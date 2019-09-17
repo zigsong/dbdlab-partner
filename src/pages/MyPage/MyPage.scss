@@ -1,0 +1,152 @@
+$red: #e8454a;
+$black: #282828;
+$white: #fff;
+$gray: #9b9b9b;
+$lightGray: #dcdcdc;
+$veryLightGray: #cacaca;
+$imgUrl: '/static/images';
+
+.contents__account {
+  padding-bottom: 64px;
+
+  .contents-inner {
+    max-width: 850px;
+    margin: 43px auto 0;
+  }
+
+  .account__tablist {
+    width: 100%;
+    border-bottom: 1px solid $veryLightGray;
+
+    .tablist__item {
+      position: relative;
+      display: inline-block;
+      vertical-align: top;
+      padding: 0 11px 7px;
+      margin: 0 9px;
+      border-bottom: 3px solid transparent;
+
+      &:first-child {
+        margin-left: 0;
+      }
+
+      &--active {
+        @extend .tablist__item;
+        border-color: $black;
+
+        .btn-tab {
+          font-weight: bold;
+        }
+      }
+    }
+
+    .btn-tab {
+      padding: 0;
+      font-size: 14px;
+      font-weight: 300;
+      color: $black;
+    }
+  }
+
+  .account__info {
+    .info__title {
+      margin-bottom: 11px;
+      font-size: 14px;
+      color: $gray;
+      text-transform: capitalize;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .info__teams {
+      width: 100%;
+      margin-top: 38px;
+
+      .teams__list {
+        width: 100%;
+
+        .list__item {
+          width: 100%;
+          border-top: 1px solid $lightGray;
+          height: 50px;
+
+          a {
+            display: inline-block;
+            padding: 17px 13px 16px;
+            font-size: 12px;
+            color: $black;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+
+    .info__activity {
+      width: 100%;
+      margin-top: 38px;
+
+      .activity__list {
+        width: 100%;
+
+        .list__item {
+          width: 100%;
+          border-top: 1px solid $lightGray;
+          height: 70px;
+
+          .box-item {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 17px 13px 17px;
+            box-sizing: border-box;
+
+            .box-image {
+              display: block;
+              position: relative;
+              width: 29px;
+              height: 29px;
+              border: 1px solid $lightGray;
+              border-radius: 50%;
+
+              img {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: auto;
+                height: auto;
+                max-width: 100%;
+                max-height: 100%;
+                margin: auto;
+              }
+            }
+
+            .box-text {
+              display: block;
+              height: 100%;
+              margin-left: 13px;
+
+              .text__activity {
+                display: block;
+                font-size: 12px;
+                color: $black;
+
+                .name {
+                  font-weight: 500;
+                }
+              }
+
+              .text__date {
+                font-size: 10px;
+                color: $black;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

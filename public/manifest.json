@@ -1,0 +1,15 @@
+{
+  "short_name": "FLUTO",
+  "name": "지속적으로 성장하는 서비스를 위한 UX (사용자 경험) 테스트 플랫폼 FLUTO",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#e8454a",
+  "background_color": "#ffffff"
+}

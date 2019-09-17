@@ -1,0 +1,117 @@
+@mixin for-mobile-portrait {
+  @media all and (max-width: 479px) { @content; }
+}
+
+@mixin for-mobile-landscape {
+  @media all and (min-width: 480px) and (max-width: 767px) { @content; }
+}
+
+@mixin for-tablet-portrait {
+  @media all and (min-width: 768px) and (max-width: 1023px) { @content; }
+}
+
+@mixin for-tablet-landscape-up {
+  @media all and (min-width: 1024px) and (max-width: 1199px) { @content; }
+}
+
+@mixin for-desktop-small {
+  @media all and (min-width: 1200px) and (max-width: 1499px) { @content; }
+}
+
+@mixin for-mobile-tablet-all {
+  @media all and (max-width: 1023px) { @content; }
+}
+
+@mixin for-mobile-all {
+  @media all and (max-width: 767px) { @content; }
+}
+
+@mixin for-tablet-all {
+  @media all and (min-width: 768px) and (max-width: 1199px) { @content; }
+}
+
+@mixin upAnimation($name) {
+  @keyframes #{$name} {
+    0% {
+      transform: translateY(25px);
+      opacity: 0;
+    }
+
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
+
+@mixin downAnimation($name) {
+  @keyframes #{$name} {
+    0% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    100% {
+      transform: translateY(25px);
+      opacity: 0;
+    }
+  }
+}
+
+@mixin transperantAnimation($name) {
+  @keyframes #{$name} {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+}
+
+@mixin keyframes($animation-name) {
+  @-webkit-keyframes #{$animation-name} {
+    @content;
+  }
+  @-moz-keyframes #{$animation-name} {
+    @content;
+  }  
+  @-ms-keyframes #{$animation-name} {
+    @content;
+  }
+  @-o-keyframes #{$animation-name} {
+    @content;
+  }  
+  @keyframes #{$animation-name} {
+    @content;
+  }
+}
+
+@mixin animation($str) {
+  -webkit-animation: #{$str};
+  -moz-animation: #{$str};
+  -ms-animation: #{$str};
+  -o-animation: #{$str};
+  animation: #{$str};
+}
+
+
+// mobile: 320,
+// mobileLandscape: 480,
+// tablet: 768,
+// tabletLandscape: 1024,
+// desktop: 1200,
+// desktopLarge: 1500,
+// desktopWide: 1920,
+
+// font-size convert
+// 60->45
+// 36->27
+// 32->24
+// 30->22
+// 28->21
+// 24->16
+// 20->15
+// 18->14
+// 16->12

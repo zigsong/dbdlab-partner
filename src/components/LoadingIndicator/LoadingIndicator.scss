@@ -1,0 +1,51 @@
+@import '../../lib/mixin.scss';
+
+.box__loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 10;
+  width: 100px;
+  height: 100px;
+  margin-top: -50px;
+  margin-left: -50px;
+  padding: 20px 20px 20px;
+  border-radius: 5px;
+  text-align: center;
+  // background-color: rgba(0, 0, 0, .4);
+
+  .item__text {
+    display: block;
+    padding-bottom: 20px;
+    color: #fff;
+    text-indent: -9999px;
+  }
+
+  .item__loading-line {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    background-color: #029bff;
+    text-indent: -9999px;
+
+    &:nth-last-child(1) {
+      @include animation('loading .6s .1s linear infinite');
+    }
+
+    &:nth-last-child(2) {
+      margin: 0 5px;
+      @include animation('loading .6s .2s linear infinite');
+    }
+
+    &:nth-last-child(3) {
+      @include animation('loading .6s .3s linear infinite');
+    }
+
+    @include keyframes(loading) {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(0, 15px); }
+      100% { transform: translate(0,0); }
+    }
+  }
+}

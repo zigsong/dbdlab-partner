@@ -1,0 +1,44 @@
+$red: #e8454a;
+$black: #282828;
+$white: #fff;
+$lightGray: #dcdcdc;
+
+.contents__project {
+  .contents-inner {
+    max-width: 850px;
+    margin: 43px auto 100px;
+  }
+
+  .project__title {
+    width: 100%;
+    font-size: 16px;
+    font-weight: 500;
+    color: $black;
+    line-height: 24px;
+    padding-left: 11px;
+    padding-bottom: 9px;
+    border-bottom: 1px solid $lightGray;
+    text-transform: capitalize;
+    box-sizing: border-box;
+  }
+
+  .project__desc {
+    text-align: center;
+
+    .desc__text {
+      display: block;
+      padding: 38px 0 27px;
+      font-size: 16px;
+      color: $black;
+    }
+
+    .btn-start--red {
+      min-width: 188px;
+      height: 30px;
+      border-radius: 15px;
+      background: $red;
+      color: $white;
+      font-size: 16px;
+    }
+  }
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="92px" height="92px" viewBox="0 0 92 92" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 56.2 (81672) - https://sketch.com -->
+    <title>Group 5</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="my_project_test_apply6-2" transform="translate(-1092.000000, -542.000000)">
+            <g id="Group-5" transform="translate(1093.000000, 543.000000)">
+                <text id="SUBMIT" font-family="NotoSansKR-Light, Noto Sans KR Light" font-size="12" font-weight="normal" line-spacing="23" fill="#FFFFFF">
+                    <tspan x="24.08" y="70">SUBMIT</tspan>
+                </text>
+                <circle id="Oval-Copy" stroke="#FFFFFF" cx="45" cy="45" r="45"></circle>
+                <polyline id="Path-6" stroke="#FFFFFF" stroke-linecap="round" transform="translate(45.500000, 29.500000) scale(-1, 1) rotate(-45.000000) translate(-45.500000, -29.500000) " points="36.4859459 10 33 48.8424094 58 49"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>

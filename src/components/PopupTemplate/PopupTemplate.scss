@@ -1,0 +1,62 @@
+$red: #e8454a;
+$blue: #029bff;
+$black: #282828;
+$white: #fff;
+$lightGray: #dcdcdc;
+$veryLightGray: #cacaca;
+
+.popup {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 200;
+  display: flex;
+  background-color: rgba(0, 0, 0, .7);
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+
+  &--hidden {
+    position: static;
+    display: block;
+    z-index: -1;
+    opacity: 0;
+    visibility: hidden;
+
+    .box-popup {
+      width: 0;
+      height: 0;
+      min-width: 0;
+      min-height: 0;
+      padding: 0;
+      opacity: 0;
+      overflow: hidden;
+      font-size: 0;
+      border: 0;
+      background: none;
+    }
+  }
+
+  .box-popup {
+    min-width: 430px;
+    min-height: 379px;
+    padding: 48px 50px 35px;
+    background-color: $white;
+    border-radius: 3.4px;
+    border: 1px solid $veryLightGray;
+    box-sizing: border-box;
+
+    .popup__title {
+      font-size: 24px;
+      font-weight: 300;
+      color: $black;
+      line-height: 36px;
+    }
+
+    .popup__contents {
+      padding-top: 27px;
+    }
+  }
+}

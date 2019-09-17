@@ -1,0 +1,253 @@
+$gray: #cacaca;
+$lightGray: #dcdcdc;
+$darkgray: #9b9b9b;
+$red: #e8454a;
+$blue: #029bff;
+$black: #282828;
+$white: #fff;
+$blueGray: #f6f7fa;
+
+.contents__plan {
+  width: 100%;
+  padding: 104px 0 183px;
+
+  .contents-inner {
+    max-width: 729px;
+    margin: 0 auto;
+  }
+
+  .form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    .field__section {
+      width: 50%;
+      max-width: 312px;
+
+      &:first-child {
+        .field:not(:nth-child(4)) {
+          .box-input__text {
+            max-width: 150px;
+          }
+        }
+      }
+
+      .field__info {
+        display: block;
+        padding-left: 18px;
+        font-size: 14px;
+        color: $red;
+        line-height: 22px;
+        text-indent: -18px;
+      }
+
+      label[for="plan"] {
+        display: block;
+
+        .box-input__radio {
+          position: relative;
+          display: inline-block;
+          width: 150px;
+          height: 165px;
+          padding: 21px 20px 16px;
+          margin-bottom: 21px;
+          box-sizing: border-box;
+          text-align: center;
+          vertical-align: top;
+
+          &:last-child {
+            margin-left: 12px;
+          }
+
+          .box-input__text {
+            position: absolute;
+            bottom: 48px;
+            left: 25px;
+            z-index: 10;
+            max-width: 100px;
+            padding-bottom: 0;
+            text-align: left;
+
+            input[type="number"] {
+              padding: 0 8px;
+              min-width: 80px;
+              max-width: 80px;
+            }
+
+            &--active {
+              @extend .box-input__text;
+
+              input[type="number"] {
+                border-color: $blue;
+              }
+
+              + .input__placeholder {
+                border-color: $blue;
+                transition: border-color .3s;
+
+                + .plan__date {
+                  color: $black;
+                }
+              }
+            }
+
+            &--error {
+              @extend .box-input__text;
+
+              + .input__placeholder {
+                &:after {
+                  width: 100%;
+                  height: 1px;
+                  transition: width .32s linear .45s;
+                }
+              }
+
+              &--active {
+                @extend .box-input__text;
+
+                input[type="number"] {
+                  border-color: $blue;
+                }
+              }
+            }
+          }
+
+          input[type="radio"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 5;
+            display: block;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            box-sizing: border-box;
+            border: 1px solid $lightGray;
+            border-radius: 3px;
+
+            &:checked {
+              border-color: $blue;
+            }
+          }
+
+          .plan__name {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: $black;
+            line-height: 24px;
+          }
+
+          .plan__desc {
+            display: block;
+            font-size: 12px;
+            color: $black;
+            line-height: 18px;
+            text-transform: capitalize;
+          }
+
+          .plan__date {
+            display: block;
+            padding-top: 67px;
+            font-size: 12px;
+            color: $gray;
+            line-height: 18px;
+            text-align: center;
+
+            strong {
+              padding-left: 2px;
+              text-indent: 5px;
+              color: inherit;
+              font-size: inherit;
+              font-weight: 300;
+            }
+          }
+
+          .input__placeholder {
+            position: absolute;
+            bottom: 48px;
+            right: 24px;
+            z-index: 10;
+            display: inline-block;
+            width: 22px;
+            height: 30px;
+            border-bottom: 1px solid $lightGray;
+            line-height: 30px;
+            vertical-align: top;
+            box-sizing: border-box;
+            transition: border-color .3s;
+            font-size: 12px;
+            color: $darkgray;
+
+            &:after {
+              content: '';
+              display: block;
+              position: absolute;
+              left: 0;
+              bottom: -1px;
+              z-index: 5;
+              width: 0;
+              height: 0;
+              background-color: $red;
+            }
+          }
+        }
+      }
+    }
+
+    .field__title {
+      display: block;
+      margin-bottom: 5px;
+
+      .title {
+        font-size: 10px;
+        color: $black;
+        font-weight: 500;
+      }
+
+      .box-input__checkbox {
+        margin-left: 33px;
+        vertical-align: middle;
+      }
+    }
+
+    .receipt__total {
+      padding: 13.5px 0 8px;
+      border-top: 1px solid $lightGray;
+
+      .total__price {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 18px;
+        color: $black;
+        font-weight: normal;
+        line-height: 27px;
+
+        span {
+          text-transform: capitalize;
+          font-size: 12px;
+          color: $blue;
+        }
+
+        strong {
+          font-size: 18px;
+          color: $black;
+          font-weight: bold;
+
+          i {
+            font-size: inherit;
+            color: inherit;
+            font-weight: inherit;
+          }
+        }
+      }
+    }
+  }
+}

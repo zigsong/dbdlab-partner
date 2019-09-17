@@ -1,0 +1,102 @@
+$red: #e8454a;
+$black: #282828;
+$white: #fff;
+$lightGray: #dcdcdc;
+$veryLightGray: #cacaca;
+
+.box-input__text {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  min-width: 100px;
+  max-width: 329px;
+  padding-bottom: 20px;
+
+  label {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"] {
+      width: 100%;
+      height: 30px;
+      padding: 3px;
+      border: 0;
+      border-bottom: 1px solid $lightGray;
+      box-sizing: border-box;
+      background: transparent;
+      color: $black;
+      transition: border-color .3s;
+      
+      &::placeholder {
+        color: $veryLightGray;
+        opacity: 1;
+      }
+
+      &:focus,
+      &:active {
+        border-color: $black;
+        transition: border-color .3s;
+      }
+
+      &:disabled {
+        color: $veryLightGray;
+      }
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      z-index: 5;
+      display: block;
+      width: 0;
+      height: 0;
+      background-color: $red;
+      transition: width .5s;
+    }
+  }
+
+  &--error {
+    @extend .box-input__text;
+
+    label {
+      &:before {
+        width: 100%;
+        height: 1px;
+        transition: width .5s;
+      }
+    }
+
+    .msg--error {
+      position: absolute;
+      left: 0;
+      bottom: 3.5px;
+      z-index: 10;
+      font-size: 8px;
+      color: $red;
+    }
+
+    &--active {
+      @extend .box-input__text;
+
+      .msg--error {
+        position: absolute;
+        left: 0;
+        bottom: 3.5px;
+        z-index: 10;
+        font-size: 8px;
+        color: $red;
+      }
+    }
+  }
+
+  &--active {
+    @extend .box-input__text;
+  }
+}

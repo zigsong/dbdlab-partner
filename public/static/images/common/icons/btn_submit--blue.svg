@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="92" height="92" viewBox="0 0 92 92">
+    <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+        <text fill="#029BFF" font-family="NotoSansKR-Light, Noto Sans KR Light" font-size="12">
+            <tspan x="24.08" y="70">SUBMIT</tspan>
+        </text>
+        <circle cx="45" cy="45" r="45" stroke="#029BFF"/>
+        <path stroke="#029BFF" stroke-linecap="round" d="M65.662 22.085l-25 29.931-17.79-17.566"/>
+    </g>
+</svg>

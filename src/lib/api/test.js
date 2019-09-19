@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const AUTH_TOKEN = localStorage.getItem('token') || sessionStorage.getItem('token');
+const baseURL = 'http://qa-server.realdopt.com/api';
 const headers = {
   headers: {
     'Content-Type': 'application/json',
@@ -8,8 +9,8 @@ const headers = {
   },
 };
 
-export const getTest = tId => axios.get(`/tests/${tId}/`, headers);
-export const getTestList = pId => axios.get(`/tests/?project_id=${pId}`, headers);
+export const getTest = tId => axios.get(`${baseURL}/tests/${tId}/`, headers);
+export const getTestList = pId => axios.get(`${baseURL}/tests/?project_id=${pId}`, headers);
 export const postTest = (
   id,
   title,
@@ -24,7 +25,7 @@ export const postTest = (
   serviceStatus,
   serviceDesc,
   funnel,
-) => axios.post('/tests/', {
+) => axios.post(`${baseURL}/tests/`, {
   project_id: id,
   title,
   client_name: clientName,
@@ -55,7 +56,7 @@ export const patchTest = (
   serviceDesc,
   funnel,
   registerValue,
-) => axios.patch(`/tests/${tId}/`, {
+) => axios.patch(`${baseURL}/tests/${tId}/`, {
   project_id: pId,
   title,
   client_name: clientName,

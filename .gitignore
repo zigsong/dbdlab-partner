@@ -1,7 +1,7 @@
 # git General
 node_modules/
 dist/*
-client/build/*
+build/*
 *.log
 
 # MacOS General

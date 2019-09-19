@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const AUTH_TOKEN = localStorage.getItem('token') || sessionStorage.getItem('token');
-
+const baseURL = 'http://qa-server.realdopt.com/api';
 const headers = {
   headers: {
     'Content-Type': 'application/json',
@@ -10,4 +10,4 @@ const headers = {
 };
 
 // eslint-disable-next-line import/prefer-default-export
-export const getAuthSelf = () => axios.get('/accounts/auth/self/', headers);
+export const getAuthSelf = () => axios.get(`${baseURL}/accounts/auth/self/`, headers);

@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const AUTH_TOKEN = localStorage.getItem('token') || sessionStorage.getItem('token');
+const baseURL = 'http://qa-server.realdopt.com/api';
 const headers = {
   headers: {
     'Content-Type': 'application/json',
@@ -8,5 +9,5 @@ const headers = {
   },
 };
 
-export const getPlanList = () => axios.get('/plans/', headers);
-export const getPlan = planId => axios.get(`/plans/${planId}`, headers);
+export const getPlanList = () => axios.get(`${baseURL}/plans/`, headers);
+export const getPlan = planId => axios.get(`${baseURL}/plans/${planId}`, headers);

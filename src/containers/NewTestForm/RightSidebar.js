@@ -203,7 +203,7 @@ const RightSidebar = (props) => {
     ? payMeta.plan.active : undefined;
 
   const setDefaultTitle = () => {
-    switch (true) {
+    switch (isDefaultRendered) {
       case isMedia1Active:
       case isMedia2Active:
         return '테스트할 서비스는\n어디서\n테스트하면 될까요?';
@@ -223,6 +223,8 @@ const RightSidebar = (props) => {
         return '테스트 신청 경로를\n알려주세요';
       case isServiceStatusActive:
         return '지금\n테스트할 서비스는\n어떤 단계인가요?';
+      case isAllPassed:
+        return '클릭해도\n수정할 수 없다구..\n후훟..';
       case hasDefaultRequiredValues:
         return '모든 정보를\n다 입력하셨나요?';
       case submitFailed:
@@ -233,7 +235,7 @@ const RightSidebar = (props) => {
   };
 
   const setDefaultDesc = () => {
-    switch (true) {
+    switch (isDefaultRendered) {
       case isMedia1Active:
       case isMedia2Active:
         return '웹사이트에서\n테스트 할까요?\n아니면 어플리케이션?\n휴대폰으로 테스트해야할지,\n컴퓨터로 테스트해야할지\n알려주세요.';
@@ -253,6 +255,8 @@ const RightSidebar = (props) => {
         return '이번 테스트를 신청하시게 된 계기를 선택해주세요.';
       case isServiceStatusActive:
         return '현재 시점의 서비스 상태를 선택해주세요';
+      case isAllPassed:
+        return '이미 테스트가\n등록되었기 때문에\n수정할 수 없습니다.\n문의사항이 있다면\n매니저에게 알려주세요!';
       case hasDefaultRequiredValues:
         return '누락 된 정보는 없는지\n꼼꼼하게 확인한 후\n다음 스텝으로\n이동해주세요 :)';
       case submitFailed:
@@ -263,7 +267,7 @@ const RightSidebar = (props) => {
   };
 
   const setTargetTitle = () => {
-    switch (true) {
+    switch (isTargetRendered) {
       case isMinAgeActive:
       case isMaxAgeActive:
       case isGenderActive:
@@ -273,6 +277,8 @@ const RightSidebar = (props) => {
         return '추가 정보란,';
       case isInterestActive:
         return '어떤 관심사를\n가진 사람에게\n테스트할까요?';
+      case isAllPassed:
+        return '클릭해도\n수정할 수 없다구..\n후훟..';
       case hasTargetRequiredValues:
         return '모든 정보를\n다 입력하셨나요?';
       case submitFailed:
@@ -283,7 +289,7 @@ const RightSidebar = (props) => {
   };
 
   const setTargetDesc = () => {
-    switch (true) {
+    switch (isTargetRendered) {
       case isMinAgeActive:
       case isMaxAgeActive:
       case isGenderActive:
@@ -293,6 +299,8 @@ const RightSidebar = (props) => {
         return '타겟의 조건을\n더 상세하게 설정하고\n싶을 때 선택해주세요.\n단, 타겟 한명 당\n추가금이 발생합니다.\n* 3,000원일 경우, 총 45,000원 추가\n(3,000 x 15 = 45,000)';
       case isInterestActive:
         return '기본적으로 제공되는\n테스터 분류 기준입니다.\n서비스의 주요 콘텐츠,\n핵심 고객이 관심있어하는\n분야에 대해 알려주세요';
+      case isAllPassed:
+        return '이미 테스트가\n등록되었기 때문에\n수정할 수 없습니다.\n문의사항이 있다면\n매니저에게 알려주세요!';
       case hasTargetRequiredValues:
         return '누락 된 정보는 없는지\n꼼꼼하게 확인한 후\n다음 스텝으로\n이동해주세요 :)';
       case submitFailed:
@@ -303,7 +311,7 @@ const RightSidebar = (props) => {
   };
 
   const setQuestTitle = () => {
-    switch (true) {
+    switch (isQuestRendered) {
       case isRegisterRequiredActive:
         return '서비스를 경험하는데\n회원가입이\n필수적인가요?';
       case isIssue1Active:
@@ -319,6 +327,8 @@ const RightSidebar = (props) => {
         return '도전과제 2 에 대해서\n자세히 알려주세요';
       case isIssuePurpose3Active:
         return '도전과제 3 에 대해서\n자세히 알려주세요';
+      case isAllPassed:
+        return '클릭해도\n수정할 수 없다구..\n후훟..';
       case hasQuestRequiredValues:
         return '모든 정보를\n다 입력하셨나요?';
       case submitFailed:
@@ -329,7 +339,7 @@ const RightSidebar = (props) => {
   };
 
   const setQuestDesc = () => {
-    switch (true) {
+    switch (isQuestRendered) {
       case isRegisterRequiredActive:
         return '보통의 경우,\n리얼답에서\n테스트 계정을 만들어서\n진행합니다.\nSNS 회원가입만\n가능한 서비스이거나,\n테스트 개별 회원가입이\n필수적이라면\n"네"를 선택해주세요.\n테스터 1명당\n3,000원의 보상이\n추가됩니다.';
       case isIssue1Active:
@@ -343,6 +353,8 @@ const RightSidebar = (props) => {
       case isIssuePurpose2Active:
       case isIssuePurpose3Active:
         return '이 서비스에서 도전과제를 수행한 테스터에게 무엇이 궁금한가요?';
+      case isAllPassed:
+        return '이미 테스트가\n등록되었기 때문에\n수정할 수 없습니다.\n문의사항이 있다면\n매니저에게 알려주세요!';
       case hasQuestRequiredValues:
         return '누락 된 정보는 없는지\n꼼꼼하게 확인한 후\n다음 스텝으로\n이동해주세요 :)';
       case submitFailed:
@@ -353,7 +365,9 @@ const RightSidebar = (props) => {
   };
 
   const setPayTitle = () => {
-    switch (true) {
+    switch (isPayRendered) {
+      case isAllPassed:
+        return '클릭해도\n수정할 수 없다구..\n후훟..';
       case isPlanActive:
         return '원하는 Plan을\n선택해주세요.\n시리얼넘버가 있다면,\n입력해주세요';
       case submitFailed:
@@ -364,7 +378,9 @@ const RightSidebar = (props) => {
   };
 
   const setPayDesc = () => {
-    switch (true) {
+    switch (isPayRendered) {
+      case isAllPassed:
+        return '이미 테스트가\n등록되었기 때문에\n수정할 수 없습니다.\n문의사항이 있다면\n매니저에게 알려주세요!';
       case isPlanActive:
         return 'Plan 01 :테스트\nPlan 02 :테스트 + 컨설팅\n엑셀러레이터,\n인큐베이팅 프로그램에서\n시리얼 넘버를 받았다면,\n입력해주세요.\n테스트 비용이 면제됩니다.';
       case submitFailed:
@@ -375,15 +391,14 @@ const RightSidebar = (props) => {
   };
 
   const isActive = fieldsMeta !== undefined && Object.keys(fieldsMeta).length > 0;
-
   return (
     <aside
       className={`form-btn-wrapper${isDisabled ? '--disabled' : ''}${
-        (hasDefaultRequiredValues && isDefaultRendered)
-        || (hasTargetRequiredValues && isTargetRendered)
-        || (hasQuestRequiredValues && isQuestRendered)
-        || (hasPlanValue && isPayRendered)
-          ? '--pass' : ''}`}
+        (hasDefaultRequiredValues && isDefaultRendered && !isAllPassed && !submitFailed)
+        || (hasTargetRequiredValues && isTargetRendered && !isAllPassed && !submitFailed)
+        || (hasQuestRequiredValues && isQuestRendered && !isAllPassed && !submitFailed)
+        || (hasPlanValue && isPayRendered && !isAllPassed && !submitFailed)
+          ? '--pass' : ''}${submitFailed ? '--fail' : ''}`}
     >
       {isDisabled
         ? null
@@ -634,7 +649,12 @@ const RightSidebar = (props) => {
               </p>
             </div>
             <div className="box-btn">
-              <button type="submit" className={`btn__default${isPayRendered && isQuestPassed ? '--submit' : ''}`}>Next</button>
+              {isAllPassed
+                ? null
+                : (
+                  <button type="submit" className={`btn__default${isPayRendered && isQuestPassed ? '--submit' : ''}`}>Next</button>
+                )
+              }
             </div>
           </>
         )

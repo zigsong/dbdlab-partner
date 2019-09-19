@@ -2,7 +2,6 @@
   "name": "dbdlab-partnership-page",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://qa-server.realdopt.com/api/",
   "dependencies": {
     "axios": "^0.19.0",
     "core-js": "^3.1.4",

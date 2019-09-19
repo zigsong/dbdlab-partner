@@ -43,7 +43,7 @@ const UserProfile = (props) => {
         onBlur={e => handleBlur(e)}
       >
         <i className="btn__icon">
-          <img src={`/${profile}`} alt="test" />
+          <img src={`https://qa-server.realdopt.com${profile}`} alt="test" />
           <span className="btn__text">프로필</span>
         </i>
       </button>

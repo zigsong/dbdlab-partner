@@ -10,7 +10,7 @@ const planRequired = value => (value ? undefined : 'Plan을 선택해 주세요:
 
 const TestFormPay = (props) => {
   let inputEl = useRef(null);
-  const { couponValue, planList } = props;
+  const { couponValue, planList, isDisabled } = props;
   const coupon = [
     {
       title: '한달이내에 리얼답을 사용한 적이 있습니다',
@@ -89,6 +89,7 @@ const TestFormPay = (props) => {
               onChange={input.onChange}
               checked={p.name === input.value}
               value={p.name}
+              disabled={isDisabled}
             />
             <strong className="plan__name">{p.name}</strong>
             <span className="plan__desc">{p.description}</span>
@@ -154,6 +155,7 @@ const TestFormPay = (props) => {
                       component="input"
                       value={String(c.price)}
                       onChange={() => handleInputFocus()}
+                      disabled={isDisabled}
                     />
                     <span className="coupon__name">{c.title}</span>
                   </span>
@@ -168,6 +170,7 @@ const TestFormPay = (props) => {
                   label="pay.couponNum"
                   placeholder="코드를 입력해주세요"
                   setRef={(input) => { inputEl = input; }}
+                  disabled={isDisabled}
                 />
               </p>
             </div>

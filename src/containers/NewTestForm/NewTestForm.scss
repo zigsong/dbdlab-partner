@@ -2,6 +2,7 @@
 
 $red: #e8454a;
 $blue: #029bff;
+$yellow: #fff013;
 $black: #282828;
 $white: #fff;
 $gray: #9b9b9b;
@@ -180,7 +181,7 @@ $imgUrl: '/static/images/';
 
       .field-wrapper {
         width: 100%;
-        padding: 39px 44px 35px;
+        padding: 39px 44px 15px;
         box-sizing: border-box;
 
         &--default,
@@ -234,7 +235,7 @@ $imgUrl: '/static/images/';
           margin-bottom: 5px;
 
           .title {
-            font-size: 10px;
+            font-size: 12px;
             color: $black;
             font-weight: 500;
           }
@@ -360,6 +361,10 @@ $imgUrl: '/static/images/';
                 & + .text {
                   color: $blue;
                 }
+
+                &:disabled {
+                  border-color: $gray;
+                }
               }
             }
 
@@ -472,7 +477,11 @@ $imgUrl: '/static/images/';
           }
 
           .field {
-            margin-bottom: 35px;
+            margin-top: 35px;
+
+            &:first-child {
+              margin-top: 0;
+            }
           }
         }
 
@@ -508,6 +517,10 @@ $imgUrl: '/static/images/';
                 &:checked {
                   border-width: 2px;
                   border-color: $blue;
+
+                  &:disabled {
+                    border-color: $gray;
+                  }
                 }
               }
 
@@ -778,6 +791,13 @@ $imgUrl: '/static/images/';
               color: $blue;
               font-weight: 500;
             }
+
+            .btn__confirm {
+              @extend .btn__tax-invoice;
+              margin-left: 20px;
+              background: $blue;
+              color: $white;
+            }
           }
         }
       }
@@ -868,7 +888,38 @@ $imgUrl: '/static/images/';
 
         .box-info {
           .info__title {
-            color: #fff013;
+            color: $yellow;
+            font-weight: 300;
+          }
+  
+          .info__desc {
+            color: $white;
+            font-weight: 300;
+  
+            &--active {
+              @extend .info__desc;
+              color: $white;
+            }
+          }
+        }
+
+        .btn__default {
+          background: transparent url('#{$imgUrl}common/icons/btn_next--white.svg') no-repeat center / 100%;
+
+          &--submit {
+            @extend .btn__default;
+            background: transparent url('#{$imgUrl}common/icons/btn_submit--white.svg') no-repeat center / 100%;
+          }
+        }
+      }
+
+      &--fail {
+        @extend .form-btn-wrapper;
+        background-color: $red;
+
+        .box-info {
+          .info__title {
+            color: $yellow;
             font-weight: 300;
           }
   

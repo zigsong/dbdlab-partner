@@ -22,7 +22,7 @@ const DisabledLayer = () => (
   <div className="layer--disabled">아직은 입력하실 수 없어요!</div>
 );
 
-const PayAccountinfo = () => (
+const PayAccountinfo = ({ submit }) => (
   <div className="field-wrapper--pay-info">
     <div className="wrapper-inner">
       <p className="pay-info__text">
@@ -39,6 +39,7 @@ const PayAccountinfo = () => (
         <strong className="account_info">1,500,000원</strong>
       </p>
       <button type="button" className="btn__tax-invoice" onClick={() => alert('클릭해도 볼 수 없다구..후훟..')}>세금계산서 신청하기</button>
+      <button type="button" className="btn__confirm" onClick={submit}>확인</button>
     </div>
   </div>
 );
@@ -51,11 +52,13 @@ class NewTestForm extends Component {
     isQuestRendered: false,
     isPayRendered: false,
     isAllRendered: false,
+    isReportRendered: false,
     isDefaultPassed: false,
     isTargetPassed: false,
     isQuestPassed: false,
     isPayPassed: false,
     isAllPassed: false,
+    hasReport: false,
     test: {},
   }
 
@@ -204,8 +207,6 @@ class NewTestForm extends Component {
     const { match } = route;
 
     if (!match.params.tId) window.location.reload();
-
-    // history.push(`/project/${match.params.pId}`);
     window.location.assign(`/project/${match.params.pId}`);
   };
 
@@ -223,8 +224,8 @@ class NewTestForm extends Component {
       ? this.setState({ isPayRendered: true })
       : this.setState({ isPayRendered: false });
     const renderReport = id === 4
-      ? this.setState({ isAllRendered: true })
-      : this.setState({ isAllRendered: false });
+      ? this.setState({ isReportRendered: true })
+      : this.setState({ isReportRendered: false });
 
     return {
       renderDefault, renderTarget, renderQuest, renderPay, renderReport,
@@ -474,11 +475,13 @@ class NewTestForm extends Component {
       isQuestRendered,
       isPayRendered,
       isAllRendered,
+      isReportRendered,
       isDefaultPassed,
       isTargetPassed,
       isQuestPassed,
       isPayPassed,
       isAllPassed,
+      hasReport,
       test,
     } = this.state;
     const {
@@ -534,7 +537,7 @@ class NewTestForm extends Component {
       },
       {
         title: '결과 리포트',
-        class: `report${isAllRendered ? '--active' : ''}`,
+        class: `report${isReportRendered ? '--active' : ''}`,
       },
     ];
 
@@ -558,7 +561,7 @@ class NewTestForm extends Component {
                               className="btn-nav"
                               type="button"
                               onClick={() => handleFormRender(idx)}
-                              disabled={idx === 4 && !isAllPassed}
+                              disabled={idx === 4 && hasReport}
                             >
                               {n.title}
                             </button>
@@ -597,7 +600,7 @@ class NewTestForm extends Component {
                               className="btn-nav"
                               type="button"
                               onClick={() => handleFormRender(idx)}
-                              disabled={idx === 4 && !isAllPassed}
+                              disabled={idx === 4 && !isAllRendered}
                             >
                               {n.title}
                             </button>
@@ -615,6 +618,7 @@ class NewTestForm extends Component {
                   component="input"
                   ref={(ref) => { this.titleInput = ref; }}
                   forwardRef
+                  disabled={isAllPassed}
                 />
                 { isDefaultRendered
                   ? (
@@ -623,7 +627,9 @@ class NewTestForm extends Component {
                         isDisabled={isNoNamed || (isDefaultPassed
                           && isTargetPassed
                           && isQuestPassed
-                          && isPayPassed)}
+                          && isPayPassed)
+                          || isAllPassed
+                        }
                         test={test}
                         media1Category={media1Category}
                         media2Category={media2Category}
@@ -644,7 +650,9 @@ class NewTestForm extends Component {
                           isDisabled={isNoNamed || (isDefaultPassed
                               && isTargetPassed
                               && isQuestPassed
-                              && isPayPassed)}
+                              && isPayPassed)
+                              || isAllPassed
+                            }
                           extraInfoCategory={extraInfoCategory}
                         />
                       </FormSection>
@@ -661,7 +669,9 @@ class NewTestForm extends Component {
                           isDisabled={isNoNamed || (isDefaultPassed
                             && isTargetPassed
                             && isQuestPassed
-                            && isPayPassed)}
+                            && isPayPassed)
+                            || isAllPassed
+                          }
                           qId={qId}
                           issueCategory={issueCategory}
                         />
@@ -675,29 +685,46 @@ class NewTestForm extends Component {
                     <>
                       { isQuestPassed ? null : <DisabledLayer />}
                       { isPayPassed
-                        ? <PayAccountinfo />
+                        ? (
+                          <PayAccountinfo submit={
+                            () => this.setState({
+                              isPayPassed: false,
+                              isAllRendered: false,
+                              isAllPassed: true,
+                            })}
+                          />
+                        )
                         : (
-                          <FormSection name="pay">
-                            <TestFormPay
-                              isDisabled={isNoNamed || (isDefaultPassed
-                                && isTargetPassed
-                                && isQuestPassed
-                                && isPayPassed)}
-                              planList={planList}
-                            />
-                          </FormSection>
+                          <>
+                            {isAllRendered
+                              ? null
+                              : (
+                                <FormSection name="pay">
+                                  <TestFormPay
+                                    isDisabled={isNoNamed || (isDefaultPassed
+                                      && isTargetPassed
+                                      && isQuestPassed
+                                      && isPayPassed)
+                                      || isAllPassed
+                                    }
+                                    planList={planList}
+                                  />
+                                </FormSection>
+                              )
+                            }
+                          </>
                         )
                       }
                     </>
                   )
                   : null
                 }
-                { isAllRendered
+                { isReportRendered
                   ? <TestFormReport />
                   : null
                 }
               </div>
-              {isPayPassed
+              {isPayPassed || isReportRendered
                 ? null
                 : (
                   <RightSidebar

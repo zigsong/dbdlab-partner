@@ -24,16 +24,22 @@ export const logout = () => (dispatch) => {
   const { protocol } = window.location;
   const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
   const deleteTokenCookie = () => new Promise(() => {
-    if (hasTokenCookie !== undefined) {
-      document.cookie = 'token=;expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+    const setTokenCookie = (expireDate) => {
+      const date = new Date();
+      date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
+      document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=realdopt.com`;
+      // document.cookie = `token=${token};expires=${date.toUTCString()};path=/;domain=localhost`;
       alert('로그아웃 되었습니다 :)');
+    };
+    if (hasTokenCookie !== undefined) {
+      setTokenCookie(-1);
     } else {
       alert('다시 로그인 해주세요 :)');
     }
   });
 
   deleteTokenCookie().then(
-    window.location.assign(`${protocol}//realdopt.com`),
+    window.location.assign(`${protocol}//realdopt.com/login`),
     // window.location.assign(`${protocol}//localhost:3000/login`),
   );
 

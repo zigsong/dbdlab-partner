@@ -21,8 +21,21 @@ export const getAuthSelf = () => dispatch => AuthAPI.getAuthSelf().then(
 });
 
 export const logout = () => (dispatch) => {
-  localStorage.removeItem('token');
-  sessionStorage.removeItem('token');
+  const { protocol } = window.location;
+  const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
+  const deleteTokenCookie = () => new Promise(() => {
+    if (hasTokenCookie !== undefined) {
+      document.cookie = 'token=;expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+      alert('로그아웃 되었습니다 :)');
+    } else {
+      alert('다시 로그인 해주세요 :)');
+    }
+  });
+
+  deleteTokenCookie().then(
+    window.location.assign(`${protocol}//realdopt.com`),
+    // window.location.assign(`${protocol}//localhost:3000/login`),
+  );
 
   dispatch({
     type: LOGOUT,

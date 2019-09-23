@@ -3,6 +3,8 @@ import * as TargetAPI from 'lib/api/target';
 import { handleActions } from 'redux-actions';
 
 const SET_INIT = 'target/SET_INIT';
+const POST_TARGET_SUCCESS = 'target/POST_TARGET_SUCCESS';
+const POST_TARGET_FAILURE = 'target/POST_TARGET_FAILURE';
 const GET_TARGET_LIST_SUCCESS = 'target/GET_TARGET_LIST_SUCCESS';
 const GET_TARGET_LIST_FAILURE = 'target/GET_TARGET_LIST_FAILURE';
 const GET_TARGET_SUCCESS = 'target/GET_TARGET_SUCCESS';
@@ -12,8 +14,35 @@ const PATCH_TARGET_FAILURE = 'target/PATCH_TARGET_FAILURE';
 
 export const setTargetInit = () => ({ type: SET_INIT });
 
-export const getTargetList = tId => (dispatch) => {
-  return new Promise((resolve, reject) => {
+export const postTarget = (tId, gender, minAge, maxAge) => (dispatch) => {
+  console.log(tId, gender, minAge, maxAge);
+  return (
+    new Promise((resolve, reject) => {
+      TargetAPI.postTarget(tId, gender, minAge, maxAge).then(
+        (res) => {
+          console.log(res);
+          dispatch({
+            type: POST_TARGET_SUCCESS,
+            payload: res,
+          });
+          resolve(res);
+        },
+      ).catch((err) => {
+        console.log(err);
+        console.log(err.reponse);
+        console.log(err.message);
+        dispatch({
+          type: POST_TARGET_FAILURE,
+          payload: err,
+        });
+        reject(err);
+      });
+    })
+  );
+};
+
+export const getTargetList = tId => dispatch => (
+  new Promise((resolve, reject) => {
     TargetAPI.getTargetList(tId).then(
       (res) => {
         console.log(res);
@@ -33,8 +62,8 @@ export const getTargetList = tId => (dispatch) => {
       });
       reject(err);
     });
-  });
-};
+  })
+);
 
 export const getTarget = tgId => dispatch => (
   new Promise((resolve, reject) => {
@@ -60,8 +89,8 @@ export const getTarget = tgId => dispatch => (
   })
 );
 
-export const patchTarget = (tgId, tId, gender, minAge, maxAge) => (dispatch) => {
-  return new Promise((resolve, reject) => {
+export const patchTarget = (tgId, tId, gender, minAge, maxAge) => dispatch => (
+  new Promise((resolve, reject) => {
     TargetAPI.patchTarget(tgId, tId, gender, minAge, maxAge).then(
       (res) => {
         console.log(res);
@@ -81,8 +110,8 @@ export const patchTarget = (tgId, tId, gender, minAge, maxAge) => (dispatch) => 
       });
       reject(err);
     });
-  });
-};
+  })
+);
 
 const initialState = {
   getSuccess: false,
@@ -99,7 +128,7 @@ const initialState = {
     age_maximum: null,
     gender: null,
     test_id: null,
-    extras: null,
+    extras: [],
   },
 };
 
@@ -108,6 +137,39 @@ export default handleActions({
     ...state,
     target: {},
   }),
+  [POST_TARGET_SUCCESS]: (state, action) => {
+    console.log(action);
+    const {
+      id,
+      tester_amount,
+      age_minimum,
+      age_maximum,
+      gender,
+      test_id,
+      extras,
+    } = action.payload.data;
+
+    return {
+      ...state,
+      postSuccess: true,
+      target: {
+        id,
+        tester_amount,
+        age_minimum,
+        age_maximum,
+        gender,
+        test_id,
+        extras,
+      },
+    };
+  },
+  [POST_TARGET_FAILURE]: (state, action) => {
+    console.log(action);
+    return {
+      ...state,
+      postFailure: true,
+    };
+  },
   [GET_TARGET_SUCCESS]: (state, action) => {
     console.log(action);
     const {
@@ -151,6 +213,7 @@ export default handleActions({
 
     return {
       ...state,
+      postSuccess: true,
       target: {
         id,
         tester_amount,

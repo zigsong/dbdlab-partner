@@ -307,7 +307,6 @@ class NewTestForm extends Component {
         const { gender, minAge, maxAge } = values.target;
         // eslint-disable-next-line no-nested-ternary
         const genderValue = gender === '여자' ? 'female' : (gender === '남자' ? 'male' : 'both');
-        console.log(genderValue);
 
         await patchTarget(
           tgId,
@@ -348,8 +347,6 @@ class NewTestForm extends Component {
             registerValue,
           );
         }
-
-        console.log(tId);
 
         if (issue[`q${qId[0]}`]) {
           await patchQuest(
@@ -441,24 +438,64 @@ class NewTestForm extends Component {
               isDefaultRendered: false,
               isDefaultPassed: true,
               isTargetRendered: true,
+              test: {
+                targets: [
+                  { id: res.data.targets[0].id },
+                ],
+                quests: [
+                  { id: res.data.quests[0].id },
+                  { id: res.data.quests[1].id },
+                  { id: res.data.quests[2].id },
+                ],
+              },
             });
           } else if (hasTargetPassed) {
             this.setState({
               isTargetRendered: false,
               isTargetPassed: true,
               isQuestRendered: true,
+              test: {
+                targets: [
+                  { id: res.data.targets[0].id },
+                ],
+                quests: [
+                  { id: res.data.quests[0].id },
+                  { id: res.data.quests[1].id },
+                  { id: res.data.quests[2].id },
+                ],
+              },
             });
           } else if (hasQuestPassed) {
             this.setState({
               isQuestRendered: false,
               isQuestPassed: true,
               isPayRendered: true,
+              test: {
+                targets: [
+                  { id: res.data.targets[0].id },
+                ],
+                quests: [
+                  { id: res.data.quests[0].id },
+                  { id: res.data.quests[1].id },
+                  { id: res.data.quests[2].id },
+                ],
+              },
             });
           } else if (hasPayPassed) {
             this.setState({
               isPayRendered: true,
               isPayPassed: true,
               isAllRendered: false,
+              test: {
+                targets: [
+                  { id: res.data.targets[0].id },
+                ],
+                quests: [
+                  { id: res.data.quests[0].id },
+                  { id: res.data.quests[1].id },
+                  { id: res.data.quests[2].id },
+                ],
+              },
             });
           }
         });
@@ -843,6 +880,9 @@ const mapStateToProps = (state) => {
       },
     },
   };
+
+  console.log(targets);
+  console.log(quests);
 
   return ({
     fieldsValues: getFormValues('testForm')(state),

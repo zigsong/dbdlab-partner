@@ -248,7 +248,6 @@ const PlanList = () => {
                   ))}
                 </strong>
                 <em>/ plan</em>
-                <button type="button" className="link__changePlan" onClick={e => handleToggleList(e)}>대량 구매를 원해요</button>
               </span>
               {list.expired.map((days, j) => (
                 j === 0 ? (
@@ -275,7 +274,7 @@ const PlanList = () => {
                   ))}
                 </strong>
                 <em>/ plan</em>
-                <button type="button" className="link__changePlan" onClick={e => handleToggleList(e)}>대량 구매를 원해요</button>
+                {/* <button type="button" className="btn__changePlan" onClick={e => handleToggleList(e)}>대량 구매를 원해요</button> */}
               </span>
               {list.expired.map((days, l) => (
                 l === 0 ? (
@@ -289,7 +288,7 @@ const PlanList = () => {
           )
         }
       </p>
-      <Link className="btn btn__buy" to="/">테스트 신청하기</Link>
+      <button type="button" className="btn__changePlan" onClick={e => handleToggleList(e)}>대량 구매를 원해요</button>
     </>
   );
 

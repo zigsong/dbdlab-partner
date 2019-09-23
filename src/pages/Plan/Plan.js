@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import PageTemplate from 'containers/PageTemplate';
 import PlanList from 'containers/PlanList';
 import NewPlanForm from 'containers/NewPlanForm';
@@ -117,22 +118,32 @@ const Plan = (props) => {
 
   const testLevel = [
     {
-      title: '도전과제 개수',
-      plan01: '3개',
-      plan02: '3개',
-      plan03: '협의',
-    },
-    {
-      title: '테스터',
-      plan01: '15명',
-      plan02: '15명',
-      plan03: '협의',
-    },
-    {
-      title: '타겟',
-      plan01: '3개',
-      plan02: '3개',
-      plan03: '협의',
+      head: [
+        { title: '' },
+        { title: 'plan 01' },
+        { title: 'plan 02' },
+        { title: 'plan 03' },
+      ],
+      body: [
+        {
+          title: '도전과제 개수',
+          plan01: '3개',
+          plan02: '3개',
+          plan03: '협의',
+        },
+        {
+          title: '테스터',
+          plan01: '15명',
+          plan02: '15명',
+          plan03: '협의',
+        },
+        {
+          title: '타겟',
+          plan01: '3개',
+          plan02: '3개',
+          plan03: '협의',
+        },
+      ],
     },
   ];
   const { match } = props;
@@ -149,6 +160,12 @@ const Plan = (props) => {
                     <h1 className="box-price__title">가격 정책</h1>
                     <div className="box-price__contents">
                       <PlanList />
+                    </div>
+                    <div className="box-start">
+                      <p className="box-start__contents">
+                        <strong>지금 바로 테스트를 시작해보세요</strong>
+                        <Link to="/" className="btn__apply">테스트 시작하기</Link>
+                      </p>
                     </div>
                   </article>
                   <article className="box-targetInfo">
@@ -191,18 +208,35 @@ const Plan = (props) => {
                   <article className="box-test">
                     <h1 className="test__title">테스트 설계</h1>
                     <table className="test__table">
-                      <tbody>
-                        {
-                          testLevel.map(test => (
-                            <tr key={test.title}>
-                              <td>{test.title}</td>
-                              <td>{test.plan01}</td>
-                              <td>{test.plan02}</td>
-                              <td>{test.plan03}</td>
-                            </tr>
-                          ))
-                        }
-                      </tbody>
+                      {
+                        testLevel.map(test => (
+                          <React.Fragment key={test}>
+                            <thead>
+                              <tr>
+                                {
+                                  test.head.map(th => (
+                                    <th key={th.title}>
+                                      <span className="table__title">{th.title}</span>
+                                    </th>
+                                  ))
+                                }
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {
+                                test.body.map(td => (
+                                  <tr key={td.title}>
+                                    <td>{td.title}</td>
+                                    <td>{td.plan01}</td>
+                                    <td>{td.plan02}</td>
+                                    <td>{td.plan03}</td>
+                                  </tr>
+                                ))
+                              }
+                            </tbody>
+                          </React.Fragment>
+                        ))
+                      }
                     </table>
                   </article>
                 </section>

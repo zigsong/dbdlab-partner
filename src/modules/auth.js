@@ -28,7 +28,7 @@ export const logout = () => (dispatch) => {
       const date = new Date();
       date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
       document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=realdopt.com`;
-      // document.cookie = `token=${token};expires=${date.toUTCString()};path=/;domain=localhost`;
+      // document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=localhost`;
       alert('로그아웃 되었습니다 :)');
     };
     if (hasTokenCookie !== undefined) {

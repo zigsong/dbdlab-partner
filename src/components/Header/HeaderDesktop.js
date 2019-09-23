@@ -36,21 +36,27 @@ const UserProfile = (props) => {
 
   return (
     <section className="header__profile">
-      <button
-        className={`btn${isExtended ? '--active' : ''}`}
-        type="button"
-        onClick={() => setExtended(!isExtended)}
-        onBlur={e => handleBlur(e)}
-      >
-        <i className="btn__icon">
-          <img src={`/${profile}`} alt="test" />
-          <span className="btn__text">프로필</span>
-        </i>
-      </button>
-      <ul className={`profile__list${isExtended ? '--extended' : ''}`}>
-        {/* <li className="list__item"><Link to="/my">마이페이지</Link></li> */}
-        <li className="list__item"><button type="button" onClick={() => { dispatch(logout()); }}>로그아웃</button></li>
-      </ul>
+      {profile !== ''
+        ? (
+          <>
+            <button
+              className={`btn${isExtended ? '--active' : ''}`}
+              type="button"
+              onClick={() => setExtended(!isExtended)}
+              onBlur={e => handleBlur(e)}
+            >
+              <i className="btn__icon">
+                {profile !== '' ? <img src={`https://qa-server.realdopt.com${profile}`} alt="test" /> : '🙂' }
+                <span className="btn__text">프로필</span>
+              </i>
+            </button>
+            <ul className={`profile__list${isExtended ? '--extended' : ''}`}>
+              {/* <li className="list__item"><Link to="/my">마이페이지</Link></li> */}
+              <li className="list__item"><button type="button" onClick={() => { dispatch(logout()); }}>로그아웃</button></li>
+            </ul>
+          </>
+        )
+        : null}
     </section>
   );
 };

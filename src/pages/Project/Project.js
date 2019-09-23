@@ -31,6 +31,11 @@ const UnauthorizedPopup = () => {
     color: '#fff',
     fontWeight: 500,
   };
+  const redirect = () => {
+    const { protocol } = window.location;
+    window.location.assign(`${protocol}//realdopt.com/login`);
+    // window.location.assign(`${protocol}//localhost:3000/login`);
+  };
 
   return (
     <PopupTemplate isShow>
@@ -39,7 +44,7 @@ const UnauthorizedPopup = () => {
         <br />
         다시 로그인 해 주세요 :)
         <br />
-        <button type="button" style={btnStyle} onClick={() => console.log('done')}>확인</button>
+        <button type="button" style={btnStyle} onClick={() => redirect()}>확인</button>
       </p>
     </PopupTemplate>
   );

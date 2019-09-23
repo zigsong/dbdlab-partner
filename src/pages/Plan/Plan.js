@@ -1,11 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PageTemplate from 'containers/PageTemplate';
 import PlanList from 'containers/PlanList';
 import NewPlanForm from 'containers/NewPlanForm';
+import LoadingIndicator from 'components/LoadingIndicator';
 import './Plan.scss';
 
 const Plan = (props) => {
-  console.log(props);
+  const [isLoading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const { protocol } = window.location;
+    const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
+    const AUTH_TOKEN = hasTokenCookie !== undefined ? hasTokenCookie.replace(/\s/gi, '').substring(6) : null;
+    console.log(AUTH_TOKEN);
+
+    setLoading(true);
+
+    if (AUTH_TOKEN === null) {
+      // window.location.assign(`${protocol}//localhost:4000`);
+      window.location.assign(`${protocol}//realdopt.com/plan`);
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
   const infoTable = [
     {
       head: [
@@ -119,73 +137,78 @@ const Plan = (props) => {
   ];
   const { match } = props;
   return (
-    match.path === '/plan/purchase'
-      ? <NewPlanForm />
+    isLoading ? <LoadingIndicator />
       : (
-        <PageTemplate>
-          <section className="contents__plan">
-            <article className="box-price">
-              <h1 className="box-price__title">가격 정책</h1>
-              <div className="box-price__contents">
-                <PlanList />
-              </div>
-            </article>
-            <article className="box-targetInfo">
-              <h1 className="targetInfo__title">수집 정보</h1>
-              <span className="targetInfo__text">* VAT 별도 / 카드결제 준비중</span>
-              <table className="targetInfor__table">
-                {
-                  infoTable.map(info => (
-                    <React.Fragment key={info}>
-                      <thead>
-                        <tr>
-                          {
-                            info.head.map(th => (
-                              <th key={th.title}>
-                                <span className="table__title">{th.title}</span>
-                                <br />
-                                <em className="table__desc">{th.desc}</em>
-                              </th>
-                            ))
-                          }
-                        </tr>
-                      </thead>
+        <>
+          {match.path === '/plan/purchase'
+            ? <NewPlanForm />
+            : (
+              <PageTemplate>
+                <section className="contents__plan">
+                  <article className="box-price">
+                    <h1 className="box-price__title">가격 정책</h1>
+                    <div className="box-price__contents">
+                      <PlanList />
+                    </div>
+                  </article>
+                  <article className="box-targetInfo">
+                    <h1 className="targetInfo__title">수집 정보</h1>
+                    <span className="targetInfo__text">* VAT 별도 / 카드결제 준비중</span>
+                    <table className="targetInfor__table">
+                      {
+                        infoTable.map(info => (
+                          <React.Fragment key={info}>
+                            <thead>
+                              <tr>
+                                {
+                                  info.head.map(th => (
+                                    <th key={th.title}>
+                                      <span className="table__title">{th.title}</span>
+                                      <br />
+                                      <em className="table__desc">{th.desc}</em>
+                                    </th>
+                                  ))
+                                }
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {
+                                info.body.map(td => (
+                                  <tr key={td.title}>
+                                    <td>{td.title}</td>
+                                    <td><i className={`table__checkbox${td.plan01.length > 0 ? `-${td.plan01}` : ''}`}>{td.plan01}</i></td>
+                                    <td><i className={`table__checkbox${td.plan02.length > 0 ? `-${td.plan02}` : ''}`}>{td.plan02}</i></td>
+                                    <td><i className={`table__checkbox${td.plan03.length > 0 ? `-${td.plan03}` : ''}`}>{td.plan03}</i></td>
+                                  </tr>
+                                ))
+                              }
+                            </tbody>
+                          </React.Fragment>
+                        ))
+                      }
+                    </table>
+                  </article>
+                  <article className="box-test">
+                    <h1 className="test__title">테스트 설계</h1>
+                    <table className="test__table">
                       <tbody>
                         {
-                          info.body.map(td => (
-                            <tr key={td.title}>
-                              <td>{td.title}</td>
-                              <td><i className={`table__checkbox${td.plan01.length > 0 ? `-${td.plan01}` : ''}`}>{td.plan01}</i></td>
-                              <td><i className={`table__checkbox${td.plan02.length > 0 ? `-${td.plan02}` : ''}`}>{td.plan02}</i></td>
-                              <td><i className={`table__checkbox${td.plan03.length > 0 ? `-${td.plan03}` : ''}`}>{td.plan03}</i></td>
+                          testLevel.map(test => (
+                            <tr key={test.title}>
+                              <td>{test.title}</td>
+                              <td>{test.plan01}</td>
+                              <td>{test.plan02}</td>
+                              <td>{test.plan03}</td>
                             </tr>
                           ))
                         }
                       </tbody>
-                    </React.Fragment>
-                  ))
-                }
-              </table>
-            </article>
-            <article className="box-test">
-              <h1 className="test__title">테스트 설계</h1>
-              <table className="test__table">
-                <tbody>
-                  {
-                    testLevel.map(test => (
-                      <tr key={test.title}>
-                        <td>{test.title}</td>
-                        <td>{test.plan01}</td>
-                        <td>{test.plan02}</td>
-                        <td>{test.plan03}</td>
-                      </tr>
-                    ))
-                  }
-                </tbody>
-              </table>
-            </article>
-          </section>
-        </PageTemplate>
+                    </table>
+                  </article>
+                </section>
+              </PageTemplate>
+            )}
+        </>
       )
   );
 };

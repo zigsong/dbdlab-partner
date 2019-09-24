@@ -9,6 +9,7 @@ import {
 import { getPlanList, getPlanPrice } from 'modules/plan';
 import { orderVoucher } from 'modules/voucher';
 import PageTemplate from 'containers/PageTemplate';
+import PayAccountInfo from 'components/PayAccountInfo';
 import FormInput from 'components/FormInput';
 import Checkbox from 'components/Checkbox';
 import './NewPlanForm.scss';
@@ -20,28 +21,6 @@ const emailRequired = value => (value ? undefined : '이메일을 입력해주�
 const emailRegexp = value => (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
   ? '이메일 형식을 다시 확인해주세요' : undefined);
 const phoneRequired = value => (value ? undefined : '연락처를 입력해주세요');
-
-const PayAccountinfo = ({ submit }) => (
-  <div className="field-wrapper--pay-info">
-    <div className="wrapper-inner">
-      <p className="pay-info__text">
-        <strong>리얼답을 이용해주셔서 감사합니다.</strong>
-        <br />
-        아래 계좌정보로 입금해주시면 확인 후,
-        <br />
-        매니저 배정 후 테스트 진행을 도와드리겠습니다.
-      </p>
-      <p className="pay-info__account">
-        <span className="account__title">입금계좌</span>
-        <strong className="account_info">기업은행   010-7627-3455   김인정</strong>
-        <span className="account__title">입금액</span>
-        <strong className="account_info">1,500,000원</strong>
-      </p>
-      <button type="button" className="btn__tax-invoice" onClick={() => alert('클릭해도 볼 수 없다구..후훟..')}>세금계산서 신청하기</button>
-      <button type="button" className="btn__confirm" onClick={submit}>확인</button>
-    </div>
-  </div>
-);
 
 const asyncValidate = async (values) => {
   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -71,6 +50,7 @@ class NewPlanForm extends Component {
   state={
     isPlan: null,
     totalPrice: 0,
+    totalAmount: 0,
     hasPassed: false,
     isDisabled: false,
   }
@@ -222,6 +202,7 @@ class NewPlanForm extends Component {
         ).then(() => this.setState({
           hasPassed: true,
           isDisabled: true,
+          totalAmount: amount,
         }));
       }
     } else if (values.plan === 'PLAN 02') {
@@ -258,6 +239,7 @@ class NewPlanForm extends Component {
         ).then(() => this.setState({
           hasPassed: true,
           isDisabled: true,
+          totalAmount: amount,
         }));
       }
     }
@@ -266,13 +248,13 @@ class NewPlanForm extends Component {
   render() {
     const {
       plans, handleSubmit, companyName, applicantName, sameName, depositorName,
-      email, phone, plan, plan01Amount, plan02Amount,
+      email, phone, plan, plan01Amount, plan02Amount, voucherId,
     } = this.props;
     const hasValues = !!companyName
       && !!applicantName && !!depositorName && !!email && !!phone
       && !!plan && (!!plan01Amount || !!plan02Amount);
     const {
-      isPlan, totalPrice, hasPassed, isDisabled,
+      isPlan, totalPrice, hasPassed, isDisabled, totalAmount,
     } = this.state;
     const {
       onSubmit, getRadioValue, handleRadioValue, handleNameValue, handleInputChange,
@@ -286,11 +268,14 @@ class NewPlanForm extends Component {
             {
               hasPassed
                 ? (
-                  <PayAccountinfo submit={
-                    () => this.setState({
-                      hasPassed: false,
-                      isDisabled: true,
-                    })}
+                  <PayAccountInfo
+                    voucherId={voucherId}
+                    voucherAmount={totalAmount}
+                    submit={
+                      () => this.setState({
+                        hasPassed: false,
+                        isDisabled: true,
+                      })}
                   />
                 )
                 : (
@@ -465,7 +450,9 @@ const getPlanValues = state => ({
   plan02Amount: selector(state, 'plan02Amount'),
   plans: state.plan.planList,
   planPrice: state.plan.planPrice,
+  voucherId: state.voucher.voucher.id,
 });
+
 const mapDispatchToProps = dispatch => ({
   getPlanList: () => dispatch(getPlanList()),
   getPlanPrice: (pName, cNum) => dispatch(getPlanPrice(pName, cNum)),

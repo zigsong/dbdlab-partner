@@ -20,4 +20,13 @@ export const orderVoucher = (companyName, applicantName, depositorName, phone, e
   voucher_receive_email: email,
   plan_id: plId,
   voucher_amount: amount,
+  is_tex_bill_requested: false,
+}, headers);
+
+export const patchVoucher = (company, companyRegistNum, email, vId, amount) => axios.patch(`${baseURL}/orders/voucher/${vId}/`, {
+  voucher_amount: amount,
+  is_tex_bill_requested: true,
+  tex_bill_receive_email: email,
+  tex_bill_company_name: company,
+  company_registration_number: companyRegistNum,
 }, headers);

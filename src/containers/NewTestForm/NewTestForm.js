@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import {
   Field, FormSection, reduxForm, getFormValues, getFormMeta,
 } from 'redux-form';
+import PayAccountInfo from 'components/PayAccountInfo';
 import LoadingIndicator from 'components/LoadingIndicator';
 import {
   setTestInit, getTest, postTest, patchTest,
@@ -20,28 +21,6 @@ import './NewTestForm.scss';
 
 const DisabledLayer = () => (
   <div className="layer--disabled">아직은 입력하실 수 없어요!</div>
-);
-
-const PayAccountinfo = ({ submit }) => (
-  <div className="field-wrapper--pay-info">
-    <div className="wrapper-inner">
-      <p className="pay-info__text">
-        <strong>리얼답을 이용해주셔서 감사합니다.</strong>
-        <br />
-        아래 계좌정보로 입금해주시면 확인 후,
-        <br />
-        매니저 배정 후 테스트 진행을 도와드리겠습니다.
-      </p>
-      <p className="pay-info__account">
-        <span className="account__title">입금계좌</span>
-        <strong className="account_info">기업은행   010-7627-3455   김인정</strong>
-        <span className="account__title">입금액</span>
-        <strong className="account_info">1,500,000원</strong>
-      </p>
-      <button type="button" className="btn__tax-invoice" onClick={() => alert('클릭해도 볼 수 없다구..후훟..')}>세금계산서 신청하기</button>
-      <button type="button" className="btn__confirm" onClick={submit}>확인</button>
-    </div>
-  </div>
 );
 
 class NewTestForm extends Component {
@@ -723,7 +702,7 @@ class NewTestForm extends Component {
                       { isQuestPassed ? null : <DisabledLayer />}
                       { isPayPassed
                         ? (
-                          <PayAccountinfo submit={
+                          <PayAccountInfo submit={
                             () => this.setState({
                               isPayPassed: false,
                               isAllRendered: false,

@@ -17,7 +17,7 @@ class ProjectForm extends Component {
     if (isSame) change('company', serviceName);
   }
 
-  changeInputValue = () => {
+  handleInputValue = () => {
     const { change, serviceName, isSame } = this.props;
     if (isSame) change('company', serviceName);
   };
@@ -27,12 +27,6 @@ class ProjectForm extends Component {
     reset();
     onPopup(false);
   }
-
-  required = value => (value ? undefined : 'Required');
-
-  maxLength = max => value => (value && value.length > max ? `Must be ${max} characters or less` : undefined);
-
-  minValue = min => value => (value && value < min ? `Must be at least ${min}` : undefined);
 
   render() {
     const { handleSubmit, serviceName, fieldMeta } = this.props;
@@ -61,7 +55,7 @@ class ProjectForm extends Component {
               component={Checkbox}
               label="서비스명과 동일합니다"
               checked
-              onChange={() => this.changeInputValue()}
+              onChange={() => this.handleInputValue()}
             />
           </span>
           <Field

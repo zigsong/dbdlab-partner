@@ -225,7 +225,7 @@ const PlanList = () => {
           </Ticks>
         </Slider>
       </div>
-      <Link to="/plan/purchase" className="btn btn-buy">PLAN 구매하기</Link>
+      <Link to="/plan/purchase" className="btn btn-buy">바우처 구매하기</Link>
     </>
   );
 

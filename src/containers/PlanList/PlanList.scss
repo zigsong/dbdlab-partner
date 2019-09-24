@@ -150,10 +150,6 @@ $imgUrl: '/static/images/';
           &.plan02--single {
             position: relative;
             padding: 45px 0 69px;
-
-            .link__changePlan {
-              margin-top: 35px;
-            }
           }
 
           &.plan03 {
@@ -164,8 +160,8 @@ $imgUrl: '/static/images/';
           }
         }
 
-        .btn__buy,
-        .btn__changePlan {
+        .btn-buy,
+        .btn-changePlan {
           @extend %btnBlue;
           display: inline-block;
           min-width: 180px;
@@ -174,7 +170,7 @@ $imgUrl: '/static/images/';
           text-align: center;
         }
 
-        .link__changePlan {
+        .link-changePlan {
           background: none;
           min-width: 180px;
           margin-top: 17px;
@@ -258,7 +254,7 @@ $imgUrl: '/static/images/';
       line-height: 55px;
     }
 
-    .btn__apply {
+    .btn-apply {
       @extend %btnBlue;
       display: inline-block;
       min-width: 152px;

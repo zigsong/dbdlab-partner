@@ -11,6 +11,13 @@ const headers = {
   },
 };
 
-export const getPlanList = () => axios.get(`${baseURL}/plans/`, headers);
-export const getPlan = planId => axios.get(`${baseURL}/plans/${planId}`, headers);
-export const getPlanPrice = (pName, cNum) => axios.get(`${baseURL}/plans/calculate/?plan_name=${pName}&coupon_number=${cNum}`);
+// eslint-disable-next-line import/prefer-default-export
+export const orderVoucher = (companyName, applicantName, depositorName, phone, email, plId, amount) => axios.post(`${baseURL}/orders/voucher/`, {
+  company_name: companyName,
+  applicant_name: applicantName,
+  depositor_name: depositorName,
+  phone_number: phone,
+  voucher_receive_email: email,
+  plan_id: plId,
+  voucher_amount: amount,
+}, headers);

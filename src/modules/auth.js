@@ -40,7 +40,7 @@ export const logout = () => (dispatch) => {
   });
 
   deleteTokenCookie().then(
-    window.location.assign(`${protocol}//realdopt.com/login`),
+    window.location.assign(`${protocol}//qa.realdopt.com/login`),
     // window.location.assign(`${protocol}//localhost:3000/login`),
   );
 

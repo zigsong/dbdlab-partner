@@ -18,7 +18,7 @@ const Plan = (props) => {
 
     if (AUTH_TOKEN === null) {
       // window.location.assign(`${protocol}//localhost:4000`);
-      window.location.assign(`${protocol}//realdopt.com/plan`);
+      window.location.assign(`${protocol}//qa.realdopt.com/plan`);
     } else {
       setLoading(false);
     }

@@ -126,6 +126,7 @@ export default handleActions({
       created_at,
       is_new,
       member_cnt,
+      members,
     } = action.payload.data;
     const resultObj = {
       id,
@@ -140,6 +141,7 @@ export default handleActions({
       created_at,
       is_new,
       member_cnt,
+      members,
     };
     return {
       ...state,
@@ -166,6 +168,7 @@ export default handleActions({
       created_at,
       is_new,
       member_cnt,
+      members,
     } = action.payload.data;
 
     return {
@@ -183,6 +186,7 @@ export default handleActions({
         created_at,
         is_new,
         member_cnt,
+        members,
       },
     };
   },

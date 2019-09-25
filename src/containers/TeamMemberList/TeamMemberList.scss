@@ -1,0 +1,262 @@
+$red: #e8454a;
+$blue: #029bff;
+$yellow: #fff013;
+$black: #282828;
+$white: #fff;
+$gray: #9b9b9b;
+$lightGray: #dcdcdc;
+$veryLightGray: #cacaca;
+$imgUrl: '/static/images/';
+
+.team__form {
+  width: 100%;
+
+  .form-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .form__section {
+    display: inline-block;
+    max-width: 50%;
+    min-width: 354px;
+    margin: 28px 29.5px 0 0;
+    vertical-align: top;
+
+    &:last-child {
+      max-width: 260px;
+      min-width: 260px;
+      margin-right: 59px;
+    }
+  }
+
+  .field {
+    width: 100%;
+    margin-bottom: 6px;
+
+    &-column {
+      @extend .field;
+      display: inline-block;
+      width: 50%;
+      max-width: 170px;
+      vertical-align: top;
+    }
+  }
+
+  .field__title {
+    display: block;
+    margin-bottom: 5px;
+
+    .title {
+      font-size: 12px;
+      color: $black;
+      font-weight: 500;
+    }
+  }
+
+  .box-input__text {
+    max-width: 317px;
+
+    &--error {
+      @extend .box-input__text;
+
+      &--active {
+        @extend .box-input__text;
+      }
+    }
+
+    &--active {
+      @extend .box-input__text;
+    }
+  }
+
+  .form__btn-wrapper {
+    margin-top: 14px;
+  }
+
+  .section__title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+
+    .title__text {
+      font-size: 12px;
+      font-weight: 500;
+      color: $black;
+    }
+  }
+
+  .section__teamList {
+    width: 100%;
+
+    .list-team {
+      width: 100%;
+      border-top: 2px solid $veryLightGray;
+
+      .box-member {
+        position: relative;
+        z-index: 5;
+        width: 100%;
+        height: 56px;
+        padding: 11px 17px;
+        border-bottom: 2px solid $veryLightGray;
+        box-sizing: border-box;
+        font-size: 12px;
+        color: $black;
+
+        .member__profile {
+          display: inline-block;
+          width: 32px;
+          height: 32px;
+          vertical-align: top;
+
+          .box-img {
+            position: relative;
+            z-index: 10;
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px solid $lightGray;
+            box-sizing: border-box;
+
+            img {
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              z-index: 15;
+              width: auto;
+              height: auto;
+              max-width: 80%;
+              max-height: 80%;
+              margin: auto;
+            }
+          }
+        }
+
+        .member__info {
+          display: inline-block;
+          width: calc(100% - 32px);
+          height: 100%;
+          padding-left: 16px;
+          box-sizing: border-box;
+
+          .info__name {
+            display: block;
+            padding-top: 2px;
+            font-size: 12px;
+            color: $black;
+            line-height: 11px;
+          }
+
+          .info__email {
+            font-size: 12px;
+            color: $gray;
+            line-height: 11px;
+          }
+
+          .badge {
+            display: inline-block;
+            width: 12px;
+            height: 11px;
+            background: transparent url('#{$imgUrl}common/icons/icon_team_leader.svg') no-repeat center center;
+            vertical-align: top;
+            margin-left: 5px;
+            text-indent: -9999px;
+            font-size: 0;
+            color: transparent;
+          }
+        }
+
+        .btn-menu {
+          position: absolute;
+          top: 7px;
+          right: 8px;
+          z-index: 20;
+          width: 5px;
+          height: 18px;
+          padding: 0;
+          text-indent: -9999px;
+          color: transparent;
+          font-size: 0;
+          background: transparent url('#{$imgUrl}common/icons/btn_team_menu.svg') no-repeat center top;
+        }
+
+        .menu-list {
+          position: absolute;
+          top: 8px;
+          right: 19px;
+          z-index: 20;
+          width: 93px;
+          height: auto;
+          border-radius: 3.4px;
+          border: 1px solid $veryLightGray;
+          box-sizing: border-box;
+          background: $white;
+          overflow: hidden;
+
+          .list__item {
+            width: 100%;
+            height: 40px;
+            
+            button {
+              display: block;
+              width: 100%;
+              height: 100%;
+              padding: 9px;
+              font-size: 14px;
+              line-height: 1.53;
+              color: $black;
+              box-sizing: border-box;
+              background: $white;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .btn-cancle {
+    min-width: 66px;
+    height: 34px;
+    border: 1px solid $veryLightGray;
+    border-radius: 3.4px;
+    color: $gray;
+    font-size: 16px;
+    background: $white;
+    margin-right: 8px;
+  }
+
+  .btn-submit {
+    min-width: 136px;
+    height: 34px;
+    border: 1px solid $veryLightGray;
+    border-radius: 3.4px;
+    color: $white;
+    font-size: 16px;
+    background: $veryLightGray;
+
+    &--active {
+      @extend .btn-submit;
+      border-color: $blue;
+      background: $blue;
+    }
+  }
+  
+  .btn-invite {
+    min-width: 82px;
+    height: 24px;
+    border-radius: 12px;
+    background: $blue;
+    font-size: 14px;
+    color: $white;
+    font-weight: 500;
+    line-height: 1;
+    box-sizing: border-box;
+    border: 0;
+  }
+}

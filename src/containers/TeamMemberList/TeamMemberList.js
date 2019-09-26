@@ -4,19 +4,12 @@ import FormInput from 'components/FormInput';
 import FormSelect from 'components/FormSelect';
 import { reduxForm, Field } from 'redux-form';
 import LoadingIndicator from 'components/LoadingIndicator';
-import { getProject } from 'modules/project';
 import { getCategoryItem } from 'modules/category';
 import './TeamMemberList.scss';
 
-const mediaRequired = value => (value ? undefined : '카테고리를 선택해주세요');
+const categoryRequired = value => (value ? undefined : '카테고리를 선택해주세요');
 const seriveInfoRequired = value => (value ? undefined : 'URL 또는 어플리케이션 명을 입력해주세요');
-const serviceStatusRequired = value => (value ? undefined : '서비스 단계를 선택해주세요');
-const clientNameRequired = value => (value ? undefined : '이름을 입력해주세요');
-const clientContactRequired = value => (value ? undefined : '연락처를 입력해주세요');
-const clientContactRegexp = value => (value && !/^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/.test(value) ? '연락처 형식을 다시 확인해주세요' : undefined);
-const emailRequired = value => (value ? undefined : '이메일을 입력해주세요');
-const emailRegexp = value => (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
-  ? '이메일 형식을 다시 확인해주세요' : undefined);
+const servieRequired = value => (value ? undefined : '서비스명을 입력해주세요');
 
 const DisabledLayer = () => (
   <div className="layer--disabled">아직은 입력하실 수 없어요!</div>
@@ -27,29 +20,29 @@ class TeamMemberList extends Component {
     isDisabled: false,
     isLoading: false,
     isExtended: false,
+    isLayerOpen: false,
   }
 
   componentDidMount() {
-    console.log(this.props);
-    const { props } = this;
-    const pId = props.projectId;
-    this.getProject(pId);
-    // props.getProject(pId).then(res => console.log(res));
+    this.getCategory();
   }
 
-  getProject = async (pId) => {
+  getCategory = async () => {
     const { props } = this;
     this.setState({ isLoading: true });
 
-    await props.getProject(pId);
     await props.getCategoryItem(2);
     await props.getCategoryItem(3).then(this.setState({ isLoading: false }));
   };
 
-  handleMenuToggle = () => {
-    // this.setState((prevState) => {
-    //   isExtended: !prevState.isExtended,
-    // })
+  handleMenuToggle = (e) => {
+    e.preventDefault();
+    this.setState(prevState => ({ isExtended: !prevState.isExtended }));
+  }
+
+  handleInvitePopupToggle = (e) => {
+    e.preventDefault();
+    this.setState(prevState => ({ isLayerOpen: !prevState.isLayerOpen }));
   }
 
   onSubmit = (values) => {
@@ -61,16 +54,29 @@ class TeamMemberList extends Component {
       handleSubmit,
       onReset,
       category,
-      members,
+      project,
+      projectName,
+      serviceInfoValue,
+      serviceCategoryValue,
+      serviceFormatValue,
+      valid,
     } = this.props;
-    const { isDisabled, isLoading } = this.state;
-    const { onSubmit } = this;
+    const {
+      isDisabled,
+      isLoading,
+      isExtended,
+      isLayerOpen,
+    } = this.state;
+    const {
+      handleMenuToggle,
+      handleInvitePopupToggle,
+      onSubmit,
+    } = this;
     const service1Category = Object.keys(category).length > 0
       ? category[0].category_items.map(c => c.name) : [];
     const service2Category = Object.keys(category).length > 1
       ? category[1].category_items.map(c => c.name) : [];
-    console.log(this.props);
-    const memberList = members !== undefined ? members : [];
+    const memberList = project.members !== undefined ? project.members : [];
 
     return (
       isLoading
@@ -90,7 +96,7 @@ class TeamMemberList extends Component {
                     placeholder="텍스트 입력"
                     component={FormInput}
                     disabled={isDisabled}
-                    validate={[seriveInfoRequired]}
+                    validate={[servieRequired]}
                   />
                 </div>
                 <div className="field">
@@ -104,7 +110,6 @@ class TeamMemberList extends Component {
                     placeholder="텍스트 입력"
                     component={FormInput}
                     disabled={isDisabled}
-                    validate={[seriveInfoRequired]}
                   />
                 </div>
                 <div className="field">
@@ -130,7 +135,7 @@ class TeamMemberList extends Component {
                     type="select"
                     component={FormSelect}
                     disabled={isDisabled}
-                    validate={mediaRequired}
+                    validate={categoryRequired}
                     defaultValue="카테고리 선택"
                   >
                     <option value="카테고리 선택" disabled>카테고리 선택</option>
@@ -148,7 +153,7 @@ class TeamMemberList extends Component {
                     type="select"
                     component={FormSelect}
                     disabled={isDisabled}
-                    validate={mediaRequired}
+                    validate={categoryRequired}
                     defaultValue="카테고리 선택"
                   >
                     <option value="카테고리 선택" disabled>카테고리 선택</option>
@@ -172,43 +177,63 @@ class TeamMemberList extends Component {
                 </div>
                 <div className="form__btn-wrapper">
                   <button type="button" className="btn-cancle" onClick={onReset}>취소</button>
-                  {/* <button type="submit" className={`btn-submit${service !== undefined && serviceInfo !== undefined && serviceCategory !== undefined && serviceFormat !== undefined ? '--active' : ''}`} onClick={handleSubmit}>프로젝트 만들기</button> */}
+                  <button
+                    type="submit"
+                    className={`
+                      btn-submit${projectName !== undefined && serviceInfoValue !== undefined && serviceCategoryValue !== undefined && serviceFormatValue !== undefined && valid ? '--active' : ''}
+                    `}
+                  >
+                    프로젝트 만들기
+                  </button>
                 </div>
               </section>
               <section className="form__section">
                 <div className="section__title">
                   <span className="title__text">우리팀원</span>
-                  <button type="button" className="btn-invite">+ 초대하기</button>
+                  <button type="button" className="btn-invite" onClick={e => handleInvitePopupToggle(e)}>+ 초대하기</button>
                 </div>
-                <div className="section__teamList">
+                <div className="section__team-list">
                   <ol className="list-team">
                     {
                       memberList.length > 0
                         ? (
-                          memberList.map(m => (
-                            <li className="list-team__item" key={m.email}>
-                              <div className="box-member">
-                                <span className="member__profile">
-                                  <i className="box-img">
-                                    <img src={`https://qa-server.realdopt.com${m.avatar_url}`} alt={`${m.name}님의 프로필`} />
-                                  </i>
-                                </span>
-                                <span className="member__info">
-                                  <span className="info__name">
-                                    {m.name}
-                                    {m.is_manager ? <i className="badge">팀장</i> : null}
+                          memberList.map((m) => {
+                            const userName = m.name === '' ? m.email.substring(0, m.email.indexOf('@')) : m.name;
+                            return (
+                              <li className="list-team__item" key={m.email}>
+                                <div className="box-member">
+                                  <span className="member__profile">
+                                    <i className="box-img">
+                                      <img src={`https://qa-server.realdopt.com${m.avatar_url}`} alt={`${userName}님의 프로필`} />
+                                    </i>
                                   </span>
-                                  <span className="info__email">{m.email}</span>
-                                </span>
-                                <button type="button" className="btn-menu">팀원 관리하기</button>
-                                <ul className="menu-list">
-                                  <li className="list__item">
-                                    <button type="button">추방하기</button>
-                                  </li>
-                                </ul>
-                              </div>
-                            </li>
-                          ))
+                                  <span className="member__info">
+                                    <span className="info__name">
+                                      {userName}
+                                      {m.is_manager ? <i className="badge">팀장</i> : null}
+                                    </span>
+                                    <span className="info__email">{m.email}</span>
+                                  </span>
+                                  {m.is_manager
+                                    ? null
+                                    : (
+                                      <button
+                                        type="button"
+                                        className="btn-menu"
+                                        onClick={e => handleMenuToggle(e)}
+                                      >
+                                        팀원 관리하기
+                                      </button>
+                                    )}
+                                  <ul className={`menu-list${isExtended ? '--extended' : ''}`}>
+                                    <li className="list__item">
+                                      <button type="button">추방하기</button>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </li>
+                            );
+                          })
                         )
                         : (
                           <li className="list-team__item">
@@ -217,6 +242,41 @@ class TeamMemberList extends Component {
                         )
                     }
                   </ol>
+                </div>
+                <div className={`section__team-invite${isLayerOpen ? '--active' : ''}`}>
+                  <span className="invite__title">초대하기</span>
+                  <div className="invite__inputbox">
+                    <div className="box-input">
+                      <span className="box__title">
+                        <strong className="title">이메일</strong>
+                      </span>
+                      <Field
+                        name="inviteEmail"
+                        type="text"
+                        label="inviteEmail"
+                        placeholder="텍스트 입력"
+                        component={FormInput}
+                      />
+                    </div>
+                    <div className="box-btn">
+                      <button type="button" className="btn-add">+ 메일 추가하기</button>
+                      <button type="button" className="btn-invite--submit">초대하기</button>
+                    </div>
+                  </div>
+                  <div className="invite__linkbox">
+                    <div className="box-input">
+                      <span className="box__title">
+                        <strong className="title">링크 복사</strong>
+                      </span>
+                      <Field
+                        name="inviteLink"
+                        type="text"
+                        label="inviteLink"
+                        component={FormInput}
+                      />
+                    </div>
+                  </div>
+                  <button type="button" className="btn-copy">복사하기</button>
                 </div>
               </section>
             </div>
@@ -227,24 +287,14 @@ class TeamMemberList extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { project } = state.project;
   const { category } = state.category;
-  console.log(category);
 
   return {
-    projectName: project.name,
-    companyName: project.company_name,
-    serviceInfoValue: project.service_extra_info,
-    serviceCategoryValue: project.service_category,
-    serviceFormatValue: project.service_format,
-    serviceDesc: project.service_description,
-    members: project.members,
     category,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  getProject: pId => dispatch(getProject(pId)),
   getCategoryItem: cId => dispatch((getCategoryItem(cId))),
 });
 
@@ -253,4 +303,11 @@ export default connect(
   mapDispatchToProps,
 )(reduxForm({
   form: 'teamForm',
+  enableReinitialize: true,
+  onSubmitFail: (errors, dispatch, submitError, props) => {
+    console.log(errors, dispatch, submitError, props);
+  },
+  onSubmitSuccess: () => {
+    console.log('success');
+  },
 })(TeamMemberList));

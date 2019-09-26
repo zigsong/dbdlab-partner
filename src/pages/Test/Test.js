@@ -79,6 +79,20 @@ class Test extends Component {
     } = this.props;
     const { pId } = match.params;
     const getTestStep = Object.keys(testList).map(t => testList[t].step);
+    const {
+      name,
+      company_name,
+      service_extra_info,
+      service_category,
+      service_format,
+      service_description,
+    } = project;
+    const projectName = (name !== undefined && name !== '') ? name : undefined;
+    const companyName = (company_name !== undefined && company_name !== '') ? company_name : undefined;
+    const serviceInfo = (service_extra_info !== undefined && service_extra_info !== '') ? service_extra_info : undefined;
+    const serviceCategory = (service_category !== undefined && service_category !== '') ? service_category : undefined;
+    const serviceFormat = (service_format !== undefined && service_format !== '') ? service_format : undefined;
+    const serviceDesc = (service_description !== undefined && service_description !== '') ? service_description : undefined;
 
     return (
       isLoading
@@ -155,7 +169,17 @@ class Test extends Component {
                             )
                             : (
                               <div className="team__desc">
-                                <TeamMemberList projectId={pId} />
+                                <TeamMemberList
+                                  project={project}
+                                  initialValues={{
+                                    service: projectName,
+                                    company: companyName,
+                                    serviceInfo,
+                                    serviceCategory,
+                                    serviceFormat,
+                                    serviceDesc,
+                                  }}
+                                />
                               </div>
                             )
                         }

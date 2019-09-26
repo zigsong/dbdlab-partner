@@ -63,6 +63,7 @@ const UserProfile = (props) => {
 
 const HeaderDesktop = (props) => {
   const { global, avatar_url, projectName } = props;
+  console.log(props);
 
   return (
     <header className="header">

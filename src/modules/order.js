@@ -1,10 +1,12 @@
-import * as VoucherAPI from 'lib/api/voucher';
+import * as OrderAPI from 'lib/api/order';
 import { handleActions } from 'redux-actions';
 
-const POST_ORDER_VOUCHER_SUCCESS = 'voucher/POST_ORDER_VOUCHER_SUCCESS';
-const POST_ORDER_VOUCHER_FAILURE = 'voucher/POST_ORDER_VOUCHER_FAILURE';
-const PATCH_VOUCHER_SUCCESS = 'voucher/PATCH_VOUCHER_SUCCESS';
-const PATCH_VOUCHER_FAILURE = 'voucher/PATCH_VOUCHER_FAILURE';
+const POST_ORDER_VOUCHER_SUCCESS = 'order/POST_ORDER_VOUCHER_SUCCESS';
+const POST_ORDER_VOUCHER_FAILURE = 'order/POST_ORDER_VOUCHER_FAILURE';
+const PATCH_VOUCHER_SUCCESS = 'order/PATCH_VOUCHER_SUCCESS';
+const PATCH_VOUCHER_FAILURE = 'order/PATCH_VOUCHER_FAILURE';
+const POST_ORDER_TEST_SUCCESS = 'order/POST_ORDER_TEST_SUCCESS';
+const POST_ORDER_TEST_FAILURE = 'order/POST_ORDER_TEST_FAILURE';
 
 export const orderVoucher = (
   companyName,
@@ -14,7 +16,7 @@ export const orderVoucher = (
   email,
   plId,
   amount,
-) => dispatch => VoucherAPI.orderVoucher(
+) => dispatch => OrderAPI.orderVoucher(
   companyName,
   applicantName,
   depositorName,
@@ -43,7 +45,7 @@ export const patchVoucher = (
   email,
   vId,
   amount,
-) => dispatch => VoucherAPI.patchVoucher(
+) => dispatch => OrderAPI.patchVoucher(
   company,
   companyRegistNum,
   email,
@@ -65,6 +67,36 @@ export const patchVoucher = (
   },
 );
 
+export const orderTest = (
+  pId,
+  tId,
+  cType,
+  cCode,
+) => dispatch => new Promise((resolve, reject) => OrderAPI.orderTest(
+  pId,
+  tId,
+  cType,
+  cCode,
+).then(
+  (res) => {
+    console.log(res);
+    dispatch({
+      type: POST_ORDER_TEST_SUCCESS,
+      payload: res,
+    });
+    resolve(res);
+  },
+).catch((err) => {
+  console.log(err);
+  console.log(err.response);
+  console.log(err.message);
+  dispatch({
+    type: POST_ORDER_TEST_FAILURE,
+    payload: err,
+  });
+  reject(err);
+}));
+
 const initialState = {
   getVoucherListSuccess: false,
   getVoucherListFailure: false,
@@ -72,7 +104,10 @@ const initialState = {
   getVoucherFailure: false,
   postVoucherSuccess: false,
   postVoucherFailure: false,
+  postTestSuccess: false,
+  postTestFailure: false,
   voucher: {},
+  test: {},
 };
 
 export default handleActions({
@@ -93,5 +128,14 @@ export default handleActions({
   [PATCH_VOUCHER_FAILURE]: state => ({
     ...state,
     postVoucherFailure: true,
+  }),
+  [POST_ORDER_TEST_SUCCESS]: (state, action) => ({
+    ...state,
+    postTestSuccess: true,
+    test: action.payload.data,
+  }),
+  [POST_ORDER_TEST_FAILURE]: state => ({
+    ...state,
+    postTestFailure: true,
   }),
 }, initialState);

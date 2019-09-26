@@ -137,7 +137,12 @@ $blueGray: #f6f7fa;
             }
 
             .msg--error {
+              display: block;
+              width: 120px;
+              left: 50%;
               bottom: -16px;
+              margin-left: -60px;
+              text-align: center;
             }
           }
 

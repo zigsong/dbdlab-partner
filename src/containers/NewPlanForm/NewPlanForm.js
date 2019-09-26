@@ -7,7 +7,7 @@ import {
   Field, reduxForm, getFormMeta, getFormValues, change, SubmissionError, formValueSelector,
 } from 'redux-form';
 import { getPlanList, getPlanPrice } from 'modules/plan';
-import { orderVoucher } from 'modules/voucher';
+import { orderVoucher } from 'modules/order';
 import PageTemplate from 'containers/PageTemplate';
 import PayAccountInfo from 'components/PayAccountInfo';
 import FormInput from 'components/FormInput';

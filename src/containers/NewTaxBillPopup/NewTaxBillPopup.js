@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { togglePopup } from 'modules/popup';
-import { patchVoucher } from 'modules/voucher';
+import { patchVoucher } from 'modules/order';
 import PopupTemplate from 'components/PopupTemplate';
 import TaxBillForm from './TaxBillForm';
 import './NewTaxBillPopup.scss';
@@ -26,8 +26,7 @@ class NewTaxBillPopup extends Component {
 
     if (hasAllValues) {
       patchVoucher(company, companyRegistNum, email, voucherId, voucherAmount)
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           this.setState({
             hasComplete: true,
           }, () => {

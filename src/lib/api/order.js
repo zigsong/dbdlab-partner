@@ -30,3 +30,11 @@ export const patchVoucher = (company, companyRegistNum, email, vId, amount) => a
   tex_bill_company_name: company,
   company_registration_number: companyRegistNum,
 }, headers);
+
+export const orderTest = (pId, tId, cType, cCode) => axios.post(`${baseURL}/orders/test/`, {
+  plan_id: pId,
+  test_id: tId,
+  coupon_type: cType,
+  coupon_code: cCode,
+  is_tex_bill_requested: false,
+}, headers);

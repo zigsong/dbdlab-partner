@@ -1,4 +1,6 @@
+/* eslint-disable no-shadow */
 /* eslint-disable camelcase */
+/* eslint-disable-next-line no-shadow */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
@@ -13,6 +15,7 @@ import { patchTarget } from 'modules/target';
 import { patchQuest } from 'modules/quest';
 import { getCategories } from 'modules/category';
 import { getPlanList } from 'modules/plan';
+import { orderTest } from 'modules/order';
 import RightSidebar from './RightSidebar';
 import {
   TestFormDefault, TestFormTarget, TestFormQuest, TestFormPay, TestFormReport,
@@ -213,13 +216,23 @@ class NewTestForm extends Component {
 
   onSubmit = async (values) => {
     const {
-      // eslint-disable-next-line no-shadow
-      route, postTest, patchTest, patchTarget, patchQuest, getTest,
+      route,
+      postTest,
+      patchTest,
+      patchTarget,
+      patchQuest,
+      getTest,
+      orderTest,
+      planList,
     } = this.props;
     const { match, history } = route;
     const { pId, tId } = match.params;
     const {
-      test, isDefaultRendered, isTargetRendered, isQuestRendered, isPayRendered,
+      test,
+      isDefaultRendered,
+      isTargetRendered,
+      isQuestRendered,
+      isPayRendered,
     } = this.state;
     const { targets } = test;
     const tgId = targets !== undefined ? targets[0].id : null;
@@ -387,10 +400,26 @@ class NewTestForm extends Component {
             });
         }
       } else if (isPayRendered && hasPayPassed) {
-        this.setState({
-          isPayRendered: true,
-          isPayPassed: true,
-          isAllRendered: false,
+        const selectedPlan = planList.find(p => p.name === values.pay.plan);
+        const cType = values.pay.coupon !== undefined ? values.pay.coupon : undefined;
+        const cCode = values.pay.couponNum !== undefined ? values.pay.couponNum : undefined;
+
+        orderTest(
+          selectedPlan.id,
+          tId,
+          cType,
+          cCode,
+        ).then((res) => {
+          console.log(res);
+          this.setState({
+            isPayRendered: true,
+            isPayPassed: true,
+            isAllRendered: false,
+          });
+        }).catch((err) => {
+          console.log(err);
+          console.log(err.response);
+          console.log(err.message);
         });
       }
     } else {
@@ -860,9 +889,6 @@ const mapStateToProps = (state) => {
     },
   };
 
-  console.log(targets);
-  console.log(quests);
-
   return ({
     fieldsValues: getFormValues('testForm')(state),
     fieldsMeta: getFormMeta('testForm')(state),
@@ -940,14 +966,45 @@ const mapDispatchToProps = dispatch => ({
     funnel,
     registerValue,
   )),
-  patchTarget: (tgId, tId, gender, minAge, maxAge) => dispatch(
-    patchTarget(tgId, tId, gender, minAge, maxAge),
-  ),
-  patchQuest: (qId, tId, issue, issueDetail, issuePurpose) => dispatch(
-    patchQuest(qId, tId, issue, issueDetail, issuePurpose),
-  ),
+  patchTarget: (
+    tgId,
+    tId,
+    gender,
+    minAge,
+    maxAge,
+  ) => dispatch(patchTarget(
+    tgId,
+    tId,
+    gender,
+    minAge,
+    maxAge,
+  )),
+  patchQuest: (
+    qId,
+    tId,
+    issue,
+    issueDetail,
+    issuePurpose,
+  ) => dispatch(patchQuest(
+    qId,
+    tId,
+    issue,
+    issueDetail,
+    issuePurpose,
+  )),
   getCategories: () => dispatch(getCategories()),
   getPlanList: () => dispatch(getPlanList()),
+  orderTest: (
+    pId,
+    tId,
+    cType,
+    cCode,
+  ) => dispatch(orderTest(
+    pId,
+    tId,
+    cType,
+    cCode,
+  )),
 });
 
 

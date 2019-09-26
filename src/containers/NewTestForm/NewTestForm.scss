@@ -660,25 +660,37 @@ $imgUrl: '/static/images/';
 
               .coupon__number {
                 position: relative;
+
+                .input__placeholder {
+                  position: absolute;
+                  display: inline-block;
+                  height: 30px;
+                  padding: 3px;
+                  color: $black;
+                  font-size: 12px;
+                  box-sizing: border-box;
+                  vertical-align: top;
+                  transition: border-color .3s;
+                  line-height: 25px;
+                }
+  
+                .box-input__text {
+                  label {
+                    input[type="text"] {
+                      padding-left: 66px;
+                    }
+                  }
+                }
               }
 
-              .input__placeholder {
-                position: absolute;
-                display: inline-block;
-                height: 30px;
-                padding: 3px;
-                color: $black;
-                font-size: 12px;
-                box-sizing: border-box;
-                vertical-align: top;
-                transition: border-color .3s;
-                line-height: 25px;
-              }
+              .coupon__serial {
+                @extend .coupon__number;
 
-              .box-input__text {
-                label {
-                  input[type="text"] {
-                    padding-left: 66px;
+                .box-input__text {
+                  label {
+                    input[type="text"] {
+                      padding-left: 100px;
+                    }
                   }
                 }
               }

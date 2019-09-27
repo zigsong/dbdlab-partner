@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import FormInput from 'components/FormInput';
 import {
@@ -10,12 +10,19 @@ const planRequired = value => (value ? undefined : 'Plan을 선택해 주세요:
 
 const TestFormPay = (props) => {
   let inputEl = useRef(null);
-  const [planPrice, setPlanPrice] = useState(0);
+  let planPriceValue;
+  const [planPrice, setPlanPrice] = useState(planPriceValue === undefined ? 0 : planPriceValue);
   const [targetPrice, setTargetPrice] = useState(0);
   const [registerPrice, setRegisterPrice] = useState(0);
   // const [couponDiscount, setCouponDiscount] = useState(0);
   console.log(props);
-  const { couponValue, planList, isDisabled } = props;
+  const {
+    couponValue,
+    planList,
+    isDisabled,
+    planValue,
+  } = props;
+
   const totalPrice = planPrice + targetPrice + registerPrice;
   const couponDiscount = couponValue !== undefined ? totalPrice * 0.03 : 0;
   const coupon = [
@@ -83,6 +90,24 @@ const TestFormPay = (props) => {
       </>
     );
   };
+
+  useEffect(() => {
+    const getPlanPriceValue = () => {
+      if (planList === undefined || planList === []) {
+        planPriceValue = 0;
+      } else if (planValue === undefined) {
+        planPriceValue = 0;
+      } else {
+        planPriceValue = planList.find(p => p.name === planValue).price_amount;
+      }
+      console.log(planPriceValue);
+
+      return planPriceValue;
+    };
+
+    getPlanPriceValue();
+    setPlanPrice(planPriceValue);
+  }, [planPriceValue]);
 
   return (
     <div className="field-wrapper--pay">

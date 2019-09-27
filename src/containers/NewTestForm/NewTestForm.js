@@ -15,7 +15,7 @@ import { patchTarget } from 'modules/target';
 import { patchQuest } from 'modules/quest';
 import { getCategories } from 'modules/category';
 import { getPlanList } from 'modules/plan';
-import { orderTest } from 'modules/order';
+import { orderTest, getTestOrder } from 'modules/order';
 import RightSidebar from './RightSidebar';
 import {
   TestFormDefault, TestFormTarget, TestFormQuest, TestFormPay, TestFormReport,
@@ -47,7 +47,7 @@ class NewTestForm extends Component {
   componentDidMount() {
     const {
       // eslint-disable-next-line no-shadow
-      route, getTest, getCategories, getPlanList,
+      route, getTest, getCategories, getPlanList, getTestOrder, orderValue, orderId,
     } = this.props;
     const { match } = route;
     const { tId } = match.params;
@@ -117,6 +117,13 @@ class NewTestForm extends Component {
     getCategories()
       .then(getPlanList())
       .then(() => {
+        console.log(orderValue);
+        console.log(orderId);
+        if (orderId) {
+          getTestOrder(orderId);
+        }
+      })
+      .then(() => {
         if (tId) {
           getTestContent().then(
             () => {
@@ -130,6 +137,7 @@ class NewTestForm extends Component {
               const hasIssue1Value = issues[0] !== '';
               const hasIssuePurpose1Value = issuePurposes[0] !== '';
               const hasIssueDetail1Value = issueDetails[0] !== '';
+              // const hasPayVlue = 
               const hasDefaultPassed = () => !!test.default;
 
               if (hasDefaultPassed) {
@@ -269,6 +277,7 @@ class NewTestForm extends Component {
     };
     console.log(values);
     console.log('summited');
+    console.log(hasPayPassed);
     // window.alert(`You submitted:\n\n${JSON.stringify(values, null, 2)}`);
 
     if (tId) {
@@ -586,6 +595,8 @@ class NewTestForm extends Component {
       },
     ];
 
+    console.log(this.props);
+
     return (
       <>
         {isLoading
@@ -815,6 +826,7 @@ const mapStateToProps = (state) => {
   const { quests } = state.test.quests;
   const { categoryList } = state.category;
   const { planList } = state.plan;
+  const { order } = state;
   const titleValue = test.title ? test.title : undefined;
   const media1Value = test.media_category_1 ? test.media_category_1 : undefined;
   const media2Value = test.media_category_2 ? test.media_category_2 : undefined;
@@ -848,6 +860,8 @@ const mapStateToProps = (state) => {
   const issueissuePurpose1Value = quests !== undefined && quests[0].issue_purpose !== '' ? quests[0].issue_purpose : undefined;
   const issueissuePurpose2Value = quests !== undefined && quests[1].issue_purpose !== '' ? quests[1].issue_purpose : undefined;
   const issueissuePurpose3Value = quests !== undefined && quests[2].issue_purpose !== '' ? quests[2].issue_purpose : undefined;
+  const planValue = order !== undefined && order.test !== {} && order.test.plan !== undefined ? order.test.plan.name : undefined;
+  console.log(planValue);
 
   const initData = {
     title: titleValue,
@@ -887,6 +901,9 @@ const mapStateToProps = (state) => {
         [`q${issue3qId}`]: issueissuePurpose3Value,
       },
     },
+    pay: {
+      plan: planValue,
+    },
   };
 
   return ({
@@ -895,6 +912,8 @@ const mapStateToProps = (state) => {
     test,
     targets,
     quests,
+    orderValue: order.test,
+    orderId: order.test.id,
     categoryList,
     planList,
     initialValues: initData,
@@ -1005,6 +1024,7 @@ const mapDispatchToProps = dispatch => ({
     cType,
     cCode,
   )),
+  getTestOrder: oId => dispatch(getTestOrder(oId)),
 });
 
 

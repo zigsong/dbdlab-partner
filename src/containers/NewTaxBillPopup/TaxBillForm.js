@@ -22,49 +22,51 @@ class TaxBillForm extends Component {
     const { onReset } = this;
     return (
       <form className="form-tax" onSubmit={handleSubmit}>
-        <p className="form__data-wrapper">
-          <span className="wrapper__title">
-            <strong className="title">기업명*</strong>
-          </span>
-          <Field
-            name="company"
-            type="text"
-            label="company"
-            placeholder="텍스트 입력"
-            component={FormInput}
-            validate={companyRequired}
-          />
-        </p>
-        <p className="form__data-wrapper">
-          <span className="wrapper__title">
-            <strong className="title">사업자 등록 번호*</strong>
-          </span>
-          <Field
-            name="companyRegistNum"
-            type="text"
-            label="companyRegistNum"
-            placeholder="숫자만 입력"
-            component={FormInput}
-            validate={[registNumRequired, registNumRegexp]}
-          />
-        </p>
-        <p className="form__data-wrapper">
-          <span className="wrapper__title">
-            <strong className="title">이메일*</strong>
-          </span>
-          <Field
-            name="email"
-            type="text"
-            label="email"
-            placeholder="텍스트 입력"
-            component={FormInput}
-            validate={[emailRequired, emailRegexp]}
-          />
-        </p>
-        <div className="form__btn-wrapper">
-          <button type="button" className="btn-cancle" onClick={onReset}>취소</button>
-          <button type="submit" className={`btn-submit${serviceName !== undefined && fieldMeta.service.visited ? '--active' : ''}`} onClick={handleSubmit}>신청하기</button>
-        </div>
+        <fieldset>
+          <p className="form__data-wrapper">
+            <span className="wrapper__title">
+              <strong className="title">기업명*</strong>
+            </span>
+            <Field
+              name="company"
+              type="text"
+              label="company"
+              placeholder="텍스트 입력"
+              component={FormInput}
+              validate={companyRequired}
+            />
+          </p>
+          <p className="form__data-wrapper">
+            <span className="wrapper__title">
+              <strong className="title">사업자 등록 번호*</strong>
+            </span>
+            <Field
+              name="companyRegistNum"
+              type="text"
+              label="companyRegistNum"
+              placeholder="숫자만 입력"
+              component={FormInput}
+              validate={[registNumRequired, registNumRegexp]}
+            />
+          </p>
+          <p className="form__data-wrapper">
+            <span className="wrapper__title">
+              <strong className="title">이메일*</strong>
+            </span>
+            <Field
+              name="email"
+              type="text"
+              label="email"
+              placeholder="텍스트 입력"
+              component={FormInput}
+              validate={[emailRequired, emailRegexp]}
+            />
+          </p>
+          <div className="form__btn-wrapper">
+            <button type="button" className="btn-cancle" onClick={onReset}>취소</button>
+            <button type="submit" className={`btn-submit${serviceName !== undefined && fieldMeta.service.visited ? '--active' : ''}`} onClick={handleSubmit}>신청하기</button>
+          </div>
+        </fieldset>
       </form>
     );
   }

@@ -19,7 +19,7 @@ class NewTaxBillPopup extends Component {
       voucherId,
       voucherAmount,
     } = this.props;
-    const { company, companyRegistNum, email } = values;
+    const { company, companyRegistNum, email } = values.tax;
     console.log(company, companyRegistNum, email, voucherId, voucherAmount);
     const hasAllValues = !!company && !!companyRegistNum && !!email && !!voucherId && !!voucherAmount;
     console.log(hasAllValues);

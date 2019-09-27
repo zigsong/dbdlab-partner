@@ -742,7 +742,9 @@ class NewTestForm extends Component {
                       { isQuestPassed ? null : <DisabledLayer />}
                       { isPayPassed
                         ? (
-                          <PayAccountInfo submit={
+                          <PayAccountInfo
+                            // testOrderId={}
+                            submit={
                             () => this.setState({
                               isPayPassed: false,
                               isAllRendered: false,

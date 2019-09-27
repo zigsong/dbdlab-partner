@@ -38,3 +38,5 @@ export const orderTest = (pId, tId, cType, cCode) => axios.post(`${baseURL}/orde
   coupon_code: cCode,
   is_tex_bill_requested: false,
 }, headers);
+
+export const getTestOrder = oId => axios.get(`${baseURL}/orders/test/${oId}`, headers);

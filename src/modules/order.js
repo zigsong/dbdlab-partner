@@ -7,6 +7,8 @@ const PATCH_VOUCHER_SUCCESS = 'order/PATCH_VOUCHER_SUCCESS';
 const PATCH_VOUCHER_FAILURE = 'order/PATCH_VOUCHER_FAILURE';
 const POST_ORDER_TEST_SUCCESS = 'order/POST_ORDER_TEST_SUCCESS';
 const POST_ORDER_TEST_FAILURE = 'order/POST_ORDER_TEST_FAILURE';
+const GET_ORDER_TEST_SUCCESS = 'order/GET_ORDER_TEST_SUCCESS';
+const GET_ORDER_TEST_FAILURE = 'order/GET_ORDER_TEST_FAILURE';
 
 export const orderVoucher = (
   companyName,
@@ -97,6 +99,21 @@ export const orderTest = (
   reject(err);
 }));
 
+export const getTestOrder = oId => dispatch => OrderAPI.getTestOrder(oId).then(
+  (res) => {
+    console.log(res);
+    dispatch({
+      type: GET_ORDER_TEST_SUCCESS,
+      payload: res,
+    });
+  },
+).catch((err) => {
+  dispatch({
+    type: GET_ORDER_TEST_FAILURE,
+    payload: err,
+  });
+});
+
 const initialState = {
   getVoucherListSuccess: false,
   getVoucherListFailure: false,
@@ -106,6 +123,8 @@ const initialState = {
   postVoucherFailure: false,
   postTestSuccess: false,
   postTestFailure: false,
+  getTestSuccess: false,
+  getTestFailure: false,
   voucher: {},
   test: {},
 };
@@ -137,5 +156,14 @@ export default handleActions({
   [POST_ORDER_TEST_FAILURE]: state => ({
     ...state,
     postTestFailure: true,
+  }),
+  [GET_ORDER_TEST_SUCCESS]: (state, action) => ({
+    ...state,
+    getTestSuccess: true,
+    test: action.payload.data,
+  }),
+  [GET_ORDER_TEST_FAILURE]: state => ({
+    ...state,
+    getTestFailure: true,
   }),
 }, initialState);

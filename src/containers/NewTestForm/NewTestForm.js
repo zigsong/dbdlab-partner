@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -8,7 +9,12 @@ import LoadingIndicator from 'components/LoadingIndicator';
 import {
   setTestInit, getTest, postTest, patchTest,
 } from 'modules/test';
-import { patchTarget } from 'modules/target';
+import {
+  getTarget,
+  patchTarget,
+  postTargetExtra,
+  patchTargetExtra,
+} from 'modules/target';
 import { patchQuest } from 'modules/quest';
 import { getCategories } from 'modules/category';
 import { getPlanList } from 'modules/plan';
@@ -64,8 +70,11 @@ class NewTestForm extends Component {
 
   componentDidMount() {
     const {
-      // eslint-disable-next-line no-shadow
-      route, getTest, getCategories, getPlanList,
+      route,
+      getTest,
+      getCategories,
+      getPlanList,
+      getTarget,
     } = this.props;
     const { match } = route;
     const { tId } = match.params;
@@ -94,6 +103,8 @@ class NewTestForm extends Component {
               create_user_id,
               created_at,
             } = test;
+
+            getTarget(targets[0].id);
 
             this.setState({
               test: {
@@ -129,8 +140,6 @@ class NewTestForm extends Component {
           console.log(err.reponse);
         });
     };
-
-    this.setState({ isLoading: true });
 
     getCategories()
       .then(getPlanList())
@@ -192,6 +201,8 @@ class NewTestForm extends Component {
           this.setState({ isLoading: false });
           this.titleInput.getRenderedComponent().focus();
         }
+
+        this.setState({ isLoading: true });
       });
   }
 
@@ -234,8 +245,16 @@ class NewTestForm extends Component {
 
   onSubmit = async (values) => {
     const {
-      // eslint-disable-next-line no-shadow
-      route, postTest, patchTest, patchTarget, patchQuest, getTest,
+      route,
+      postTest,
+      patchTest,
+      patchTarget,
+      postTargetExtra,
+      patchTargetExtra,
+      patchQuest,
+      getTest,
+      categoryList,
+      extras,
     } = this.props;
     const { match, history } = route;
     const { pId, tId } = match.params;
@@ -304,9 +323,50 @@ class NewTestForm extends Component {
           });
         });
       } else if (isTargetRendered && hasTargetPassed) {
-        const { gender, minAge, maxAge } = values.target;
+        const {
+          gender,
+          minAge,
+          maxAge,
+          extraInfoCategory1,
+          extraInfoCategory2,
+          extraInfoCategory3,
+          extraInfoDesc1,
+          extraInfoDesc2,
+          extraInfoDesc3,
+        } = values.target;
         // eslint-disable-next-line no-nested-ternary
         const genderValue = gender === '여자' ? 'female' : (gender === '남자' ? 'male' : 'both');
+        console.log(values.target);
+        const categoryListArr = Object.keys(categoryList).length > 0
+          ? Object.keys(categoryList).map(c => categoryList[c].category_items)
+          : undefined;
+        // submit values 값 확인
+        const exCate1Id = extraInfoCategory1 !== undefined
+          ? categoryListArr[6].find(e => e.name === extraInfoCategory1).id : undefined;
+        const exCate2Id = extraInfoCategory2 !== undefined
+          ? categoryListArr[6].find(e => e.name === extraInfoCategory2).id : undefined;
+        const exCate3Id = extraInfoCategory3 !== undefined
+          ? categoryListArr[6].find(e => e.name === extraInfoCategory3).id : undefined;
+
+        // init values 값 확인
+        const tgEx1Id = extras !== undefined && extras !== [] && extras[0] !== undefined && Object.keys(extras[0]).length > 1
+          ? extras[0].id : undefined;
+        const tgEx2Id = extras !== undefined && extras !== [] && extras[1] !== undefined && Object.keys(extras[1]).length > 1
+          ? extras[1].id : undefined;
+        const tgEx3Id = extras !== undefined && extras !== [] && extras[2] !== undefined && Object.keys(extras[2]).length > 1
+          ? extras[2].id : undefined;
+
+        if (tgEx1Id) {
+          await patchTargetExtra(tgEx1Id, tgId, exCate1Id, extraInfoDesc1);
+        } else if (exCate1Id) await postTargetExtra(tgId, exCate1Id, extraInfoDesc1);
+
+        if (tgEx2Id) {
+          await patchTargetExtra(tgEx2Id, tgId, exCate2Id, extraInfoDesc2);
+        } else if (exCate2Id) await postTargetExtra(tgId, exCate2Id, extraInfoDesc2);
+
+        if (tgEx3Id) {
+          await patchTargetExtra(tgEx3Id, tgId, exCate3Id, extraInfoDesc3);
+        } else if (exCate3Id) await postTargetExtra(tgId, exCate3Id, extraInfoDesc3);
 
         await patchTarget(
           tgId,
@@ -529,6 +589,7 @@ class NewTestForm extends Component {
       handleSubmit,
       categoryList,
       planList,
+      extras,
     } = this.props;
     const { goBack, handleFormRender, onSubmit } = this;
     const qId = test.quests ? test.quests.map(q => q.id).sort((a, b) => a - b) : [1, 2, 3];
@@ -691,6 +752,7 @@ class NewTestForm extends Component {
                               || isAllPassed
                             }
                           extraInfoCategory={extraInfoCategory}
+                          extraValue={extras}
                         />
                       </FormSection>
                     </>
@@ -804,6 +866,7 @@ class NewTestForm extends Component {
 const mapStateToProps = (state) => {
   const { test } = state.test;
   const { targets } = state.test.targets;
+  const { extras } = state.target.target;
   const { quests } = state.test.quests;
   const { categoryList } = state.category;
   const { planList } = state.plan;
@@ -824,6 +887,18 @@ const mapStateToProps = (state) => {
   const getGenderValue = targets !== undefined ? targets[0].gender : undefined;
   // eslint-disable-next-line no-nested-ternary
   const setGenderValue = getGenderValue !== undefined && getGenderValue !== '' ? (getGenderValue === 'female' ? '여자' : (getGenderValue === 'male' ? '남자' : '무관')) : undefined;
+  const getExtraInfo1Value = extras !== undefined && extras !== []
+    ? extras.sort((a, b) => a.id - b.id)[0] : undefined;
+  const getExtraInfo2Value = extras !== undefined && extras !== []
+    ? extras.sort((a, b) => a.id - b.id)[1] : undefined;
+  const getExtraInfo3Value = extras !== undefined && extras !== []
+    ? extras.sort((a, b) => a.id - b.id)[2] : undefined;
+  const extraInfoCategory1 = getExtraInfo1Value !== undefined ? getExtraInfo1Value.name : undefined;
+  const extraInfoCategory2 = getExtraInfo2Value !== undefined ? getExtraInfo2Value.name : undefined;
+  const extraInfoCategory3 = getExtraInfo3Value !== undefined ? getExtraInfo3Value.name : undefined;
+  const extraInfoDesc1 = getExtraInfo1Value !== undefined ? getExtraInfo1Value.value : undefined;
+  const extraInfoDesc2 = getExtraInfo2Value !== undefined ? getExtraInfo2Value.value : undefined;
+  const extraInfoDesc3 = getExtraInfo3Value !== undefined ? getExtraInfo3Value.value : undefined;
   const registerRequire = (test !== undefined && test.is_register_required !== null)
     ? test.is_register_required : undefined;
   // eslint-disable-next-line no-nested-ternary
@@ -860,6 +935,12 @@ const mapStateToProps = (state) => {
       minAge: minAgeValue,
       maxAge: maxAgeValue,
       gender: setGenderValue,
+      extraInfoCategory1,
+      extraInfoCategory2,
+      extraInfoCategory3,
+      extraInfoDesc1,
+      extraInfoDesc2,
+      extraInfoDesc3,
     },
     quest: {
       registerRequire: registerValue,
@@ -881,14 +962,12 @@ const mapStateToProps = (state) => {
     },
   };
 
-  console.log(targets);
-  console.log(quests);
-
   return ({
     fieldsValues: getFormValues('testForm')(state),
     fieldsMeta: getFormMeta('testForm')(state),
     test,
     targets,
+    extras,
     quests,
     categoryList,
     planList,
@@ -961,9 +1040,22 @@ const mapDispatchToProps = dispatch => ({
     funnel,
     registerValue,
   )),
+  getTarget: tId => dispatch(getTarget(tId)),
   patchTarget: (tgId, tId, gender, minAge, maxAge) => dispatch(
     patchTarget(tgId, tId, gender, minAge, maxAge),
   ),
+  postTargetExtra: (tgId, cId, cValue) => dispatch(postTargetExtra(tgId, cId, cValue)),
+  patchTargetExtra: (
+    tgEx1Id,
+    tgId,
+    exCate1Id,
+    extraInfoDesc1,
+  ) => dispatch(patchTargetExtra(
+    tgEx1Id,
+    tgId,
+    exCate1Id,
+    extraInfoDesc1,
+  )),
   patchQuest: (qId, tId, issue, issueDetail, issuePurpose) => dispatch(
     patchQuest(qId, tId, issue, issueDetail, issuePurpose),
   ),

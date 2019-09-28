@@ -470,7 +470,9 @@ $imgUrl: '/static/images/';
             vertical-align: top;
           }
 
-          .select--target\.extraInfoCategory {
+          .select--target\.extraInfoCategory1,
+          .select--target\.extraInfoCategory2,
+          .select--target\.extraInfoCategory3 {
             display: inline-block;
             min-width: 120px;
             max-width: 140px;

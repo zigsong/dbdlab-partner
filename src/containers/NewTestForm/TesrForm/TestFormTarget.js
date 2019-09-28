@@ -9,21 +9,29 @@ const maxAgeVerify = value => (value && parseInt(value, 10) < 101 ? undefined : 
 const genderRequired = value => (value ? undefined : '성별을 선택해 주세요');
 
 const TestFormTarget = (props) => {
-  const [extraInfoBox, setInfoBox] = useState([0]);
-  const { extraInfoCategory, isDisabled } = props;
+  const { extraInfoCategory, extraValue, isDisabled } = props;
+  const setExtraValue = () => {
+    if (extraValue.length > 3) {
+      extraValue.length = 3;
+    } else if (extraValue.length < 1) {
+      extraValue.push({ id: 1 });
+    }
+    return extraValue;
+  };
+  const [extraInfoBox, setInfoBox] = useState(setExtraValue);
   const genderCategory = [
     '남자', '여자', '무관',
   ];
-  console.log(extraInfoBox);
 
-  const addInfoBox = (num) => {
+  const addInfoBox = () => {
     if (extraInfoBox.length > 2) {
-      alert('추가 정보는 3개까지 추가 가능합니다');
+      alert('추가 정보는 3개까지 가능합니다');
       return false;
     }
+
     return setInfoBox([
       ...extraInfoBox,
-      num,
+      { id: extraInfoBox[extraInfoBox.length - 1].id + 1 },
     ]);
   };
 
@@ -87,10 +95,10 @@ const TestFormTarget = (props) => {
           <span className="field__title">
             <strong className="title">추가 정보 선택</strong>
           </span>
-          {extraInfoBox.map(n => (
-            <div className="field__box" key={n}>
+          {extraInfoBox.map((n, idx) => (
+            <div className="field__box" key={n.id}>
               <Field
-                name="extraInfoCategory"
+                name={`extraInfoCategory${idx + 1}`}
                 type="select"
                 defaultValue="추가 정보 선택"
                 component={FormSelect}
@@ -102,16 +110,34 @@ const TestFormTarget = (props) => {
                 ))}
               </Field>
               <Field
-                name="extraInfoDesc"
+                name={`extraInfoDesc${idx + 1}`}
                 type="text"
                 label="target.extraInfoDesc"
                 placeholder="텍스트 입력"
                 component={FormInput}
                 disabled={isDisabled}
               />
-              {n === 0
-                ? <button type="button" className="btn-target-add" onClick={() => addInfoBox(extraInfoBox.length)}>타겟 추가하기</button>
-                : <button type="button" className="btn-target-remove" onClick={() => removeInfoBox()}>타겟 제거하기</button>
+              {idx === 0
+                ? (
+                  <button
+                    type="button"
+                    className="btn-target-add"
+                    onClick={() => addInfoBox()}
+                    disabled={isDisabled}
+                  >
+                    타겟 추가하기
+                  </button>
+                )
+                : (
+                  <button
+                    type="button"
+                    className="btn-target-remove"
+                    onClick={() => removeInfoBox()}
+                    disabled={isDisabled}
+                  >
+                    타겟 제거하기
+                  </button>
+                )
               }
             </div>
           ))}

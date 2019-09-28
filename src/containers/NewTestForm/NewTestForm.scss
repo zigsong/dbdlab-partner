@@ -378,6 +378,35 @@ $imgUrl: '/static/images/';
         }
 
         &--target {
+          .subtitle {
+            display: block;
+            font-size: 14px;
+            color: $blue;
+            line-height: 20px;
+          }
+
+          .field__box {
+            .btn-target-add,
+            .btn-target-remove {
+              display: inline-block;
+              width: 18px;
+              height: 18px;
+              margin-left: 10px;
+              padding: 0;
+              text-indent: -9999px;
+              color: transparent;
+              font-size: 0;
+            }
+
+            .btn-target-add {
+              background: transparent url('#{$imgUrl}common/icons/btn_target--add.svg') no-repeat center center;
+            }
+
+            .btn-target-remove {
+              background: transparent url('#{$imgUrl}common/icons/btn_target--delete.svg') no-repeat center center;
+            }
+          }
+
           .box-field {
             display: inline-block;
             position: relative;
@@ -431,6 +460,7 @@ $imgUrl: '/static/images/';
             display: inline-block;
             min-width: 100px;
             max-width: 120px;
+            vertical-align: top;
           }
 
           .select--target\.extraInfo {
@@ -440,7 +470,9 @@ $imgUrl: '/static/images/';
             vertical-align: top;
           }
 
-          .select--target\.extraInfoCategory {
+          .select--target\.extraInfoCategory1,
+          .select--target\.extraInfoCategory2,
+          .select--target\.extraInfoCategory3 {
             display: inline-block;
             min-width: 120px;
             max-width: 140px;

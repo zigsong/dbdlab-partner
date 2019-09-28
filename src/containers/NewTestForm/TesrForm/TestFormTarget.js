@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import FormInput from 'components/FormInput';
 import FormSelect from 'components/FormSelect';
 import { Field } from 'redux-form';
@@ -9,10 +9,41 @@ const maxAgeVerify = value => (value && parseInt(value, 10) < 101 ? undefined : 
 const genderRequired = value => (value ? undefined : '성별을 선택해 주세요');
 
 const TestFormTarget = (props) => {
-  const { extraInfoCategory, isDisabled } = props;
+  const { extraInfoCategory, extraValue, isDisabled } = props;
+  const setExtraValue = () => {
+    if (extraValue.length > 3) {
+      extraValue.length = 3;
+    } else if (extraValue.length < 1) {
+      extraValue.push({ id: 1 });
+    }
+    return extraValue;
+  };
+  const [extraInfoBox, setInfoBox] = useState(setExtraValue);
   const genderCategory = [
     '남자', '여자', '무관',
   ];
+
+  const addInfoBox = () => {
+    if (extraInfoBox.length > 2) {
+      alert('추가 정보는 3개까지 가능합니다');
+      return false;
+    }
+
+    return setInfoBox([
+      ...extraInfoBox,
+      { id: extraInfoBox[extraInfoBox.length - 1].id + 1 },
+    ]);
+  };
+
+  const removeInfoBox = () => {
+    const tempArr = extraInfoBox.slice();
+    const resultArr = tempArr.slice(0, -1);
+
+    if (extraInfoBox.length < 2) {
+      return false;
+    }
+    return setInfoBox(resultArr);
+  };
 
   return (
     <div className="field-wrapper--target">
@@ -20,6 +51,7 @@ const TestFormTarget = (props) => {
         <div className="field">
           <span className="field__title">
             <strong className="title">누가 이 서비스를 주로 이용하나요? (타겟 정보)*</strong>
+            <span className="subtitle">타겟 인원수는 15명 입니다</span>
           </span>
           <p className="box-field">
             <Field
@@ -63,26 +95,52 @@ const TestFormTarget = (props) => {
           <span className="field__title">
             <strong className="title">추가 정보 선택</strong>
           </span>
-          <Field
-            name="extraInfoCategory"
-            type="select"
-            defaultValue="추가 정보 선택"
-            component={FormSelect}
-            disabled={isDisabled}
-          >
-            <option value="추가 정보 선택" disabled>추가 정보 선택</option>
-            {extraInfoCategory.map(m => (
-              <option key={m} value={m}>{m}</option>
-            ))}
-          </Field>
-          <Field
-            name="extraInfoDesc"
-            type="text"
-            label="target.extraInfoDesc"
-            placeholder="텍스트 입력"
-            component={FormInput}
-            disabled={isDisabled}
-          />
+          {extraInfoBox.map((n, idx) => (
+            <div className="field__box" key={n.id}>
+              <Field
+                name={`extraInfoCategory${idx + 1}`}
+                type="select"
+                defaultValue="추가 정보 선택"
+                component={FormSelect}
+                disabled={isDisabled}
+              >
+                <option value="추가 정보 선택" disabled>추가 정보 선택</option>
+                {extraInfoCategory.map(m => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </Field>
+              <Field
+                name={`extraInfoDesc${idx + 1}`}
+                type="text"
+                label="target.extraInfoDesc"
+                placeholder="텍스트 입력"
+                component={FormInput}
+                disabled={isDisabled}
+              />
+              {idx === 0
+                ? (
+                  <button
+                    type="button"
+                    className="btn-target-add"
+                    onClick={() => addInfoBox()}
+                    disabled={isDisabled}
+                  >
+                    타겟 추가하기
+                  </button>
+                )
+                : (
+                  <button
+                    type="button"
+                    className="btn-target-remove"
+                    onClick={() => removeInfoBox()}
+                    disabled={isDisabled}
+                  >
+                    타겟 제거하기
+                  </button>
+                )
+              }
+            </div>
+          ))}
         </div>
         <div className="field">
           <span className="field__title">

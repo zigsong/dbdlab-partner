@@ -13,3 +13,4 @@ const headers = {
 
 export const getPlanList = () => axios.get(`${baseURL}/plans/`, headers);
 export const getPlan = planId => axios.get(`${baseURL}/plans/${planId}`, headers);
+export const getPlanPrice = (pName, cNum) => axios.get(`${baseURL}/plans/calculate/?plan_name=${pName}&coupon_number=${cNum}`);

@@ -1,10 +1,12 @@
 /* eslint-disable no-shadow */
 /* eslint-disable camelcase */
+/* eslint-disable-next-line no-shadow */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  Field, FormSection, reduxForm, getFormValues, getFormMeta,
+  Field, FormSection, reduxForm, getFormValues, getFormMeta, SubmissionError,
 } from 'redux-form';
+import PayAccountInfo from 'components/PayAccountInfo';
 import LoadingIndicator from 'components/LoadingIndicator';
 import {
   setTestInit, getTest, postTest, patchTest,
@@ -18,6 +20,7 @@ import {
 import { patchQuest } from 'modules/quest';
 import { getCategories } from 'modules/category';
 import { getPlanList } from 'modules/plan';
+import { orderTest, getTestOrder } from 'modules/order';
 import RightSidebar from './RightSidebar';
 import {
   TestFormDefault, TestFormTarget, TestFormQuest, TestFormPay, TestFormReport,
@@ -26,28 +29,6 @@ import './NewTestForm.scss';
 
 const DisabledLayer = () => (
   <div className="layer--disabled">아직은 입력하실 수 없어요!</div>
-);
-
-const PayAccountinfo = ({ submit }) => (
-  <div className="field-wrapper--pay-info">
-    <div className="wrapper-inner">
-      <p className="pay-info__text">
-        <strong>리얼답을 이용해주셔서 감사합니다.</strong>
-        <br />
-        아래 계좌정보로 입금해주시면 확인 후,
-        <br />
-        매니저 배정 후 테스트 진행을 도와드리겠습니다.
-      </p>
-      <p className="pay-info__account">
-        <span className="account__title">입금계좌</span>
-        <strong className="account_info">기업은행   010-7627-3455   김인정</strong>
-        <span className="account__title">입금액</span>
-        <strong className="account_info">1,500,000원</strong>
-      </p>
-      <button type="button" className="btn__tax-invoice" onClick={() => alert('클릭해도 볼 수 없다구..후훟..')}>세금계산서 신청하기</button>
-      <button type="button" className="btn__confirm" onClick={submit}>확인</button>
-    </div>
-  </div>
 );
 
 class NewTestForm extends Component {
@@ -82,7 +63,13 @@ class NewTestForm extends Component {
       await getTest(tId)
         .then(
           () => {
-            const { test, targets, quests } = this.props;
+            const {
+              test,
+              targets,
+              quests,
+              order,
+            } = this.props;
+
             const {
               id,
               title,
@@ -130,6 +117,7 @@ class NewTestForm extends Component {
                 },
                 targets,
                 quests,
+                order,
               },
             });
           },
@@ -154,9 +142,12 @@ class NewTestForm extends Component {
               const issueDetails = test.quests.map(q => q.issue_detail);
               const hasTargetValue = (age_maximum && age_minimum) !== null;
               const hasGenderValue = gender !== '';
-              const hasIssue1Value = issues[0] !== '';
-              const hasIssuePurpose1Value = issuePurposes[0] !== '';
-              const hasIssueDetail1Value = issueDetails[0] !== '';
+              const hasIssue1Value = issues[2] !== '';
+              const hasIssuePurpose1Value = issuePurposes[2] !== '';
+              const hasIssueDetail1Value = issueDetails[2] !== '';
+              const hasPayValue = test.order !== null
+                && test.order !== undefined
+                && test.order.plan.name !== undefined;
               const hasDefaultPassed = () => !!test.default;
 
               if (hasDefaultPassed) {
@@ -186,11 +177,12 @@ class NewTestForm extends Component {
                 });
               }
 
-              if (test.pay) {
+              if (hasPayValue) {
                 this.setState({
                   isLoading: false,
-                  isPayRendered: false,
+                  isPayRendered: true,
                   isPayPassed: true,
+                  isAllRendered: false,
                 });
               }
             },
@@ -255,11 +247,17 @@ class NewTestForm extends Component {
       getTest,
       categoryList,
       extras,
+      orderTest,
+      planList,
     } = this.props;
     const { match, history } = route;
     const { pId, tId } = match.params;
     const {
-      test, isDefaultRendered, isTargetRendered, isQuestRendered, isPayRendered,
+      test,
+      isDefaultRendered,
+      isTargetRendered,
+      isQuestRendered,
+      isPayRendered,
     } = this.state;
     const { targets } = test;
     const tgId = targets !== undefined ? targets[0].id : null;
@@ -349,11 +347,17 @@ class NewTestForm extends Component {
           ? categoryListArr[6].find(e => e.name === extraInfoCategory3).id : undefined;
 
         // init values 값 확인
-        const tgEx1Id = extras !== undefined && extras !== [] && extras[0] !== undefined && Object.keys(extras[0]).length > 1
+        const tgEx1Id = extras !== undefined
+          && extras !== [] && extras[0] !== undefined
+          && Object.keys(extras[0]).length > 1
           ? extras[0].id : undefined;
-        const tgEx2Id = extras !== undefined && extras !== [] && extras[1] !== undefined && Object.keys(extras[1]).length > 1
+        const tgEx2Id = extras !== undefined
+          && extras !== [] && extras[1] !== undefined
+          && Object.keys(extras[1]).length > 1
           ? extras[1].id : undefined;
-        const tgEx3Id = extras !== undefined && extras !== [] && extras[2] !== undefined && Object.keys(extras[2]).length > 1
+        const tgEx3Id = extras !== undefined
+          && extras !== [] && extras[2] !== undefined
+          && Object.keys(extras[2]).length > 1
           ? extras[2].id : undefined;
 
         if (tgEx1Id) {
@@ -382,7 +386,7 @@ class NewTestForm extends Component {
           });
         });
       } else if (isQuestRendered && hasQuestPassed) {
-        const qId = test.quests.map(q => q.id).sort((a, b) => a - b);
+        const qId = test.quests.map(q => q.id);
         const {
           registerRequire, issue, issueDetail, issuePurpose,
         } = values.quest;
@@ -468,10 +472,40 @@ class NewTestForm extends Component {
             });
         }
       } else if (isPayRendered && hasPayPassed) {
-        this.setState({
-          isPayRendered: true,
-          isPayPassed: true,
-          isAllRendered: false,
+        const selectedPlan = planList.find(p => p.name === values.pay.plan);
+        const cType = values.pay.coupon !== undefined ? values.pay.coupon : undefined;
+        const cCode = values.pay.couponNum !== undefined ? values.pay.couponNum : undefined;
+
+        if ((cType !== 'WELCOME_BACK' && cType && !cCode) || (!cType && cCode)) {
+          const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+          return sleep(100).then(() => {
+            throw new SubmissionError({
+              couponNum: '쿠폰, 혹은 시리얼 넘버를 정확히 입력해 주셔야 합니다',
+              _error: '쿠폰, 혹은 시리얼 넘버를 정확히 입력해 주셔야 합니다',
+            });
+          });
+        }
+
+        orderTest(
+          selectedPlan.id,
+          tId,
+          cType,
+          cCode,
+        ).then((res) => {
+          console.log(res);
+          this.setState({
+            isPayRendered: true,
+            isPayPassed: true,
+            isAllRendered: true,
+            test: {
+              order: res.data,
+            },
+          });
+        }).catch((err) => {
+          console.log(err);
+          console.log(err.response);
+          console.log(err.message);
         });
       }
     } else {
@@ -590,9 +624,15 @@ class NewTestForm extends Component {
       categoryList,
       planList,
       extras,
+      error,
     } = this.props;
     const { goBack, handleFormRender, onSubmit } = this;
-    const qId = test.quests ? test.quests.map(q => q.id).sort((a, b) => a - b) : [1, 2, 3];
+    // eslint-disable-next-line no-nested-ternary
+    const qId = test.quests
+      ? test.quests.map(q => q.id)
+      : (fieldsValues && fieldsValues !== undefined
+        ? Object.keys(fieldsValues.quest.issue).map(q => q.slice(1)).sort((a, b) => b - a)
+        : [1, 2, 3]);
     const isNoNamed = fieldsValues === undefined ? true : (fieldsValues.title === undefined || fieldsValues.title === '');
     const categoryListArr = Object.keys(categoryList).length > 0
       ? Object.keys(categoryList).map(c => categoryList[c].category_items)
@@ -612,9 +652,9 @@ class NewTestForm extends Component {
     const issueCategory = categoryListArr !== undefined ? categoryListArr[7].map(c => c.name) : [];
     const hasIssueValues = fieldsValues && fieldsValues !== undefined
       ? fieldsValues.quest.issue : undefined;
-    const hasIssue1Value = hasIssueValues !== undefined ? hasIssueValues[`q${qId[0]}`] : undefined;
+    const hasIssue1Value = hasIssueValues !== undefined ? hasIssueValues[`q${qId[2]}`] : undefined;
     const hasIssue2Value = hasIssueValues !== undefined ? hasIssueValues[`q${qId[1]}`] : undefined;
-    const hasIssue3Value = hasIssueValues !== undefined ? hasIssueValues[`q${qId[2]}`] : undefined;
+    const hasIssue3Value = hasIssueValues !== undefined ? hasIssueValues[`q${qId[0]}`] : undefined;
     const nav = [
       {
         title: '기본 정보',
@@ -673,8 +713,12 @@ class NewTestForm extends Component {
                                 && (hasIssue1Value || hasIssue2Value || hasIssue3Value))
                               || (isPayRendered && isTargetPassed
                                 && (hasIssue1Value || hasIssue2Value || hasIssue3Value))
+                              || (isPayRendered && isPayPassed
+                                && (hasIssue1Value || hasIssue2Value || hasIssue3Value))
                               || isQuestPassed
+                              || isPayPassed
                               || isAllPassed
+                              || isAllRendered
                               ? (
                                 <ol className="nav-sub">
                                   <li className={`sub__item${hasIssue1Value ? '--active' : ''}`}>{n.subnav[0]}</li>
@@ -785,18 +829,19 @@ class NewTestForm extends Component {
                       { isQuestPassed ? null : <DisabledLayer />}
                       { isPayPassed
                         ? (
-                          <PayAccountinfo submit={
-                            () => this.setState({
-                              isPayPassed: false,
-                              isAllRendered: false,
-                              isAllPassed: true,
-                            })}
-                          />
-                        )
-                        : (
                           <>
                             {isAllRendered
-                              ? null
+                              ? (
+                                <PayAccountInfo
+                                  testOrder={test.order}
+                                  submit={
+                                  () => this.setState({
+                                    isPayPassed: false,
+                                    isAllRendered: false,
+                                    isAllPassed: true,
+                                  })}
+                                />
+                              )
                               : (
                                 <FormSection name="pay">
                                   <TestFormPay
@@ -805,6 +850,7 @@ class NewTestForm extends Component {
                                       && isQuestPassed
                                       && isPayPassed)
                                       || isAllPassed
+                                      || !isQuestPassed
                                     }
                                     planList={planList}
                                   />
@@ -812,6 +858,21 @@ class NewTestForm extends Component {
                               )
                             }
                           </>
+                        )
+                        : (
+                          <FormSection name="pay">
+                            <TestFormPay
+                              isDisabled={isNoNamed || (isDefaultPassed
+                                && isTargetPassed
+                                && isQuestPassed
+                                && isPayPassed)
+                                || isAllPassed
+                                || !isQuestPassed
+                              }
+                              planList={planList}
+                              submitErrorMsg={error}
+                            />
+                          </FormSection>
                         )
                       }
                     </>
@@ -870,6 +931,7 @@ const mapStateToProps = (state) => {
   const { quests } = state.test.quests;
   const { categoryList } = state.category;
   const { planList } = state.plan;
+  const { order } = state.test.test;
   const titleValue = test.title ? test.title : undefined;
   const media1Value = test.media_category_1 ? test.media_category_1 : undefined;
   const media2Value = test.media_category_2 ? test.media_category_2 : undefined;
@@ -903,18 +965,23 @@ const mapStateToProps = (state) => {
     ? test.is_register_required : undefined;
   // eslint-disable-next-line no-nested-ternary
   const registerValue = registerRequire !== undefined ? (registerRequire !== false ? '네 (+5,000)' : '아니오') : undefined;
-  const issue1qId = quests !== undefined ? quests[0].id : '';
+  const issue1qId = quests !== undefined ? quests[2].id : '';
   const issue2qId = quests !== undefined ? quests[1].id : '';
-  const issue3qId = quests !== undefined ? quests[2].id : '';
-  const issue1Value = quests !== undefined && quests[0].issue !== '' ? quests[0].issue : undefined;
+  const issue3qId = quests !== undefined ? quests[0].id : '';
+  const issue1Value = quests !== undefined && quests[2].issue !== '' ? quests[2].issue : undefined;
   const issue2Value = quests !== undefined && quests[1].issue !== '' ? quests[1].issue : undefined;
-  const issue3Value = quests !== undefined && quests[2].issue !== '' ? quests[2].issue : undefined;
-  const issueDetail1Value = quests !== undefined && quests[0].issue_detail !== '' ? quests[0].issue_detail : undefined;
+  const issue3Value = quests !== undefined && quests[0].issue !== '' ? quests[0].issue : undefined;
+  const issueDetail1Value = quests !== undefined && quests[2].issue_detail !== '' ? quests[2].issue_detail : undefined;
   const issueDetail2Value = quests !== undefined && quests[1].issue_detail !== '' ? quests[1].issue_detail : undefined;
-  const issueDetail3Value = quests !== undefined && quests[2].issue_detail !== '' ? quests[2].issue_detail : undefined;
-  const issueissuePurpose1Value = quests !== undefined && quests[0].issue_purpose !== '' ? quests[0].issue_purpose : undefined;
+  const issueDetail3Value = quests !== undefined && quests[0].issue_detail !== '' ? quests[0].issue_detail : undefined;
+  const issueissuePurpose1Value = quests !== undefined && quests[2].issue_purpose !== '' ? quests[2].issue_purpose : undefined;
   const issueissuePurpose2Value = quests !== undefined && quests[1].issue_purpose !== '' ? quests[1].issue_purpose : undefined;
-  const issueissuePurpose3Value = quests !== undefined && quests[2].issue_purpose !== '' ? quests[2].issue_purpose : undefined;
+  const issueissuePurpose3Value = quests !== undefined && quests[0].issue_purpose !== '' ? quests[0].issue_purpose : undefined;
+  const planValue = order !== null && order !== undefined && order.plan !== undefined
+    ? order.plan.name : undefined;
+  const codeValue = order !== null && order !== undefined && order.coupon_type !== null
+    ? order.coupon_type : undefined;
+  const orderId = order !== null && order !== undefined ? order.id : undefined;
 
   const initData = {
     title: titleValue,
@@ -960,6 +1027,10 @@ const mapStateToProps = (state) => {
         [`q${issue3qId}`]: issueissuePurpose3Value,
       },
     },
+    pay: {
+      plan: planValue,
+      coupon: codeValue,
+    },
   };
 
   return ({
@@ -969,6 +1040,8 @@ const mapStateToProps = (state) => {
     targets,
     extras,
     quests,
+    order,
+    orderId,
     categoryList,
     planList,
     initialValues: initData,
@@ -1041,9 +1114,6 @@ const mapDispatchToProps = dispatch => ({
     registerValue,
   )),
   getTarget: tId => dispatch(getTarget(tId)),
-  patchTarget: (tgId, tId, gender, minAge, maxAge) => dispatch(
-    patchTarget(tgId, tId, gender, minAge, maxAge),
-  ),
   postTargetExtra: (tgId, cId, cValue) => dispatch(postTargetExtra(tgId, cId, cValue)),
   patchTargetExtra: (
     tgEx1Id,
@@ -1056,11 +1126,46 @@ const mapDispatchToProps = dispatch => ({
     exCate1Id,
     extraInfoDesc1,
   )),
-  patchQuest: (qId, tId, issue, issueDetail, issuePurpose) => dispatch(
-    patchQuest(qId, tId, issue, issueDetail, issuePurpose),
-  ),
+  patchTarget: (
+    tgId,
+    tId,
+    gender,
+    minAge,
+    maxAge,
+  ) => dispatch(patchTarget(
+    tgId,
+    tId,
+    gender,
+    minAge,
+    maxAge,
+  )),
+  patchQuest: (
+    qId,
+    tId,
+    issue,
+    issueDetail,
+    issuePurpose,
+  ) => dispatch(patchQuest(
+    qId,
+    tId,
+    issue,
+    issueDetail,
+    issuePurpose,
+  )),
   getCategories: () => dispatch(getCategories()),
   getPlanList: () => dispatch(getPlanList()),
+  orderTest: (
+    pId,
+    tId,
+    cType,
+    cCode,
+  ) => dispatch(orderTest(
+    pId,
+    tId,
+    cType,
+    cCode,
+  )),
+  getTestOrder: oId => dispatch(getTestOrder(oId)),
 });
 
 

@@ -4,6 +4,7 @@ $blue: #029bff;
 $black: #282828;
 $white: #fff;
 $blueGray: #f6f7fa;
+$imgUrl: '/static/images/';
 
 %hidden {
   font-size: 0;
@@ -89,7 +90,7 @@ $blueGray: #f6f7fa;
         }
 
         .plan__desc {
-          padding: 32px 0 14px;
+          padding: 30px 0 14px;
 
           .desc__text {
             display: block;
@@ -132,16 +133,6 @@ $blueGray: #f6f7fa;
               line-height: 40px;
               font-weight: bold;
             }
-
-            .link__changePlan {
-              background: none;
-              margin-top: 17px;
-              font-size: 14px;
-              font-weight: 500;
-              color: $black;
-              text-decoration: underline;
-              cursor: pointer;
-            }
           }
 
           .desc__expired {
@@ -158,11 +149,7 @@ $blueGray: #f6f7fa;
           &.plan01--single,
           &.plan02--single {
             position: relative;
-            padding-top: 45px;
-
-            .link__changePlan {
-              margin-top: 35px;
-            }
+            padding: 45px 0 69px;
           }
 
           &.plan03 {
@@ -173,12 +160,25 @@ $blueGray: #f6f7fa;
           }
         }
 
-        .btn__buy {
+        .btn-buy,
+        .btn-changePlan {
           @extend %btnBlue;
           display: inline-block;
           min-width: 180px;
           height: 58px;
           line-height: 40px;
+          text-align: center;
+        }
+
+        .link-changePlan {
+          background: none;
+          min-width: 180px;
+          margin-top: 17px;
+          font-size: 14px;
+          font-weight: 500;
+          color: $black;
+          text-decoration: underline;
+          cursor: pointer;
           text-align: center;
         }
       }
@@ -188,7 +188,7 @@ $blueGray: #f6f7fa;
         position: relative;
         z-index: 20;
         width: 100%;
-        margin-top: 34px;
+        margin-top: 30px;
 
         .slider__rail {
           position: absolute;
@@ -229,6 +229,38 @@ $blueGray: #f6f7fa;
           }
         }
       }
+    }
+  }
+
+  .box-start {
+    width: 100%;
+    margin-top: -68px;
+    background-color: $blue;
+
+    .box-start__contents {
+      width: 100%;
+      max-width: 770px;
+      margin: 0 auto;
+      padding: 146px 22px 109px;
+      background: $blue url('#{$imgUrl}/bg/bg_plan.png') no-repeat right bottom / 257px auto;
+    }
+
+    strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 26px;
+      color: $white;
+      font-weight: bold;
+      line-height: 55px;
+    }
+
+    .btn-apply {
+      @extend %btnBlue;
+      display: inline-block;
+      min-width: 152px;
+      border-color: $white;
+      color: $white;
+      text-align: center;
     }
   }
 

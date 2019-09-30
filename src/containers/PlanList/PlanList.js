@@ -126,7 +126,7 @@ const PlanList = () => {
                   ))}
                 </strong>
                 <em>/ plan</em>
-                <button type="button" className="link__changePlan" onClick={e => handleToggleList(e)}>단일 구매를 원해요</button>
+                <button type="button" className="link-changePlan" onClick={e => handleToggleList(e)}>단일 구매를 원해요</button>
               </span>
               {list.expired.map((days, j) => (
                 j + 1 === value ? (
@@ -158,7 +158,7 @@ const PlanList = () => {
                   ))}
                 </strong>
                 <em>/ plan</em>
-                <button type="button" className="link__changePlan" onClick={e => handleToggleList(e)}>단일 구매를 원해요</button>
+                <button type="button" className="link-changePlan" onClick={e => handleToggleList(e)}>단일 구매를 원해요</button>
               </span>
               {list.expired.map((days, l) => (
                 l + 1 === value ? (
@@ -225,7 +225,7 @@ const PlanList = () => {
           </Ticks>
         </Slider>
       </div>
-      <button type="button" className="btn btn__buy" onClick={() => alert('아직 개발이 덜 되었다구..후훟..')}>PLAN 구매하기</button>
+      <Link to="/plan/purchase" className="btn btn-buy">바우처 구매하기</Link>
     </>
   );
 
@@ -248,7 +248,6 @@ const PlanList = () => {
                   ))}
                 </strong>
                 <em>/ plan</em>
-                <button type="button" className="link__changePlan" onClick={e => handleToggleList(e)}>대량 구매를 원해요</button>
               </span>
               {list.expired.map((days, j) => (
                 j === 0 ? (
@@ -275,7 +274,7 @@ const PlanList = () => {
                   ))}
                 </strong>
                 <em>/ plan</em>
-                <button type="button" className="link__changePlan" onClick={e => handleToggleList(e)}>대량 구매를 원해요</button>
+                {/* <button type="button" className="btn-changePlan" onClick={e => handleToggleList(e)}>대량 구매를 원해요</button> */}
               </span>
               {list.expired.map((days, l) => (
                 l === 0 ? (
@@ -289,7 +288,7 @@ const PlanList = () => {
           )
         }
       </p>
-      <Link className="btn btn__buy" to="/">테스트 신청하기</Link>
+      <button type="button" className="btn-changePlan" onClick={e => handleToggleList(e)}>대량 구매를 원해요</button>
     </>
   );
 
@@ -316,7 +315,7 @@ const PlanList = () => {
                       <br />
                       있으신가요?
                     </p>
-                    <button className="btn btn__buy" type="button" onClick={() => alert('클릭해봤자라구..후훟..')}>
+                    <button className="btn btn-buy" type="button" onClick={() => alert('클릭해봤자라구..후훟..')}>
                       문의하기
                     </button>
                   </>

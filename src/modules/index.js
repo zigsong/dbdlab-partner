@@ -8,6 +8,7 @@ import target from './target';
 import quest from './quest';
 import category from './category';
 import plan from './plan';
+import order from './order';
 
 const rootReducer = combineReducers({
   popup,
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   quest,
   category,
   plan,
+  order,
   form: formReducer,
 });
 

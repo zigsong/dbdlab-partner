@@ -1,6 +1,7 @@
 $gray: #cacaca;
 $lightGray: #dcdcdc;
 $darkgray: #9b9b9b;
+$veryLightGray: #cacaca;
 $red: #e8454a;
 $blue: #029bff;
 $black: #282828;
@@ -31,6 +32,18 @@ $blueGray: #f6f7fa;
         .field:not(:nth-child(4)) {
           .box-input__text {
             max-width: 150px;
+
+            &--active {
+              @extend .box-input__text;
+            }
+
+            &--error {
+              @extend .box-input__text;
+
+              &--active {
+                @extend .box-input__text;
+              }
+            }
           }
         }
       }
@@ -111,7 +124,25 @@ $blueGray: #f6f7fa;
                 input[type="number"] {
                   border-color: $blue;
                 }
+
+                + .input__placeholder {
+                  border-color: $blue;
+                  transition: border-color .3s;
+  
+                  + .plan__date {
+                    color: $black;
+                  }
+                }
               }
+            }
+
+            .msg--error {
+              display: block;
+              width: 120px;
+              left: 50%;
+              bottom: -16px;
+              margin-left: -60px;
+              text-align: center;
             }
           }
 
@@ -132,6 +163,10 @@ $blueGray: #f6f7fa;
 
             &:checked {
               border-color: $blue;
+
+              &:disabled {
+                border-color: $darkgray;
+              }
             }
           }
 
@@ -245,6 +280,31 @@ $blueGray: #f6f7fa;
             font-size: inherit;
             color: inherit;
             font-weight: inherit;
+          }
+        }
+      }
+    }
+
+    .box-btn {
+      padding-top: 22px;
+
+      .btn-purchase {
+        width: 100%;
+        height: 34px;
+        border: 1px solid $veryLightGray;
+        border-radius: 3.4px;
+        color: $white;
+        font-size: 16px;
+        background: $veryLightGray;
+  
+        &--active {
+          @extend .btn-purchase;
+          border-color: $blue;
+          background: $blue;
+
+          &:disabled {
+            border-color: $veryLightGray;
+            background: $veryLightGray;
           }
         }
       }

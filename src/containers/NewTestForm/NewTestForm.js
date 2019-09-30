@@ -141,8 +141,6 @@ class NewTestForm extends Component {
                 && test.order !== undefined
                 && test.order.plan.name !== undefined;
               const hasDefaultPassed = () => !!test.default;
-              console.log(test.order);
-              console.log(hasPayValue);
 
               if (hasDefaultPassed) {
                 this.setState({
@@ -282,7 +280,6 @@ class NewTestForm extends Component {
     };
     console.log(values);
     console.log('summited');
-    console.log(hasPayPassed);
     // window.alert(`You submitted:\n\n${JSON.stringify(values, null, 2)}`);
 
     if (tId) {
@@ -328,7 +325,7 @@ class NewTestForm extends Component {
           });
         });
       } else if (isQuestRendered && hasQuestPassed) {
-        const qId = test.quests.map(q => q.id).sort((a, b) => a - b);
+        const qId = test.quests.map(q => q.id);
         const {
           registerRequire, issue, issueDetail, issuePurpose,
         } = values.quest;
@@ -417,10 +414,6 @@ class NewTestForm extends Component {
         const selectedPlan = planList.find(p => p.name === values.pay.plan);
         const cType = values.pay.coupon !== undefined ? values.pay.coupon : undefined;
         const cCode = values.pay.couponNum !== undefined ? values.pay.couponNum : undefined;
-        console.log(cType);
-        console.log(cCode);
-        console.log(!!cType);
-        console.log(!!cCode);
 
         if ((cType !== 'WELCOME_BACK' && cType && !cCode) || (!cType && cCode)) {
           const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -444,6 +437,9 @@ class NewTestForm extends Component {
             isPayRendered: true,
             isPayPassed: true,
             isAllRendered: true,
+            test: {
+              order: res.data,
+            },
           });
         }).catch((err) => {
           console.log(err);
@@ -569,7 +565,12 @@ class NewTestForm extends Component {
       error,
     } = this.props;
     const { goBack, handleFormRender, onSubmit } = this;
-    const qId = test.quests ? test.quests.map(q => q.id).sort((a, b) => a - b) : [1, 2, 3];
+    // eslint-disable-next-line no-nested-ternary
+    const qId = test.quests
+      ? test.quests.map(q => q.id)
+      : (fieldsValues && fieldsValues !== undefined
+        ? Object.keys(fieldsValues.quest.issue).map(q => q.slice(1)).sort((a, b) => b - a)
+        : [1, 2, 3]);
     const isNoNamed = fieldsValues === undefined ? true : (fieldsValues.title === undefined || fieldsValues.title === '');
     const categoryListArr = Object.keys(categoryList).length > 0
       ? Object.keys(categoryList).map(c => categoryList[c].category_items)
@@ -589,9 +590,9 @@ class NewTestForm extends Component {
     const issueCategory = categoryListArr !== undefined ? categoryListArr[7].map(c => c.name) : [];
     const hasIssueValues = fieldsValues && fieldsValues !== undefined
       ? fieldsValues.quest.issue : undefined;
-    const hasIssue1Value = hasIssueValues !== undefined ? hasIssueValues[`q${qId[0]}`] : undefined;
+    const hasIssue1Value = hasIssueValues !== undefined ? hasIssueValues[`q${qId[2]}`] : undefined;
     const hasIssue2Value = hasIssueValues !== undefined ? hasIssueValues[`q${qId[1]}`] : undefined;
-    const hasIssue3Value = hasIssueValues !== undefined ? hasIssueValues[`q${qId[2]}`] : undefined;
+    const hasIssue3Value = hasIssueValues !== undefined ? hasIssueValues[`q${qId[0]}`] : undefined;
     const nav = [
       {
         title: '기본 정보',
@@ -615,8 +616,6 @@ class NewTestForm extends Component {
         class: `report${isReportRendered ? '--active' : ''}`,
       },
     ];
-
-    console.log(this.props);
 
     return (
       <>
@@ -652,8 +651,12 @@ class NewTestForm extends Component {
                                 && (hasIssue1Value || hasIssue2Value || hasIssue3Value))
                               || (isPayRendered && isTargetPassed
                                 && (hasIssue1Value || hasIssue2Value || hasIssue3Value))
+                              || (isPayRendered && isPayPassed
+                                && (hasIssue1Value || hasIssue2Value || hasIssue3Value))
                               || isQuestPassed
+                              || isPayPassed
                               || isAllPassed
+                              || isAllRendered
                               ? (
                                 <ol className="nav-sub">
                                   <li className={`sub__item${hasIssue1Value ? '--active' : ''}`}>{n.subnav[0]}</li>
@@ -767,7 +770,7 @@ class NewTestForm extends Component {
                             {isAllRendered
                               ? (
                                 <PayAccountInfo
-                                  // testOrderId={}
+                                  testOrder={test.order}
                                   submit={
                                   () => this.setState({
                                     isPayPassed: false,
@@ -886,27 +889,23 @@ const mapStateToProps = (state) => {
     ? test.is_register_required : undefined;
   // eslint-disable-next-line no-nested-ternary
   const registerValue = registerRequire !== undefined ? (registerRequire !== false ? '네 (+5,000)' : '아니오') : undefined;
-  const issue1qId = quests !== undefined ? quests[0].id : '';
+  const issue1qId = quests !== undefined ? quests[2].id : '';
   const issue2qId = quests !== undefined ? quests[1].id : '';
-  const issue3qId = quests !== undefined ? quests[2].id : '';
-  const issue1Value = quests !== undefined && quests[0].issue !== '' ? quests[0].issue : undefined;
+  const issue3qId = quests !== undefined ? quests[0].id : '';
+  const issue1Value = quests !== undefined && quests[2].issue !== '' ? quests[2].issue : undefined;
   const issue2Value = quests !== undefined && quests[1].issue !== '' ? quests[1].issue : undefined;
-  const issue3Value = quests !== undefined && quests[2].issue !== '' ? quests[2].issue : undefined;
-  const issueDetail1Value = quests !== undefined && quests[0].issue_detail !== '' ? quests[0].issue_detail : undefined;
+  const issue3Value = quests !== undefined && quests[0].issue !== '' ? quests[0].issue : undefined;
+  const issueDetail1Value = quests !== undefined && quests[2].issue_detail !== '' ? quests[2].issue_detail : undefined;
   const issueDetail2Value = quests !== undefined && quests[1].issue_detail !== '' ? quests[1].issue_detail : undefined;
-  const issueDetail3Value = quests !== undefined && quests[2].issue_detail !== '' ? quests[2].issue_detail : undefined;
-  const issueissuePurpose1Value = quests !== undefined && quests[0].issue_purpose !== '' ? quests[0].issue_purpose : undefined;
+  const issueDetail3Value = quests !== undefined && quests[0].issue_detail !== '' ? quests[0].issue_detail : undefined;
+  const issueissuePurpose1Value = quests !== undefined && quests[2].issue_purpose !== '' ? quests[2].issue_purpose : undefined;
   const issueissuePurpose2Value = quests !== undefined && quests[1].issue_purpose !== '' ? quests[1].issue_purpose : undefined;
-  const issueissuePurpose3Value = quests !== undefined && quests[2].issue_purpose !== '' ? quests[2].issue_purpose : undefined;
+  const issueissuePurpose3Value = quests !== undefined && quests[0].issue_purpose !== '' ? quests[0].issue_purpose : undefined;
   const planValue = order !== null && order !== undefined && order.plan !== undefined
     ? order.plan.name : undefined;
   const codeValue = order !== null && order !== undefined && order.coupon_type !== null
     ? order.coupon_type : undefined;
   const orderId = order !== null && order !== undefined ? order.id : undefined;
-  console.log(order);
-  console.log(orderId);
-  console.log(planValue);
-  console.log(codeValue);
 
   const initData = {
     title: titleValue,

@@ -9,6 +9,8 @@ const POST_ORDER_TEST_SUCCESS = 'order/POST_ORDER_TEST_SUCCESS';
 const POST_ORDER_TEST_FAILURE = 'order/POST_ORDER_TEST_FAILURE';
 const GET_ORDER_TEST_SUCCESS = 'order/GET_ORDER_TEST_SUCCESS';
 const GET_ORDER_TEST_FAILURE = 'order/GET_ORDER_TEST_FAILURE';
+const PATCH_ORDER_TEST_SUCCESS = 'order/PATCH_ORDER_TEST_SUCCESS';
+const PATCH_ORDER_TEST_FAILURE = 'order/PATCH_ORDER_TEST_FAILURE';
 
 export const orderVoucher = (
   companyName,
@@ -47,12 +49,14 @@ export const patchVoucher = (
   email,
   vId,
   amount,
+  hasTaxBillReq,
 ) => dispatch => OrderAPI.patchVoucher(
   company,
   companyRegistNum,
   email,
   vId,
   amount,
+  hasTaxBillReq,
 ).then(
   (res) => {
     dispatch({
@@ -114,6 +118,56 @@ export const getTestOrder = oId => dispatch => OrderAPI.getTestOrder(oId).then(
   });
 });
 
+export const patchTestOrder = (
+  oId,
+  cCode,
+  cType,
+  planName,
+  planDesc,
+  originPrice,
+  discountedPrice,
+  totalPrice,
+  isPaid,
+  paidDate,
+  hasTaxBillReq,
+  taxEmail,
+  taxCompany,
+  taxCompanyRegistNum,
+) => dispatch => new Promise((resolve, reject) => OrderAPI.patchTestOrder(
+  oId,
+  cCode,
+  cType,
+  planName,
+  planDesc,
+  originPrice,
+  discountedPrice,
+  totalPrice,
+  isPaid,
+  paidDate,
+  hasTaxBillReq,
+  taxEmail,
+  taxCompany,
+  taxCompanyRegistNum,
+).then(
+  (res) => {
+    console.log(res);
+    dispatch({
+      type: PATCH_ORDER_TEST_SUCCESS,
+      payload: res,
+    });
+    resolve(res);
+  },
+).catch((err) => {
+  console.log(err);
+  console.log(err.response);
+  console.log(err.message);
+  dispatch({
+    type: PATCH_ORDER_TEST_FAILURE,
+    payload: err,
+  });
+  reject(err);
+}));
+
 const initialState = {
   getVoucherListSuccess: false,
   getVoucherListFailure: false,
@@ -165,5 +219,14 @@ export default handleActions({
   [GET_ORDER_TEST_FAILURE]: state => ({
     ...state,
     getTestFailure: true,
+  }),
+  [PATCH_ORDER_TEST_SUCCESS]: (state, action) => ({
+    ...state,
+    postTestSuccess: true,
+    test: action.payload.data,
+  }),
+  [PATCH_ORDER_TEST_FAILURE]: state => ({
+    ...state,
+    postTestFailure: true,
   }),
 }, initialState);

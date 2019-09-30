@@ -47,7 +47,7 @@ class NewTestForm extends Component {
   componentDidMount() {
     const {
       // eslint-disable-next-line no-shadow
-      route, getTest, getCategories, getPlanList, getTestOrder, orderValue, orderId,
+      route, getTest, getCategories, getPlanList,
     } = this.props;
     const { match } = route;
     const { tId } = match.params;
@@ -55,7 +55,13 @@ class NewTestForm extends Component {
       await getTest(tId)
         .then(
           () => {
-            const { test, targets, quests } = this.props;
+            const {
+              test,
+              targets,
+              quests,
+              order,
+            } = this.props;
+            console.log(order);
             const {
               id,
               title,
@@ -101,6 +107,7 @@ class NewTestForm extends Component {
                 },
                 targets,
                 quests,
+                order,
               },
             });
           },
@@ -117,13 +124,6 @@ class NewTestForm extends Component {
     getCategories()
       .then(getPlanList())
       .then(() => {
-        console.log(orderValue);
-        console.log(orderId);
-        if (orderId) {
-          getTestOrder(orderId);
-        }
-      })
-      .then(() => {
         if (tId) {
           getTestContent().then(
             () => {
@@ -134,11 +134,15 @@ class NewTestForm extends Component {
               const issueDetails = test.quests.map(q => q.issue_detail);
               const hasTargetValue = (age_maximum && age_minimum) !== null;
               const hasGenderValue = gender !== '';
-              const hasIssue1Value = issues[0] !== '';
-              const hasIssuePurpose1Value = issuePurposes[0] !== '';
-              const hasIssueDetail1Value = issueDetails[0] !== '';
-              // const hasPayVlue = 
+              const hasIssue1Value = issues[2] !== '';
+              const hasIssuePurpose1Value = issuePurposes[2] !== '';
+              const hasIssueDetail1Value = issueDetails[2] !== '';
+              const hasPayValue = test.order !== null
+                && test.order !== undefined
+                && test.order.plan.name !== undefined;
               const hasDefaultPassed = () => !!test.default;
+              console.log(test.order);
+              console.log(hasPayValue);
 
               if (hasDefaultPassed) {
                 this.setState({
@@ -167,11 +171,12 @@ class NewTestForm extends Component {
                 });
               }
 
-              if (test.pay) {
+              if (hasPayValue) {
                 this.setState({
                   isLoading: false,
-                  isPayRendered: false,
+                  isPayRendered: true,
                   isPayPassed: true,
+                  isAllRendered: false,
                 });
               }
             },
@@ -412,6 +417,9 @@ class NewTestForm extends Component {
         const selectedPlan = planList.find(p => p.name === values.pay.plan);
         const cType = values.pay.coupon !== undefined ? values.pay.coupon : undefined;
         const cCode = values.pay.couponNum !== undefined ? values.pay.couponNum : undefined;
+        console.log(selectedPlan);
+        console.log(cType);
+        console.log(cCode);
 
         orderTest(
           selectedPlan.id,
@@ -423,7 +431,7 @@ class NewTestForm extends Component {
           this.setState({
             isPayRendered: true,
             isPayPassed: true,
-            isAllRendered: false,
+            isAllRendered: true,
           });
         }).catch((err) => {
           console.log(err);
@@ -742,20 +750,19 @@ class NewTestForm extends Component {
                       { isQuestPassed ? null : <DisabledLayer />}
                       { isPayPassed
                         ? (
-                          <PayAccountInfo
-                            // testOrderId={}
-                            submit={
-                            () => this.setState({
-                              isPayPassed: false,
-                              isAllRendered: false,
-                              isAllPassed: true,
-                            })}
-                          />
-                        )
-                        : (
                           <>
                             {isAllRendered
-                              ? null
+                              ? (
+                                <PayAccountInfo
+                                  // testOrderId={}
+                                  submit={
+                                  () => this.setState({
+                                    isPayPassed: false,
+                                    isAllRendered: false,
+                                    isAllPassed: true,
+                                  })}
+                                />
+                              )
                               : (
                                 <FormSection name="pay">
                                   <TestFormPay
@@ -764,6 +771,7 @@ class NewTestForm extends Component {
                                       && isQuestPassed
                                       && isPayPassed)
                                       || isAllPassed
+                                      || !isQuestPassed
                                     }
                                     planList={planList}
                                   />
@@ -771,6 +779,20 @@ class NewTestForm extends Component {
                               )
                             }
                           </>
+                        )
+                        : (
+                          <FormSection name="pay">
+                            <TestFormPay
+                              isDisabled={isNoNamed || (isDefaultPassed
+                                && isTargetPassed
+                                && isQuestPassed
+                                && isPayPassed)
+                                || isAllPassed
+                                || !isQuestPassed
+                              }
+                              planList={planList}
+                            />
+                          </FormSection>
                         )
                       }
                     </>
@@ -828,7 +850,7 @@ const mapStateToProps = (state) => {
   const { quests } = state.test.quests;
   const { categoryList } = state.category;
   const { planList } = state.plan;
-  const { order } = state;
+  const { order } = state.test.test;
   const titleValue = test.title ? test.title : undefined;
   const media1Value = test.media_category_1 ? test.media_category_1 : undefined;
   const media2Value = test.media_category_2 ? test.media_category_2 : undefined;
@@ -862,7 +884,13 @@ const mapStateToProps = (state) => {
   const issueissuePurpose1Value = quests !== undefined && quests[0].issue_purpose !== '' ? quests[0].issue_purpose : undefined;
   const issueissuePurpose2Value = quests !== undefined && quests[1].issue_purpose !== '' ? quests[1].issue_purpose : undefined;
   const issueissuePurpose3Value = quests !== undefined && quests[2].issue_purpose !== '' ? quests[2].issue_purpose : undefined;
-  const planValue = order !== undefined && order.test !== {} && order.test.plan !== undefined ? order.test.plan.name : undefined;
+  const planValue = order !== null && order !== undefined && order.plan !== undefined
+    ? order.plan.name : undefined;
+  const codeValue = order !== null && order !== undefined && order.coupon_type !== null
+    ? order.coupon_type : undefined;
+  const orderId = order !== null && order !== undefined ? order.id : undefined;
+  console.log(order);
+  console.log(orderId);
   console.log(planValue);
 
   const initData = {
@@ -905,6 +933,7 @@ const mapStateToProps = (state) => {
     },
     pay: {
       plan: planValue,
+      coupon: codeValue,
     },
   };
 
@@ -914,8 +943,8 @@ const mapStateToProps = (state) => {
     test,
     targets,
     quests,
-    orderValue: order.test,
-    orderId: order.test.id,
+    order,
+    orderId,
     categoryList,
     planList,
     initialValues: initData,

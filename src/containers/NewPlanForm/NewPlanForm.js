@@ -450,7 +450,7 @@ const getPlanValues = state => ({
   plan02Amount: selector(state, 'plan02Amount'),
   plans: state.plan.planList,
   planPrice: state.plan.planPrice,
-  voucherId: state.voucher.voucher.id,
+  voucherId: state.order.voucher.id,
 });
 
 const mapDispatchToProps = dispatch => ({

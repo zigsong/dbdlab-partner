@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -71,9 +72,15 @@ class Test extends Component {
       },
     ];
     const { isLoading, isNewTestApply } = this.state;
-    const { match, testList, project } = this.props;
+    const {
+      match,
+      testList,
+      project,
+      avatar_url,
+    } = this.props;
     const { pId } = match.params;
     const getTestStep = Object.keys(testList).map(t => testList[t].step);
+    console.log(this.props);
 
     return (
       isLoading
@@ -88,7 +95,7 @@ class Test extends Component {
               )
               : (
                 <>
-                  <Header global={false} projectName={project.name} />
+                  <Header global={false} projectName={project.name} avatar_url={avatar_url} />
                   <main className="contents">
                     <section className="contents__test">
                       <div className="contents-inner">
@@ -160,11 +167,13 @@ class Test extends Component {
 const mapStateToProps = (state) => {
   const { count, testList } = state.test;
   const { project } = state.project;
+  const { avatar_url } = state.auth.users;
 
   return ({
     count,
     testList,
     project,
+    avatar_url,
   });
 };
 

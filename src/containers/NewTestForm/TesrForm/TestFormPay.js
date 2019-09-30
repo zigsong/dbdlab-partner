@@ -21,6 +21,7 @@ const TestFormPay = (props) => {
     planList,
     isDisabled,
     planValue,
+    submitErrorMsg,
   } = props;
 
   const totalPrice = planPrice + targetPrice + registerPrice;
@@ -180,7 +181,7 @@ const TestFormPay = (props) => {
                   <>
                     {couponValue === 'RECOMMEND'
                       ? (
-                        <p className="coupon__number">
+                        <p className={`coupon__number${submitErrorMsg ? '--error' : ''}`}>
                           <span className="input__placeholder">코드 입력: </span>
                           <Field
                             name="couponNum"
@@ -190,11 +191,13 @@ const TestFormPay = (props) => {
                             placeholder="코드를 입력해주세요"
                             setRef={(input) => { inputEl = input; }}
                             disabled={isDisabled}
+                            submitError={!!submitErrorMsg}
                           />
+                          {submitErrorMsg && <span className="msg--error">{submitErrorMsg}</span>}
                         </p>
                       )
                       : (
-                        <p className="coupon__serial">
+                        <p className={`coupon__number${submitErrorMsg ? '--error' : ''}`}>
                           <span className="input__placeholder">시리얼 넘버 입력: </span>
                           <Field
                             name="couponNum"
@@ -204,7 +207,9 @@ const TestFormPay = (props) => {
                             placeholder="시리얼 넘버를 입력해주세요"
                             setRef={(input) => { inputEl = input; }}
                             disabled={isDisabled}
+                            submitError={!!submitErrorMsg}
                           />
+                          {submitErrorMsg && <span className="msg--error">{submitErrorMsg}</span>}
                         </p>
                       )
                     }

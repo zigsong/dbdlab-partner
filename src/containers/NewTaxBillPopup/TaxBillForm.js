@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import FormInput from 'components/FormInput';
-import { FormSection, Field, reduxForm, getFormMeta } from 'redux-form';
+import {
+  FormSection,
+  Field,
+  reduxForm,
+  getFormValues,
+} from 'redux-form';
 
 const companyRequired = value => (value ? undefined : '이름을 입력해주세요');
 const registNumRequired = value => (value ? undefined : '연락처를 입력해주세요');
@@ -18,7 +23,7 @@ class TaxBillForm extends Component {
   }
 
   render() {
-    const { handleSubmit, serviceName, fieldMeta } = this.props;
+    const { handleSubmit, fieldValue } = this.props;
     const { onReset } = this;
     return (
       <FormSection name="tax" className="form-tax" onSubmit={handleSubmit}>
@@ -63,16 +68,17 @@ class TaxBillForm extends Component {
         </p>
         <div className="form__btn-wrapper">
           <button type="button" className="btn-cancle" onClick={onReset}>취소</button>
-          <button type="submit" className={`btn-submit${serviceName !== undefined && fieldMeta.service.visited ? '--active' : ''}`} onClick={handleSubmit}>신청하기</button>
+          <button type="submit" className={`btn-submit${fieldValue !== undefined ? '--active' : ''}`} onClick={handleSubmit}>신청하기</button>
         </div>
       </FormSection>
     );
   }
 }
 
+
 const getFormData = (state) => {
-  const fieldMeta = getFormMeta('taxForm')(state);
-  return { fieldMeta };
+  const fieldValue = getFormValues('taxForm')(state);
+  return { fieldValue };
 };
 
 export default connect(

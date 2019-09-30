@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { togglePopup } from 'modules/popup';
-import { patchVoucher } from 'modules/order';
+import { patchVoucher, patchTestOrder } from 'modules/order';
 import PopupTemplate from 'components/PopupTemplate';
 import TaxBillForm from './TaxBillForm';
 import './NewTaxBillPopup.scss';
@@ -16,29 +16,75 @@ class NewTaxBillPopup extends Component {
     const {
       handlePopup,
       patchVoucher,
-      voucherId,
-      voucherAmount,
+      patchTestOrder,
+      voucherOrder,
+      testOrder,
     } = this.props;
     const { company, companyRegistNum, email } = values.tax;
-    console.log(company, companyRegistNum, email, voucherId, voucherAmount);
-    const hasAllValues = !!company && !!companyRegistNum && !!email && !!voucherId && !!voucherAmount;
-    console.log(hasAllValues);
+    const hasAllValues = !!company
+      && !!companyRegistNum
+      && !!email
+      && ((!!voucherOrder) || !!testOrder);
 
-    if (hasAllValues) {
-      patchVoucher(company, companyRegistNum, email, voucherId, voucherAmount)
-        .then(() => {
-          this.setState({
-            hasComplete: true,
-          }, () => {
-            setTimeout(() => {
-              this.setState(({
-                hasComplete: false,
-              }), () => { handlePopup(false); });
-            }, 2000);
+    if (testOrder !== undefined && testOrder.id) {
+      if (hasAllValues) {
+        patchTestOrder(
+          testOrder.id,
+          undefined,
+          testOrder.coupon_type,
+          testOrder.plan.name,
+          testOrder.plan.description,
+          testOrder.ordered_price,
+          undefined,
+          undefined,
+          testOrder.is_paid,
+          testOrder.paid_at,
+          true,
+          email,
+          company,
+          companyRegistNum,
+        )
+          .then(() => {
+            this.setState({
+              hasComplete: true,
+            }, () => {
+              setTimeout(() => {
+                this.setState(({
+                  hasComplete: false,
+                }), () => { handlePopup(false); });
+              }, 2000);
+            });
           });
-        });
-    } else {
-      alert('something wrong');
+      } else {
+        alert('something wrong1');
+      }
+    }
+
+    if (voucherOrder !== undefined && voucherOrder.voucherId) {
+      if (hasAllValues) {
+        patchVoucher(
+          company,
+          companyRegistNum,
+          email,
+          voucherOrder.voucherId,
+          voucherOrder.totalAmount,
+          true,
+        )
+          .then((res) => {
+            console.log(res);
+            this.setState({
+              hasComplete: true,
+            }, () => {
+              setTimeout(() => {
+                this.setState(({
+                  hasComplete: false,
+                }), () => { handlePopup(false); });
+              }, 2000);
+            });
+          });
+      } else {
+        alert('something wrong2');
+      }
     }
   };
 
@@ -73,12 +119,45 @@ const mapDispatchToProps = dispatch => ({
     email,
     voucherId,
     voucherAmount,
+    hasTaxBillReq,
   ) => dispatch(patchVoucher(
     company,
     companyRegistNum,
     email,
     voucherId,
     voucherAmount,
+    hasTaxBillReq,
+  )),
+  patchTestOrder: (
+    oId,
+    cCode,
+    cType,
+    planName,
+    planDesc,
+    originPrice,
+    discountedPrice,
+    totalPrice,
+    isPaid,
+    paidDate,
+    hasTaxBillReq,
+    taxEmail,
+    taxCompany,
+    taxCompanyRegistNum,
+  ) => dispatch(patchTestOrder(
+    oId,
+    cCode,
+    cType,
+    planName,
+    planDesc,
+    originPrice,
+    discountedPrice,
+    totalPrice,
+    isPaid,
+    paidDate,
+    hasTaxBillReq,
+    taxEmail,
+    taxCompany,
+    taxCompanyRegistNum,
   )),
 });
 

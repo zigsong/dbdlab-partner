@@ -10,7 +10,10 @@ const PayAccountInfo = (props) => {
   };
 
   const {
-    submit, voucherId, isOpen, voucherAmount,
+    submit,
+    isOpen,
+    voucherOrder,
+    testOrder,
   } = props;
 
   return (
@@ -37,8 +40,8 @@ const PayAccountInfo = (props) => {
       <NewTaxBillPopup
         show={isOpen}
         handlePopup={handlePopup}
-        voucherId={voucherId}
-        voucherAmount={voucherAmount}
+        voucherOrder={voucherOrder}
+        testOrder={testOrder}
       />
     </>
   );

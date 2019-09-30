@@ -269,8 +269,12 @@ class NewPlanForm extends Component {
               hasPassed
                 ? (
                   <PayAccountInfo
-                    voucherId={voucherId}
-                    voucherAmount={totalAmount}
+                    voucherOrder={{
+                      voucherId,
+                      plans,
+                      totalAmount,
+                      totalPrice,
+                    }}
                     submit={
                       () => this.setState({
                         hasPassed: false,

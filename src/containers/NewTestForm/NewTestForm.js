@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  Field, FormSection, reduxForm, getFormValues, getFormMeta,
+  Field, FormSection, reduxForm, getFormValues, getFormMeta, SubmissionError,
 } from 'redux-form';
 import PayAccountInfo from 'components/PayAccountInfo';
 import LoadingIndicator from 'components/LoadingIndicator';
@@ -61,7 +61,7 @@ class NewTestForm extends Component {
               quests,
               order,
             } = this.props;
-            console.log(order);
+
             const {
               id,
               title,
@@ -417,9 +417,21 @@ class NewTestForm extends Component {
         const selectedPlan = planList.find(p => p.name === values.pay.plan);
         const cType = values.pay.coupon !== undefined ? values.pay.coupon : undefined;
         const cCode = values.pay.couponNum !== undefined ? values.pay.couponNum : undefined;
-        console.log(selectedPlan);
         console.log(cType);
         console.log(cCode);
+        console.log(!!cType);
+        console.log(!!cCode);
+
+        if ((cType !== 'WELCOME_BACK' && cType && !cCode) || (!cType && cCode)) {
+          const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+          return sleep(100).then(() => {
+            throw new SubmissionError({
+              couponNum: '쿠폰, 혹은 시리얼 넘버를 정확히 입력해 주셔야 합니다',
+              _error: '쿠폰, 혹은 시리얼 넘버를 정확히 입력해 주셔야 합니다',
+            });
+          });
+        }
 
         orderTest(
           selectedPlan.id,
@@ -554,6 +566,7 @@ class NewTestForm extends Component {
       handleSubmit,
       categoryList,
       planList,
+      error,
     } = this.props;
     const { goBack, handleFormRender, onSubmit } = this;
     const qId = test.quests ? test.quests.map(q => q.id).sort((a, b) => a - b) : [1, 2, 3];
@@ -791,6 +804,7 @@ class NewTestForm extends Component {
                                 || !isQuestPassed
                               }
                               planList={planList}
+                              submitErrorMsg={error}
                             />
                           </FormSection>
                         )
@@ -892,6 +906,7 @@ const mapStateToProps = (state) => {
   console.log(order);
   console.log(orderId);
   console.log(planValue);
+  console.log(codeValue);
 
   const initData = {
     title: titleValue,

@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import FormInput from 'components/FormInput';
 import {
@@ -10,68 +10,56 @@ const planRequired = value => (value ? undefined : 'Plan을 선택해 주세요:
 
 const TestFormPay = (props) => {
   let inputEl = useRef(null);
-  const { couponValue, planList, isDisabled } = props;
+  let planPriceValue;
+  const [planPrice, setPlanPrice] = useState(planPriceValue === undefined ? 0 : planPriceValue);
+  const [targetPrice, setTargetPrice] = useState(0);
+  const [registerPrice, setRegisterPrice] = useState(0);
+  // const [couponDiscount, setCouponDiscount] = useState(0);
+  console.log(props);
+  const {
+    couponValue,
+    planList,
+    isDisabled,
+    planValue,
+    submitErrorMsg,
+  } = props;
+
+  const totalPrice = planPrice + targetPrice + registerPrice;
+  const couponDiscount = couponValue !== undefined ? totalPrice * 0.03 : 0;
   const coupon = [
     {
       title: '한달이내에 리얼답을 사용한 적이 있습니다',
-      price: 12345,
+      type: 'WELCOME_BACK',
     },
     {
       title: '추천코드가 있습니다',
-      price: 123456,
+      type: 'RECOMMEND',
     },
     {
       title: '다른 누군가로 부터 시리얼 넘버를 받았습니다',
-      price: 0,
+      type: 'VOUCHER',
     },
   ];
   const receipt = [
     {
       title: '테스트 비용',
-      price: 370000,
+      price: planPrice === 0 ? 'PLAN을 선택해주세요' : `${planPrice}원`,
     },
     {
       title: '타겟 정보 추가',
-      price: 0,
+      price: `${targetPrice}원`,
     },
     {
       title: '회원가입',
-      price: 12345,
+      price: `${registerPrice}원`,
     },
   ];
 
-  const getPlanTotalPrice = () => {
-    const extraPrice = receipt.reduce((prev, curr) => ({ price: prev.price + curr.price }));
-    return (
-      <strong className="total__price">
-        <span>Total</span>
-        <strong>
-          {extraPrice.price}
-          <i>원</i>
-        </strong>
-      </strong>
-    );
-  };
-
-  const getTotalPrice = () => {
-    const categoryPrice = receipt.reduce((prev, curr) => ({ price: prev.price + curr.price }));
-    const couponPrice = couponValue === undefined ? 0 : parseInt(couponValue, 10);
-    const totalPrice = categoryPrice.price - couponPrice;
-    return (
-      <strong className="total__price">
-        <span>Total</span>
-        <strong>
-          {totalPrice}
-          <i>원</i>
-        </strong>
-      </strong>
-    );
-  };
-
   const handleInputFocus = () => {
     const { active } = props.fields.pay.coupon;
+    const isCouponValid = couponValue !== 'WELCOME_BACK' && couponValue !== undefined;
 
-    if (active) inputEl.focus();
+    if (active && isCouponValid) inputEl.focus();
   };
 
   const FormRadio = (valueProps) => {
@@ -85,7 +73,10 @@ const TestFormPay = (props) => {
             <input
               type="radio"
               name={input.name}
-              onFocus={e => input.onFocus(e, input.onChange(p.name))}
+              onFocus={(e) => {
+                input.onFocus(e, input.onChange(p.name));
+                setPlanPrice(p.price_amount);
+              }}
               onChange={input.onChange}
               checked={p.name === input.value}
               value={p.name}
@@ -100,6 +91,24 @@ const TestFormPay = (props) => {
       </>
     );
   };
+
+  useEffect(() => {
+    const getPlanPriceValue = () => {
+      if (planList === undefined || planList === []) {
+        planPriceValue = 0;
+      } else if (planValue === undefined) {
+        planPriceValue = 0;
+      } else {
+        planPriceValue = planList.find(p => p.name === planValue).price_amount;
+      }
+      console.log(planPriceValue);
+
+      return planPriceValue;
+    };
+
+    getPlanPriceValue();
+    setPlanPrice(planPriceValue);
+  }, [planPriceValue]);
 
   return (
     <div className="field-wrapper--pay">
@@ -127,20 +136,26 @@ const TestFormPay = (props) => {
                 <span className="extra__title">{r.title}</span>
                 <strong className="extra__price">
                   {r.price}
-                  <i>원</i>
+                  {/* <i>원</i> */}
                 </strong>
               </p>
             ))}
           </div>
           <p className="plan__total">
-            {getPlanTotalPrice()}
+            <strong className="total__price">
+              <span>Total</span>
+              <strong>
+                {totalPrice}
+                <i>원</i>
+              </strong>
+            </strong>
           </p>
           <div className="receipt__coupon">
             <span className="coupon__title">
               <strong className="title">Coupon</strong>
               <strong className="coupon__price">
                 -
-                <span className="price">{couponValue === undefined ? 0 : couponValue}</span>
+                <span className="price">{couponDiscount}</span>
                 원
               </strong>
             </span>
@@ -153,7 +168,7 @@ const TestFormPay = (props) => {
                       name="coupon"
                       type="radio"
                       component="input"
-                      value={String(c.price)}
+                      value={c.type}
                       onChange={() => handleInputFocus()}
                       disabled={isDisabled}
                     />
@@ -161,22 +176,57 @@ const TestFormPay = (props) => {
                   </span>
                 ))}
               </label>
-              <p className="coupon__number">
-                <span className="input__placeholder">코드 입력: </span>
-                <Field
-                  name="couponNum"
-                  type="text"
-                  component={FormInput}
-                  label="pay.couponNum"
-                  placeholder="코드를 입력해주세요"
-                  setRef={(input) => { inputEl = input; }}
-                  disabled={isDisabled}
-                />
-              </p>
+              {couponValue !== 'WELCOME_BACK' && couponValue !== undefined
+                ? (
+                  <>
+                    {couponValue === 'RECOMMEND'
+                      ? (
+                        <p className={`coupon__number${submitErrorMsg ? '--error' : ''}`}>
+                          <span className="input__placeholder">코드 입력: </span>
+                          <Field
+                            name="couponNum"
+                            type="text"
+                            component={FormInput}
+                            label="pay.couponNum"
+                            placeholder="코드를 입력해주세요"
+                            setRef={(input) => { inputEl = input; }}
+                            disabled={isDisabled}
+                            submitError={!!submitErrorMsg}
+                          />
+                          {submitErrorMsg && <span className="msg--error">{submitErrorMsg}</span>}
+                        </p>
+                      )
+                      : (
+                        <p className={`coupon__number${submitErrorMsg ? '--error' : ''}`}>
+                          <span className="input__placeholder">시리얼 넘버 입력: </span>
+                          <Field
+                            name="couponNum"
+                            type="text"
+                            component={FormInput}
+                            label="pay.couponNum"
+                            placeholder="시리얼 넘버를 입력해주세요"
+                            setRef={(input) => { inputEl = input; }}
+                            disabled={isDisabled}
+                            submitError={!!submitErrorMsg}
+                          />
+                          {submitErrorMsg && <span className="msg--error">{submitErrorMsg}</span>}
+                        </p>
+                      )
+                    }
+                  </>
+                )
+                : null
+              }
             </div>
           </div>
           <p className="receipt__total">
-            {getTotalPrice()}
+            <strong className="total__price">
+              <span>Total</span>
+              <strong>
+                {totalPrice - couponDiscount}
+                <i>원</i>
+              </strong>
+            </strong>
             <span className="receipt__text">VAT 포함</span>
           </p>
         </div>
@@ -189,5 +239,6 @@ const selector = formValueSelector('testForm');
 
 export default connect(state => ({
   couponValue: selector(state, 'pay.coupon'),
+  planValue: selector(state, 'pay.plan'),
   fields: getFormMeta('testForm')(state),
 }))(TestFormPay);

@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import './TestCard.scss';
 
 const TestCard = (props) => {
   const setStepState = (step, manager) => {
     switch (step) {
-      case 'APPLY':
+      case 'apply':
         return (
           <span className="test__state">매니저 배정중</span>
         );
-      case 'REGISTER':
+      case 'register':
         return (
           <span className="test__state--on">
             {manager !== null ? `${manager}매니저` : '매니저 배정중' }
           </span>
         );
-      case 'PAYMENT':
-      case 'TESTING':
-      case 'COMPLETED':
+      case 'payment':
+      case 'testing':
+      case 'completed':
         return (
           <span className="test__state--off">
             {manager !== null ? `${manager}매니저` : '매니저 배정중' }
@@ -39,20 +39,25 @@ const TestCard = (props) => {
     return date;
   };
 
-  const { test, pId } = props;
+  const {
+    tId,
+    pId,
+    tTitle,
+    step,
+    staff,
+    createDate,
+  } = props;
 
   return (
-    Object.keys(test).map(t => (
-      <Link to={`/project/${pId}/test/${test[t].id}`} key={test[t].id} className="test">
-        <div className="card-test" key={test[t].id}>
-          <p className="card-test__test">
-            {setStepState(test[t].step, test[t].staff)}
-            <span className="test__title">{test[t].title}</span>
-          </p>
-          <p className="card-test__info">{getDate(test[t].created_at)}</p>
-        </div>
-      </Link>
-    ))
+    <Link to={`/project/${pId}/test/${tId}`} key={tId} className="test">
+      <div className="card-test" key={tId}>
+        <p className="card-test__test">
+          {setStepState(step, staff)}
+          <span className="test__title">{tTitle}</span>
+        </p>
+        <p className="card-test__info">{getDate(createDate)}</p>
+      </div>
+    </Link>
   );
 };
 

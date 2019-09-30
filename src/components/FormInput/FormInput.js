@@ -2,10 +2,16 @@ import React from 'react';
 import './FormInput.scss';
 
 const FormInput = ({
-  input, type, label, placeholder, disabled, defaultValue,
+  input,
+  type,
+  label,
+  placeholder,
+  disabled,
+  defaultValue,
   meta: {
     active, touched, error, warning,
-  }, setRef,
+  },
+  setRef,
 }) => (
   <span className={
     `box-input__text${touched && error ? '--error' : ''}${active ? '--active' : ''}`

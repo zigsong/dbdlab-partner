@@ -241,6 +241,7 @@ export default handleActions({
       targets,
       quests,
       is_register_required,
+      order,
     } = action.payload.data;
 
     return {
@@ -266,6 +267,7 @@ export default handleActions({
         create_user_id,
         created_at,
         is_register_required,
+        order,
       },
       targets: {
         targets,
@@ -301,6 +303,7 @@ export default handleActions({
       project_id,
       create_user_id,
       created_at,
+      order,
     } = action.payload.data;
     // const targetObj
     const resultObj = {
@@ -322,6 +325,7 @@ export default handleActions({
       project_id,
       create_user_id,
       created_at,
+      order,
     };
     const key = Object.keys(state.testList).length;
     console.log(key);
@@ -363,6 +367,7 @@ export default handleActions({
       create_user_id,
       created_at,
       is_register_required,
+      order,
     } = action.payload.data;
 
     return {
@@ -387,6 +392,7 @@ export default handleActions({
         create_user_id,
         created_at,
         is_register_required,
+        order,
       },
     };
   },

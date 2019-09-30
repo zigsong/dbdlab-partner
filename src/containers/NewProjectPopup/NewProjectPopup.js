@@ -12,37 +12,35 @@ class NewProjectPopup extends Component {
   };
 
   onSubmit = (values) => {
-    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
     // eslint-disable-next-line no-shadow
     const { handlePopup, getProjectList } = this.props;
-    return sleep(1000).then(() => {
-      if (values.service === undefined) {
-        throw new SubmissionError({
-          service: '여긴 꼭 써야댕',
-          _error: 'too short',
+
+    if (values.service === undefined) {
+      throw new SubmissionError({
+        service: '여긴 꼭 써야댕',
+        _error: 'too short',
+      });
+    } else if (values.service.length < 1) {
+      throw new SubmissionError({
+        service: '너모 짧옹',
+        _error: 'too short',
+      });
+    } else if (values.service.length > 20) {
+      throw new SubmissionError({
+        service: '너모 길옹',
+        _error: 'too long',
+      });
+    } else {
+      const { company, service } = values;
+      const { props } = this;
+      props.putProject({ company, service })
+        .then(() => {
+          getProjectList();
+        })
+        .then(() => {
+          handlePopup(false);
         });
-      } else if (values.service.length < 1) {
-        throw new SubmissionError({
-          service: '너모 짧옹',
-          _error: 'too short',
-        });
-      } else if (values.service.length > 20) {
-        throw new SubmissionError({
-          service: '너모 길옹',
-          _error: 'too long',
-        });
-      } else {
-        const { company, service } = values;
-        const { props } = this;
-        props.putProject({ company, service })
-          .then(() => {
-            getProjectList();
-          })
-          .then(() => {
-            handlePopup(false);
-          });
-      }
-    });
+    }
   };
 
   render() {

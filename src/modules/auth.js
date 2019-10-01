@@ -89,7 +89,7 @@ export const patchAccountUpdate = (id, email, name, phone) => dispatch => new Pr
     },
   ).catch((err) => {
     console.log(err);
-    console.log(err.reponse);
+    console.log(err.response);
     console.log(err.message);
     dispatch({
       type: PATCH_ACCOUNT_UPDATE_FAILURE,

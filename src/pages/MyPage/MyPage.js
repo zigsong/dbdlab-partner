@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { reduxForm, Field, formValueSelector } from 'redux-form';
+import { reduxForm, Field, getFormValues } from 'redux-form';
 import {
   getAuthSelf,
   getAccount,
@@ -18,6 +18,7 @@ import FormInput from 'components/FormInput';
 import './MyPage.scss';
 
 const nameRequired = value => (value ? undefined : '이름을 입력해주세요');
+const nameLength = value => (parseInt(value.length, 10) > 64 ? '이름이 너무 길어요' : undefined);
 const phoneNumRequired = value => (value ? undefined : '연락처를 입력해주세요');
 const phoneNumRegexp = value => (value && !/^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/.test(value) ? '연락처 형식을 다시 확인해주세요' : undefined);
 
@@ -83,26 +84,46 @@ class MyPage extends Component {
     props.togglePopup(true);
   }
 
-  handleSubmit = (values) => {
+  onSubmit = (values) => {
+    const { props, handleEdit } = this;
+    const { id, email } = props;
+    const { name, phone } = values;
     console.log('submit');
     console.log(values);
+
+    props.patchAccountUpdate(
+      id,
+      email,
+      name,
+      phone,
+    ).then(() => {
+      handleEdit();
+    }).catch((err) => {
+      console.log(err);
+      console.log(err.response);
+      console.log(err.message);
+      alert('입력하신 정보를 다시 확인해 주세요 :(');
+    });
   }
 
   render() {
     const {
       avatar_url,
       email,
-      name,
-      phone_number,
+      prevName,
       togglePopup,
       isOpen,
+      handleSubmit,
+      fieldValues,
     } = this.props;
+    const name = fieldValues !== undefined ? fieldValues.name : undefined;
+    const phone = fieldValues !== undefined ? fieldValues.phone : undefined;
     const { onEdit, isLoading } = this.state;
     const {
       handleFileInput,
       handleEdit,
-      handleSubmit,
       handlePwPopup,
+      onSubmit,
       onReset,
     } = this;
     const teamList = [
@@ -165,8 +186,8 @@ class MyPage extends Component {
                     </form>
                     <span className="profile__desc">
                       <strong className="desc__name">
-                        {name !== undefined && name !== ''
-                          ? name
+                        {prevName !== undefined && prevName !== ''
+                          ? prevName
                           : email.substring(0, email.indexOf('@'))
                         }
                       </strong>
@@ -176,7 +197,7 @@ class MyPage extends Component {
                   </section>
                   {onEdit
                     ? (
-                      <form className="form-account" onSubmit={() => handleSubmit}>
+                      <form className="form-account" onSubmit={handleSubmit(values => onSubmit(values))}>
                         <section className="form__section">
                           <p className="form__data-wrapper">
                             <span className="wrapper__title">
@@ -188,7 +209,7 @@ class MyPage extends Component {
                               label="name"
                               placeholder="텍스트 입력"
                               component={FormInput}
-                              validate={nameRequired}
+                              validate={[nameRequired, nameLength]}
                             />
                           </p>
                           <p className="form__data-wrapper">
@@ -215,7 +236,7 @@ class MyPage extends Component {
                         </section>
                         <div className="form__btn-wrapper">
                           <button type="button" className="btn-cancle" onClick={onReset}>취소</button>
-                          <button type="submit" className={`btn-submit${name !== undefined && phone_number !== undefined ? '--active' : ''}`} onClick={() => handleEdit}>확인</button>
+                          <button type="submit" className={`btn-submit${name !== undefined && name !== '' && phone !== undefined && phone !== '' ? '--active' : ''}`} onClick={() => handleEdit}>확인</button>
                         </div>
                       </form>
                     )
@@ -243,8 +264,8 @@ class MyPage extends Component {
                                   <p className="box-text">
                                     <span className="text__activity">
                                       <strong className="name">
-                                        {name !== undefined && name !== ''
-                                          ? name
+                                        {prevName !== undefined && prevName !== ''
+                                          ? prevName
                                           : email.substring(0, email.indexOf('@'))
                                         }
                                       </strong>
@@ -275,24 +296,25 @@ const mapStateToProps = (state) => {
     id,
     avatar_url,
     email,
-    name,
     phone_number,
   } = state.auth.users;
+  const prevName = state.auth.users.name;
   const { isOpen } = state.popup;
-
   const initData = {
-    name,
+    name: prevName,
     phone: phone_number,
   };
+  const fieldValues = getFormValues('accountForm')(state);
 
   return ({
     id,
     avatar_url,
     email,
-    name,
+    prevName,
     phone_number,
     initialValues: initData,
     isOpen,
+    fieldValues,
   });
 };
 

@@ -4,19 +4,30 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import LoadingIndicator from 'components/LoadingIndicator';
 import PageTemplate from 'containers/PageTemplate';
-import { getAuthSelf } from 'modules/auth';
+import {
+  getAuthSelf,
+  getAccount,
+  postAvatarUpdate,
+  patchAccountUpdate,
+  putPasswordUpdate,
+} from 'modules/auth';
 import './MyPage.scss';
 
 class MyPage extends Component {
   state = {
     onEdit: false,
     isLoading: false,
+    selectedFile: null,
   }
 
   componentDidMount() {
     const { props } = this;
     const authenticate = async () => {
-      await props.getAuthSelf();
+      await props.getAuthSelf()
+        .then((res) => {
+          console.log(res);
+          props.getAccount(res.data.id);
+        });
     };
 
     this.setState({ isLoading: true });
@@ -24,10 +35,30 @@ class MyPage extends Component {
       .then(this.setState({ isLoading: false }));
   }
 
+  // eslint-disable-next-line consistent-return
+  handleFileInput = (e) => {
+    const { props } = this;
+    const formData = new FormData();
+
+    if (!e.target.files[0]) return false;
+
+    this.setState({
+      selectedFile: e.target.files[0],
+    }, () => {
+      const { selectedFile } = this.state;
+      formData.append('file', selectedFile);
+      props.postAvatarUpdate(formData)
+        .then(res => console.log(res))
+        .catch((err) => {
+          console.log(err);
+          alert('이미지 파일을 선택해 주세요:)');
+        });
+    });
+  }
+
   render() {
     const { avatar_url, email, name } = this.props;
     const { onEdit, isLoading } = this.state;
-    const userName = '김두루미와거북이봉숭아꽃살구꽃아기진달래';
     const teamList = [
       'abc', 'def', 'ghi', 'jkl', 'mno', 'pqr', 'stu', 'vwx', 'yz',
     ];
@@ -81,12 +112,16 @@ class MyPage extends Component {
                         <>
                           <section className="info__profile">
                             <h2 className="info__title--hidden">Account</h2>
-                            <span className="profile__image">
+                            <form className="profile__image" encType="multipart/form-data">
                               <span className="box-image">
                                 <img src={avatar_url} alt="프로필" />
                               </span>
-                              <input type="file" />
-                            </span>
+                              <span className="box-input">
+                                <label htmlFor="profile">
+                                  <input type="file" name="profile" onChange={e => this.handleFileInput(e)} />
+                                </label>
+                              </span>
+                            </form>
                             <span className="profile__desc">
                               <strong className="desc__name">
                                 {name !== undefined && name !== ''
@@ -119,7 +154,12 @@ class MyPage extends Component {
                                     </span>
                                     <p className="box-text">
                                       <span className="text__activity">
-                                        <strong className="name">{userName}</strong>
+                                        <strong className="name">
+                                          {name !== undefined && name !== ''
+                                            ? name
+                                            : email.substring(0, email.indexOf('@'))
+                                          }
+                                        </strong>
                                         <span className="activity">{l.activity}</span>
                                       </span>
                                       <span className="text__date">{l.date}</span>
@@ -142,13 +182,37 @@ class MyPage extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { avatar_url, email, name } = state.auth.users;
+  const {
+    id,
+    avatar_url,
+    email,
+    name,
+  } = state.auth.users;
 
-  return ({ avatar_url, email, name });
+  return ({
+    id,
+    avatar_url,
+    email,
+    name,
+  });
 };
 
 const mapDispatchToProps = dispatch => ({
   getAuthSelf: () => dispatch(getAuthSelf()),
+  getAccount: id => dispatch(getAccount(id)),
+  postAvatarUpdate: file => dispatch(postAvatarUpdate(file)),
+  patchAccountUpdate: (
+    id,
+    email,
+    name,
+    phone,
+  ) => dispatch(patchAccountUpdate(
+    id,
+    email,
+    name,
+    phone,
+  )),
+  putPasswordUpdate: (email, name, phone) => dispatch(putPasswordUpdate(email, name, phone)),
 });
 
 export default connect(

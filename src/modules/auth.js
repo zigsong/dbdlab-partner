@@ -1,24 +1,125 @@
+/* eslint-disable camelcase */
 import * as AuthAPI from 'lib/api/auth';
 import { handleActions } from 'redux-actions';
 
 const GET_AUTH_SELF_SUCCESS = 'auth/GET_AUTH_SELF_SUCCESS';
 const GET_AUTH_SELF_FAILURE = 'auth/GET_AUTH_SELF_FAILURE';
+const GET_ACCOUNT_SUCCESS = 'auth/GET_ACCOUNT_SUCCESS';
+const GET_ACCOUNT_FAILURE = 'auth/GET_ACCOUNT_FAILURE';
+const POST_AVATAR_UPDATE_SUCCESS = 'auth/POST_AVATAR_UPDATE_SUCCESS';
+const POST_AVATAR_UPDATE_FAILURE = 'auth/POST_AVATAR_UPDATE_FAILURE';
+const PATCH_ACCOUNT_UPDATE_SUCCESS = 'auth/PATCH_ACCOUNT_UPDATE_SUCCESS';
+const PATCH_ACCOUNT_UPDATE_FAILURE = 'auth/PATCH_ACCOUNT_UPDATE_FAILURE';
+const PUT_PASSWORD_UPDATE_SUCCESS = 'auth/PUT_PASSWORD_UPDATE_SUCCESS';
+const PUT_PASSWORD_UPDATE_FAILURE = 'auth/PUT_PASSWORD_UPDATE_FAILURE';
 const LOGOUT = 'auth/LOGOUT';
 
-export const getAuthSelf = () => dispatch => AuthAPI.getAuthSelf().then(
-  (res) => {
-    console.log(res);
+export const getAuthSelf = () => dispatch => new Promise(
+  (resolve, reject) => AuthAPI.getAuthSelf().then(
+    (res) => {
+      console.log(res);
+      dispatch({
+        type: GET_AUTH_SELF_SUCCESS,
+        payload: res,
+      });
+      resolve(res);
+    },
+  ).catch((err) => {
     dispatch({
-      type: GET_AUTH_SELF_SUCCESS,
-      payload: res,
+      type: GET_AUTH_SELF_FAILURE,
+      payload: err,
     });
-  },
-).catch((err) => {
-  dispatch({
-    type: GET_AUTH_SELF_FAILURE,
-    payload: err,
-  });
-});
+    reject(err);
+  }),
+);
+
+export const getAccount = id => dispatch => new Promise(
+  (resolve, reject) => AuthAPI.getAccount(id).then(
+    (res) => {
+      console.log(res);
+      dispatch({
+        type: GET_ACCOUNT_SUCCESS,
+        payload: res,
+      });
+      resolve(res);
+    },
+  ).catch((err) => {
+    console.log(err);
+    console.log(err.reponse);
+    console.log(err.message);
+    dispatch({
+      type: GET_ACCOUNT_FAILURE,
+      payload: err,
+    });
+    reject(err);
+  }),
+);
+
+export const postAvatarUpdate = file => dispatch => new Promise(
+  (resolve, reject) => AuthAPI.postAvatarUpdate(file).then(
+    (res) => {
+      console.log(res);
+      dispatch({
+        type: POST_AVATAR_UPDATE_SUCCESS,
+        payload: res,
+      });
+      resolve(res);
+    },
+  ).catch((err) => {
+    console.log(err);
+    console.log(err.reponse);
+    console.log(err.message);
+    dispatch({
+      type: POST_AVATAR_UPDATE_FAILURE,
+      payload: err,
+    });
+    reject(err);
+  }),
+);
+
+export const patchAccountUpdate = (id, email, name, phone) => dispatch => new Promise(
+  (resolve, reject) => AuthAPI.patchAccountUpdate(id, email, name, phone).then(
+    (res) => {
+      console.log(res);
+      dispatch({
+        type: PATCH_ACCOUNT_UPDATE_SUCCESS,
+        payload: res,
+      });
+      resolve(res);
+    },
+  ).catch((err) => {
+    console.log(err);
+    console.log(err.reponse);
+    console.log(err.message);
+    dispatch({
+      type: PATCH_ACCOUNT_UPDATE_FAILURE,
+      payload: err,
+    });
+    reject(err);
+  }),
+);
+
+export const putPasswordUpdate = (email, name, phone) => dispatch => new Promise(
+  (resolve, reject) => AuthAPI.putPasswordUpdate(email, name, phone).then(
+    (res) => {
+      console.log(res);
+      dispatch({
+        type: PUT_PASSWORD_UPDATE_SUCCESS,
+        payload: res,
+      });
+      resolve(res);
+    },
+  ).catch((err) => {
+    console.log(err);
+    console.log(err.reponse);
+    console.log(err.message);
+    dispatch({
+      type: PUT_PASSWORD_UPDATE_FAILURE,
+      payload: err,
+    });
+    reject(err);
+  }),
+);
 
 export const logout = () => (dispatch) => {
   const { protocol } = window.location;
@@ -54,7 +155,10 @@ const initialState = {
   success: false,
   users: {
     id: '',
+    is_staff: false,
     email: '',
+    name: '',
+    phone_number: '',
     auth_token: '',
     avatar_url: '',
   },
@@ -63,18 +167,119 @@ const initialState = {
 export default handleActions({
   [GET_AUTH_SELF_SUCCESS]: (state, action) => {
     const {
-      // eslint-disable-next-line camelcase
-      id, email, auth_token, avatar_url,
+      id,
+      email,
+      auth_token,
+      avatar_url,
     } = action.payload.data;
     return {
       ...state,
       success: true,
       users: {
-        id, email, auth_token, avatar_url,
+        id,
+        email,
+        auth_token,
+        avatar_url,
       },
     };
   },
   [GET_AUTH_SELF_FAILURE]: state => ({
+    ...state,
+    error: true,
+  }),
+  [GET_ACCOUNT_SUCCESS]: (state, action) => {
+    const {
+      id,
+      email,
+      name,
+      phone_number,
+      avatar_url,
+    } = action.payload.data;
+    return {
+      ...state,
+      success: true,
+      users: {
+        id,
+        email,
+        name,
+        phone_number,
+        avatar_url,
+      },
+    };
+  },
+  [GET_ACCOUNT_FAILURE]: state => ({
+    ...state,
+    error: true,
+  }),
+  [POST_AVATAR_UPDATE_SUCCESS]: (state, action) => {
+    const {
+      id,
+      email,
+      name,
+      phone_number,
+      avatar_url,
+    } = action.payload.data;
+    return {
+      ...state,
+      success: true,
+      users: {
+        id,
+        email,
+        name,
+        phone_number,
+        avatar_url,
+      },
+    };
+  },
+  [POST_AVATAR_UPDATE_FAILURE]: state => ({
+    ...state,
+    error: true,
+  }),
+  [PATCH_ACCOUNT_UPDATE_SUCCESS]: (state, action) => {
+    const {
+      id,
+      email,
+      name,
+      phone_number,
+      avatar_url,
+    } = action.payload.data;
+    return {
+      ...state,
+      success: true,
+      users: {
+        id,
+        email,
+        name,
+        phone_number,
+        avatar_url,
+      },
+    };
+  },
+  [PATCH_ACCOUNT_UPDATE_FAILURE]: state => ({
+    ...state,
+    error: true,
+  }),
+  [PUT_PASSWORD_UPDATE_SUCCESS]: (state, action) => {
+    const {
+      id,
+      email,
+      name,
+      phone_number,
+      avatar_url,
+    } = action.payload.data;
+    return {
+      ...state,
+      success: true,
+      users: {
+        id,
+        email,
+        name,
+        phone_number,
+        avatar_url,
+      },
+    };
+  },
+  [PUT_PASSWORD_UPDATE_FAILURE]: state => ({
     ...state,
     error: true,
   }),

@@ -391,4 +391,77 @@ $imgUrl: '/static/images';
       }
     }
   }
+
+  .payment__info {
+    .wrapper-inner {
+      width: 100%;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .info__list {
+      width: 100%;
+
+      .list__item {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 29px 14px 20px;
+        border-bottom: 1px solid $veryLightGray;
+      }
+
+      .box-payment {
+        .payment__title {
+          display: block;
+          font-size: 12px;
+          color: $gray;
+          font-weight: 500;
+        }
+
+        .payment__plan {
+          display: inline-block;
+          margin-right: 6px;
+          font-size: 12px;
+          color: $black;
+          font-weight: 500;
+        }
+
+        .payment__step {
+          display: inline-block;
+          font-size: 12px;
+        }
+      }
+
+      .box-paid {
+        width: percentage(100 / 780);
+        text-align: right;
+
+        .paid__total {
+          display: block;
+          margin-bottom: 3px;
+          font-size: 12px;
+          color: $black;
+          font-weight: 500;
+
+          i {
+            font-size: inherit;
+            color: inherit;
+            font-weight: inherit;
+          }
+        }
+
+        .paid__date {
+          display: block;
+          font-size: 10px;
+          color: $gray;
+
+          span {
+            font-size: inherit;
+            color: inherit;
+            font-weight: inherit;
+          }
+        }
+      }
+    }
+  }
 }

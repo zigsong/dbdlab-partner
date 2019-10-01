@@ -21,9 +21,9 @@ export const patchAccountUpdate = (id, email, name, phone) => axios.patch(`${bas
   name,
   phone_number: phone,
 }, headers);
-export const putPasswordUpdate = (email, name, phone) => axios.put(`${baseURL}/accounts/self/password/`, {
+export const putPasswordUpdate = (email, currentPw, nextPw) => axios.put(`${baseURL}/accounts/self/password/`, {
   is_staff: false,
   email,
-  name,
-  phone_number: phone,
+  password: currentPw,
+  new_password: nextPw,
 }, headers);

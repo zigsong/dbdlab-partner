@@ -99,8 +99,8 @@ export const patchAccountUpdate = (id, email, name, phone) => dispatch => new Pr
   }),
 );
 
-export const putPasswordUpdate = (email, name, phone) => dispatch => new Promise(
-  (resolve, reject) => AuthAPI.putPasswordUpdate(email, name, phone).then(
+export const putPasswordUpdate = (email, currentPw, nextPw) => dispatch => new Promise(
+  (resolve, reject) => AuthAPI.putPasswordUpdate(email, currentPw, nextPw).then(
     (res) => {
       console.log(res);
       dispatch({
@@ -111,7 +111,7 @@ export const putPasswordUpdate = (email, name, phone) => dispatch => new Promise
     },
   ).catch((err) => {
     console.log(err);
-    console.log(err.reponse);
+    console.log(err.response);
     console.log(err.message);
     dispatch({
       type: PUT_PASSWORD_UPDATE_FAILURE,

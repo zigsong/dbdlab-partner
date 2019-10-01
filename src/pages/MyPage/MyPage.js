@@ -1,17 +1,25 @@
+/* eslint-disable no-shadow */
 /* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import LoadingIndicator from 'components/LoadingIndicator';
-import PageTemplate from 'containers/PageTemplate';
+import { reduxForm, Field, formValueSelector } from 'redux-form';
 import {
   getAuthSelf,
   getAccount,
   postAvatarUpdate,
   patchAccountUpdate,
-  putPasswordUpdate,
 } from 'modules/auth';
+import { togglePopup } from 'modules/popup';
+import LoadingIndicator from 'components/LoadingIndicator';
+import PageTemplate from 'containers/PageTemplate';
+import NewPasswordPopup from 'containers/NewPasswordPopup';
+import FormInput from 'components/FormInput';
 import './MyPage.scss';
+
+const nameRequired = value => (value ? undefined : '이름을 입력해주세요');
+const phoneNumRequired = value => (value ? undefined : '연락처를 입력해주세요');
+const phoneNumRegexp = value => (value && !/^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/.test(value) ? '연락처 형식을 다시 확인해주세요' : undefined);
 
 class MyPage extends Component {
   state = {
@@ -56,11 +64,49 @@ class MyPage extends Component {
     });
   }
 
+  handleEdit = () => {
+    this.setState(prevState => ({
+      onEdit: !prevState.onEdit,
+    }));
+  }
+
+  onReset = () => {
+    const { reset, onPopup } = this.props;
+    reset();
+    onPopup(false);
+  }
+
+  handlePwPopup = (e) => {
+    const { props } = this;
+
+    e.preventDefault();
+    props.togglePopup(true);
+  }
+
+  handleSubmit = (values) => {
+    console.log('submit');
+    console.log(values);
+  }
+
   render() {
-    const { avatar_url, email, name } = this.props;
+    const {
+      avatar_url,
+      email,
+      name,
+      phone_number,
+      togglePopup,
+      isOpen,
+    } = this.props;
     const { onEdit, isLoading } = this.state;
+    const {
+      handleFileInput,
+      handleEdit,
+      handleSubmit,
+      handlePwPopup,
+      onReset,
+    } = this;
     const teamList = [
-      'abc', 'def', 'ghi', 'jkl', 'mno', 'pqr', 'stu', 'vwx', 'yz',
+      'abc', 'def', 'ghi', 'jkl',
     ];
     const logList = [
       {
@@ -105,76 +151,119 @@ class MyPage extends Component {
                   <li className="tablist__item"><button type="button" className="btn-tab">Payment</button></li>
                 </ul>
                 <div className="account__info">
-                  {
-                    onEdit
-                      ? null
-                      : (
-                        <>
-                          <section className="info__profile">
-                            <h2 className="info__title--hidden">Account</h2>
-                            <form className="profile__image" encType="multipart/form-data">
-                              <span className="box-image">
-                                <img src={avatar_url} alt="프로필" />
-                              </span>
-                              <span className="box-input">
-                                <label htmlFor="profile">
-                                  <input type="file" name="profile" onChange={e => this.handleFileInput(e)} />
-                                </label>
-                              </span>
-                            </form>
-                            <span className="profile__desc">
-                              <strong className="desc__name">
-                                {name !== undefined && name !== ''
-                                  ? name
-                                  : email.substring(0, email.indexOf('@'))
-                                }
-                              </strong>
-                              <button type="button" className="btn-edit">Edit profile</button>
-                              <span className="desc__mail">{email}</span>
+                  <section className="info__profile">
+                    <h2 className="info__title--hidden">Account</h2>
+                    <form className="profile__image" encType="multipart/form-data">
+                      <span className="box-image">
+                        <img src={avatar_url} alt="프로필" />
+                      </span>
+                      <span className="box-input">
+                        <label htmlFor="profile">
+                          <input type="file" name="profile" onChange={e => handleFileInput(e)} />
+                        </label>
+                      </span>
+                    </form>
+                    <span className="profile__desc">
+                      <strong className="desc__name">
+                        {name !== undefined && name !== ''
+                          ? name
+                          : email.substring(0, email.indexOf('@'))
+                        }
+                      </strong>
+                      <button type="button" className="btn-edit" onClick={() => handleEdit()}>Edit profile</button>
+                      <span className="desc__mail">{email}</span>
+                    </span>
+                  </section>
+                  {onEdit
+                    ? (
+                      <form className="form-account" onSubmit={() => handleSubmit}>
+                        <section className="form__section">
+                          <p className="form__data-wrapper">
+                            <span className="wrapper__title">
+                              <strong className="title">이름*</strong>
                             </span>
-                          </section>
-                          <section className="info__teams">
-                            <h2 className="info__title">Teams</h2>
-                            <ul className="teams__list">
-                              {teamList.map(t => (
-                                <li className="list__item" key={t}>
-                                  <Link to="/test">{t}</Link>
-                                </li>
-                              ))}
-                            </ul>
-                          </section>
-                          <section className="info__activity">
-                            <h2 className="info__title">Activity</h2>
-                            <ul className="activity__list">
-                              {logList.map(l => (
-                                <li className="list__item" key={l.activity}>
-                                  <div className="box-item">
-                                    <span className="box-image">
-                                      <img src="/static/images/common/profiles/img_profile_03.svg" alt="test" />
+                            <Field
+                              name="name"
+                              type="text"
+                              label="name"
+                              placeholder="텍스트 입력"
+                              component={FormInput}
+                              validate={nameRequired}
+                            />
+                          </p>
+                          <p className="form__data-wrapper">
+                            <span className="wrapper__title">
+                              <strong className="title">연락처*</strong>
+                            </span>
+                            <Field
+                              name="phone"
+                              type="tel"
+                              label="phone"
+                              placeholder="‘-’ 제외하고 입력"
+                              component={FormInput}
+                              validate={[phoneNumRequired, phoneNumRegexp]}
+                            />
+                          </p>
+                        </section>
+                        <section className="form__section">
+                          <p className="form__data-wrapper">
+                            <span className="wrapper__title">
+                              <strong className="title">비밀번호</strong>
+                            </span>
+                            <button type="button" className="btn-changePw" onClick={e => handlePwPopup(e)}>비밀번호 수정</button>
+                          </p>
+                        </section>
+                        <div className="form__btn-wrapper">
+                          <button type="button" className="btn-cancle" onClick={onReset}>취소</button>
+                          <button type="submit" className={`btn-submit${name !== undefined && phone_number !== undefined ? '--active' : ''}`} onClick={() => handleEdit}>확인</button>
+                        </div>
+                      </form>
+                    )
+                    : (
+                      <>
+                        <section className="info__teams">
+                          <h2 className="info__title">Teams</h2>
+                          <ul className="teams__list">
+                            {teamList.map(t => (
+                              <li className="list__item" key={t}>
+                                <Link to="/test">{t}</Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </section>
+                        <section className="info__activity">
+                          <h2 className="info__title">Activity</h2>
+                          <ul className="activity__list">
+                            {logList.map(l => (
+                              <li className="list__item" key={l.activity}>
+                                <div className="box-item">
+                                  <span className="box-image">
+                                    <img src={avatar_url} alt="프로필" />
+                                  </span>
+                                  <p className="box-text">
+                                    <span className="text__activity">
+                                      <strong className="name">
+                                        {name !== undefined && name !== ''
+                                          ? name
+                                          : email.substring(0, email.indexOf('@'))
+                                        }
+                                      </strong>
+                                      <span className="activity">{l.activity}</span>
                                     </span>
-                                    <p className="box-text">
-                                      <span className="text__activity">
-                                        <strong className="name">
-                                          {name !== undefined && name !== ''
-                                            ? name
-                                            : email.substring(0, email.indexOf('@'))
-                                          }
-                                        </strong>
-                                        <span className="activity">{l.activity}</span>
-                                      </span>
-                                      <span className="text__date">{l.date}</span>
-                                    </p>
-                                  </div>
-                                </li>
-                              ))}
-                            </ul>
-                          </section>
-                        </>
-                      )
+                                    <span className="text__date">{l.date}</span>
+                                  </p>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        </section>
+                      </>
+                    )
                   }
                 </div>
               </div>
             </section>
+            <NewPasswordPopup show={isOpen} onPopup={togglePopup} handleSubmit={handleSubmit} />
           </PageTemplate>
         )
     );
@@ -187,13 +276,23 @@ const mapStateToProps = (state) => {
     avatar_url,
     email,
     name,
+    phone_number,
   } = state.auth.users;
+  const { isOpen } = state.popup;
+
+  const initData = {
+    name,
+    phone: phone_number,
+  };
 
   return ({
     id,
     avatar_url,
     email,
     name,
+    phone_number,
+    initialValues: initData,
+    isOpen,
   });
 };
 
@@ -212,10 +311,13 @@ const mapDispatchToProps = dispatch => ({
     name,
     phone,
   )),
-  putPasswordUpdate: (email, name, phone) => dispatch(putPasswordUpdate(email, name, phone)),
+  togglePopup: isOpen => dispatch(togglePopup(isOpen)),
 });
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(MyPage);
+)(reduxForm({
+  form: 'accountForm',
+  enableReinitialize: true,
+})(MyPage));

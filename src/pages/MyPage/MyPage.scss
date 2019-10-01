@@ -230,6 +230,7 @@ $imgUrl: '/static/images';
               height: 29px;
               border: 1px solid $lightGray;
               border-radius: 50%;
+              overflow: hidden;
 
               img {
                 position: absolute;

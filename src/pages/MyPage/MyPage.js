@@ -32,6 +32,7 @@ class MyPage extends Component {
 
   componentDidMount() {
     const { props } = this;
+    const { path } = props.match;
     const authenticate = async () => {
       await props.getAuthSelf()
         .then((res) => {
@@ -42,7 +43,18 @@ class MyPage extends Component {
 
     this.setState({ isLoading: true });
     authenticate()
-      .then(this.setState({ isLoading: false }));
+      .then(() => {
+        if (path === '/my/payment') {
+          this.setState({
+            isLoading: false,
+            isProfileTab: false,
+          });
+        } else {
+          this.setState({
+            isLoading: false,
+          });
+        }
+      });
   }
 
   // eslint-disable-next-line consistent-return
@@ -132,7 +144,6 @@ class MyPage extends Component {
       handleEdit,
       handlePwPopup,
       onSubmit,
-      onReset,
     } = this;
     const teamList = [
       'abc', 'def', 'ghi', 'jkl',

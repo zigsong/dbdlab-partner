@@ -75,18 +75,36 @@ class TeamMemberList extends Component {
     }
   }
 
+  // eslint-disable-next-line consistent-return
   onSend = (e) => {
     // eslint-disable-next-line no-shadow
     const { fieldValues, project, inviteProject } = this.props;
     const { inputArr } = this.state;
     const emailList = inputArr.map(a => fieldValues[`inviteEmail${a}`]);
 
+    e.preventDefault();
+
     while (emailList.indexOf(undefined) !== -1) {
       emailList.splice(emailList.indexOf(undefined), 1);
       console.log(emailList);
     }
 
-    e.preventDefault();
+    console.log(emailList);
+    console.log(emailList.length);
+
+    if (emailList.length < 1) {
+      alert('1개 이상의 이메일을 입력해 주세요');
+
+      return false;
+    }
+
+    const reg = emailList.map(email => !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email));
+
+    if (reg.indexOf(true) !== -1) {
+      alert('이메일 형식을 다시 한 번 확인해 주세요');
+
+      return false;
+    }
 
     inviteProject(project.id, emailList)
       .then((res) => {
@@ -162,8 +180,9 @@ class TeamMemberList extends Component {
       onReset,
       category,
       project,
-      valid,
       fieldValues,
+      invitePending,
+      pristine,
     } = this.props;
     const {
       isDisabled,
@@ -297,7 +316,7 @@ class TeamMemberList extends Component {
                     <button
                       type="submit"
                       className={`
-                        btn-submit${projectName !== undefined && serviceInfoValue !== undefined && serviceCategoryValue !== undefined && serviceFormatValue !== undefined && valid ? '--active' : ''}
+                        btn-submit${projectName !== undefined && serviceInfoValue !== undefined && serviceCategoryValue !== undefined && serviceFormatValue !== undefined && !pristine ? '--active' : ''}
                       `}
                     >
                       확인
@@ -369,7 +388,7 @@ class TeamMemberList extends Component {
                         </span>
                         <ol className="list-input" ref={(ref) => { this.list = ref; }}>
                           {inputArr.map(a => (
-                            <li className="list__item">
+                            <li className="list__item" key={a}>
                               <span className="item-num">
                                 {a + 1}
                                 .
@@ -414,6 +433,10 @@ class TeamMemberList extends Component {
               subtitle={toastSubtitle}
               isShow={isToastShow}
             />
+            {invitePending
+              ? <LoadingIndicator />
+              : null
+            }
           </>
         )
     );
@@ -423,11 +446,14 @@ class TeamMemberList extends Component {
 const mapStateToProps = (state) => {
   const { category } = state.category;
   const { project } = state.project;
+  const { invitePending } = state.project;
+  // console.log(invitePending);
 
   return {
     fieldValues: getFormValues('teamForm')(state),
     category,
     project,
+    invitePending,
   };
 };
 

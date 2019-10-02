@@ -10,6 +10,7 @@ const PUT_PROJECT_SUCCESS = 'project/PUT_PROJECT_SUCCESS';
 const PUT_PROJECT_FAILURE = 'project/PUT_PROJECT_FAILURE';
 const PATCH_PROJECT_SUCCESS = 'project/PATCH_PROJECT_SUCCESS';
 const PATCH_PROJECT_FAILURE = 'project/PATCH_PROJECT_FAILURE';
+const INVITE_PROJECT_PENDING = 'project/INVITE_PROJECT_PENDING';
 const INVITE_PROJECT_SUCCESS = 'project/INVITE_PROJECT_SUCCESS';
 const INVITE_PROJECT_FAILURE = 'project/INVITE_PROJECT_FAILURE';
 
@@ -121,6 +122,10 @@ export const patchProject = (
 
 export const inviteProject = (id, email) => (dispatch) => {
   console.log(id, email);
+  dispatch({
+    type: INVITE_PROJECT_PENDING,
+  });
+
   return (
     new Promise((resolve, reject) => {
       ProjectAPI.inviteProject(id, email).then((res) => {
@@ -151,6 +156,7 @@ const initialState = {
   putFailure: false,
   patchSuccess: false,
   patchFailure: false,
+  invitePending: false,
   inviteSuccess: false,
   inviteFailure: false,
   count: 0,
@@ -243,6 +249,7 @@ export default handleActions({
     } = action.payload.data;
 
     return {
+      ...state,
       project: {
         ...project,
         id,
@@ -284,6 +291,7 @@ export default handleActions({
     } = action.payload.data;
 
     return {
+      ...state,
       patchSuccess: true,
       project: {
         ...project,
@@ -307,12 +315,18 @@ export default handleActions({
     ...state,
     patchFailure: true,
   }),
+  [INVITE_PROJECT_PENDING]: state => ({
+    ...state,
+    invitePending: true,
+  }),
   [INVITE_PROJECT_SUCCESS]: state => ({
     ...state,
     inviteSuccess: true,
+    invitePending: false,
   }),
   [INVITE_PROJECT_FAILURE]: state => ({
     ...state,
     inviteFailure: true,
+    invitePending: false,
   }),
 }, initialState);

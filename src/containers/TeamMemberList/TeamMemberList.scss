@@ -147,6 +147,7 @@ $imgUrl: '/static/images/';
             border-radius: 50%;
             border: 1px solid $lightGray;
             box-sizing: border-box;
+            overflow: hidden;
 
             img {
               position: absolute;
@@ -157,8 +158,8 @@ $imgUrl: '/static/images/';
               z-index: 15;
               width: auto;
               height: auto;
-              max-width: 80%;
-              max-height: 80%;
+              max-width: 100%;
+              max-height: 100%;
               margin: auto;
             }
           }
@@ -175,10 +176,18 @@ $imgUrl: '/static/images/';
 
           .info__name {
             display: block;
+            width: 100%;
             height: 16px;
             font-size: 12px;
             color: $black;
-            line-height: .7;
+            line-height: 1;
+
+            .name {
+              display: inline-block;
+              width: calc(100% - 20px);
+              text-overflow: ellipsis;
+              overflow: hidden;
+            }
           }
 
           .info__email {
@@ -186,12 +195,12 @@ $imgUrl: '/static/images/';
             top: 16px;
             left: 16px;
             z-index: 10;
-            display: block;
-            width: 100%;
+            display: inline-block;
+            max-width: 100%;
             height: 16px;
             font-size: 12px;
             color: $gray;
-            line-height: .7;
+            line-height: 1;
             overflow: hidden;
             text-overflow: ellipsis;
 
@@ -199,13 +208,15 @@ $imgUrl: '/static/images/';
               top: 12px;
               left: 12px;
               width: auto;
+              max-width: unset;
               height: 20px;
               padding: 4px;
               border-radius: 3.4px;
-              line-height: .5;
+              line-height: .9;
               box-sizing: border-box;
               border: 1px solid $veryLightGray;
               text-overflow: unset;
+              background: $white;
             }
           }
 
@@ -219,7 +230,7 @@ $imgUrl: '/static/images/';
             text-indent: -9999px;
             font-size: 0;
             color: transparent;
-            vertical-align: top;
+            vertical-align: text-top;
           }
         }
 
@@ -336,6 +347,34 @@ $imgUrl: '/static/images/';
         font-size: 12px;
         font-weight: 500;
         color: $black;
+      }
+    }
+
+    .list-input {
+      max-height: 150px;
+      overflow-x: hidden;
+      overflow-y: auto;
+
+      .list__item {
+        position: relative;
+
+        .item-num {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 17px;
+          height: 29px;
+          font-size: 10px;
+          color: #4a4a4a;
+          box-sizing: border-box;
+          line-height: 3;
+        }
+
+        .box-input__text {
+          input[type="text"] {
+            padding-left: 17px;
+          }
+        }
       }
     }
 

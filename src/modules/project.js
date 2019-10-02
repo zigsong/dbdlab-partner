@@ -8,6 +8,11 @@ const GET_PROJECT_SUCCESS = 'project/GET_PROJECT_SUCCESS';
 const GET_PROJECT_FAILURE = 'project/GET_PROJECT_FAILURE';
 const PUT_PROJECT_SUCCESS = 'project/PUT_PROJECT_SUCCESS';
 const PUT_PROJECT_FAILURE = 'project/PUT_PROJECT_FAILURE';
+const PATCH_PROJECT_SUCCESS = 'project/PATCH_PROJECT_SUCCESS';
+const PATCH_PROJECT_FAILURE = 'project/PATCH_PROJECT_FAILURE';
+const INVITE_PROJECT_PENDING = 'project/INVITE_PROJECT_PENDING';
+const INVITE_PROJECT_SUCCESS = 'project/INVITE_PROJECT_SUCCESS';
+const INVITE_PROJECT_FAILURE = 'project/INVITE_PROJECT_FAILURE';
 
 export const getProjectList = () => dispatch => (
   new Promise((resolve, reject) => {
@@ -77,11 +82,83 @@ export const getProject = id => dispatch => (
   })
 );
 
+export const patchProject = (
+  id,
+  service,
+  company,
+  serviceInfo,
+  serviceCategory,
+  serviceFormat,
+  serviceDesc,
+) => dispatch => (
+  new Promise((resolve, reject) => {
+    ProjectAPI.patchProject(
+      id,
+      service,
+      company,
+      serviceInfo,
+      serviceCategory,
+      serviceFormat,
+      serviceDesc,
+    ).then((res) => {
+      console.log(res);
+      dispatch({
+        type: PATCH_PROJECT_SUCCESS,
+        payload: res,
+      });
+      resolve(res);
+    }).catch((err) => {
+      console.log(err);
+      console.log(err.response);
+      console.log(err.message);
+      dispatch({
+        type: PATCH_PROJECT_FAILURE,
+        payload: err,
+      });
+      reject(err);
+    });
+  })
+);
+
+export const inviteProject = (id, email) => (dispatch) => {
+  console.log(id, email);
+  dispatch({
+    type: INVITE_PROJECT_PENDING,
+  });
+
+  return (
+    new Promise((resolve, reject) => {
+      ProjectAPI.inviteProject(id, email).then((res) => {
+        console.log(res);
+        dispatch({
+          type: INVITE_PROJECT_SUCCESS,
+          payload: res,
+        });
+        resolve(res);
+      }).catch((err) => {
+        console.log(err);
+        console.log(err.response);
+        console.log(err.message);
+        dispatch({
+          type: INVITE_PROJECT_FAILURE,
+          payload: err,
+        });
+        reject(err);
+      });
+    })
+  );
+};
+
 const initialState = {
   getSuccess: false,
   getFailure: false,
   putSuccess: false,
   putFailure: false,
+  patchSuccess: false,
+  patchFailure: false,
+  invitePending: false,
+  inviteSuccess: false,
+  inviteFailure: false,
   count: 0,
   next: '',
   previous: '',
@@ -126,6 +203,7 @@ export default handleActions({
       created_at,
       is_new,
       member_cnt,
+      members,
     } = action.payload.data;
     const resultObj = {
       id,
@@ -140,6 +218,7 @@ export default handleActions({
       created_at,
       is_new,
       member_cnt,
+      members,
     };
     return {
       ...state,
@@ -166,9 +245,11 @@ export default handleActions({
       created_at,
       is_new,
       member_cnt,
+      members,
     } = action.payload.data;
 
     return {
+      ...state,
       project: {
         ...project,
         id,
@@ -183,11 +264,69 @@ export default handleActions({
         created_at,
         is_new,
         member_cnt,
+        members,
       },
     };
   },
   [GET_PROJECT_FAILURE]: state => ({
     ...state,
     getFailure: true,
+  }),
+  [PATCH_PROJECT_SUCCESS]: (state, action) => {
+    const { project } = state;
+    const {
+      id,
+      name,
+      code,
+      company_name,
+      service_extra_info,
+      service_category,
+      service_format,
+      service_description,
+      create_user_id,
+      created_at,
+      is_new,
+      member_cnt,
+      members,
+    } = action.payload.data;
+
+    return {
+      ...state,
+      patchSuccess: true,
+      project: {
+        ...project,
+        id,
+        name,
+        code,
+        company_name,
+        service_extra_info,
+        service_category,
+        service_format,
+        service_description,
+        create_user_id,
+        created_at,
+        is_new,
+        member_cnt,
+        members,
+      },
+    };
+  },
+  [PATCH_PROJECT_FAILURE]: state => ({
+    ...state,
+    patchFailure: true,
+  }),
+  [INVITE_PROJECT_PENDING]: state => ({
+    ...state,
+    invitePending: true,
+  }),
+  [INVITE_PROJECT_SUCCESS]: state => ({
+    ...state,
+    inviteSuccess: true,
+    invitePending: false,
+  }),
+  [INVITE_PROJECT_FAILURE]: state => ({
+    ...state,
+    inviteFailure: true,
+    invitePending: false,
   }),
 }, initialState);

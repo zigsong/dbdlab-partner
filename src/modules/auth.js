@@ -28,8 +28,8 @@ export const logout = () => (dispatch) => {
       const setTokenCookie = (expireDate) => {
         const date = new Date();
         date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
-        document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=realdopt.com`;
-        // document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=localhost`;
+        // document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=realdopt.com`;
+        document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=localhost`;
       };
       setTokenCookie(-1);
       // document.cookie = 'token=;expires=Thu, 01 Jan 1999 00:00:10 GMT;';

@@ -12,6 +12,6 @@ const headers = {
 };
 
 export const getCategories = () => axios.get(`${baseURL}/categories/`, headers);
-export const getCategiryItem = cId => axios.get(`${baseURL}/categories/${cId}/`, headers);
+export const getCategoryItem = cId => axios.get(`${baseURL}/categories/${cId}/`, headers);
 export const getItems = () => axios.get(`${baseURL}/categories/items/`, headers);
 export const getItem = iId => axios.get(`${baseURL}/categories/items/${iId}/`, headers);

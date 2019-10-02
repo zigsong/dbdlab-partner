@@ -35,11 +35,11 @@ export const getCategories = () => (dispatch) => {
   });
 };
 
-export const getCategiryItem = cId => (dispatch) => {
+export const getCategoryItem = cId => (dispatch) => {
   console.log(cId);
 
   return new Promise((resolve, reject) => {
-    CategoryAPI.getCategiryItem(cId).then(
+    CategoryAPI.getCategoryItem(cId).then(
       (res) => {
         console.log(res);
         dispatch({
@@ -91,7 +91,7 @@ export const getItem = iId => (dispatch) => {
   console.log(iId);
 
   return new Promise((resolve, reject) => {
-    CategoryAPI.getCategiryItem(iId).then(
+    CategoryAPI.getCategoryItem(iId).then(
       (res) => {
         console.log(res);
         dispatch({
@@ -152,16 +152,14 @@ export default handleActions({
     getCategoiesFailure: true,
   }),
   [GET_CATEGORY_SUCCESS]: (state, action) => {
-    const {
-      id, name, description, category_items,
-    } = action.payload.data;
-    const key = Object.keys(state.categoryList).length;
-    console.log(key);
+    const { data } = action.payload;
+    const key = Object.keys(state.category).length;
 
     return {
       ...state,
       category: {
-        id, name, description, category_items,
+        ...state.category,
+        [key]: { ...data },
       },
     };
   },
@@ -170,20 +168,15 @@ export default handleActions({
     getCategoyFailure: true,
   }),
   [GET_ITEM_SUCCESS]: (state, action) => {
-    const {
-      id, name, description, extra_price, category_id,
-    } = action.payload.data;
+    const { data } = action.payload;
     const key = Object.keys(state.itemList).length;
-    console.log(key);
 
     return {
       ...state,
       getItemSuccess: true,
-      // list: {
-
-      // },
       item: {
-        id, name, description, extra_price, category_id,
+        ...state.item,
+        [key]: { ...data },
       },
     };
   },

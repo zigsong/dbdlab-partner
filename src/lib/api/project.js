@@ -17,3 +17,22 @@ export const putProject = ({ company, service }) => axios.post(`${baseURL}/proje
   company_name: company,
   name: service,
 }, headers);
+export const patchProject = (
+  id,
+  service,
+  company,
+  serviceInfo,
+  serviceCategory,
+  serviceFormat,
+  serviceDesc,
+) => axios.patch(`${baseURL}/projects/${id}/`, {
+  company_name: company,
+  name: service,
+  service_extra_info: serviceInfo,
+  service_category: serviceCategory,
+  service_format: serviceFormat,
+  service_description: serviceDesc,
+}, headers);
+export const inviteProject = (id, email) => axios.post(`${baseURL}/projects/${id}/invite/`, {
+  email_list: email,
+}, headers);

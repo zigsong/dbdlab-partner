@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -6,6 +7,7 @@ import Header from 'components/Header';
 import TestCard from 'components/TestCard';
 import LoadingIndicator from 'components/LoadingIndicator';
 import NewTestForm from 'containers/NewTestForm';
+import TeamMemberList from 'containers/TeamMemberList';
 import { getAuthSelf } from 'modules/auth';
 import { getProject } from 'modules/project';
 import { getTestList, getTest, setTestListInit } from 'modules/test';
@@ -17,6 +19,7 @@ class Test extends Component {
     this.state = {
       isLoading: false,
       isNewTestApply: false,
+      isTestTab: true,
     };
   }
 
@@ -40,6 +43,13 @@ class Test extends Component {
     const { props } = this;
     props.setTestListInit();
     this.setState({ isNewTestApply: false });
+  }
+
+  handleTabToggle = (e) => {
+    e.preventDefault();
+    this.setState(prevState => ({
+      isTestTab: !prevState.isTestTab,
+    }));
   }
 
   handleNewTestForm = (e) => {
@@ -70,11 +80,28 @@ class Test extends Component {
         state: 'testing',
       },
     ];
-    const { isLoading, isNewTestApply } = this.state;
-    const { match, testList, project } = this.props;
+    const { isLoading, isNewTestApply, isTestTab } = this.state;
+    const {
+      match, testList, project, avatar_url,
+    } = this.props;
+    const { handleTabToggle, handleNewTestForm } = this;
     const { pId } = match.params;
     const hasTestList = Object.keys(testList).length > 0;
     console.log(testList);
+    const {
+      name,
+      company_name,
+      service_extra_info,
+      service_category,
+      service_format,
+      service_description,
+    } = project;
+    const projectName = (name !== undefined && name !== '') ? name : undefined;
+    const companyName = (company_name !== undefined && company_name !== '') ? company_name : undefined;
+    const serviceInfo = (service_extra_info !== undefined && service_extra_info !== '') ? service_extra_info : undefined;
+    const serviceCategory = (service_category !== undefined && service_category !== '') ? service_category : undefined;
+    const serviceFormat = (service_format !== undefined && service_format !== '') ? service_format : undefined;
+    const serviceDesc = (service_description !== undefined && service_description !== '') ? service_description : undefined;
 
     return (
       isLoading
@@ -89,92 +116,116 @@ class Test extends Component {
               )
               : (
                 <>
-                  <Header global={false} projectName={project.name} />
+                  <Header global={false} projectName={project.name} avatar_url={avatar_url} />
                   <main className="contents">
                     <section className="contents__test">
                       <div className="contents-inner">
                         <ul className="test__tablist">
-                          <li className="tablist__item--active"><button type="button" className="btn-tab">테스트 목록</button></li>
-                          {/* <li className="tablist__item"><button type="button" className="btn-tab">우리 팀</button></li> */}
+                          <li className={`tablist__item${isTestTab ? '--active' : ''}`}>
+                            <button type="button" className="btn-tab" onClick={e => handleTabToggle(e)}>테스트 목록</button>
+                          </li>
+                          <li className={`tablist__item${isTestTab ? '' : '--active'}`}>
+                            <button type="button" className="btn-tab" onClick={e => handleTabToggle(e)}>우리 팀</button>
+                          </li>
                         </ul>
-                        <div className="test__desc">
-                          { hasTestList
+                        {
+                          isTestTab
                             ? (
-                              <ul className="desc__step-list">
-                                { step.map(s => (
-                                  <li
-                                    className={`list__item--${s.state}${s.state === 'apply' ? '--active' : ''}`}
-                                    key={s.title}
-                                  >
-                                    <h2 className="item__title">{s.title}</h2>
-                                    <p className="item__desc">
-                                      { s.desc.toString().split('\n').map(desc => (
-                                        <React.Fragment key={desc}>
-                                          {desc}
-                                          <br />
-                                        </React.Fragment>
-                                      )) }
-                                      { s.state === 'apply'
-                                        ? <button type="button" className="btn-start--red" onClick={e => this.handleNewTestForm(e)}>+ 테스트 신청하기</button>
-                                        : null }
-                                    </p>
-                                    <ScrollContainer className="item__testbox scroll-container">
-                                      { Object.keys(testList).map((t) => {
-                                        const tStep = testList[t].step.toLowerCase();
-                                        return (
-                                          s.state === tStep
-                                            ? (
-                                              <React.Fragment key={t}>
-                                                <TestCard
-                                                  pId={pId}
-                                                  tId={testList[t].id}
-                                                  tTitle={testList[t].title}
-                                                  step={tStep}
-                                                  staff={testList[t].staff}
-                                                  createDate={testList[t].created_at}
-                                                />
-                                                { s.state === 'testing'
-                                                  ? <Link to="/" className="btn-start--blue">결과 리포트 확인하기</Link>
-                                                  : null }
+                              <div className="test__desc">
+                                { hasTestList
+                                  ? (
+                                    <ul className="desc__step-list">
+                                      { step.map(s => (
+                                        <li
+                                          className={`list__item--${s.state}${s.state === 'apply' ? '--active' : ''}`}
+                                          key={s.title}
+                                        >
+                                          <h2 className="item__title">{s.title}</h2>
+                                          <p className="item__desc">
+                                            { s.desc.toString().split('\n').map(desc => (
+                                              <React.Fragment key={desc}>
+                                                {desc}
+                                                <br />
                                               </React.Fragment>
-                                            )
-                                            : null
-                                        );
-                                      })
-                                      }
-                                    </ScrollContainer>
-                                  </li>
-                                )) }
-                              </ul>
+                                            )) }
+                                            { s.state === 'apply'
+                                              ? <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
+                                              : null }
+                                          </p>
+                                          <ScrollContainer className="item__testbox scroll-container">
+                                            { Object.keys(testList).map((t) => {
+                                              const tStep = testList[t].step.toLowerCase();
+                                              return (
+                                                s.state === tStep
+                                                  ? (
+                                                    <React.Fragment key={t}>
+                                                      <TestCard
+                                                        pId={pId}
+                                                        tId={testList[t].id}
+                                                        tTitle={testList[t].title}
+                                                        step={tStep}
+                                                        staff={testList[t].staff}
+                                                        createDate={testList[t].created_at}
+                                                      />
+                                                      { s.state === 'testing'
+                                                        ? <Link to="/" className="btn-start--blue">결과 리포트 확인하기</Link>
+                                                        : null }
+                                                    </React.Fragment>
+                                                  )
+                                                  : null
+                                              );
+                                            })
+                                            }
+                                          </ScrollContainer>
+                                        </li>
+                                      )) }
+                                    </ul>
+                                  )
+                                  : (
+                                    <>
+                                      <ul className="desc__step-list">
+                                        { step.map(s => (
+                                          <li
+                                            className={`list__item--${s.state}`}
+                                            key={s.title}
+                                          >
+                                            <h2 className="item__title">{s.title}</h2>
+                                            <p className="item__desc">
+                                              { s.desc.toString().split('\n').map(desc => (
+                                                <React.Fragment key={desc}>
+                                                  {desc}
+                                                  <br />
+                                                </React.Fragment>
+                                              )) }
+                                              { s.state === 'apply' && Object.keys(testList).length > 0
+                                                ? <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
+                                                : null }
+                                            </p>
+                                          </li>
+                                        )) }
+                                      </ul>
+                                      <span className="desc__text">테스트를 통해, 고객에게 더 좋은 서비스를 제공하세요!</span>
+                                      <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
+                                    </>
+                                  )}
+                              </div>
                             )
                             : (
-                              <>
-                                <ul className="desc__step-list">
-                                  { step.map(s => (
-                                    <li
-                                      className={`list__item--${s.state}`}
-                                      key={s.title}
-                                    >
-                                      <h2 className="item__title">{s.title}</h2>
-                                      <p className="item__desc">
-                                        { s.desc.toString().split('\n').map(desc => (
-                                          <React.Fragment key={desc}>
-                                            {desc}
-                                            <br />
-                                          </React.Fragment>
-                                        )) }
-                                        { s.state === 'apply' && Object.keys(testList).length > 0
-                                          ? <button type="button" className="btn-start--red" onClick={e => this.handleNewTestForm(e)}>+ 테스트 신청하기</button>
-                                          : null }
-                                      </p>
-                                    </li>
-                                  )) }
-                                </ul>
-                                <span className="desc__text">테스트를 통해, 고객에게 더 좋은 서비스를 제공하세요!</span>
-                                <button type="button" className="btn-start--red" onClick={e => this.handleNewTestForm(e)}>+ 테스트 신청하기</button>
-                              </>
-                            )}
-                        </div>
+                              <div className="team__desc">
+                                <TeamMemberList
+                                  project={project}
+                                  initialValues={{
+                                    service: projectName,
+                                    company: companyName,
+                                    serviceInfo,
+                                    serviceCategory,
+                                    serviceFormat,
+                                    serviceDesc,
+                                  }}
+                                />
+                              </div>
+                            )
+                        }
                       </div>
                     </section>
                   </main>
@@ -194,6 +245,7 @@ const mapStateToProps = (state) => {
     count,
     testList,
     project,
+    avatar_url: state.auth.users.avatar_url,
   });
 };
 

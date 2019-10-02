@@ -5,6 +5,7 @@ import FormSelect from 'components/FormSelect';
 import { reduxForm, Field, getFormValues } from 'redux-form';
 import LoadingIndicator from 'components/LoadingIndicator';
 import ToastAlert from 'components/ToastAlert';
+import { getAuthSelf } from 'modules/auth';
 import { patchProject, inviteProject } from 'modules/project';
 import { getCategoryItem } from 'modules/category';
 import './TeamMemberList.scss';
@@ -14,10 +15,6 @@ const seriveInfoRequired = value => (value ? undefined : 'URL 또는 어플리�
 const servieRequired = value => (value ? undefined : '서비스명을 입력해주세요');
 const emailRegexp = value => (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
   ? '이메일 형식을 다시 확인해주세요' : undefined);
-
-// const DisabledLayer = () => (
-//   <div className="layer--disabled">아직은 입력하실 수 없어요!</div>
-// );
 
 class TeamMemberList extends Component {
   state = {
@@ -32,6 +29,16 @@ class TeamMemberList extends Component {
   };
 
   componentDidMount() {
+    const { props } = this;
+    const { project } = props;
+
+    props.getAuthSelf().then(() => {
+      const { id } = props;
+      const isManager = project.members.find(arr => arr.id === id).is_manager;
+
+      if (!isManager) this.setState({ isDisabled: true });
+    });
+
     this.getCategory();
   }
 
@@ -213,6 +220,7 @@ class TeamMemberList extends Component {
       : undefined;
     const serviceFormatValue = fieldValues !== undefined ? fieldValues.serviceFormat : undefined;
 
+    console.log(project);
     return (
       isLoading
         ? <LoadingIndicator />
@@ -311,17 +319,22 @@ class TeamMemberList extends Component {
                       disabled={isDisabled}
                     />
                   </div>
-                  <div className="form__btn-wrapper">
-                    <button type="button" className="btn-cancle" onClick={onReset}>취소</button>
-                    <button
-                      type="submit"
-                      className={`
-                        btn-submit${projectName !== undefined && serviceInfoValue !== undefined && serviceCategoryValue !== undefined && serviceFormatValue !== undefined && !pristine ? '--active' : ''}
-                      `}
-                    >
-                      확인
-                    </button>
-                  </div>
+                  {isDisabled
+                    ? null
+                    : (
+                      <div className="form__btn-wrapper">
+                        <button type="button" className="btn-cancle" onClick={onReset}>취소</button>
+                        <button
+                          type="submit"
+                          className={`
+                            btn-submit${projectName !== undefined && serviceInfoValue !== undefined && serviceCategoryValue !== undefined && serviceFormatValue !== undefined && !pristine ? '--active' : ''}
+                          `}
+                        >
+                          확인
+                        </button>
+                      </div>
+                    )
+                  }
                 </section>
                 <section className="form__section">
                   <div className="section__title">
@@ -351,8 +364,7 @@ class TeamMemberList extends Component {
                                       <span className="info__email">{m.email}</span>
                                     </span>
                                     {m.is_manager
-                                      ? null
-                                      : (
+                                      ? (
                                         <button
                                           type="button"
                                           className="btn-menu"
@@ -360,7 +372,8 @@ class TeamMemberList extends Component {
                                         >
                                           팀원 관리하기
                                         </button>
-                                      )}
+                                      )
+                                      : null}
                                     <ul className={`menu-list${isExtended ? '--extended' : ''}`}>
                                       <li className="list__item">
                                         <button type="button">추방하기</button>
@@ -447,6 +460,7 @@ const mapStateToProps = (state) => {
   const { category } = state.category;
   const { project } = state.project;
   const { invitePending } = state.project;
+  const { id } = state.auth.users;
   // console.log(invitePending);
 
   return {
@@ -454,11 +468,13 @@ const mapStateToProps = (state) => {
     category,
     project,
     invitePending,
+    id,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  getCategoryItem: cId => dispatch((getCategoryItem(cId))),
+  getAuthSelf: () => dispatch(getAuthSelf()),
+  getCategoryItem: cId => dispatch(getCategoryItem(cId)),
   patchProject: (
     id,
     service,

@@ -19,7 +19,7 @@ class Test extends Component {
     this.state = {
       isLoading: false,
       isNewTestApply: false,
-      isTestTab: false,
+      isTestTab: true,
     };
   }
 
@@ -43,6 +43,13 @@ class Test extends Component {
     const { props } = this;
     props.setTestListInit();
     this.setState({ isNewTestApply: false });
+  }
+
+  handleTabToggle = (e) => {
+    e.preventDefault();
+    this.setState(prevState => ({
+      isTestTab: !prevState.isTestTab,
+    }));
   }
 
   handleNewTestForm = (e) => {
@@ -77,6 +84,7 @@ class Test extends Component {
     const {
       match, testList, project, avatar_url,
     } = this.props;
+    const { handleTabToggle, handleNewTestForm } = this;
     const { pId } = match.params;
     const getTestStep = Object.keys(testList).map(t => testList[t].step);
     const {
@@ -112,8 +120,12 @@ class Test extends Component {
                     <section className="contents__test">
                       <div className="contents-inner">
                         <ul className="test__tablist">
-                          <li className={`tablist__item${isTestTab ? '--active' : ''}`}><button type="button" className="btn-tab">테스트 목록</button></li>
-                          <li className={`tablist__item${isTestTab ? '' : '--active'}`}><button type="button" className="btn-tab">우리 팀</button></li>
+                          <li className={`tablist__item${isTestTab ? '--active' : ''}`}>
+                            <button type="button" className="btn-tab" onClick={e => handleTabToggle(e)}>테스트 목록</button>
+                          </li>
+                          <li className={`tablist__item${isTestTab ? '' : '--active'}`}>
+                            <button type="button" className="btn-tab" onClick={e => handleTabToggle(e)}>우리 팀</button>
+                          </li>
                         </ul>
                         {
                           isTestTab
@@ -140,7 +152,7 @@ class Test extends Component {
                                                 <>
                                                   <TestCard test={testList} pId={pId} />
                                                   { s.state === 'apply'
-                                                    ? <button type="button" className="btn-start--red" onClick={e => this.handleNewTestForm(e)}>+ 테스트 신청하기</button>
+                                                    ? <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
                                                     : null }
                                                   { s.state === 'testing'
                                                     ? <Link to="/" className="btn-start--blue">결과 리포트 확인하기</Link>
@@ -161,7 +173,7 @@ class Test extends Component {
                                     : (
                                       <>
                                         <span className="desc__text">테스트를 통해, 고객에게 더 좋은 서비스를 제공하세요!</span>
-                                        <button type="button" className="btn-start--red" onClick={e => this.handleNewTestForm(e)}>+ 테스트 신청하기</button>
+                                        <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
                                       </>
                                     )
                                 }

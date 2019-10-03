@@ -274,7 +274,6 @@ const PlanList = () => {
                   ))}
                 </strong>
                 <em>/ plan</em>
-                {/* <button type="button" className="btn-changePlan" onClick={e => handleToggleList(e)}>대량 구매를 원해요</button> */}
               </span>
               {list.expired.map((days, l) => (
                 l === 0 ? (

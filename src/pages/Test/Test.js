@@ -82,7 +82,10 @@ class Test extends Component {
     ];
     const { isLoading, isNewTestApply, isTestTab } = this.state;
     const {
-      match, testList, project, avatar_url,
+      match,
+      testList,
+      project,
+      avatar_url,
     } = this.props;
     const { handleTabToggle, handleNewTestForm } = this;
     const { pId } = match.params;
@@ -240,12 +243,13 @@ class Test extends Component {
 const mapStateToProps = (state) => {
   const { count, testList } = state.test;
   const { project } = state.project;
+  const { avatar_url } = state.auth.users;
 
   return ({
     count,
     testList,
     project,
-    avatar_url: state.auth.users.avatar_url,
+    avatar_url,
   });
 };
 

@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { logout } from 'modules/auth';
 import GlobalNav from './GlobalNav';
 import LocalNav from './LocalNav';
@@ -46,12 +46,12 @@ const UserProfile = (props) => {
               onBlur={e => handleBlur(e)}
             >
               <i className="btn__icon">
-                {profile !== '' ? <img src={`https://qa-server.realdopt.com${profile}`} alt="test" /> : '🙂' }
+                {profile !== '' ? <img src={profile} alt="프로필" /> : '🙂' }
                 <span className="btn__text">프로필</span>
               </i>
             </button>
             <ul className={`profile__list${isExtended ? '--extended' : ''}`}>
-              {/* <li className="list__item"><Link to="/my">마이페이지</Link></li> */}
+              <li className="list__item"><Link to="/my">마이페이지</Link></li>
               <li className="list__item"><button type="button" onClick={() => { dispatch(logout()); }}>로그아웃</button></li>
             </ul>
           </>

@@ -173,6 +173,7 @@ $imgUrl: '/static/images';
         border-radius: 50%;
         border: 1px solid $lightGray;
         box-sizing: border-box;
+        overflow: hidden;
 
         img {
           position: absolute;
@@ -182,8 +183,8 @@ $imgUrl: '/static/images';
           bottom: 0;
           width: auto;
           height: auto;
-          max-width: 80%;
-          max-height: 80%;
+          max-width: 100%;
+          max-height: 100%;
           margin: auto;
         }
       }

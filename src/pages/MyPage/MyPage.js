@@ -18,7 +18,7 @@ import FormInput from 'components/FormInput';
 import './MyPage.scss';
 
 const nameRequired = value => (value ? undefined : '이름을 입력해주세요');
-const nameLength = value => (parseInt(value.length, 10) > 64 ? '이름이 너무 길어요' : undefined);
+const nameLength = value => (parseInt(value.length, 10) > 10 ? '이름이 너무 길어요' : undefined);
 const phoneNumRequired = value => (value ? undefined : '연락처를 입력해주세요');
 const phoneNumRegexp = value => (value && !/^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/.test(value) ? '연락처 형식을 다시 확인해주세요' : undefined);
 

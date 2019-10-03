@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { togglePopup } from 'modules/popup';
 import NewTaxBillPopup from 'containers/NewTaxBillPopup';
@@ -34,7 +35,10 @@ const PayAccountInfo = (props) => {
             <strong className="account_info">1,500,000원</strong>
           </p>
           <button type="button" className="btn__tax-invoice" onClick={() => handlePopup(true)}>세금계산서 신청하기</button>
-          <button type="button" className="btn__confirm" onClick={submit}>확인</button>
+          {voucherOrder === undefined
+            ? <button type="button" className="btn__confirm" onClick={submit}>확인</button>
+            : <Link to="/my/payment" className="btn__confirm" onClick={submit}>확인</Link>
+          }
         </div>
       </div>
       <NewTaxBillPopup

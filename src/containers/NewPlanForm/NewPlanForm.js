@@ -4,7 +4,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  Field, reduxForm, getFormMeta, getFormValues, change, SubmissionError, formValueSelector,
+  Field,
+  reduxForm,
+  getFormMeta,
+  getFormValues,
+  change,
+  SubmissionError,
+  formValueSelector,
 } from 'redux-form';
 import { getPlanList, getPlanPrice } from 'modules/plan';
 import { orderVoucher } from 'modules/order';
@@ -247,18 +253,37 @@ class NewPlanForm extends Component {
 
   render() {
     const {
-      plans, handleSubmit, companyName, applicantName, sameName, depositorName,
-      email, phone, plan, plan01Amount, plan02Amount, voucherId,
+      plans,
+      handleSubmit,
+      companyName,
+      applicantName,
+      sameName,
+      depositorName,
+      email,
+      phone,
+      plan,
+      plan01Amount,
+      plan02Amount,
+      voucherId,
     } = this.props;
     const hasValues = !!companyName
       && !!applicantName && !!depositorName && !!email && !!phone
       && !!plan && (!!plan01Amount || !!plan02Amount);
     const {
-      isPlan, totalPrice, hasPassed, isDisabled, totalAmount,
+      isPlan,
+      totalPrice,
+      hasPassed,
+      isDisabled,
+      totalAmount,
     } = this.state;
     const {
-      onSubmit, getRadioValue, handleRadioValue, handleNameValue, handleInputChange,
-      handlePrice, getExpiredDate,
+      onSubmit,
+      getRadioValue,
+      handleRadioValue,
+      handleNameValue,
+      handleInputChange,
+      handlePrice,
+      getExpiredDate,
     } = this;
 
     return (
@@ -275,11 +300,6 @@ class NewPlanForm extends Component {
                       totalAmount,
                       totalPrice,
                     }}
-                    submit={
-                      () => this.setState({
-                        hasPassed: false,
-                        isDisabled: true,
-                      })}
                   />
                 )
                 : (

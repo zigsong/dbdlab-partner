@@ -59,6 +59,9 @@ class NewTestForm extends Component {
     } = this.props;
     const { match } = route;
     const { tId } = match.params;
+
+    this.setState({ isLoading: true });
+
     const getTestContent = async () => {
       await getTest(tId)
         .then(
@@ -193,8 +196,6 @@ class NewTestForm extends Component {
           this.setState({ isLoading: false });
           this.titleInput.getRenderedComponent().focus();
         }
-
-        this.setState({ isLoading: true });
       });
   }
 

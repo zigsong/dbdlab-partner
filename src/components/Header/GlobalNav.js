@@ -10,10 +10,7 @@ const GlobalNav = () => {
   return (
     <section className="header__nav nav-global">
       <h1 className="logo">
-        <Link to="/">
-          realdopt
-          <span>로고주떼욤</span>
-        </Link>
+        <Link to="/">realdopt</Link>
       </h1>
       <ul className="nav__list">
         {nav.map((n, i) => (

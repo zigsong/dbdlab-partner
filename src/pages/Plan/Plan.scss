@@ -6,6 +6,7 @@ $blue: #029bff;
 $black: #282828;
 $white: #fff;
 $blueGray: #f6f7fa;
+$imgUrl: '/static/images/';
 
 %hidden {
   font-size: 0;
@@ -143,6 +144,79 @@ $blueGray: #f6f7fa;
   padding: 104px 0 171px;
   position: relative;
   z-index: 10;
+
+  .box-price {
+    min-height: 126px;
+    padding-bottom: 70px;
+  
+    .box-price__title {
+      @extend %hidden;
+    }
+  
+    .box-price__contents {
+      width: 770px;
+      height: 400px;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+  
+    .box-start {
+      width: 100%;
+      margin-top: -68px;
+      background-color: $blue;
+  
+      .box-start__contents {
+        width: 100%;
+        max-width: 770px;
+        margin: 0 auto;
+        padding: 146px 22px 109px;
+        background: $blue url('#{$imgUrl}/bg/bg_plan.png') no-repeat right bottom / 257px auto;
+      }
+  
+      strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 26px;
+        color: $white;
+        font-weight: bold;
+        line-height: 55px;
+      }
+  
+      .btn-apply {
+        @extend %btnBlue;
+        display: inline-block;
+        min-width: 152px;
+        border-color: $white;
+        color: $white;
+        text-align: center;
+      }
+    }
+  
+    .box-buttons {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 15;
+      width: 100%;
+      padding: 0 16px 20px;
+      box-sizing: border-box;
+      background-color: $white;
+  
+      .btn {
+        border-radius: 0;
+        cursor: pointer;
+  
+        &.btn__start,
+        &.btn__request {
+          @extend %btnGray;
+          width: 690px;
+          height: 40px;
+          box-sizing: border-box;
+        }
+      }
+    }
+  }
 
   .box-targetInfo {
     padding: 70px 0 60px;

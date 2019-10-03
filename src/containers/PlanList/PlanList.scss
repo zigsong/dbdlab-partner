@@ -4,7 +4,6 @@ $blue: #029bff;
 $black: #282828;
 $white: #fff;
 $blueGray: #f6f7fa;
-$imgUrl: '/static/images/';
 
 %hidden {
   font-size: 0;
@@ -39,252 +38,179 @@ $imgUrl: '/static/images/';
   cursor: pointer;
 }
 
-.box-price {
-  min-height: 126px;
-  padding-bottom: 70px;
+.box-price__list {
+  width: 100%;
+  height: 100%;
+  font-size: 0;
 
-  .box-price__title {
-    @extend %hidden;
-  }
-
-  .box-price__contents {
-    width: 770px;
-    height: 400px;
-    margin: 0 auto;
+  .list__item {
+    display: inline-block;
+    width: 250px;
+    height: 100%;
+    margin-left: 10px;
+    background-color: $white;
+    border: 1px solid $gray;
+    border-radius: 5px;
     box-sizing: border-box;
+    vertical-align: top;
 
-    .box-price__list {
+    &:first-child {
+      margin-left: 0;
+    }
+
+    .item__plan {
       width: 100%;
       height: 100%;
-      font-size: 0;
-
-      .list__item {
-        display: inline-block;
-        width: 250px;
-        height: 100%;
-        margin-left: 10px;
-        background-color: $white;
-        border: 1px solid $gray;
-        border-radius: 5px;
-        box-sizing: border-box;
-        vertical-align: top;
-
-        &:first-child {
-          margin-left: 0;
-        }
-
-        .item__plan {
-          width: 100%;
-          height: 100%;
-          padding: 45px 35px 45px;
-          box-sizing: border-box;
-        }
-
-        .plan__title {
-          font-size: 24px;
-          color: $black;
-          font-weight: bold;
-          text-align: center;
-          text-transform: uppercase;
-          line-height: 1;
-        }
-
-        .plan__desc {
-          padding: 30px 0 14px;
-
-          .desc__text {
-            display: block;
-            height: 40px;
-            font-size: 14px;
-            line-height: 20px;
-            font-weight: bold;
-            text-align: center;
-
-            .text--point {
-              color: $blue;
-              font-size: 14px;
-              line-height: 20px;
-              font-weight: bold;
-            }
-          }
-
-          .desc__price {
-            display: block;
-            margin-top: 5px;
-            text-align: center;
-
-            strong {
-              font-size: 32px;
-              line-height: 40px;
-              font-weight: bold;
-            }
-
-            em {
-              display: block;
-              margin-top: 3px;
-              font-size: 14px;
-              line-height: 20px;
-              font-weight: bold;
-              color: $darkgray;
-            }
-
-            .price--text {
-              font-size: 32px;
-              line-height: 40px;
-              font-weight: bold;
-            }
-          }
-
-          .desc__expired {
-            position: absolute;
-            bottom: -85px;
-            z-index: 35;
-            display: block;
-            width: 100%;
-            text-align: center;
-            font-size: 12px;
-            color: $darkgray;
-          }
-
-          &.plan01--single,
-          &.plan02--single {
-            position: relative;
-            padding: 45px 0 69px;
-          }
-
-          &.plan03 {
-            padding: 79px 0 82px;
-            text-align: center;
-            font-size: 22px;
-            line-height: 30px;
-          }
-        }
-
-        .btn-buy,
-        .btn-changePlan {
-          @extend %btnBlue;
-          display: inline-block;
-          min-width: 180px;
-          height: 58px;
-          line-height: 40px;
-          text-align: center;
-        }
-
-        .link-changePlan {
-          background: none;
-          min-width: 180px;
-          margin-top: 17px;
-          font-size: 14px;
-          font-weight: 500;
-          color: $black;
-          text-decoration: underline;
-          cursor: pointer;
-          text-align: center;
-        }
-      }
-
-      // slider
-      .slider-amount {
-        position: relative;
-        z-index: 20;
-        width: 100%;
-        margin-top: 30px;
-
-        .slider__rail {
-          position: absolute;
-          z-index: 25;
-          width: 100%;
-          height: 8px;
-          border-radius: 4px;
-          background-color: #efefef;
-          cursor: pointer;
-        }
-
-        .slider__handle {
-          .handle {
-            position: absolute;
-            z-index: 35;
-            width: 30px;
-            height: 30px;
-            margin-top: -10px;
-            margin-left: -15px;
-            background: $blue url('/static/images/common/icons/icon_slider_handle.png') no-repeat center;
-            background-size: percentage(18 / 30) auto;
-            border-radius: 50%;
-            cursor: pointer;
-          }
-        }
-
-        .slider__ticks {
-          .tick {
-            position: absolute;
-            top: 0;
-            z-index: 30;
-            width: 4px;
-            height: 4px;
-            background-color: $white;
-            border-radius: 50%;
-            margin-top: 2px;
-            cursor: pointer;
-          }
-        }
-      }
-    }
-  }
-
-  .box-start {
-    width: 100%;
-    margin-top: -68px;
-    background-color: $blue;
-
-    .box-start__contents {
-      width: 100%;
-      max-width: 770px;
-      margin: 0 auto;
-      padding: 146px 22px 109px;
-      background: $blue url('#{$imgUrl}/bg/bg_plan.png') no-repeat right bottom / 257px auto;
+      padding: 45px 35px 45px;
+      box-sizing: border-box;
     }
 
-    strong {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 26px;
-      color: $white;
+    .plan__title {
+      font-size: 24px;
+      color: $black;
       font-weight: bold;
-      line-height: 55px;
+      text-align: center;
+      text-transform: uppercase;
+      line-height: 1;
     }
 
-    .btn-apply {
+    .plan__desc {
+      padding: 30px 0 14px;
+
+      .desc__text {
+        display: block;
+        height: 40px;
+        font-size: 14px;
+        line-height: 20px;
+        font-weight: bold;
+        text-align: center;
+
+        .text--point {
+          color: $blue;
+          font-size: 14px;
+          line-height: 20px;
+          font-weight: bold;
+        }
+      }
+
+      .desc__price {
+        display: block;
+        margin-top: 5px;
+        text-align: center;
+
+        strong {
+          font-size: 32px;
+          line-height: 40px;
+          font-weight: bold;
+        }
+
+        em {
+          display: block;
+          margin-top: 3px;
+          font-size: 14px;
+          line-height: 20px;
+          font-weight: bold;
+          color: $darkgray;
+        }
+
+        .price--text {
+          font-size: 32px;
+          line-height: 40px;
+          font-weight: bold;
+        }
+      }
+
+      .desc__expired {
+        position: absolute;
+        bottom: -85px;
+        z-index: 35;
+        display: block;
+        width: 100%;
+        text-align: center;
+        font-size: 12px;
+        color: $darkgray;
+      }
+
+      &.plan01--single,
+      &.plan02--single {
+        position: relative;
+        padding: 45px 0 69px;
+      }
+
+      &.plan03 {
+        padding: 79px 0 82px;
+        text-align: center;
+        font-size: 22px;
+        line-height: 30px;
+      }
+    }
+
+    .btn-buy,
+    .btn-changePlan {
       @extend %btnBlue;
       display: inline-block;
-      min-width: 152px;
-      border-color: $white;
-      color: $white;
+      min-width: 180px;
+      height: 58px;
+      line-height: 40px;
+      text-align: center;
+    }
+
+    .link-changePlan {
+      background: none;
+      min-width: 180px;
+      margin-top: 17px;
+      font-size: 14px;
+      font-weight: 500;
+      color: $black;
+      text-decoration: underline;
+      cursor: pointer;
       text-align: center;
     }
   }
 
-  .box-buttons {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 15;
+  // slider
+  .slider-amount {
+    position: relative;
+    z-index: 20;
     width: 100%;
-    padding: 0 16px 20px;
-    box-sizing: border-box;
-    background-color: $white;
+    margin-top: 30px;
 
-    .btn {
-      border-radius: 0;
+    .slider__rail {
+      position: absolute;
+      z-index: 25;
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background-color: #efefef;
       cursor: pointer;
+    }
 
-      &.btn__start,
-      &.btn__request {
-        @extend %btnGray;
-        width: 690px;
-        height: 40px;
-        box-sizing: border-box;
+    .slider__handle {
+      .handle {
+        position: absolute;
+        z-index: 35;
+        width: 30px;
+        height: 30px;
+        margin-top: -10px;
+        margin-left: -15px;
+        background: $blue url('/static/images/common/icons/icon_slider_handle.png') no-repeat center;
+        background-size: percentage(18 / 30) auto;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+    }
+
+    .slider__ticks {
+      .tick {
+        position: absolute;
+        top: 0;
+        z-index: 30;
+        width: 4px;
+        height: 4px;
+        background-color: $white;
+        border-radius: 50%;
+        margin-top: 2px;
+        cursor: pointer;
       }
     }
   }

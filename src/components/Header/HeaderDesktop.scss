@@ -52,33 +52,22 @@ $imgUrl: '/static/images';
       .logo {
         display: inline-block;
         height: 100%;
+        vertical-align: top;
 
         a {
           display: block;
-          width: 75px;
+          width: 79px;
           height: 29px;
-          padding: 9px 0 3px;
-          font-family: 'Comfortaa', cursive;
-          font-size: 18px;
-          line-height: .5;
-          text-indent: 0;
+          background: transparent url('#{$imgUrl}/common/img_logo--temp.png') no-repeat center center / 100%;
+          font-size: 0;
+          text-indent: -9999px;
           color: #029bff;
           box-sizing: border-box;
-
-          span {
-            font-size: 8px;
-            color: #9b9b9b;
-          }
-
-          img {
-            width: auto;
-            height: 100%;
-          }
         }
       }
 
       .nav__list {
-        width: calc(100% - 75px); //logo 75
+        width: calc(100% - 79px); //logo 79
         display: inline-block;
         padding-left: percentage(43 / 1000);
         margin: 6px 0;

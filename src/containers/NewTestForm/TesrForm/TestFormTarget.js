@@ -112,7 +112,7 @@ const TestFormTarget = (props) => {
               <Field
                 name={`extraInfoDesc${idx + 1}`}
                 type="text"
-                label="target.extraInfoDesc"
+                label={`target.extraInfoDesc${idx + 1}`}
                 placeholder="텍스트 입력"
                 component={FormInput}
                 disabled={isDisabled}

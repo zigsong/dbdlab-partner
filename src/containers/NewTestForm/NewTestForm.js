@@ -363,15 +363,24 @@ class NewTestForm extends Component {
 
         if (tgEx1Id) {
           await patchTargetExtra(tgEx1Id, tgId, exCate1Id, extraInfoDesc1);
-        } else if (exCate1Id) await postTargetExtra(tgId, exCate1Id, extraInfoDesc1);
+        } else if (exCate1Id) {
+          await getTest(tId);
+          await postTargetExtra(tgId, exCate1Id, extraInfoDesc1);
+        }
 
         if (tgEx2Id) {
           await patchTargetExtra(tgEx2Id, tgId, exCate2Id, extraInfoDesc2);
-        } else if (exCate2Id) await postTargetExtra(tgId, exCate2Id, extraInfoDesc2);
+        } else if (exCate2Id) {
+          await getTest(tId);
+          await postTargetExtra(tgId, exCate2Id, extraInfoDesc2);
+        }
 
         if (tgEx3Id) {
           await patchTargetExtra(tgEx3Id, tgId, exCate3Id, extraInfoDesc3);
-        } else if (exCate3Id) await postTargetExtra(tgId, exCate3Id, extraInfoDesc3);
+        } else if (exCate3Id) {
+          await getTest(tId);
+          await postTargetExtra(tgId, exCate3Id, extraInfoDesc3);
+        }
 
         await patchTarget(
           tgId,
@@ -379,13 +388,15 @@ class NewTestForm extends Component {
           genderValue,
           minAge,
           maxAge,
-        ).then(() => {
-          this.setState({
-            isTargetRendered: false,
-            isTargetPassed: true,
-            isQuestRendered: true,
+        )
+          .then(() => { getTest(tId); })
+          .then(() => {
+            this.setState({
+              isTargetRendered: false,
+              isTargetPassed: true,
+              isQuestRendered: true,
+            });
           });
-        });
       } else if (isQuestRendered && hasQuestPassed) {
         const qId = test.quests.map(q => q.id);
         const {
@@ -681,246 +692,241 @@ class NewTestForm extends Component {
     ];
 
     return (
-      <>
-        {isLoading
-          ? <LoadingIndicator />
-          : (
-            <form className="contents__form" onSubmit={handleSubmit(values => onSubmit(values))}>
-              <div className="form__nav">
-                <span className="box-btn">
-                  <button type="button" className="btn-back" onClick={e => goBack(e)}>뒤로 가기</button>
-                </span>
-                <nav className="nav">
-                  <ol className="nav-list">
-                    {nav.map((n, idx) => (
-                      idx === 2
-                        ? (
-                          <li className={`nav-list__item--quest${isQuestRendered ? '--active' : ''}`} key={n.title}>
-                            <button
-                              className="btn-nav"
-                              type="button"
-                              onClick={() => handleFormRender(idx)}
-                              disabled={idx === 4 && hasReport}
-                            >
-                              {n.title}
-                            </button>
-                            {((hasIssue1Value || hasIssue2Value || hasIssue3Value)
-                              && isQuestRendered)
-                              || (isDefaultRendered && isTargetPassed)
-                              || (isTargetRendered && isTargetPassed)
-                              || (isQuestRendered && isTargetPassed
-                                && (hasIssue1Value || hasIssue2Value || hasIssue3Value))
-                              || (isPayRendered && isQuestPassed
-                                && (hasIssue1Value || hasIssue2Value || hasIssue3Value))
-                              || (isPayRendered && isTargetPassed
-                                && (hasIssue1Value || hasIssue2Value || hasIssue3Value))
-                              || (isPayRendered && isPayPassed
-                                && (hasIssue1Value || hasIssue2Value || hasIssue3Value))
-                              || isQuestPassed
-                              || isPayPassed
-                              || isAllPassed
-                              || isAllRendered
-                              ? (
-                                <ol className="nav-sub">
-                                  <li className={`sub__item${hasIssue1Value ? '--active' : ''}`}>{n.subnav[0]}</li>
-                                  <li className={`sub__item${hasIssue2Value ? '--active' : ''}`}>{n.subnav[1]}</li>
-                                  <li className={`sub__item${hasIssue3Value ? '--active' : ''}`}>{n.subnav[2]}</li>
-                                </ol>
-                              )
-                              : (
-                                <div className="item-info">
-                                  무엇을
-                                  <br />
-                                  테스트할까요?
-                                </div>
-                              )
-                            }
-                          </li>
-                        )
-                        : (
-                          <li className={`nav-list__item--${n.class}`} key={n.title}>
-                            <button
-                              className="btn-nav"
-                              type="button"
-                              onClick={() => handleFormRender(idx)}
-                              disabled={idx === 4 && !isAllRendered}
-                            >
-                              {n.title}
-                            </button>
-                          </li>
-                        )
-                    ))}
-                  </ol>
-                </nav>
-              </div>
-              <div className="form__field">
-                <Field
-                  type="text"
-                  name="title"
-                  placeholder="Untitled"
-                  component="input"
-                  ref={(ref) => { this.titleInput = ref; }}
-                  forwardRef
-                  disabled={isAllPassed}
-                />
-                { isDefaultRendered
-                  ? (
-                    <FormSection name="default">
-                      <TestFormDefault
-                        isDisabled={isNoNamed || (isDefaultPassed
+      isLoading ? <LoadingIndicator /> : (
+        <form className="contents__form" onSubmit={handleSubmit(values => onSubmit(values))}>
+          <div className="form__nav">
+            <span className="box-btn">
+              <button type="button" className="btn-back" onClick={e => goBack(e)}>뒤로 가기</button>
+            </span>
+            <nav className="nav">
+              <ol className="nav-list">
+                {nav.map((n, idx) => (
+                  idx === 2
+                    ? (
+                      <li className={`nav-list__item--quest${isQuestRendered ? '--active' : ''}`} key={n.title}>
+                        <button
+                          className="btn-nav"
+                          type="button"
+                          onClick={() => handleFormRender(idx)}
+                          disabled={idx === 4 && hasReport}
+                        >
+                          {n.title}
+                        </button>
+                        {((hasIssue1Value || hasIssue2Value || hasIssue3Value)
+                          && isQuestRendered)
+                          || (isDefaultRendered && isTargetPassed)
+                          || (isTargetRendered && isTargetPassed)
+                          || (isQuestRendered && isTargetPassed
+                            && (hasIssue1Value || hasIssue2Value || hasIssue3Value))
+                          || (isPayRendered && isQuestPassed
+                            && (hasIssue1Value || hasIssue2Value || hasIssue3Value))
+                          || (isPayRendered && isTargetPassed
+                            && (hasIssue1Value || hasIssue2Value || hasIssue3Value))
+                          || (isPayRendered && isPayPassed
+                            && (hasIssue1Value || hasIssue2Value || hasIssue3Value))
+                          || isQuestPassed
+                          || isPayPassed
+                          || isAllPassed
+                          || isAllRendered
+                          ? (
+                            <ol className="nav-sub">
+                              <li className={`sub__item${hasIssue1Value ? '--active' : ''}`}>{n.subnav[0]}</li>
+                              <li className={`sub__item${hasIssue2Value ? '--active' : ''}`}>{n.subnav[1]}</li>
+                              <li className={`sub__item${hasIssue3Value ? '--active' : ''}`}>{n.subnav[2]}</li>
+                            </ol>
+                          )
+                          : (
+                            <div className="item-info">
+                              무엇을
+                              <br />
+                              테스트할까요?
+                            </div>
+                          )
+                        }
+                      </li>
+                    )
+                    : (
+                      <li className={`nav-list__item--${n.class}`} key={n.title}>
+                        <button
+                          className="btn-nav"
+                          type="button"
+                          onClick={() => handleFormRender(idx)}
+                          disabled={idx === 4 && !isAllRendered}
+                        >
+                          {n.title}
+                        </button>
+                      </li>
+                    )
+                ))}
+              </ol>
+            </nav>
+          </div>
+          <div className="form__field">
+            <Field
+              type="text"
+              name="title"
+              placeholder="Untitled"
+              component="input"
+              ref={(ref) => { this.titleInput = ref; }}
+              forwardRef
+              disabled={isAllPassed}
+            />
+            { isDefaultRendered
+              ? (
+                <FormSection name="default">
+                  <TestFormDefault
+                    isDisabled={isNoNamed || (isDefaultPassed
+                      && isTargetPassed
+                      && isQuestPassed
+                      && isPayPassed)
+                      || isAllPassed
+                    }
+                    test={test}
+                    media1Category={media1Category}
+                    media2Category={media2Category}
+                    service1Category={service1Category}
+                    service2Category={service2Category}
+                    funnelCategory={funnelCategory}
+                  />
+                </FormSection>
+              )
+              : null
+            }
+            { isTargetRendered
+              ? (
+                <>
+                  { isDefaultPassed ? null : <DisabledLayer />}
+                  <FormSection name="target">
+                    <TestFormTarget
+                      isDisabled={isNoNamed || (isDefaultPassed
                           && isTargetPassed
                           && isQuestPassed
                           && isPayPassed)
                           || isAllPassed
                         }
-                        test={test}
-                        media1Category={media1Category}
-                        media2Category={media2Category}
-                        service1Category={service1Category}
-                        service2Category={service2Category}
-                        funnelCategory={funnelCategory}
-                      />
-                    </FormSection>
-                  )
-                  : null
-                }
-                { isTargetRendered
-                  ? (
-                    <>
-                      { isDefaultPassed ? null : <DisabledLayer />}
-                      <FormSection name="target">
-                        <TestFormTarget
-                          isDisabled={isNoNamed || (isDefaultPassed
-                              && isTargetPassed
-                              && isQuestPassed
-                              && isPayPassed)
-                              || isAllPassed
-                            }
-                          extraInfoCategory={extraInfoCategory}
-                          extraValue={extras}
-                        />
-                      </FormSection>
-                    </>
-                  )
-                  : null
-                }
-                { isQuestRendered
-                  ? (
-                    <>
-                      { isTargetPassed ? null : <DisabledLayer />}
-                      <FormSection name="quest">
-                        <TestFormQuest
+                      extraInfoCategory={extraInfoCategory}
+                      extraValue={extras}
+                    />
+                  </FormSection>
+                </>
+              )
+              : null
+            }
+            { isQuestRendered
+              ? (
+                <>
+                  { isTargetPassed ? null : <DisabledLayer />}
+                  <FormSection name="quest">
+                    <TestFormQuest
+                      isDisabled={isNoNamed || (isDefaultPassed
+                        && isTargetPassed
+                        && isQuestPassed
+                        && isPayPassed)
+                        || isAllPassed
+                      }
+                      qId={qId}
+                      issueCategory={issueCategory}
+                    />
+                  </FormSection>
+                </>
+              )
+              : null
+            }
+            { isPayRendered
+              ? (
+                <>
+                  { isQuestPassed ? null : <DisabledLayer />}
+                  { isPayPassed
+                    ? (
+                      <>
+                        {isAllRendered
+                          ? (
+                            <PayAccountInfo
+                              testOrder={test.order}
+                              submit={
+                              () => this.setState({
+                                isPayPassed: false,
+                                isAllRendered: false,
+                                isAllPassed: true,
+                              })}
+                            />
+                          )
+                          : (
+                            <FormSection name="pay">
+                              <TestFormPay
+                                isDisabled={isNoNamed || (isDefaultPassed
+                                  && isTargetPassed
+                                  && isQuestPassed
+                                  && isPayPassed)
+                                  || isAllPassed
+                                  || !isQuestPassed
+                                }
+                                planList={planList}
+                              />
+                            </FormSection>
+                          )
+                        }
+                      </>
+                    )
+                    : (
+                      <FormSection name="pay">
+                        <TestFormPay
                           isDisabled={isNoNamed || (isDefaultPassed
                             && isTargetPassed
                             && isQuestPassed
                             && isPayPassed)
                             || isAllPassed
+                            || !isQuestPassed
                           }
-                          qId={qId}
-                          issueCategory={issueCategory}
+                          planList={planList}
+                          submitErrorMsg={error}
                         />
                       </FormSection>
-                    </>
-                  )
-                  : null
-                }
-                { isPayRendered
-                  ? (
-                    <>
-                      { isQuestPassed ? null : <DisabledLayer />}
-                      { isPayPassed
-                        ? (
-                          <>
-                            {isAllRendered
-                              ? (
-                                <PayAccountInfo
-                                  testOrder={test.order}
-                                  submit={
-                                  () => this.setState({
-                                    isPayPassed: false,
-                                    isAllRendered: false,
-                                    isAllPassed: true,
-                                  })}
-                                />
-                              )
-                              : (
-                                <FormSection name="pay">
-                                  <TestFormPay
-                                    isDisabled={isNoNamed || (isDefaultPassed
-                                      && isTargetPassed
-                                      && isQuestPassed
-                                      && isPayPassed)
-                                      || isAllPassed
-                                      || !isQuestPassed
-                                    }
-                                    planList={planList}
-                                  />
-                                </FormSection>
-                              )
-                            }
-                          </>
-                        )
-                        : (
-                          <FormSection name="pay">
-                            <TestFormPay
-                              isDisabled={isNoNamed || (isDefaultPassed
-                                && isTargetPassed
-                                && isQuestPassed
-                                && isPayPassed)
-                                || isAllPassed
-                                || !isQuestPassed
-                              }
-                              planList={planList}
-                              submitErrorMsg={error}
-                            />
-                          </FormSection>
-                        )
-                      }
-                    </>
-                  )
-                  : null
-                }
-                { isReportRendered
-                  ? <TestFormReport />
-                  : null
-                }
+                    )
+                  }
+                </>
+              )
+              : null
+            }
+            { isReportRendered
+              ? <TestFormReport />
+              : null
+            }
+          </div>
+          {isPayPassed || isReportRendered
+            ? null
+            : (
+              <RightSidebar
+                isDisabled={isNoNamed}
+                isDefaultRendered={isDefaultRendered}
+                isTargetRendered={isTargetRendered}
+                isQuestRendered={isQuestRendered}
+                isPayRendered={isPayRendered}
+                isAllRendered={isAllRendered}
+                isDefaultPassed={isDefaultPassed}
+                isTargetPassed={isTargetPassed}
+                isQuestPassed={isQuestPassed}
+                isPayPassed={isPayPassed}
+                isAllPassed={isAllPassed}
+                fieldsMeta={fieldsMeta}
+                fieldsValues={fieldsValues}
+                submitFailed={submitFailed}
+                submitSucceeded={submitSucceeded}
+              />
+            )
+          }
+          {/* 생성된 테스트 페이지 수정 시에도 안 보이게 하려면 아래 주석 삭제 */}
+          {/* { isNoNamed && tId === undefined */}
+          { isNoNamed
+            ? (
+              <div className="layer--guide">
+                <i className={`layer__bubble${isNoNamed ? '--active' : ''}`}>테스트명을 입력해주세요</i>
               </div>
-              {isPayPassed || isReportRendered
-                ? null
-                : (
-                  <RightSidebar
-                    isDisabled={isNoNamed}
-                    isDefaultRendered={isDefaultRendered}
-                    isTargetRendered={isTargetRendered}
-                    isQuestRendered={isQuestRendered}
-                    isPayRendered={isPayRendered}
-                    isAllRendered={isAllRendered}
-                    isDefaultPassed={isDefaultPassed}
-                    isTargetPassed={isTargetPassed}
-                    isQuestPassed={isQuestPassed}
-                    isPayPassed={isPayPassed}
-                    isAllPassed={isAllPassed}
-                    fieldsMeta={fieldsMeta}
-                    fieldsValues={fieldsValues}
-                    submitFailed={submitFailed}
-                    submitSucceeded={submitSucceeded}
-                  />
-                )
-              }
-              {/* 생성된 테스트 페이지 수정 시에도 안 보이게 하려면 아래 주석 삭제 */}
-              {/* { isNoNamed && tId === undefined */}
-              { isNoNamed
-                ? (
-                  <div className="layer--guide">
-                    <i className={`layer__bubble${isNoNamed ? '--active' : ''}`}>테스트명을 입력해주세요</i>
-                  </div>
-                )
-                : null
-              }
-            </form>
-          )
-        }
-      </>
+            )
+            : null
+          }
+        </form>
+      )
     );
   }
 }

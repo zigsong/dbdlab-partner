@@ -11,7 +11,7 @@ const Routers = () => (
       <Route exact path={['/', '/project']} component={Project} />
       <Route exact path={['/project/:pId/test/:tId', '/project/:pId/?apply', '/project/:pId/test', '/project/:pId']} component={Test} />
       <Route exact path={['/plan', '/plan/purchase']} component={Plan} />
-      {/* <Route path="/my" component={MyPage} /> */}
+      <Route exact path={['/my', '/my/profile', '/my/payment']} component={MyPage} />
     </Switch>
   </Suspense>
 );

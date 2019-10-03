@@ -13,7 +13,6 @@ const Plan = (props) => {
     const { protocol } = window.location;
     const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
     const AUTH_TOKEN = hasTokenCookie !== undefined ? hasTokenCookie.replace(/\s/gi, '').substring(6) : null;
-    console.log(AUTH_TOKEN);
 
     setLoading(true);
 
@@ -164,7 +163,7 @@ const Plan = (props) => {
                     <div className="box-start">
                       <p className="box-start__contents">
                         <strong>지금 바로 테스트를 시작해보세요</strong>
-                        <Link to="/" className="btn__apply">테스트 시작하기</Link>
+                        <Link to="/" className="btn-apply">테스트 시작하기</Link>
                       </p>
                     </div>
                   </article>

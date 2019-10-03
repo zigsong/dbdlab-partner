@@ -54,14 +54,24 @@ class Project extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hasProject: 0,
       isLoading: false,
       isAuthError: false,
     };
   }
 
   componentDidMount() {
+    const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
+    const AUTH_TOKEN = hasTokenCookie !== undefined ? hasTokenCookie.replace(/\s/gi, '').substring(6) : null;
+
+    if (AUTH_TOKEN === null) {
+      this.setState({
+        isLoading: false,
+        isAuthError: true,
+      });
+    }
+
     this.getProject();
+    this.setState({ isLoading: true });
   }
 
   componentDidUpdate(prevProps) {
@@ -78,76 +88,51 @@ class Project extends Component {
 
   getProject = async () => {
     const { props } = this;
-    this.setState({ isLoading: true });
 
     await props.getProjectList()
-      .then(this.setState({ isLoading: true }))
+      .then(() => {
+        this.setState({ isLoading: false });
+      })
       .catch((err) => {
         const { statusText } = err.response;
         console.log(err.response);
         if (statusText === 'Unauthorized') {
-          this.setState({ isAuthError: true });
+          this.setState({
+            isLoading: false,
+            isAuthError: true,
+          });
         }
       });
-    await this.setProjectList();
   };
-
-  setProjectList = () => {
-    const { projectList } = this.props;
-    const ProjectListLength = Object.keys(projectList).length;
-    return new Promise((resolve) => {
-      resolve(
-        this.setState({
-          isLoading: false,
-          hasProject: ProjectListLength,
-        }),
-      );
-    });
-  }
 
   render() {
     const { isOpen, history, projectList } = this.props;
-    const { hasProject, isLoading, isAuthError } = this.state;
+    const { isLoading, isAuthError } = this.state;
 
     return (
       <PageTemplate>
         <section className="contents__project">
           <div className="contents-inner">
             <h1 className="project__title">Project</h1>
-            {
-              isLoading
-                ? <LoadingIndicator />
-                : (
-                  <>
-                    {
-                      isAuthError
-                        ? <UnauthorizedPopup />
-                        : (
-                          <>
-                            {
-                              hasProject > 0
-                                ? (
-                                  <ProjectList project={projectList} />
-                                )
-                                : (
-                                  <>
-                                    <div className="project__desc">
-                                      <span className="desc__text">프로젝트를 만들고, 테스트를 시작해보세요!</span>
-                                      <button type="button" className="btn-start--red" onClick={() => this.handlePopup(true)}>+ 프로젝트 만들기</button>
-                                    </div>
-                                    <NewProjectPopup
-                                      show={isOpen}
-                                      handlePopup={this.handlePopup}
-                                      history={history}
-                                    />
-                                  </>
-                                )
-                            }
-                          </>
-                        )
-                    }
-                  </>
-                )
+            { isLoading ? <LoadingIndicator /> : null }
+            { isAuthError ? <UnauthorizedPopup /> : null }
+            { Object.keys(projectList).length > 0
+              ? (
+                <ProjectList project={projectList} />
+              )
+              : (
+                <>
+                  <div className="project__desc">
+                    <span className="desc__text">프로젝트를 만들고, 테스트를 시작해보세요!</span>
+                    <button type="button" className="btn-start--red" onClick={() => this.handlePopup(true)}>+ 프로젝트 만들기</button>
+                  </div>
+                  <NewProjectPopup
+                    show={isOpen}
+                    handlePopup={this.handlePopup}
+                    history={history}
+                  />
+                </>
+              )
             }
           </div>
         </section>

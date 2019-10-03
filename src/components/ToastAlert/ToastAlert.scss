@@ -1,0 +1,43 @@
+$black: #282828;
+$white: #fff;
+$gray: #cacaca;
+
+.box__alert {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: -1;
+  width: 330px;
+  max-height: 130px;
+  margin: -65px 0 0 -165px;
+  background-color: $black;
+  padding: 28px 30px 30px;
+  border-radius: 5px;
+  text-align: center;
+  box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(130px);
+  transition: all .3s ease-in-out;
+
+  &.alert {
+    z-index: 250;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: all .3s ease-in-out;
+  }
+
+  strong {
+    display: block;
+    font-size: 20px;
+    color: $white;
+    font-weight: 500;
+  }
+
+  span {
+    font-size: 14px;
+    color: $gray;
+    line-height: 16px;
+  }
+}

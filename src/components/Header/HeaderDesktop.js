@@ -25,11 +25,6 @@ const UserProfile = (props) => {
   useEffect(() => {
     setMounted(true);
     setExtended(false);
-
-    return () => {
-      setMounted(false);
-      setExtended(false);
-    };
   }, []);
 
   const { profile } = props;

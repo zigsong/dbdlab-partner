@@ -11,6 +11,7 @@ import {
   patchAccountUpdate,
 } from 'modules/auth';
 import { togglePopup } from 'modules/popup';
+import { getProjectList } from 'modules/project';
 import LoadingIndicator from 'components/LoadingIndicator';
 import PageTemplate from 'containers/PageTemplate';
 import NewPasswordPopup from 'containers/NewPasswordPopup';
@@ -28,6 +29,7 @@ class MyPage extends Component {
     isProfileTab: true,
     onEdit: false,
     selectedFile: null,
+    projectList: [],
   }
 
   componentDidMount() {
@@ -38,6 +40,10 @@ class MyPage extends Component {
         .then((res) => {
           console.log(res);
           props.getAccount(res.data.id);
+        });
+      await props.getProjectList()
+        .then((res) => {
+          this.setState({ projectList: res.data.results });
         });
     };
 
@@ -137,7 +143,12 @@ class MyPage extends Component {
     } = this.props;
     const name = fieldValues !== undefined ? fieldValues.name : undefined;
     const phone = fieldValues !== undefined ? fieldValues.phone : undefined;
-    const { isProfileTab, isLoading, onEdit } = this.state;
+    const {
+      projectList,
+      isProfileTab,
+      isLoading,
+      onEdit,
+    } = this.state;
     const {
       handleFileInput,
       handleTabToggle,
@@ -145,9 +156,6 @@ class MyPage extends Component {
       handlePwPopup,
       onSubmit,
     } = this;
-    const teamList = [
-      'abc', 'def', 'ghi', 'jkl',
-    ];
     const logList = [
       {
         activity: '님이 ‘리뷰남기기v1.2’ 테스트 등록을 시작했습니다',
@@ -270,9 +278,9 @@ class MyPage extends Component {
                             <section className="info__teams">
                               <h2 className="info__title">Teams</h2>
                               <ul className="teams__list">
-                                {teamList.map(t => (
-                                  <li className="list__item" key={t}>
-                                    <Link to="/test">{t}</Link>
+                                {projectList.map(p => (
+                                  <li className="list__item" key={p.id}>
+                                    <Link to={`/project/${p.id}`}>{p.name}</Link>
                                   </li>
                                 ))}
                               </ul>
@@ -403,6 +411,7 @@ const mapDispatchToProps = dispatch => ({
     phone,
   )),
   togglePopup: isOpen => dispatch(togglePopup(isOpen)),
+  getProjectList: () => dispatch(getProjectList()),
 });
 
 export default connect(

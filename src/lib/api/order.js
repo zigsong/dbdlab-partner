@@ -12,6 +12,7 @@ const headers = {
 };
 
 // eslint-disable-next-line import/prefer-default-export
+export const getVoucherOrder = () => axios.get(`${baseURL}/orders/voucher/`, headers);
 export const orderVoucher = (companyName, applicantName, depositorName, phone, email, plId, amount) => axios.post(`${baseURL}/orders/voucher/`, {
   company_name: companyName,
   applicant_name: applicantName,
@@ -81,5 +82,5 @@ export const patchTestOrder = (
   tax_bill_company_name: taxCompany,
   company_registration_number: taxCompanyRegistNum,
 }, headers);
-
+export const getTestOrderList = () => axios.get(`${baseURL}/orders/test/`, headers);
 export const getTestOrder = oId => axios.get(`${baseURL}/orders/test/${oId}/`, headers);

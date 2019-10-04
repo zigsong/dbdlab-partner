@@ -12,6 +12,8 @@ import {
 } from 'modules/auth';
 import { togglePopup } from 'modules/popup';
 import { getProjectList } from 'modules/project';
+import { getVoucherOrder, getTestOrderList } from 'modules/order';
+import { getNotifications } from 'modules/notification';
 import LoadingIndicator from 'components/LoadingIndicator';
 import PageTemplate from 'containers/PageTemplate';
 import NewPasswordPopup from 'containers/NewPasswordPopup';
@@ -30,6 +32,9 @@ class MyPage extends Component {
     onEdit: false,
     selectedFile: null,
     projectList: [],
+    activityList: [],
+    voucherList: [],
+    testList: [],
   }
 
   componentDidMount() {
@@ -44,6 +49,25 @@ class MyPage extends Component {
       await props.getProjectList()
         .then((res) => {
           this.setState({ projectList: res.data.results });
+        });
+      await props.getNotifications()
+        .then(() => {
+          const { notiList } = this.props;
+
+          if (notiList.length > 10) notiList.splice(10);
+          this.setState({ activityList: notiList });
+        });
+      await props.getVoucherOrder()
+        .then(() => {
+          const { voucherList } = this.props;
+
+          this.setState({ voucherList });
+        });
+      await props.getTestOrderList()
+        .then(() => {
+          const { testList } = this.props;
+
+          this.setState({ testList });
         });
     };
 
@@ -145,6 +169,9 @@ class MyPage extends Component {
     const phone = fieldValues !== undefined ? fieldValues.phone : undefined;
     const {
       projectList,
+      activityList,
+      voucherList,
+      testList,
       isProfileTab,
       isLoading,
       onEdit,
@@ -156,36 +183,6 @@ class MyPage extends Component {
       handlePwPopup,
       onSubmit,
     } = this;
-    const logList = [
-      {
-        activity: '님이 ‘리뷰남기기v1.2’ 테스트 등록을 시작했습니다',
-        date: '2019. 7. 23. at 7:48 PM',
-      },
-      {
-        activity: '님이 ‘디비디랩’ 팀에 소속되었습니다',
-        date: '2019. 7. 23. at 7:48 PM',
-      },
-      {
-        activity: '님이 ‘더 테스터’ 프로젝트를 생성했습니다',
-        date: '2019. 7. 23. at 7:48 PM',
-      },
-      {
-        activity: '님이 ‘리뷰남기기v1.3’ 테스트 등록을 시작했습니다',
-        date: '2019. 7. 23. at 7:48 PM',
-      },
-      {
-        activity: '님이 ‘리뷰남기기v1.4’ 테스트 등록을 시작했습니다',
-        date: '2019. 7. 23. at 7:48 PM',
-      },
-      {
-        activity: '님이 ‘리뷰남기기v1.5’ 테스트 등록을 시작했습니다',
-        date: '2019. 7. 23. at 7:48 PM',
-      },
-      {
-        activity: '님이 ‘리뷰남기기v1.6’ 테스트 등록을 시작했습니다',
-        date: '2019. 7. 23. at 7:48 PM',
-      },
-    ];
 
     return (
       isLoading
@@ -288,23 +285,46 @@ class MyPage extends Component {
                             <section className="info__activity">
                               <h2 className="info__title">Activity</h2>
                               <ul className="activity__list">
-                                {logList.map(l => (
-                                  <li className="list__item" key={l.activity}>
+                                {activityList.map(a => (
+                                  <li className="list__item" key={a.timestamp}>
                                     <div className="box-item">
                                       <span className="box-image">
-                                        <img src={avatar_url} alt="프로필" />
+                                        <img
+                                          src={a.actor.avatar_url}
+                                          alt={a.actor.name !== undefined && a.actor.name !== ''
+                                            ? a.actor.name
+                                            : a.actor.email.substring(0, a.actor.email.indexOf('@'))}
+                                        />
                                       </span>
                                       <p className="box-text">
                                         <span className="text__activity">
-                                          <strong className="name">
-                                            {prevName !== undefined && prevName !== ''
-                                              ? prevName
-                                              : email.substring(0, email.indexOf('@'))
+                                          {a.verb.indexOf('{actor}') > -1
+                                            ? (
+                                              <strong className="name">
+                                                {a.actor.name !== undefined && a.actor.name !== ''
+                                                  ? a.actor.name
+                                                  : a.actor.email.substring(0, a.actor.email.indexOf('@'))
+                                                }
+                                              </strong>
+                                            )
+                                            : null
+                                          }
+                                          <span className="activity">
+                                            {a.target_content_type === '프로젝트'
+                                              ? a.verb.replace('{actor}', '').replace("'{target}'", a.target.name)
+                                              : null
                                             }
-                                          </strong>
-                                          <span className="activity">{l.activity}</span>
+                                            {a.target_content_type === '테스트'
+                                              ? a.verb.replace('{actor}', '').replace("'{target}'", a.target.title)
+                                              : null
+                                            }
+                                            {a.target_content_type === '팀'
+                                              ? a.verb.replace('{actor}', '').replace("'{target}'", a.target.name)
+                                              : null
+                                            }
+                                          </span>
                                         </span>
-                                        <span className="text__date">{l.date}</span>
+                                        <span className="text__date">{a.timestamp}</span>
                                       </p>
                                     </div>
                                   </li>
@@ -320,40 +340,32 @@ class MyPage extends Component {
                     <div className="payment__info">
                       <div className="wrapper-inner">
                         <ul className="info__list">
-                          <li className="list__item">
-                            <div className="box-payment">
-                              <span className="payment__title">단일구매</span>
-                              <strong className="payment__plan">PLAN 01</strong>
-                              <span className="payment__step">테스트 진행 중</span>
-                            </div>
-                            <div className="box-paid">
-                              <strong className="paid__total">
-                                222500
-                                <i>원</i>
-                              </strong>
-                              <span className="paid__date">
-                                <span>구매일자: </span>
-                                2019. 7. 23.
-                              </span>
-                            </div>
-                          </li>
-                          <li className="list__item">
-                            <div className="box-payment">
-                              <span className="payment__title">단일구매</span>
-                              <strong className="payment__plan">PLAN 01</strong>
-                              <span className="payment__step">테스트 진행 중</span>
-                            </div>
-                            <div className="box-paid">
-                              <strong className="paid__total">
-                                222500
-                                <i>원</i>
-                              </strong>
-                              <span className="paid__date">
-                                <span>구매일자: </span>
-                                2019. 7. 23.
-                              </span>
-                            </div>
-                          </li>
+                          {voucherList
+                            .concat(testList)
+                            .sort((a, b) => a.created_at - b.created_at)
+                            .map(p => (
+                              <li className="list__item" key={p.id}>
+                                <div className="box-payment">
+                                  <span className="payment__title">
+                                    {p.voucher_amount > 0 ? '대량구매' : '단일구매'}
+                                  </span>
+                                  <strong className="payment__plan">{p.plan.name}</strong>
+                                  <span className="payment__step">
+                                    {p.voucher_amount > 0 ? `${p.voucher_amount}개` : p.test.step}
+                                  </span>
+                                </div>
+                                <div className="box-paid">
+                                  <strong className="paid__total">
+                                    {p.ordered_price}
+                                    <i>원</i>
+                                  </strong>
+                                  <span className="paid__date">
+                                    <span>구매일자: </span>
+                                    {p.created_at}
+                                  </span>
+                                </div>
+                              </li>
+                            ))}
                         </ul>
                       </div>
                     </div>
@@ -377,6 +389,9 @@ const mapStateToProps = (state) => {
   } = state.auth.users;
   const prevName = state.auth.users.name;
   const { isOpen } = state.popup;
+  const { notiList } = state.notification;
+  const { voucherList } = state.order;
+  const { testList } = state.order;
   const initData = {
     name: prevName,
     phone: phone_number,
@@ -391,6 +406,9 @@ const mapStateToProps = (state) => {
     phone_number,
     initialValues: initData,
     isOpen,
+    notiList,
+    voucherList,
+    testList,
     fieldValues,
   });
 };
@@ -412,6 +430,9 @@ const mapDispatchToProps = dispatch => ({
   )),
   togglePopup: isOpen => dispatch(togglePopup(isOpen)),
   getProjectList: () => dispatch(getProjectList()),
+  getVoucherOrder: () => dispatch(getVoucherOrder()),
+  getTestOrderList: () => dispatch(getTestOrderList()),
+  getNotifications: () => dispatch(getNotifications()),
 });
 
 export default connect(

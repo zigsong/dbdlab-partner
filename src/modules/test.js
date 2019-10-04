@@ -163,7 +163,7 @@ export const patchTest = (
     ).catch((err) => {
       console.log(err);
       console.log(err.message);
-      console.log(err.reponse);
+      console.log(err.response);
       dispatch({
         type: PATCH_TEST_FAILURE,
         payload: err,

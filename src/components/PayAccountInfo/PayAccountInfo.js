@@ -32,7 +32,10 @@ const PayAccountInfo = (props) => {
             <span className="account__title">입금계좌</span>
             <strong className="account_info">기업은행   010-7627-3455   김인정</strong>
             <span className="account__title">입금액</span>
-            <strong className="account_info">1,500,000원</strong>
+            <strong className="account_info">
+              {voucherOrder === undefined ? testOrder.ordered_price : voucherOrder.totalPrice}
+              원
+            </strong>
           </p>
           <button type="button" className="btn__tax-invoice" onClick={() => handlePopup(true)}>세금계산서 신청하기</button>
           {voucherOrder === undefined

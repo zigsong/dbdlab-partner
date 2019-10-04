@@ -92,6 +92,7 @@ class NewTestForm extends Component {
               project_id,
               create_user_id,
               created_at,
+              is_register_required,
             } = test;
 
             getTarget(targets[0].id);
@@ -117,6 +118,7 @@ class NewTestForm extends Component {
                   project_id,
                   create_user_id,
                   created_at,
+                  is_register_required,
                 },
                 targets,
                 quests,
@@ -628,6 +630,7 @@ class NewTestForm extends Component {
       test,
     } = this.state;
     const {
+      route,
       fieldsValues,
       fieldsMeta,
       submitFailed,
@@ -639,6 +642,7 @@ class NewTestForm extends Component {
       error,
     } = this.props;
     const { goBack, handleFormRender, onSubmit } = this;
+    const { tId } = route.match.params;
     // eslint-disable-next-line no-nested-ternary
     const qId = test.quests
       ? test.quests.map(q => q.id)
@@ -862,6 +866,10 @@ class NewTestForm extends Component {
                                   || !isQuestPassed
                                 }
                                 planList={planList}
+                                testId={tId}
+                                extraValues={extras}
+                                extraInfoCategory={extraInfoCategory}
+                                isRegisterReq={fieldsValues !== undefined && fieldsValues.quest !== undefined ? fieldsValues.quest.registerRequire : '아니오'}
                               />
                             </FormSection>
                           )
@@ -879,6 +887,10 @@ class NewTestForm extends Component {
                             || !isQuestPassed
                           }
                           planList={planList}
+                          testId={tId}
+                          extraValues={extras}
+                          extraInfoCategory={extraInfoCategory}
+                          isRegisterReq={fieldsValues !== undefined && fieldsValues.quest !== undefined ? fieldsValues.quest.registerRequire : '아니오'}
                           submitErrorMsg={error}
                         />
                       </FormSection>
@@ -971,7 +983,7 @@ const mapStateToProps = (state) => {
   const registerRequire = (test !== undefined && test.is_register_required !== null)
     ? test.is_register_required : undefined;
   // eslint-disable-next-line no-nested-ternary
-  const registerValue = registerRequire !== undefined ? (registerRequire !== false ? '네 (+5,000)' : '아니오') : undefined;
+  const registerValue = registerRequire !== undefined ? (registerRequire !== false ? '네(+3,000원/명)' : '아니오') : undefined;
   const issue1qId = quests !== undefined ? quests[2].id : '';
   const issue2qId = quests !== undefined ? quests[1].id : '';
   const issue3qId = quests !== undefined ? quests[0].id : '';

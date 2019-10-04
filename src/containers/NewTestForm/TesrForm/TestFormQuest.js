@@ -10,7 +10,7 @@ const issuePurpose1Required = value => (value ? undefined : '도전과제를 통
 
 const TestFormQuest = (props) => {
   const { qId, issueCategory, isDisabled } = props;
-  const registerCategory = ['아니오', '네(+5,000)'];
+  const registerCategory = ['아니오', '네(+3,000원/명)'];
 
   return (
     <div className="field-wrapper--quest">

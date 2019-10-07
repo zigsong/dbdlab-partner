@@ -184,7 +184,7 @@ $imgUrl: '/static/images/';
 
             .name {
               display: inline-block;
-              width: calc(100% - 20px);
+              max-width: calc(100% - 20px);
               text-overflow: ellipsis;
               overflow: hidden;
             }

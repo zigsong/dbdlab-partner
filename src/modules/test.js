@@ -30,7 +30,7 @@ export const getTestList = pId => dispatch => (
       },
     ).catch((err) => {
       console.log(err);
-      console.log(err.reponse);
+      console.log(err.response);
       console.log(err.message);
       dispatch({
         type: GET_TEST_LIST_FAILURE,
@@ -54,7 +54,7 @@ export const getTest = tId => dispatch => (
       },
     ).catch((err) => {
       console.log(err);
-      console.log(err.reponse);
+      console.log(err.response);
       console.log(err.message);
       dispatch({
         type: GET_TEST_FAILURE,

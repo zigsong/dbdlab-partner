@@ -346,7 +346,7 @@ class TeamMemberList extends Component {
                       {
                         memberList.length > 0
                           ? (
-                            memberList.map((m) => {
+                            memberList.sort((a, b) => a.id - b.id).map((m) => {
                               const userName = m.name === '' ? m.email.substring(0, m.email.indexOf('@')) : m.name;
                               return (
                                 <li className="list-team__item" key={m.email}>

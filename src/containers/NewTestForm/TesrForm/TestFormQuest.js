@@ -7,6 +7,9 @@ const registerRequired = value => (value ? undefined : '필요하냐고요');
 const issue1Required = value => (value ? undefined : '도전과제는 최소 1개 이상 선택해야 합니다');
 const issueDetail1Required = value => (value ? undefined : '선택하신 사용성 이슈에 대한 상세 설명을 적어주세요');
 const issuePurpose1Required = value => (value ? undefined : '도전과제를 통해 무엇을 알고 싶으신가요?');
+const valueRegExp = value => (value && value.replace(/(^\s*)|(\s*$)/g, '').length < 1 ? '다시 한 번 확인해 주세요' : undefined);
+const valueNumberRegExp = value => (value && value.replace(/^[0-9]/, '').length < 1 ? '정확하게 입력해주세요' : undefined);
+const valueEtcRegExp = value => (value && value.replace(/^[^0-9a-zA-Z]/, '').length < 1 ? '명확하게 입력해주세요' : undefined);
 
 const TestFormQuest = (props) => {
   const { qId, issueCategory, isDisabled } = props;
@@ -44,7 +47,12 @@ const TestFormQuest = (props) => {
             type="select"
             defaultValue="사용성 이슈 선택"
             component={FormSelect}
-            validate={issue1Required}
+            validate={[
+              issue1Required,
+              valueRegExp,
+              valueNumberRegExp,
+              valueEtcRegExp,
+            ]}
             disabled={isDisabled}
           >
             <option value="사용성 이슈 선택" disabled>사용성 이슈 선택</option>
@@ -58,7 +66,12 @@ const TestFormQuest = (props) => {
             label={`quest.issueDetail.q${qId[2]}`}
             placeholder="선택한 이슈를 상세하게 적어주세요"
             component={FormInput}
-            validate={issueDetail1Required}
+            validate={[
+              issueDetail1Required,
+              valueRegExp,
+              valueNumberRegExp,
+              valueEtcRegExp,
+            ]}
             disabled={isDisabled}
           />
         </div>
@@ -126,7 +139,12 @@ const TestFormQuest = (props) => {
             label={`quest.issuePurpose.q${qId[2]}`}
             placeholder="텍스트 입력"
             component={FormInput}
-            validate={issuePurpose1Required}
+            validate={[
+              issuePurpose1Required,
+              valueRegExp,
+              valueNumberRegExp,
+              valueEtcRegExp,
+            ]}
             disabled={isDisabled}
           />
         </div>

@@ -15,6 +15,9 @@ const clientContactRegexp = value => (value && !/^(01[016789]{1}|02|0[3-9]{1}[0-
 const emailRequired = value => (value ? undefined : '이메일을 입력해주세요');
 const emailRegexp = value => (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
   ? '이메일 형식을 다시 확인해주세요' : undefined);
+const valueRegExp = value => (value && value.replace(/(^\s*)|(\s*$)/g, '').length < 1 ? '다시 한 번 확인해 주세요' : undefined);
+const valueNumberRegExp = value => (value && value.replace(/^[0-9]/, '').length < 1 ? '정확하게 입력해주세요' : undefined);
+const valueEtcRegExp = value => (value && value.replace(/^[^0-9a-zA-Z]/, '').length < 1 ? '명확하게 입력해주세요' : undefined);
 
 const TestFormDefault = (props) => {
   const serviceStatus = [
@@ -109,7 +112,12 @@ const TestFormDefault = (props) => {
             placeholder="서비스 URL 또는 어플리케이션 명 입력"
             component={FormInput}
             disabled={isDisabled}
-            validate={[seriveInfoRequired]}
+            validate={[
+              seriveInfoRequired,
+              valueRegExp,
+              valueNumberRegExp,
+              valueEtcRegExp,
+            ]}
           />
         </div>
         <div className="field-column">
@@ -188,7 +196,12 @@ const TestFormDefault = (props) => {
             placeholder="텍스트 입력"
             component={FormInput}
             disabled={isDisabled}
-            validate={clientNameRequired}
+            validate={[
+              clientNameRequired,
+              valueRegExp,
+              valueNumberRegExp,
+              valueEtcRegExp,
+            ]}
           />
         </div>
         <div className="field-halfblock">

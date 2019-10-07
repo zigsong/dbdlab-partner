@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import FormInput from 'components/FormInput';
@@ -6,7 +7,7 @@ import { reduxForm, Field, getFormValues } from 'redux-form';
 import LoadingIndicator from 'components/LoadingIndicator';
 import ToastAlert from 'components/ToastAlert';
 import { getAuthSelf } from 'modules/auth';
-import { patchProject, inviteProject } from 'modules/project';
+import { getProject, patchProject, inviteProject } from 'modules/project';
 import { getCategoryItem } from 'modules/category';
 import './TeamMemberList.scss';
 
@@ -90,8 +91,12 @@ class TeamMemberList extends Component {
 
   // eslint-disable-next-line consistent-return
   onSend = (e) => {
-    // eslint-disable-next-line no-shadow
-    const { fieldValues, project, inviteProject } = this.props;
+    const {
+      fieldValues,
+      project,
+      getProject,
+      inviteProject,
+    } = this.props;
     const { inputArr } = this.state;
     const emailList = inputArr.map(a => fieldValues[`inviteEmail${a}`]);
 
@@ -135,6 +140,9 @@ class TeamMemberList extends Component {
                 isToastShow: !pvState.isToastShow,
               }));
             }, 2000);
+            setTimeout(() => {
+              getProject(project.id);
+            }, 2200);
           });
         }
       }).catch((err) => {
@@ -485,6 +493,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
   getAuthSelf: () => dispatch(getAuthSelf()),
   getCategoryItem: cId => dispatch(getCategoryItem(cId)),
+  getProject: pId => dispatch(getProject(pId)),
   patchProject: (
     id,
     service,

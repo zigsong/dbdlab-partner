@@ -931,6 +931,10 @@ $imgUrl: '/static/images/';
             background: transparent url('#{$imgUrl}common/icons/btn_submit--white.svg') no-repeat center / 100%;
           }
         }
+
+        &--fail {
+          @extend .form-btn-wrapper--pass;
+        }
       }
 
       &--fail {

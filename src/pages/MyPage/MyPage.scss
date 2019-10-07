@@ -412,6 +412,9 @@ $imgUrl: '/static/images';
       }
 
       .box-payment {
+        padding: 0;
+        text-align: left;
+
         .payment__title {
           display: block;
           font-size: 12px;
@@ -430,6 +433,24 @@ $imgUrl: '/static/images';
         .payment__step {
           display: inline-block;
           font-size: 12px;
+          font-weight: 500;
+
+          &--apply,
+          &--register,
+          &--payment {
+            @extend .payment__step;
+            color: $black;
+          }
+
+          &--testing {
+            @extend .payment__step;
+            color: $red;
+          }
+
+          &--completed {
+            @extend .payment__step;
+            color: $blue;
+          }
         }
       }
 

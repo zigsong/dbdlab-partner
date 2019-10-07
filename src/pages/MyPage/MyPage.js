@@ -87,6 +87,49 @@ class MyPage extends Component {
       });
   }
 
+  getDate = (value) => {
+    const getValue = new Date(value);
+    const day = getValue.getDate();
+    const month = getValue.getMonth() + 1;
+    const year = getValue.getFullYear();
+    const date = `${year}. ${month} .${day}`;
+
+    return date;
+  };
+
+  setPaymentStep = (voucherAmount, testStep) => {
+    let text;
+    if (voucherAmount > 0) {
+      text = `${voucherAmount}개`;
+    } else {
+      switch (testStep) {
+        case undefined:
+          text = '';
+          break;
+        case 'APPLY':
+          text = '테스트 작성중';
+          break;
+        case 'REGISTER':
+          text = '신청 대기중';
+          break;
+        case 'PAYMENT':
+          text = '입금 대기중';
+          break;
+        case 'TESTING':
+          text = '테스트 진행중';
+          break;
+        case 'COMPLETED':
+          text = '테스트 완료';
+          break;
+        default:
+          text = '테스트 작성중';
+          break;
+      }
+    }
+
+    return text;
+  }
+
   // eslint-disable-next-line consistent-return
   handleFileInput = (e) => {
     const { props } = this;
@@ -177,6 +220,8 @@ class MyPage extends Component {
       onEdit,
     } = this.state;
     const {
+      getDate,
+      setPaymentStep,
       handleFileInput,
       handleTabToggle,
       handleEdit,
@@ -324,7 +369,7 @@ class MyPage extends Component {
                                             }
                                           </span>
                                         </span>
-                                        <span className="text__date">{a.timestamp}</span>
+                                        <span className="text__date">{getDate(a.timestamp)}</span>
                                       </p>
                                     </div>
                                   </li>
@@ -344,16 +389,19 @@ class MyPage extends Component {
                             .concat(testList)
                             .sort((a, b) => a.created_at - b.created_at)
                             .map(p => (
-                              <li className="list__item" key={p.id}>
-                                <div className="box-payment">
+                              <li className="list__item" key={p.code}>
+                                <button type="button" className="box-payment">
                                   <span className="payment__title">
                                     {p.voucher_amount > 0 ? '대량구매' : '단일구매'}
                                   </span>
                                   <strong className="payment__plan">{p.plan.name}</strong>
-                                  <span className="payment__step">
-                                    {p.voucher_amount > 0 ? `${p.voucher_amount}개` : p.test.step}
+                                  <span className={`payment__step${p.test === undefined ? '' : `--${p.test.step.toLowerCase()}`}`}>
+                                    {setPaymentStep(
+                                      p.voucher_amount,
+                                      p.test !== undefined ? p.test.step : undefined,
+                                    )}
                                   </span>
-                                </div>
+                                </button>
                                 <div className="box-paid">
                                   <strong className="paid__total">
                                     {p.ordered_price}
@@ -361,7 +409,7 @@ class MyPage extends Component {
                                   </strong>
                                   <span className="paid__date">
                                     <span>구매일자: </span>
-                                    {p.created_at}
+                                    {getDate(p.created_at)}
                                   </span>
                                 </div>
                               </li>

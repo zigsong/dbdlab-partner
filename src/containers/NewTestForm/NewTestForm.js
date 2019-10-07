@@ -278,7 +278,7 @@ class NewTestForm extends Component {
       serviceDesc,
       funnel,
     } = values.default;
-
+    const titleReg = title.replace(/(^\s*)|(\s*$)/g, '');
     const hasDefaultPassed = () => {
       const hasDefaultValue = Object.keys(values.default).length > 0;
       return !!hasDefaultValue;
@@ -304,7 +304,7 @@ class NewTestForm extends Component {
         await patchTest(
           tId,
           pId,
-          title,
+          titleReg,
           clientName,
           clientContact,
           media2,
@@ -410,7 +410,7 @@ class NewTestForm extends Component {
           await patchTest(
             tId,
             pId,
-            title,
+            titleReg,
             clientName,
             clientContact,
             media2,
@@ -525,7 +525,7 @@ class NewTestForm extends Component {
     } else {
       await postTest(
         pId,
-        title,
+        titleReg,
         clientName,
         clientContact,
         media2,
@@ -650,6 +650,7 @@ class NewTestForm extends Component {
         ? Object.keys(fieldsValues.quest.issue).map(q => q.slice(1)).sort((a, b) => b - a)
         : [1, 2, 3]);
     const isNoNamed = fieldsValues === undefined ? true : (fieldsValues.title === undefined || fieldsValues.title === '');
+    const isSpacedTitle = fieldsValues === undefined ? true : (fieldsValues.title === undefined || fieldsValues.title.replace(/(^\s*)|(\s*$)/g, '').length < 1);
     const categoryListArr = Object.keys(categoryList).length > 0
       ? Object.keys(categoryList).map(c => categoryList[c].category_items)
       : undefined;
@@ -779,7 +780,8 @@ class NewTestForm extends Component {
               ? (
                 <FormSection name="default">
                   <TestFormDefault
-                    isDisabled={isNoNamed || (isDefaultPassed
+                    isDisabled={isNoNamed || isSpacedTitle
+                      || (isDefaultPassed
                       && isTargetPassed
                       && isQuestPassed
                       && isPayPassed)
@@ -802,7 +804,8 @@ class NewTestForm extends Component {
                   { isDefaultPassed ? null : <DisabledLayer />}
                   <FormSection name="target">
                     <TestFormTarget
-                      isDisabled={isNoNamed || (isDefaultPassed
+                      isDisabled={isNoNamed || isSpacedTitle
+                          || (isDefaultPassed
                           && isTargetPassed
                           && isQuestPassed
                           && isPayPassed)
@@ -822,7 +825,8 @@ class NewTestForm extends Component {
                   { isTargetPassed ? null : <DisabledLayer />}
                   <FormSection name="quest">
                     <TestFormQuest
-                      isDisabled={isNoNamed || (isDefaultPassed
+                      isDisabled={isNoNamed || isSpacedTitle
+                        || (isDefaultPassed
                         && isTargetPassed
                         && isQuestPassed
                         && isPayPassed)
@@ -858,7 +862,8 @@ class NewTestForm extends Component {
                           : (
                             <FormSection name="pay">
                               <TestFormPay
-                                isDisabled={isNoNamed || (isDefaultPassed
+                                isDisabled={isNoNamed || isSpacedTitle
+                                  || (isDefaultPassed
                                   && isTargetPassed
                                   && isQuestPassed
                                   && isPayPassed)
@@ -879,7 +884,8 @@ class NewTestForm extends Component {
                     : (
                       <FormSection name="pay">
                         <TestFormPay
-                          isDisabled={isNoNamed || (isDefaultPassed
+                          isDisabled={isNoNamed || isSpacedTitle
+                            || (isDefaultPassed
                             && isTargetPassed
                             && isQuestPassed
                             && isPayPassed)
@@ -909,7 +915,7 @@ class NewTestForm extends Component {
             ? null
             : (
               <RightSidebar
-                isDisabled={isNoNamed}
+                isDisabled={isNoNamed || isSpacedTitle}
                 isDefaultRendered={isDefaultRendered}
                 isTargetRendered={isTargetRendered}
                 isQuestRendered={isQuestRendered}
@@ -929,10 +935,10 @@ class NewTestForm extends Component {
           }
           {/* 생성된 테스트 페이지 수정 시에도 안 보이게 하려면 아래 주석 삭제 */}
           {/* { isNoNamed && tId === undefined */}
-          { isNoNamed
+          { isNoNamed || isSpacedTitle
             ? (
               <div className="layer--guide">
-                <i className={`layer__bubble${isNoNamed ? '--active' : ''}`}>테스트명을 입력해주세요</i>
+                <i className={`layer__bubble${isNoNamed || isSpacedTitle ? '--active' : ''}`}>테스트명을 입력해주세요</i>
               </div>
             )
             : null

@@ -1,6 +1,7 @@
 import React from 'react';
 import FormInput from 'components/FormInput';
 import FormSelect from 'components/FormSelect';
+import FormTextArea from 'components/FormTextArea';
 import { Field } from 'redux-form';
 
 const registerRequired = value => (value ? undefined : '필요하냐고요');
@@ -138,7 +139,7 @@ const TestFormQuest = (props) => {
             type="text"
             label={`quest.issuePurpose.q${qId[2]}`}
             placeholder="텍스트 입력"
-            component={FormInput}
+            component={FormTextArea}
             validate={[
               issuePurpose1Required,
               valueRegExp,
@@ -157,7 +158,7 @@ const TestFormQuest = (props) => {
             type="text"
             label={`quest.issuePurpose.q${qId[1]}`}
             placeholder="텍스트 입력"
-            component={FormInput}
+            component={FormTextArea}
             disabled={isDisabled}
           />
         </div>
@@ -170,7 +171,7 @@ const TestFormQuest = (props) => {
             type="text"
             label={`quest.issuePurpose.q${qId[0]}`}
             placeholder="텍스트 입력"
-            component={FormInput}
+            component={FormTextArea}
             disabled={isDisabled}
           />
         </div>

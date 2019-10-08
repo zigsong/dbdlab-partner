@@ -1,10 +1,11 @@
 /* eslint-disable jsx-a11y/label-has-for */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
+import { connect } from 'react-redux';
 import FormInput from 'components/FormInput';
 import FormSelect from 'components/FormSelect';
 import Checkbox from 'components/Checkbox';
-import { Field } from 'redux-form';
+import { Field, blur } from 'redux-form';
 
 const mediaRequired = value => (value ? undefined : '카테고리를 선택해주세요');
 const seriveInfoRequired = value => (value ? undefined : 'URL 또는 어플리케이션 명을 입력해주세요');
@@ -56,6 +57,15 @@ const TestFormDefault = (props) => {
         {hasError && <span className="msg--error">{meta.error}</span>}
       </>
     );
+  };
+
+  const handleContactValue = (e, newValue, preValue, name) => {
+    const { dispatch } = props;
+    e.preventDefault();
+    if (newValue && newValue.indexOf('-') > 0) {
+      const replaceTxt = newValue.replace(/-/g, '');
+      dispatch(blur('testForm', name, replaceTxt));
+    }
   };
 
   const {
@@ -216,6 +226,9 @@ const TestFormDefault = (props) => {
             component={FormInput}
             isContact
             disabled={isDisabled}
+            onBlur={
+              (e, newValue, preValue, name) => handleContactValue(e, newValue, preValue, name)
+            }
             validate={[clientContactRequired, clientContactRegexp]}
           />
         </div>
@@ -264,4 +277,4 @@ const TestFormDefault = (props) => {
   );
 };
 
-export default TestFormDefault;
+export default connect()(TestFormDefault);

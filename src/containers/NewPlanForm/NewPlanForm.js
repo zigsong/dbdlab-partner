@@ -357,20 +357,6 @@ class NewPlanForm extends Component {
                       </div>
                       <div className="field">
                         <span className="field__title">
-                          <strong className="title">시리얼 넘버 받을 이메일*</strong>
-                        </span>
-                        <Field
-                          name="email"
-                          type="email"
-                          label="email"
-                          placeholder="텍스트 입력"
-                          component={FormInput}
-                          validate={[emailRequired, emailRegexp]}
-                          disabled={isDisabled}
-                        />
-                      </div>
-                      <div className="field">
-                        <span className="field__title">
                           <strong className="title">연락처*</strong>
                         </span>
                         <Field
@@ -380,6 +366,20 @@ class NewPlanForm extends Component {
                           placeholder="‘-’ 제외하고 입력"
                           component={FormInput}
                           validate={phoneRequired}
+                          disabled={isDisabled}
+                        />
+                      </div>
+                      <div className="field">
+                        <span className="field__title">
+                          <strong className="title">시리얼 넘버 받을 이메일*</strong>
+                        </span>
+                        <Field
+                          name="email"
+                          type="email"
+                          label="email"
+                          placeholder="텍스트 입력"
+                          component={FormInput}
+                          validate={[emailRequired, emailRegexp]}
                           disabled={isDisabled}
                         />
                       </div>

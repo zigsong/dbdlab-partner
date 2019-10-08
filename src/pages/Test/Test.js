@@ -114,22 +114,22 @@ class Test extends Component {
       {
         title: 'STEP1. 신청',
         desc: '테스트를 신청해주시면,\n담당 매니저가 배정됩니다.',
-        state: 'apply',
+        state: ['apply'],
       },
       {
         title: 'STEP2. 등록',
         desc: '담당 매니저가 배정되면,\n테스트 등록을 도와드립니다.',
-        state: 'register',
+        state: ['register'],
       },
       {
         title: 'STEP3. 결제',
         desc: '등록 후, 결제가 완료되면\n바로 테스트가 진행됩니다.',
-        state: 'payment',
+        state: ['payment'],
       },
       {
         title: 'STEP4. 진행 및 완료',
         desc: '테스트는 4-5일 진행되며,\n이후 리포트가 제공됩니다.',
-        state: 'testing',
+        state: ['testing', 'completed'],
       },
     ];
     const {
@@ -147,7 +147,6 @@ class Test extends Component {
     const { handleTabToggle, handleNewTestForm } = this;
     const { pId } = match.params;
     const hasTestList = Object.keys(testList).length > 0;
-    console.log(testList);
     const {
       name,
       company_name,
@@ -196,7 +195,7 @@ class Test extends Component {
                                 <ul className="desc__step-list">
                                   { step.map(s => (
                                     <li
-                                      className={`list__item--${s.state}${s.state === 'apply' ? '--active' : ''}`}
+                                      className={`list__item--${s.state[0]}${s.state[0] === 'apply' ? '--active' : ''}`}
                                       key={s.title}
                                     >
                                       <h2 className="item__title">{s.title}</h2>
@@ -207,7 +206,7 @@ class Test extends Component {
                                             <br />
                                           </React.Fragment>
                                         )) }
-                                        { s.state === 'apply'
+                                        { s.state[0] === 'apply'
                                           ? <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
                                           : null }
                                       </p>
@@ -215,7 +214,7 @@ class Test extends Component {
                                         { Object.keys(testList).map((t) => {
                                           const tStep = testList[t].step.toLowerCase();
                                           return (
-                                            s.state === tStep
+                                            s.state.indexOf(tStep) > -1
                                               ? (
                                                 <React.Fragment key={t}>
                                                   <TestCard
@@ -226,7 +225,7 @@ class Test extends Component {
                                                     staff={testList[t].staff}
                                                     createDate={testList[t].created_at}
                                                   />
-                                                  { s.state === 'testing'
+                                                  { tStep === 'completed'
                                                     ? <Link to="/" className="btn-start--blue">결과 리포트 확인하기</Link>
                                                     : null }
                                                 </React.Fragment>

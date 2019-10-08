@@ -6,37 +6,62 @@ import FormInput from 'components/FormInput';
 import {
   Field, formValueSelector, getFormMeta,
 } from 'redux-form';
+import { getTestPrice } from 'modules/test';
+import { getPlanList } from 'modules/plan';
 
 const planRequired = value => (value ? undefined : 'Plan을 선택해 주세요:)');
 
 class TestFormPay extends Component {
   state = {
+    planList: [],
     planPrice: 0,
     targetPrice: 0,
     registerPrice: 0,
   }
 
   componentDidMount() {
-    let planPriceValue = 0;
-    const { planList, planValue } = this.props;
+    const {
+      testId,
+      planValue,
+      getTestPrice,
+      getPlanList,
+    } = this.props;
+    const { planList } = this.state;
+    getPlanList()
+      .then((res) => {
+        console.log(res);
+        this.setState({
+          planList: res.data.results,
+        });
+      })
+      .then(() => {
+        const getPlanPriceValue = () => {
+          if (planValue === undefined
+              || planList === undefined
+              || planList === []
+              || planList.length < 1) {
+            console.log(planValue);
+            this.getExtraPrice();
+            this.getRegisterPrice();
+          } else {
+            console.log(planValue);
+            getTestPrice(testId, planValue)
+              .then((res) => {
+                console.log(res);
+                this.setState({
+                  planPrice: res.data.plan_price,
+                  targetPrice: res.data.target_extra_price,
+                });
+              });
+            // this.setState({ planPrice: planList.find(p => p.name === planValue).price_amount });
+          }
+        };
+    
+        getPlanPriceValue();
+      });
     console.log(planList);
-    const getPlanPriceValue = () => {
-      if (planList === undefined || planList === [] || planList.length === 0) {
-        planPriceValue = 0;
-      } else if (planValue === undefined) {
-        planPriceValue = 0;
-      } else {
-        planPriceValue = planList.find(p => p.name === planValue).price_amount;
-      }
-      console.log(planPriceValue);
-
-      return planPriceValue;
-    };
-
-    getPlanPriceValue();
-    this.getExtraPrice();
-    this.getRegisterPrice();
-    this.setState({ planPrice: planPriceValue });
+    // this.getExtraPrice();
+    // this.getRegisterPrice();
   }
 
   componentDidUpdate(prevProps) {
@@ -70,7 +95,7 @@ class TestFormPay extends Component {
   getRegisterPrice = () => {
     const { isRegisterReq } = this.props;
 
-    if (isRegisterReq !== '아니오') this.setState({ registerPrice: 3000 * 15 });
+    if (isRegisterReq !== '아니오' && isRegisterReq !== undefined) this.setState({ registerPrice: 3000 * 15 });
   }
 
   handleInputFocus = () => {
@@ -82,8 +107,8 @@ class TestFormPay extends Component {
   };
 
   FormRadio = (valueProps) => {
-    const { planList, isDisabled } = this.props;
-    const { input, meta } = valueProps;
+    const { isDisabled } = this.props;
+    const { input, meta, planList } = valueProps;
     const hasError = meta.touched && meta.error;
 
     return (
@@ -114,7 +139,12 @@ class TestFormPay extends Component {
 
   render() {
     const { couponValue, isDisabled, submitErrorMsg } = this.props;
-    const { planPrice, targetPrice, registerPrice } = this.state;
+    const {
+      planList,
+      planPrice,
+      targetPrice,
+      registerPrice,
+    } = this.state;
     const { handleInputFocus, FormRadio } = this;
     const totalPrice = parseInt(planPrice, 10)
       + parseInt(targetPrice, 0)
@@ -162,6 +192,7 @@ class TestFormPay extends Component {
           {/* eslint-disable-next-line jsx-a11y/label-has-for */}
           <label htmlFor="pay.plan">
             <Field
+              planList={planList}
               name="plan"
               component={FormRadio}
               validate={planRequired}
@@ -284,8 +315,16 @@ const mapStateToProps = state => ({
   couponValue: selector(state, 'pay.coupon'),
   planValue: selector(state, 'pay.plan'),
   fields: getFormMeta('testForm')(state),
+  testPrice: state.test.testPrice,
+  planList: state.plan.planList,
+});
+
+const mapDispatchToProps = dispatch => ({
+  getTestPrice: (tId, pName) => dispatch(getTestPrice(tId, pName)),
+  getPlanList: () => dispatch(getPlanList()),
 });
 
 export default connect(
   mapStateToProps,
+  mapDispatchToProps,
 )(TestFormPay);

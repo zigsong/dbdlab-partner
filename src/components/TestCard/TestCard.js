@@ -3,7 +3,18 @@ import { Link } from 'react-router-dom';
 import './TestCard.scss';
 
 const TestCard = (props) => {
-  const setStepState = (step, manager) => {
+  const setStepState = (step, staff) => {
+    const setManagerName = () => {
+      let name;
+      if (staff !== null) {
+        name = staff.name !== '' ? staff.name : `${staff.email.substring(0, staff.email.indexOf('@'))}매니저`;
+      } else {
+        name = '매니저 배정중';
+      }
+
+      return name;
+    };
+
     switch (step) {
       case 'apply':
         return (
@@ -12,7 +23,7 @@ const TestCard = (props) => {
       case 'register':
         return (
           <span className="test__state--on">
-            {manager !== null ? `${manager}매니저` : '매니저 배정중' }
+            {setManagerName()}
           </span>
         );
       case 'payment':
@@ -20,7 +31,7 @@ const TestCard = (props) => {
       case 'completed':
         return (
           <span className="test__state--off">
-            {manager !== null ? `${manager}매니저` : '매니저 배정중' }
+            {setManagerName()}
           </span>
         );
       default:

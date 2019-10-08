@@ -400,90 +400,93 @@ class NewTestForm extends Component {
             });
           });
       } else if (isQuestRendered && hasQuestPassed) {
-        const qId = test.quests.map(q => q.id);
-        const {
-          registerRequire, issue, issueDetail, issuePurpose,
-        } = values.quest;
-        const registerValue = registerRequire !== '아니오';
+        const submitCheck = window.confirm('테스트를 등록하시겠어요?');
+        if (submitCheck) {
+          const qId = test.quests.map(q => q.id);
+          const {
+            registerRequire, issue, issueDetail, issuePurpose,
+          } = values.quest;
+          const registerValue = registerRequire !== '아니오';
 
-        if (registerRequire) {
-          await patchTest(
-            tId,
-            pId,
-            titleReg,
-            clientName,
-            clientContact,
-            media2,
-            email,
-            media1,
-            serviceFormat,
-            serviceInfo,
-            serviceCategory,
-            serviceStatus,
-            serviceDesc,
-            funnel,
-            registerValue,
-          );
-        }
+          if (registerRequire) {
+            await patchTest(
+              tId,
+              pId,
+              titleReg,
+              clientName,
+              clientContact,
+              media2,
+              email,
+              media1,
+              serviceFormat,
+              serviceInfo,
+              serviceCategory,
+              serviceStatus,
+              serviceDesc,
+              funnel,
+              registerValue,
+            );
+          }
 
-        if (issue[`q${qId[0]}`]) {
-          await patchQuest(
-            qId[0],
-            tId,
-            issue[`q${qId[0]}`],
-            issueDetail[`q${qId[0]}`],
-            issuePurpose[`q${qId[0]}`],
-          )
-            .then(() => { getTest(tId); })
-            .then(() => {
-              this.setState({
-                isQuestRendered: false,
-                isQuestPassed: true,
-                isPayRendered: true,
+          if (issue[`q${qId[0]}`]) {
+            await patchQuest(
+              qId[0],
+              tId,
+              issue[`q${qId[0]}`],
+              issueDetail[`q${qId[0]}`],
+              issuePurpose[`q${qId[0]}`],
+            )
+              .then(() => { getTest(tId); })
+              .then(() => {
+                this.setState({
+                  isQuestRendered: false,
+                  isQuestPassed: true,
+                  isPayRendered: true,
+                });
+              }).catch((err) => {
+                console.log(err);
               });
-            }).catch((err) => {
-              console.log(err);
-            });
-        }
+          }
 
-        if (issue[`q${qId[1]}`]) {
-          await patchQuest(
-            qId[1],
-            tId,
-            issue[`q${qId[1]}`],
-            issueDetail[`q${qId[1]}`],
-            issuePurpose[`q${qId[1]}`],
-          )
-            .then(() => { getTest(tId); })
-            .then(() => {
-              this.setState({
-                isQuestRendered: false,
-                isQuestPassed: true,
-                isPayRendered: true,
+          if (issue[`q${qId[1]}`]) {
+            await patchQuest(
+              qId[1],
+              tId,
+              issue[`q${qId[1]}`],
+              issueDetail[`q${qId[1]}`],
+              issuePurpose[`q${qId[1]}`],
+            )
+              .then(() => { getTest(tId); })
+              .then(() => {
+                this.setState({
+                  isQuestRendered: false,
+                  isQuestPassed: true,
+                  isPayRendered: true,
+                });
+              }).catch((err) => {
+                console.log(err);
               });
-            }).catch((err) => {
-              console.log(err);
-            });
-        }
+          }
 
-        if (issue[`q${qId[2]}`]) {
-          await patchQuest(
-            qId[2],
-            tId,
-            issue[`q${qId[2]}`],
-            issueDetail[`q${qId[2]}`],
-            issuePurpose[`q${qId[2]}`],
-          )
-            .then(() => { getTest(tId); })
-            .then(() => {
-              this.setState({
-                isQuestRendered: false,
-                isQuestPassed: true,
-                isPayRendered: true,
+          if (issue[`q${qId[2]}`]) {
+            await patchQuest(
+              qId[2],
+              tId,
+              issue[`q${qId[2]}`],
+              issueDetail[`q${qId[2]}`],
+              issuePurpose[`q${qId[2]}`],
+            )
+              .then(() => { getTest(tId); })
+              .then(() => {
+                this.setState({
+                  isQuestRendered: false,
+                  isQuestPassed: true,
+                  isPayRendered: true,
+                });
+              }).catch((err) => {
+                console.log(err);
               });
-            }).catch((err) => {
-              console.log(err);
-            });
+          }
         }
       } else if (isPayRendered && hasPayPassed) {
         const selectedPlan = planList.find(p => p.name === values.pay.plan);
@@ -540,6 +543,10 @@ class NewTestForm extends Component {
       )
         .then((res) => {
           history.push(`/project/${match.params.pId}/test/${res.data.id}`);
+
+          this.setState({
+            test: { default: { step: res.data.step } },
+          });
 
           if (hasDefaultPassed) {
             this.setState({
@@ -643,6 +650,8 @@ class NewTestForm extends Component {
     } = this.props;
     const { goBack, handleFormRender, onSubmit } = this;
     const { tId } = route.match.params;
+    const step = test.default !== undefined && Object.keys(test.default).length > 0
+      ? test.default.step.toLowerCase() : undefined;
     // eslint-disable-next-line no-nested-ternary
     const qId = test.quests
       ? test.quests.map(q => q.id)
@@ -734,11 +743,24 @@ class NewTestForm extends Component {
                           || isAllPassed
                           || isAllRendered
                           ? (
-                            <ol className="nav-sub">
-                              <li className={`sub__item${hasIssue1Value ? '--active' : ''}`}>{n.subnav[0]}</li>
-                              <li className={`sub__item${hasIssue2Value ? '--active' : ''}`}>{n.subnav[1]}</li>
-                              <li className={`sub__item${hasIssue3Value ? '--active' : ''}`}>{n.subnav[2]}</li>
-                            </ol>
+                            <>
+                              {hasIssue1Value || hasIssue2Value || hasIssue3Value
+                                ? (
+                                  <ol className="nav-sub">
+                                    <li className={`sub__item${hasIssue1Value ? '--active' : ''}`}>{n.subnav[0]}</li>
+                                    <li className={`sub__item${hasIssue2Value ? '--active' : ''}`}>{n.subnav[1]}</li>
+                                    <li className={`sub__item${hasIssue3Value ? '--active' : ''}`}>{n.subnav[2]}</li>
+                                  </ol>
+                                )
+                                : (
+                                  <div className="item-info">
+                                    무엇을
+                                    <br />
+                                    테스트할까요?
+                                  </div>
+                                )
+                              }
+                            </>
                           )
                           : (
                             <div className="item-info">
@@ -786,6 +808,10 @@ class NewTestForm extends Component {
                       && isQuestPassed
                       && isPayPassed)
                       || isAllPassed
+                      || (isQuestPassed && step !== 'payment')
+                      || step === 'payment'
+                      || step === 'testing'
+                      || step === 'completed'
                     }
                     test={test}
                     media1Category={media1Category}
@@ -810,6 +836,10 @@ class NewTestForm extends Component {
                           && isQuestPassed
                           && isPayPassed)
                           || isAllPassed
+                          || (isQuestPassed && step !== 'payment')
+                          || step === 'payment'
+                          || step === 'testing'
+                          || step === 'completed'
                         }
                       extraInfoCategory={extraInfoCategory}
                       extraValue={extras}
@@ -831,6 +861,10 @@ class NewTestForm extends Component {
                         && isQuestPassed
                         && isPayPassed)
                         || isAllPassed
+                        || (isQuestPassed && step !== 'payment')
+                        || step === 'payment'
+                        || step === 'testing'
+                        || step === 'completed'
                       }
                       qId={qId}
                       issueCategory={issueCategory}
@@ -869,8 +903,10 @@ class NewTestForm extends Component {
                                   && isPayPassed)
                                   || isAllPassed
                                   || !isQuestPassed
+                                  || step === 'testing'
+                                  || step === 'completed'
                                 }
-                                planList={planList}
+                                // planList={planList}
                                 testId={tId}
                                 extraValues={extras}
                                 extraInfoCategory={extraInfoCategory}
@@ -890,9 +926,12 @@ class NewTestForm extends Component {
                             && isQuestPassed
                             && isPayPassed)
                             || isAllPassed
-                            || !isQuestPassed
+                            || (isQuestPassed && step !== 'payment')
+                            || step === 'apply'
+                            || step === 'testing'
+                            || step === 'completed'
                           }
-                          planList={planList}
+                          // planList={planList}
                           testId={tId}
                           extraValues={extras}
                           extraInfoCategory={extraInfoCategory}
@@ -915,6 +954,7 @@ class NewTestForm extends Component {
             ? null
             : (
               <RightSidebar
+                step={step}
                 isDisabled={isNoNamed || isSpacedTitle}
                 isDefaultRendered={isDefaultRendered}
                 isTargetRendered={isTargetRendered}

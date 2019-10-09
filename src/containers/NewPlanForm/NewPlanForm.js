@@ -97,13 +97,13 @@ class NewPlanForm extends Component {
   };
 
   handleRadioValue = (e, idx) => {
-    const { dispatch } = this.props;
+    const { change } = this.props;
     const initValue = '';
 
     if (e.type === 'focus') {
       console.log('Focus!');
-      dispatch(change('planForm', 'plan', `PLAN 0${idx + 1}`));
-      dispatch(change('planForm', `plan0${!idx + 1}Amount`, initValue));
+      change('planForm', 'plan', `PLAN 0${idx + 1}`);
+      change('planForm', `plan0${!idx + 1}Amount`, initValue);
     }
   };
 
@@ -143,6 +143,11 @@ class NewPlanForm extends Component {
     const { change, sameName, applicantName } = this.props;
     if (sameName) change('depositorName', applicantName);
   };
+
+  handleCheckboxValue = () => {
+    const { change } = this.props;
+    change('sameName', false);
+  }
 
   handlePrice = (e) => {
     const { value, name } = e.target;
@@ -282,9 +287,11 @@ class NewPlanForm extends Component {
       handleRadioValue,
       handleNameValue,
       handleInputChange,
+      handleCheckboxValue,
       handlePrice,
       getExpiredDate,
     } = this;
+    const sameNameValue = sameName !== undefined ? sameName : false;
 
     return (
       <PageTemplate>
@@ -339,6 +346,7 @@ class NewPlanForm extends Component {
                           <Field
                             name="sameName"
                             label="동일합니다"
+                            isChecked={sameNameValue}
                             component={Checkbox}
                             onChange={() => handleNameValue()}
                             disabled={isDisabled}
@@ -350,6 +358,7 @@ class NewPlanForm extends Component {
                           label="depositorName"
                           placeholder="텍스트 입력"
                           component={FormInput}
+                          onChange={() => handleCheckboxValue()}
                           validate={depositorNameRequired}
                           value={sameName ? applicantName : undefined}
                           disabled={isDisabled}
@@ -478,6 +487,7 @@ const getPlanValues = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  change: () => dispatch(change()),
   getPlanList: () => dispatch(getPlanList()),
   getPlanPrice: (pName, cNum) => dispatch(getPlanPrice(pName, cNum)),
   orderVoucher: (

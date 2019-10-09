@@ -79,7 +79,7 @@ class ProjectForm extends Component {
               name="same"
               component={Checkbox}
               label="서비스명과 동일합니다"
-              checked={same}
+              isChecked={same}
               onChange={() => this.handleInputValue()}
             />
           </span>

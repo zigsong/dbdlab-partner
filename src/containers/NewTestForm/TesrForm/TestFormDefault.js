@@ -269,6 +269,7 @@ const TestFormDefault = (props) => {
             label="다음에도 이 정보를 그대로 사용할게요"
             component={Checkbox}
             disabled={isDisabled}
+            isChecked={false}
             onChange={() => alert('클릭해도 소용 없다구..후훟..')}
           />
         </div>

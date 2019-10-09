@@ -76,4 +76,4 @@ export const patchTest = (
   funnel,
   is_register_required: registerValue,
 }, headers);
-export const getTestPrice = (tId, pName) => axios.get(`${baseURL}/tests/${tId}/calculate/?plan_name=${pName}`);
+export const getTestPrice = (tId, pName) => axios.get(`${baseURL}/tests/${tId}/calculate/?plan_name=${pName}`, headers);

@@ -301,9 +301,12 @@ class NewTestForm extends Component {
 
     if (tId) {
       if (isDefaultRendered && hasDefaultPassed) {
+        const step = 'APPLY';
+
         await patchTest(
           tId,
           pId,
+          step,
           titleReg,
           clientName,
           clientContact,
@@ -404,29 +407,33 @@ class NewTestForm extends Component {
         if (submitCheck) {
           const qId = test.quests.map(q => q.id);
           const {
-            registerRequire, issue, issueDetail, issuePurpose,
+            registerRequire,
+            issue,
+            issueDetail,
+            issuePurpose,
           } = values.quest;
           const registerValue = registerRequire !== '아니오';
+          const step = 'REGISTER';
 
-          if (registerRequire) {
-            await patchTest(
-              tId,
-              pId,
-              titleReg,
-              clientName,
-              clientContact,
-              media2,
-              email,
-              media1,
-              serviceFormat,
-              serviceInfo,
-              serviceCategory,
-              serviceStatus,
-              serviceDesc,
-              funnel,
-              registerValue,
-            );
-          }
+          // if (registerRequire) {
+          //   await patchTest(
+          //     tId,
+          //     pId,
+          //     titleReg,
+          //     clientName,
+          //     clientContact,
+          //     media2,
+          //     email,
+          //     media1,
+          //     serviceFormat,
+          //     serviceInfo,
+          //     serviceCategory,
+          //     serviceStatus,
+          //     serviceDesc,
+          //     funnel,
+          //     registerValue,
+          //   );
+          // }
 
           if (issue[`q${qId[0]}`]) {
             await patchQuest(
@@ -436,6 +443,26 @@ class NewTestForm extends Component {
               issueDetail[`q${qId[0]}`],
               issuePurpose[`q${qId[0]}`],
             )
+              .then(() => {
+                patchTest(
+                  tId,
+                  pId,
+                  step,
+                  titleReg,
+                  clientName,
+                  clientContact,
+                  media2,
+                  email,
+                  media1,
+                  serviceFormat,
+                  serviceInfo,
+                  serviceCategory,
+                  serviceStatus,
+                  serviceDesc,
+                  funnel,
+                  registerValue,
+                );
+              })
               .then(() => { getTest(tId); })
               .then(() => {
                 this.setState({
@@ -443,7 +470,8 @@ class NewTestForm extends Component {
                   isQuestPassed: true,
                   isPayRendered: true,
                 });
-              }).catch((err) => {
+              })
+              .catch((err) => {
                 console.log(err);
               });
           }
@@ -456,6 +484,26 @@ class NewTestForm extends Component {
               issueDetail[`q${qId[1]}`],
               issuePurpose[`q${qId[1]}`],
             )
+              .then(() => {
+                patchTest(
+                  tId,
+                  pId,
+                  step,
+                  titleReg,
+                  clientName,
+                  clientContact,
+                  media2,
+                  email,
+                  media1,
+                  serviceFormat,
+                  serviceInfo,
+                  serviceCategory,
+                  serviceStatus,
+                  serviceDesc,
+                  funnel,
+                  registerValue,
+                );
+              })
               .then(() => { getTest(tId); })
               .then(() => {
                 this.setState({
@@ -463,7 +511,8 @@ class NewTestForm extends Component {
                   isQuestPassed: true,
                   isPayRendered: true,
                 });
-              }).catch((err) => {
+              })
+              .catch((err) => {
                 console.log(err);
               });
           }
@@ -476,6 +525,26 @@ class NewTestForm extends Component {
               issueDetail[`q${qId[2]}`],
               issuePurpose[`q${qId[2]}`],
             )
+              .then(() => {
+                patchTest(
+                  tId,
+                  pId,
+                  step,
+                  titleReg,
+                  clientName,
+                  clientContact,
+                  media2,
+                  email,
+                  media1,
+                  serviceFormat,
+                  serviceInfo,
+                  serviceCategory,
+                  serviceStatus,
+                  serviceDesc,
+                  funnel,
+                  registerValue,
+                );
+              })
               .then(() => { getTest(tId); })
               .then(() => {
                 this.setState({
@@ -483,7 +552,8 @@ class NewTestForm extends Component {
                   isQuestPassed: true,
                   isPayRendered: true,
                 });
-              }).catch((err) => {
+              })
+              .catch((err) => {
                 console.log(err);
               });
           }

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { SubmissionError, reset } from 'redux-form';
 import { putProject, getProjectList } from 'modules/project';
 import PopupTemplate from 'components/PopupTemplate';
+import ToastAlert from 'components/ToastAlert';
 import ProjectForm from './ProjectForm';
 import './NewProjectPopup.scss';
 
@@ -10,6 +11,12 @@ class NewProjectPopup extends Component {
   static defaultProps = {
     show: false,
   };
+
+  state = {
+    toastTitle: '',
+    toastSubtitle: '',
+    isToastShow: false,
+  }
 
   onSubmit = (values) => {
     // eslint-disable-next-line no-shadow
@@ -50,13 +57,20 @@ class NewProjectPopup extends Component {
           const errMsgName = err.response.data.name !== undefined
             ? err.response.data.name[0]
             : undefined;
-          alert(errMsgName);
+
+          this.setState({
+            toastTitle: 'Oops! :(',
+            toastSubtitle: errMsgName,
+            isToastShow: true,
+          });
+          console.log(errMsgName);
         });
     }
   };
 
   render() {
     const { show, handlePopup } = this.props;
+    const { toastTitle, toastSubtitle, isToastShow } = this.state;
 
     return (
       <PopupTemplate isShow={show} title="프로젝트 만들기">
@@ -64,6 +78,11 @@ class NewProjectPopup extends Component {
           onPopup={handlePopup}
           onSubmit={this.onSubmit}
           // initialValues={{ same: true }}
+        />
+        <ToastAlert
+          title={toastTitle}
+          subtitle={toastSubtitle}
+          isShow={isToastShow}
         />
       </PopupTemplate>
     );

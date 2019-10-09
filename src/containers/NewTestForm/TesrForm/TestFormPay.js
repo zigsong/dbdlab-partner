@@ -12,55 +12,25 @@ import { getPlanList } from 'modules/plan';
 const planRequired = value => (value ? undefined : 'Plan을 선택해 주세요:)');
 
 class TestFormPay extends Component {
+  mounted = false;
+
   state = {
-    planList: [],
     planPrice: 0,
     targetPrice: 0,
     registerPrice: 0,
   }
 
   componentDidMount() {
-    const {
-      testId,
-      planValue,
-      getTestPrice,
-      getPlanList,
-    } = this.props;
-    const { planList } = this.state;
+    const { getPlanList } = this.props;
+
+    this.mounted = true;
+
     getPlanList()
-      .then((res) => {
-        console.log(res);
-        this.setState({
-          planList: res.data.results,
-        });
-      })
       .then(() => {
-        const getPlanPriceValue = () => {
-          if (planValue === undefined
-              || planList === undefined
-              || planList === []
-              || planList.length < 1) {
-            console.log(planValue);
-            this.getExtraPrice();
-            this.getRegisterPrice();
-          } else {
-            console.log(planValue);
-            getTestPrice(testId, planValue)
-              .then((res) => {
-                console.log(res);
-                this.setState({
-                  planPrice: res.data.plan_price,
-                  targetPrice: res.data.target_extra_price,
-                });
-              });
-            // this.setState({ planPrice: planList.find(p => p.name === planValue).price_amount });
-          }
-        };
-        getPlanPriceValue();
+        if (this.mounted) {
+          this.getPlanPriceValue();
+        }
       });
-    console.log(planList);
-    // this.getExtraPrice();
-    // this.getRegisterPrice();
   }
 
   componentDidUpdate(prevProps) {
@@ -73,6 +43,45 @@ class TestFormPay extends Component {
       this.getRegisterPrice();
     }
   }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
+
+  getPlanPriceValue = () => {
+    const {
+      testId,
+      planValue,
+      planList,
+      getTestPrice,
+    } = this.props;
+
+    if (planValue === undefined
+        || planList === undefined
+        || planList === []
+        || planList.length < 1) {
+      console.log(planValue);
+      this.getExtraPrice();
+      this.getRegisterPrice();
+    } else {
+      console.log(planValue);
+      getTestPrice(testId, planValue)
+        .then((res) => {
+          console.log(res);
+          this.setState({
+            planPrice: res.data.plan_price,
+            targetPrice: res.data.target_extra_price,
+            registerPrice: res.data.register_price,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          console.log(err.message);
+          console.log(err.response);
+        });
+    }
+  };
 
   getExtraPrice = () => {
     let extraPriceValue = 0;
@@ -112,7 +121,7 @@ class TestFormPay extends Component {
 
     return (
       <>
-        {planList.map(p => (
+        {planList.map((p, idx) => (
           <span className={`box-input__radio${hasError ? '--error' : ''}`} key={p.name}>
             <input
               type="radio"
@@ -128,6 +137,7 @@ class TestFormPay extends Component {
             />
             <strong className="plan__name">{p.name}</strong>
             <span className="plan__desc">{p.description}</span>
+            { idx === 0 ? <span className="helpme">디자이너님</span> : <span className="helpme">헬프미</span> }
           </span>
         ))}
         {hasError && <span className="msg--error">{meta.error}</span>}
@@ -136,13 +146,13 @@ class TestFormPay extends Component {
   };
 
   render() {
-    const { couponValue, isDisabled, submitErrorMsg } = this.props;
     const {
       planList,
-      planPrice,
-      targetPrice,
-      registerPrice,
-    } = this.state;
+      couponValue,
+      isDisabled,
+      submitErrorMsg,
+    } = this.props;
+    const { planPrice, targetPrice, registerPrice } = this.state;
     const { handleInputFocus, FormRadio } = this;
     const totalPrice = parseInt(planPrice, 10)
       + parseInt(targetPrice, 0)

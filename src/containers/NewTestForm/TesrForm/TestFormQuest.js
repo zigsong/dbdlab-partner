@@ -4,13 +4,13 @@ import FormSelect from 'components/FormSelect';
 import FormTextArea from 'components/FormTextArea';
 import { Field } from 'redux-form';
 
-const registerRequired = value => (value ? undefined : '필요하냐고요');
+const registerRequired = value => (value ? undefined : '테스트 진행에 회원가입이 필요한가요?');
 const issue1Required = value => (value ? undefined : '도전과제는 최소 1개 이상 선택해야 합니다');
 const issueDetail1Required = value => (value ? undefined : '선택하신 사용성 이슈에 대한 상세 설명을 적어주세요');
 const issuePurpose1Required = value => (value ? undefined : '도전과제를 통해 무엇을 알고 싶으신가요?');
 const valueRegExp = value => (value && value.replace(/(^\s*)|(\s*$)/g, '').length < 1 ? '다시 한 번 확인해 주세요' : undefined);
 const valueNumberRegExp = value => (value && value.replace(/^[0-9]/, '').length < 1 ? '정확하게 입력해주세요' : undefined);
-const valueEtcRegExp = value => (value && value.replace(/^[^0-9a-zA-Z]/, '').length < 1 ? '명확하게 입력해주세요' : undefined);
+const valueEtcRegExp = value => (value && value.replace(/^[^0-9a-zA-Z]/, '').length < 2 ? '명확하게 입력해주세요' : undefined);
 
 const TestFormQuest = (props) => {
   const { qId, issueCategory, isDisabled } = props;

@@ -150,7 +150,7 @@ class Test extends Component {
                   <div className="contents-inner">
                     <ul className="test__tablist">
                       <li className={`tablist__item${isTestTab ? '--active' : ''}`}>
-                        <button type="button" className="btn-tab" onClick={e => handleTabToggle(e)}>테스트 목록</button>
+                        <button type="button" className="btn-tab" onClick={e => handleTabToggle(e)}>나의 테스트</button>
                       </li>
                       <li className={`tablist__item${isTestTab ? '' : '--active'}`}>
                         <button type="button" className="btn-tab" onClick={e => handleTabToggle(e)}>우리 팀</button>

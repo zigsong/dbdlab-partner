@@ -16,9 +16,9 @@ const clientContactRegexp = value => (value && !/^(01[016789]{1}|02|0[3-9]{1}[0-
 const emailRequired = value => (value ? undefined : '이메일을 입력해주세요');
 const emailRegexp = value => (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
   ? '이메일 형식을 다시 확인해주세요' : undefined);
-const valueRegExp = value => (value && value.replace(/(^\s*)|(\s*$)/g, '').length < 1 ? '다시 한 번 확인해 주세요' : undefined);
+const valueRegExp = value => (value && value.replace(/(^\s*)|(\s*$)/g, '').length < 1 ? '형식에 맞게 입력해 주세요' : undefined);
 const valueNumberRegExp = value => (value && value.replace(/^[0-9]/, '').length < 1 ? '정확하게 입력해주세요' : undefined);
-const valueEtcRegExp = value => (value && value.replace(/^[^0-9a-zA-Z]/, '').length < 1 ? '명확하게 입력해주세요' : undefined);
+const valueEtcRegExp = value => (value && value.replace(/^[^0-9a-zA-Z]/, '').length < 2 ? '명확하게 입력해주세요' : undefined);
 
 const TestFormDefault = (props) => {
   const serviceStatus = [

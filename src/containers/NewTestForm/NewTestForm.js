@@ -8,6 +8,7 @@ import {
 } from 'redux-form';
 import PayAccountInfo from 'components/PayAccountInfo';
 import LoadingIndicator from 'components/LoadingIndicator';
+import ToastAlert from 'components/ToastAlert';
 import {
   setTestInit, getTest, postTest, patchTest,
 } from 'modules/test';
@@ -889,7 +890,14 @@ class NewTestForm extends Component {
             { isTargetRendered
               ? (
                 <>
-                  { isDefaultPassed ? null : <DisabledLayer />}
+                  { isDefaultPassed ? null : <DisabledLayer /> }
+                  { isDefaultPassed ? null : (
+                    <ToastAlert
+                      title="아직은 작성하실 수 없어요!"
+                      subtitle="이전 단계를 모두 완성해 주세요"
+                      isShow
+                    />
+                  ) }
                   <FormSection name="target">
                     <TestFormTarget
                       isDisabled={isNoNamed || isSpacedTitle
@@ -915,6 +923,13 @@ class NewTestForm extends Component {
               ? (
                 <>
                   { isTargetPassed ? null : <DisabledLayer />}
+                  { isDefaultPassed ? null : (
+                    <ToastAlert
+                      title="아직은 작성하실 수 없어요!"
+                      subtitle="이전 단계를 모두 완성해 주세요"
+                      isShow
+                    />
+                  ) }
                   <FormSection name="quest">
                     <TestFormQuest
                       isDisabled={isNoNamed || isSpacedTitle
@@ -940,6 +955,13 @@ class NewTestForm extends Component {
               ? (
                 <>
                   { isQuestPassed ? null : <DisabledLayer />}
+                  { isDefaultPassed ? null : (
+                    <ToastAlert
+                      title="아직은 작성하실 수 없어요!"
+                      subtitle="이전 단계를 모두 완성해 주세요"
+                      isShow
+                    />
+                  ) }
                   { isPayPassed
                     ? (
                       <>

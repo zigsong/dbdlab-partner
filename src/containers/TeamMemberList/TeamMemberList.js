@@ -112,6 +112,11 @@ class TeamMemberList extends Component {
 
     if (emailList.length < 1) {
       alert('1개 이상의 이메일을 입력해 주세요');
+      // this.setState({
+      //   toastTitle: '이메일을 입력해 주세요!',
+      //   toastSubtitle: '1개 이상 입력해 주셔야 합니다',
+      //   isToastShow: true,
+      // });
 
       return false;
     }
@@ -120,6 +125,11 @@ class TeamMemberList extends Component {
 
     if (reg.indexOf(true) !== -1) {
       alert('이메일 형식을 다시 한 번 확인해 주세요');
+      // this.setState({
+      //   toastTitle: '다시 한 번 확인해 주세요',
+      //   toastSubtitle: '이메일 형식을 다시 한 번 확인해 주세요',
+      //   isToastShow: true,
+      // });
 
       return false;
     }
@@ -133,13 +143,6 @@ class TeamMemberList extends Component {
             toastSubtitle: '팀원을 초대했어요:)',
             isToastShow: true,
           }, () => {
-            setTimeout(() => {
-              this.setState(pvState => ({
-                toastTitle: '',
-                toastSubtitle: '',
-                isToastShow: !pvState.isToastShow,
-              }));
-            }, 2000);
             setTimeout(() => {
               getProject(project.id);
             }, 2200);
@@ -179,14 +182,6 @@ class TeamMemberList extends Component {
         toastTitle: 'Saved!',
         toastSubtitle: '성공적으로 수정되었어요:)',
         isToastShow: true,
-      }, () => {
-        setTimeout(() => {
-          this.setState(pvState => ({
-            toastTitle: '',
-            toastSubtitle: '',
-            isToastShow: !pvState.isToastShow,
-          }));
-        }, 2000);
       });
     }).catch((err) => {
       console.log(err);
@@ -459,15 +454,18 @@ class TeamMemberList extends Component {
                 </section>
               </div>
             </form>
-            <ToastAlert
-              title={toastTitle}
-              subtitle={toastSubtitle}
-              isShow={isToastShow}
-            />
+            {isToastShow
+              ? (
+                <ToastAlert
+                  title={toastTitle}
+                  subtitle={toastSubtitle}
+                  isShow={isToastShow}
+                />
+              )
+              : null}
             {invitePending
               ? <LoadingIndicator />
-              : null
-            }
+              : null}
           </>
         )
     );

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import ToastAlert from 'components/ToastAlert';
 import FormInput from 'components/FormInput';
 import {
   reduxForm,
@@ -16,6 +17,9 @@ class PasswordForm extends Component {
   state = {
     errMsgNew: '',
     errMsgCur: '',
+    toastTitle: '',
+    toastSubtitle: '',
+    isToastShow: false,
   }
 
   onReset = () => {
@@ -88,7 +92,10 @@ class PasswordForm extends Component {
             this.setState({
               errMsgNew: undefined,
               errMsgCur: undefined,
-            }, () => onPopup(false));
+              toastTitle: 'Saved!',
+              toastSubtitle: '성공적으로 수정되었어요:)',
+              isToastShow: true,
+            }, () => setTimeout(() => onPopup(false), 2200));
           })
           .catch((err) => {
             const errMsgNew = err.response.data.new_password !== undefined
@@ -110,7 +117,13 @@ class PasswordForm extends Component {
   render() {
     const { onReset, onSubmit } = this;
     const { handleSubmit, fieldValues } = this.props;
-    const { errMsgNew, errMsgCur } = this.state;
+    const {
+      errMsgNew,
+      errMsgCur,
+      toastTitle,
+      toastSubtitle,
+      isToastShow,
+    } = this.state;
     const currentPw = fieldValues !== undefined ? fieldValues.currentPw : undefined;
     const nextPw = fieldValues !== undefined ? fieldValues.nextPw : undefined;
     const nextRePw = fieldValues !== undefined ? fieldValues.nextRePw : undefined;
@@ -163,6 +176,15 @@ class PasswordForm extends Component {
           <button type="button" className="btn-cancle" onClick={onReset}>취소</button>
           <button type="submit" className={`btn-submit${currentPw !== undefined && nextPw !== undefined && nextRePw !== undefined ? '--active' : ''}`}>수정하기</button>
         </div>
+        {isToastShow
+          ? (
+            <ToastAlert
+              title={toastTitle}
+              subtitle={toastSubtitle}
+              isShow={isToastShow}
+            />
+          )
+          : null}
       </form>
     );
   }

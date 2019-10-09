@@ -150,7 +150,7 @@ const TestFormTarget = (props) => {
             name="interest"
             type="text"
             label="target.interest"
-            placeholder="#단어를 입력해주세요"
+            placeholder="#해시태그 #형식으로 #입력해주세요"
             component={FormInput}
             disabled={isDisabled}
           />

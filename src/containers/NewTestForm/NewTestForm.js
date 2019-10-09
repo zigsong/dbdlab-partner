@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  Field, FormSection, reduxForm, getFormValues, getFormMeta, SubmissionError,
+  Field, FormSection, reduxForm, getFormValues, getFormMeta,
 } from 'redux-form';
 import PayAccountInfo from 'components/PayAccountInfo';
 import LoadingIndicator from 'components/LoadingIndicator';
@@ -22,6 +22,7 @@ import { getCategories } from 'modules/category';
 import { getPlanList } from 'modules/plan';
 import { orderTest, getTestOrder } from 'modules/order';
 import RightSidebar from './RightSidebar';
+import validate from './validate';
 import {
   TestFormDefault, TestFormTarget, TestFormQuest, TestFormPay, TestFormReport,
 } from './TesrForm';
@@ -47,6 +48,7 @@ class NewTestForm extends Component {
     isAllPassed: false,
     hasReport: false,
     test: {},
+    asyncErrorMsg: '',
   }
 
   componentDidMount() {
@@ -558,17 +560,6 @@ class NewTestForm extends Component {
         const cType = values.pay.coupon !== undefined ? values.pay.coupon : undefined;
         const cCode = values.pay.couponNum !== undefined ? values.pay.couponNum : undefined;
 
-        if ((cType !== 'WELCOME_BACK' && cType && !cCode) || (!cType && cCode)) {
-          const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-          return sleep(100).then(() => {
-            throw new SubmissionError({
-              couponNum: '쿠폰, 혹은 시리얼 넘버를 정확히 입력해 주셔야 합니다',
-              _error: '쿠폰, 혹은 시리얼 넘버를 정확히 입력해 주셔야 합니다',
-            });
-          });
-        }
-
         const submitCheck = window.confirm('PLAN을 선택하셨나요?\n등록 후엔 수정이 되지 않습니다리다리닷닷');
 
         if (submitCheck) {
@@ -591,6 +582,9 @@ class NewTestForm extends Component {
             console.log(err);
             console.log(err.response);
             console.log(err.message);
+            this.setState({
+              asyncErrorMsg: err.response.data.coupon_code,
+            });
           });
         }
       }
@@ -704,6 +698,7 @@ class NewTestForm extends Component {
       isAllPassed,
       hasReport,
       test,
+      asyncErrorMsg,
     } = this.state;
     const {
       route,
@@ -714,7 +709,6 @@ class NewTestForm extends Component {
       handleSubmit,
       categoryList,
       extras,
-      error,
     } = this.props;
     const { goBack, handleFormRender, onSubmit } = this;
     const { tId } = route.match.params;
@@ -1002,7 +996,7 @@ class NewTestForm extends Component {
                           extraValues={extras}
                           extraInfoCategory={extraInfoCategory}
                           isRegisterReq={fieldsValues !== undefined && fieldsValues.quest !== undefined ? fieldsValues.quest.registerRequire : '아니오'}
-                          submitErrorMsg={error}
+                          submitErrorMsg={asyncErrorMsg}
                         />
                       </FormSection>
                     )
@@ -1021,7 +1015,7 @@ class NewTestForm extends Component {
             : (
               <RightSidebar
                 step={step}
-                submitErrorMsg={error}
+                submitErrorMsg={asyncErrorMsg}
                 isDisabled={isNoNamed || isSpacedTitle}
                 isDefaultRendered={isDefaultRendered}
                 isTargetRendered={isTargetRendered}
@@ -1309,6 +1303,7 @@ export default connect(
 )(reduxForm({
   form: 'testForm',
   enableReinitialize: true,
+  validate,
   onSubmitFail: (errors, dispatch, submitError, props) => {
     console.log(errors, dispatch, submitError, props);
   },

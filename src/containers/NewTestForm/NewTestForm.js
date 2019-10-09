@@ -415,27 +415,46 @@ class NewTestForm extends Component {
           const registerValue = registerRequire !== '아니오';
           const step = 'REGISTER';
 
-          // if (registerRequire) {
-          //   await patchTest(
-          //     tId,
-          //     pId,
-          //     titleReg,
-          //     clientName,
-          //     clientContact,
-          //     media2,
-          //     email,
-          //     media1,
-          //     serviceFormat,
-          //     serviceInfo,
-          //     serviceCategory,
-          //     serviceStatus,
-          //     serviceDesc,
-          //     funnel,
-          //     registerValue,
-          //   );
-          // }
+          if (registerRequire) {
+            await patchTest(
+              tId,
+              pId,
+              step,
+              titleReg,
+              clientName,
+              clientContact,
+              media2,
+              email,
+              media1,
+              serviceFormat,
+              serviceInfo,
+              serviceCategory,
+              serviceStatus,
+              serviceDesc,
+              funnel,
+              registerValue,
+            );
+          }
 
           if (issue[`q${qId[0]}`]) {
+            await patchTest(
+              tId,
+              pId,
+              step,
+              titleReg,
+              clientName,
+              clientContact,
+              media2,
+              email,
+              media1,
+              serviceFormat,
+              serviceInfo,
+              serviceCategory,
+              serviceStatus,
+              serviceDesc,
+              funnel,
+              registerValue,
+            );
             await patchQuest(
               qId[0],
               tId,
@@ -443,26 +462,6 @@ class NewTestForm extends Component {
               issueDetail[`q${qId[0]}`],
               issuePurpose[`q${qId[0]}`],
             )
-              .then(() => {
-                patchTest(
-                  tId,
-                  pId,
-                  step,
-                  titleReg,
-                  clientName,
-                  clientContact,
-                  media2,
-                  email,
-                  media1,
-                  serviceFormat,
-                  serviceInfo,
-                  serviceCategory,
-                  serviceStatus,
-                  serviceDesc,
-                  funnel,
-                  registerValue,
-                );
-              })
               .then(() => { getTest(tId); })
               .then(() => {
                 this.setState({
@@ -477,6 +476,24 @@ class NewTestForm extends Component {
           }
 
           if (issue[`q${qId[1]}`]) {
+            await patchTest(
+              tId,
+              pId,
+              step,
+              titleReg,
+              clientName,
+              clientContact,
+              media2,
+              email,
+              media1,
+              serviceFormat,
+              serviceInfo,
+              serviceCategory,
+              serviceStatus,
+              serviceDesc,
+              funnel,
+              registerValue,
+            );
             await patchQuest(
               qId[1],
               tId,
@@ -484,26 +501,6 @@ class NewTestForm extends Component {
               issueDetail[`q${qId[1]}`],
               issuePurpose[`q${qId[1]}`],
             )
-              .then(() => {
-                patchTest(
-                  tId,
-                  pId,
-                  step,
-                  titleReg,
-                  clientName,
-                  clientContact,
-                  media2,
-                  email,
-                  media1,
-                  serviceFormat,
-                  serviceInfo,
-                  serviceCategory,
-                  serviceStatus,
-                  serviceDesc,
-                  funnel,
-                  registerValue,
-                );
-              })
               .then(() => { getTest(tId); })
               .then(() => {
                 this.setState({
@@ -518,6 +515,24 @@ class NewTestForm extends Component {
           }
 
           if (issue[`q${qId[2]}`]) {
+            await patchTest(
+              tId,
+              pId,
+              step,
+              titleReg,
+              clientName,
+              clientContact,
+              media2,
+              email,
+              media1,
+              serviceFormat,
+              serviceInfo,
+              serviceCategory,
+              serviceStatus,
+              serviceDesc,
+              funnel,
+              registerValue,
+            );
             await patchQuest(
               qId[2],
               tId,
@@ -525,26 +540,6 @@ class NewTestForm extends Component {
               issueDetail[`q${qId[2]}`],
               issuePurpose[`q${qId[2]}`],
             )
-              .then(() => {
-                patchTest(
-                  tId,
-                  pId,
-                  step,
-                  titleReg,
-                  clientName,
-                  clientContact,
-                  media2,
-                  email,
-                  media1,
-                  serviceFormat,
-                  serviceInfo,
-                  serviceCategory,
-                  serviceStatus,
-                  serviceDesc,
-                  funnel,
-                  registerValue,
-                );
-              })
               .then(() => { getTest(tId); })
               .then(() => {
                 this.setState({
@@ -562,8 +557,6 @@ class NewTestForm extends Component {
         const selectedPlan = planList.find(p => p.name === values.pay.plan);
         const cType = values.pay.coupon !== undefined ? values.pay.coupon : undefined;
         const cCode = values.pay.couponNum !== undefined ? values.pay.couponNum : undefined;
-        console.log(cType);
-        console.log(cCode);
 
         if ((cType !== 'WELCOME_BACK' && cType && !cCode) || (!cType && cCode)) {
           const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -576,26 +569,30 @@ class NewTestForm extends Component {
           });
         }
 
-        orderTest(
-          selectedPlan.id,
-          tId,
-          cType,
-          cCode,
-        ).then((res) => {
-          console.log(res);
-          this.setState({
-            isPayRendered: true,
-            isPayPassed: true,
-            isAllRendered: true,
-            test: {
-              order: res.data,
-            },
+        const submitCheck = window.confirm('PLAN을 선택하셨나요?\n등록 후엔 수정이 되지 않습니다리다리닷닷');
+
+        if (submitCheck) {
+          orderTest(
+            selectedPlan.id,
+            tId,
+            cType,
+            cCode,
+          ).then((res) => {
+            console.log(res);
+            this.setState({
+              isPayRendered: true,
+              isPayPassed: true,
+              isAllRendered: true,
+              test: {
+                order: res.data,
+              },
+            });
+          }).catch((err) => {
+            console.log(err);
+            console.log(err.response);
+            console.log(err.message);
           });
-        }).catch((err) => {
-          console.log(err);
-          console.log(err.response);
-          console.log(err.message);
-        });
+        }
       }
     } else {
       await postTest(
@@ -1024,6 +1021,7 @@ class NewTestForm extends Component {
             : (
               <RightSidebar
                 step={step}
+                submitErrorMsg={error}
                 isDisabled={isNoNamed || isSpacedTitle}
                 isDefaultRendered={isDefaultRendered}
                 isTargetRendered={isTargetRendered}
@@ -1217,6 +1215,7 @@ const mapDispatchToProps = dispatch => ({
   patchTest: (
     tId,
     pId,
+    step,
     title,
     clientName,
     clientContact,
@@ -1233,6 +1232,7 @@ const mapDispatchToProps = dispatch => ({
   ) => dispatch(patchTest(
     tId,
     pId,
+    step,
     title,
     clientName,
     clientContact,

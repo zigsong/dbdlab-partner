@@ -16,6 +16,7 @@ const RightSidebar = (props) => {
     fieldsMeta,
     fieldsValues,
     submitFailed,
+    step,
   } = props;
 
   // value check
@@ -224,6 +225,7 @@ const RightSidebar = (props) => {
       case isServiceStatusActive:
         return '지금\n테스트할 서비스는\n어떤 단계인가요?';
       case isAllPassed:
+      case isQuestPassed && step !== 'payment':
         return '클릭해도\n수정할 수 없다구..\n후훟..';
       case hasDefaultRequiredValues:
         return '모든 정보를\n다 입력하셨나요?';
@@ -256,6 +258,7 @@ const RightSidebar = (props) => {
       case isServiceStatusActive:
         return '현재 시점의 서비스 상태를 선택해주세요';
       case isAllPassed:
+      case isQuestPassed && step !== 'payment':
         return '이미 테스트가\n등록되었기 때문에\n수정할 수 없습니다.\n문의사항이 있다면\n매니저에게 알려주세요!';
       case hasDefaultRequiredValues:
         return '누락 된 정보는 없는지\n꼼꼼하게 확인한 후\n다음 스텝으로\n이동해주세요 :)';
@@ -278,6 +281,7 @@ const RightSidebar = (props) => {
       case isInterestActive:
         return '어떤 관심사를\n가진 사람에게\n테스트할까요?';
       case isAllPassed:
+      case isQuestPassed && step !== 'payment':
         return '클릭해도\n수정할 수 없다구..\n후훟..';
       case hasTargetRequiredValues:
         return '모든 정보를\n다 입력하셨나요?';
@@ -300,6 +304,7 @@ const RightSidebar = (props) => {
       case isInterestActive:
         return '기본적으로 제공되는\n테스터 분류 기준입니다.\n서비스의 주요 콘텐츠,\n핵심 고객이 관심있어하는\n분야에 대해 알려주세요';
       case isAllPassed:
+      case isQuestPassed && step !== 'payment':
         return '이미 테스트가\n등록되었기 때문에\n수정할 수 없습니다.\n문의사항이 있다면\n매니저에게 알려주세요!';
       case hasTargetRequiredValues:
         return '누락 된 정보는 없는지\n꼼꼼하게 확인한 후\n다음 스텝으로\n이동해주세요 :)';
@@ -328,6 +333,7 @@ const RightSidebar = (props) => {
       case isIssuePurpose3Active:
         return '도전과제 3 에 대해서\n자세히 알려주세요';
       case isAllPassed:
+      case isQuestPassed && step !== 'payment':
         return '클릭해도\n수정할 수 없다구..\n후훟..';
       case hasQuestRequiredValues:
         return '모든 정보를\n다 입력하셨나요?';
@@ -354,6 +360,7 @@ const RightSidebar = (props) => {
       case isIssuePurpose3Active:
         return '이 서비스에서 도전과제를 수행한 테스터에게 무엇이 궁금한가요?';
       case isAllPassed:
+      case isQuestPassed && step !== 'payment':
         return '이미 테스트가\n등록되었기 때문에\n수정할 수 없습니다.\n문의사항이 있다면\n매니저에게 알려주세요!';
       case hasQuestRequiredValues:
         return '누락 된 정보는 없는지\n꼼꼼하게 확인한 후\n다음 스텝으로\n이동해주세요 :)';
@@ -367,6 +374,7 @@ const RightSidebar = (props) => {
   const setPayTitle = () => {
     switch (isPayRendered) {
       case isAllPassed:
+      case isQuestPassed && step !== 'payment':
         return '클릭해도\n수정할 수 없다구..\n후훟..';
       case isPlanActive:
         return '원하는 Plan을\n선택해주세요.\n시리얼넘버가 있다면,\n입력해주세요';
@@ -380,6 +388,7 @@ const RightSidebar = (props) => {
   const setPayDesc = () => {
     switch (isPayRendered) {
       case isAllPassed:
+      case isQuestPassed && step !== 'payment':
         return '이미 테스트가\n등록되었기 때문에\n수정할 수 없습니다.\n문의사항이 있다면\n매니저에게 알려주세요!';
       case isPlanActive:
         return 'Plan 01 :테스트\nPlan 02 :테스트 + 컨설팅\n엑셀러레이터,\n인큐베이팅 프로그램에서\n시리얼 넘버를 받았다면,\n입력해주세요.\n테스트 비용이 면제됩니다.';
@@ -391,13 +400,14 @@ const RightSidebar = (props) => {
   };
 
   const isActive = fieldsMeta !== undefined && Object.keys(fieldsMeta).length > 0;
+
   return (
     <aside
       className={`form-btn-wrapper${isDisabled ? '--disabled' : ''}${
-        (hasDefaultRequiredValues && isDefaultRendered && !isAllPassed && !submitFailed)
-        || (hasTargetRequiredValues && isTargetRendered && !isAllPassed && !submitFailed)
-        || (hasQuestRequiredValues && isQuestRendered && !isAllPassed && !submitFailed)
-        || (hasPlanValue && isPayRendered && !isAllPassed && !submitFailed)
+        (hasDefaultRequiredValues && isDefaultRendered && (!isAllPassed || step === 'payment'))
+        || (hasTargetRequiredValues && isTargetRendered && (!isAllPassed || step === 'payment'))
+        || (hasQuestRequiredValues && isQuestRendered && (!isAllPassed || step === 'payment'))
+        || (hasPlanValue && isPayRendered && (!isAllPassed || step === 'payment'))
           ? '--pass' : ''}${submitFailed ? '--fail' : ''}`}
     >
       {isDisabled
@@ -649,10 +659,10 @@ const RightSidebar = (props) => {
               </p>
             </div>
             <div className="box-btn">
-              {isAllPassed
+              {isAllPassed || (isQuestPassed && step !== 'payment') || (isPayRendered && step !== 'payment')
                 ? null
                 : (
-                  <button type="submit" className={`btn__default${isPayRendered && isQuestPassed ? '--submit' : ''}`}>Next</button>
+                  <button type="submit" className={`btn__default${(isQuestRendered && isTargetPassed) || (isPayRendered && step === 'payment') ? '--submit' : ''}`}>Next</button>
                 )
               }
             </div>

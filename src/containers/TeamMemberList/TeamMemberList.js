@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import FormInput from 'components/FormInput';
@@ -6,7 +7,7 @@ import { reduxForm, Field, getFormValues } from 'redux-form';
 import LoadingIndicator from 'components/LoadingIndicator';
 import ToastAlert from 'components/ToastAlert';
 import { getAuthSelf } from 'modules/auth';
-import { patchProject, inviteProject } from 'modules/project';
+import { getProject, patchProject, inviteProject } from 'modules/project';
 import { getCategoryItem } from 'modules/category';
 import './TeamMemberList.scss';
 
@@ -22,6 +23,7 @@ class TeamMemberList extends Component {
     isLoading: false,
     isExtended: false,
     isLayerOpen: false,
+    selectedList: 0,
     inputArr: [0],
     toastTitle: '',
     toastSubtitle: '',
@@ -58,9 +60,14 @@ class TeamMemberList extends Component {
     await props.getCategoryItem(3).then(this.setState({ isLoading: false }));
   };
 
-  handleMenuToggle = (e) => {
+  handleMenuToggle = (e, idx) => {
     e.preventDefault();
-    this.setState(prevState => ({ isExtended: !prevState.isExtended }));
+    console.log(idx);
+
+    this.setState(prevState => ({
+      selectedList: idx,
+      isExtended: !prevState.isExtended,
+    }));
   }
 
   handleInvitePopupToggle = (e) => {
@@ -84,8 +91,12 @@ class TeamMemberList extends Component {
 
   // eslint-disable-next-line consistent-return
   onSend = (e) => {
-    // eslint-disable-next-line no-shadow
-    const { fieldValues, project, inviteProject } = this.props;
+    const {
+      fieldValues,
+      project,
+      getProject,
+      inviteProject,
+    } = this.props;
     const { inputArr } = this.state;
     const emailList = inputArr.map(a => fieldValues[`inviteEmail${a}`]);
 
@@ -129,6 +140,9 @@ class TeamMemberList extends Component {
                 isToastShow: !pvState.isToastShow,
               }));
             }, 2000);
+            setTimeout(() => {
+              getProject(project.id);
+            }, 2200);
           });
         }
       }).catch((err) => {
@@ -195,6 +209,7 @@ class TeamMemberList extends Component {
       isDisabled,
       isLoading,
       isExtended,
+      selectedList,
       isLayerOpen,
       inputArr,
       toastTitle,
@@ -346,7 +361,7 @@ class TeamMemberList extends Component {
                       {
                         memberList.length > 0
                           ? (
-                            memberList.map((m) => {
+                            memberList.sort((a, b) => a.id - b.id).map((m, idx) => {
                               const userName = m.name === '' ? m.email.substring(0, m.email.indexOf('@')) : m.name;
                               return (
                                 <li className="list-team__item" key={m.email}>
@@ -363,18 +378,21 @@ class TeamMemberList extends Component {
                                       </span>
                                       <span className="info__email">{m.email}</span>
                                     </span>
-                                    {m.is_manager
-                                      ? (
+                                    {isDisabled
+                                      ? null
+                                      : (
                                         <button
                                           type="button"
                                           className="btn-menu"
-                                          onClick={e => handleMenuToggle(e)}
+                                          onClick={e => handleMenuToggle(e, idx)}
                                         >
                                           팀원 관리하기
                                         </button>
                                       )
-                                      : null}
-                                    <ul className={`menu-list${isExtended ? '--extended' : ''}`}>
+                                    }
+                                    <ul
+                                      className={`menu-list${isExtended && selectedList === idx ? '--extended' : ''}`}
+                                    >
                                       <li className="list__item">
                                         <button type="button">추방하기</button>
                                       </li>
@@ -475,6 +493,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
   getAuthSelf: () => dispatch(getAuthSelf()),
   getCategoryItem: cId => dispatch(getCategoryItem(cId)),
+  getProject: pId => dispatch(getProject(pId)),
   patchProject: (
     id,
     service,

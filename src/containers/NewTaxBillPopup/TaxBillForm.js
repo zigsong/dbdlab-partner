@@ -10,7 +10,8 @@ import {
 
 const companyRequired = value => (value ? undefined : '이름을 입력해주세요');
 const registNumRequired = value => (value ? undefined : '연락처를 입력해주세요');
-const registNumRegexp = value => (value && !/^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/.test(value) ? '연락처 형식을 다시 확인해주세요' : undefined);
+const registNumRegexp = value => (value && !/([0-9]{3})([0-9]{2})([0-9]{5}$)/.test(value) ? '사업자 등록 번호를 다시 확인해주세요' : undefined);
+const registNumLength = value => (value && parseInt(value.length, 10) > 10 ? '사업자 등록 번호를 다시 확인해주세요' : undefined);
 const emailRequired = value => (value ? undefined : '이메일을 입력해주세요');
 const emailRegexp = value => (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
   ? '이메일 형식을 다시 확인해주세요' : undefined);
@@ -50,7 +51,7 @@ class TaxBillForm extends Component {
             label="companyRegistNum"
             placeholder="숫자만 입력"
             component={FormInput}
-            validate={[registNumRequired, registNumRegexp]}
+            validate={[registNumRequired, registNumRegexp, registNumLength]}
           />
         </p>
         <p className="form__data-wrapper">

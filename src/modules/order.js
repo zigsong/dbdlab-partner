@@ -1,6 +1,8 @@
 import * as OrderAPI from 'lib/api/order';
 import { handleActions } from 'redux-actions';
 
+const GET_ORDER_VOUCHER_LIST_SUCCESS = 'order/GET_ORDER_VOUCHER_LIST_SUCCESS';
+const GET_ORDER_VOUCHER_LIST_FAILURE = 'order/GET_ORDER_VOUCHER_LIST_FAILURE';
 const POST_ORDER_VOUCHER_SUCCESS = 'order/POST_ORDER_VOUCHER_SUCCESS';
 const POST_ORDER_VOUCHER_FAILURE = 'order/POST_ORDER_VOUCHER_FAILURE';
 const PATCH_VOUCHER_SUCCESS = 'order/PATCH_VOUCHER_SUCCESS';
@@ -9,8 +11,25 @@ const POST_ORDER_TEST_SUCCESS = 'order/POST_ORDER_TEST_SUCCESS';
 const POST_ORDER_TEST_FAILURE = 'order/POST_ORDER_TEST_FAILURE';
 const GET_ORDER_TEST_SUCCESS = 'order/GET_ORDER_TEST_SUCCESS';
 const GET_ORDER_TEST_FAILURE = 'order/GET_ORDER_TEST_FAILURE';
+const GET_ORDER_TEST_LIST_SUCCESS = 'order/GET_ORDER_TEST_LIST_SUCCESS';
+const GET_ORDER_TEST_LIST_FAILURE = 'order/GET_ORDER_TEST_LIST_FAILURE';
 const PATCH_ORDER_TEST_SUCCESS = 'order/PATCH_ORDER_TEST_SUCCESS';
 const PATCH_ORDER_TEST_FAILURE = 'order/PATCH_ORDER_TEST_FAILURE';
+
+export const getVoucherOrder = () => dispatch => (
+  OrderAPI.getVoucherOrder().then((res) => {
+    console.log(res);
+    dispatch({
+      type: GET_ORDER_VOUCHER_LIST_SUCCESS,
+      payload: res,
+    });
+  }).catch((err) => {
+    dispatch({
+      type: GET_ORDER_VOUCHER_LIST_FAILURE,
+      payload: err,
+    });
+  })
+);
 
 export const orderVoucher = (
   companyName,
@@ -37,6 +56,9 @@ export const orderVoucher = (
     });
   },
 ).catch((err) => {
+  console.log(err);
+  console.log(err.response);
+  console.log(err.message);
   dispatch({
     type: POST_ORDER_VOUCHER_FAILURE,
     payload: err,
@@ -102,6 +124,22 @@ export const orderTest = (
   });
   reject(err);
 }));
+
+export const getTestOrderList = () => dispatch => OrderAPI.getTestOrderList().then((res) => {
+  console.log(res);
+  dispatch({
+    type: GET_ORDER_TEST_LIST_SUCCESS,
+    payload: res,
+  });
+}).catch((err) => {
+  console.log(err);
+  console.log(err.response);
+  console.log(err.message);
+  dispatch({
+    type: GET_ORDER_VOUCHER_LIST_FAILURE,
+    payload: err,
+  });
+});
 
 export const getTestOrder = oId => dispatch => OrderAPI.getTestOrder(oId).then(
   (res) => {
@@ -177,13 +215,26 @@ const initialState = {
   postVoucherFailure: false,
   postTestSuccess: false,
   postTestFailure: false,
+  getTestListSuccess: false,
+  getTestListFailure: false,
   getTestSuccess: false,
   getTestFailure: false,
+  voucherList: [],
+  testList: [],
   voucher: {},
   test: {},
 };
 
 export default handleActions({
+  [GET_ORDER_VOUCHER_LIST_SUCCESS]: (state, action) => ({
+    ...state,
+    getVoucherListSuccess: true,
+    voucherList: action.payload.data.results,
+  }),
+  [GET_ORDER_VOUCHER_LIST_FAILURE]: state => ({
+    ...state,
+    getVoucherListFailure: true,
+  }),
   [POST_ORDER_VOUCHER_SUCCESS]: (state, action) => ({
     ...state,
     postVoucherSuccess: true,
@@ -210,6 +261,15 @@ export default handleActions({
   [POST_ORDER_TEST_FAILURE]: state => ({
     ...state,
     postTestFailure: true,
+  }),
+  [GET_ORDER_TEST_LIST_SUCCESS]: (state, action) => ({
+    ...state,
+    getTestListSuccess: true,
+    testList: action.payload.data.results,
+  }),
+  [GET_ORDER_TEST_LIST_FAILURE]: state => ({
+    ...state,
+    getTestListFailure: true,
   }),
   [GET_ORDER_TEST_SUCCESS]: (state, action) => ({
     ...state,

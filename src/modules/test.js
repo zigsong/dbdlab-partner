@@ -12,6 +12,8 @@ const GET_TEST_SUCCESS = 'test/GET_TEST_SUCCESS';
 const GET_TEST_FAILURE = 'test/GET_TEST_FAILURE';
 const PATCH_TEST_SUCCESS = 'test/PATCH_TEST_SUCCESS';
 const PATCH_TEST_FAILURE = 'test/PATCH_TEST_FAILURE';
+const GET_TEST_PRICE_SUCCESS = 'test/GET_TEST_PRICE_SUCCESS';
+const GET_TEST_PRICE_FAILURE = 'test/GET_TEST_PRICE_FAILURE';
 
 export const setTestInit = () => ({ type: SET_INIT });
 
@@ -30,7 +32,7 @@ export const getTestList = pId => dispatch => (
       },
     ).catch((err) => {
       console.log(err);
-      console.log(err.reponse);
+      console.log(err.response);
       console.log(err.message);
       dispatch({
         type: GET_TEST_LIST_FAILURE,
@@ -54,7 +56,7 @@ export const getTest = tId => dispatch => (
       },
     ).catch((err) => {
       console.log(err);
-      console.log(err.reponse);
+      console.log(err.response);
       console.log(err.message);
       dispatch({
         type: GET_TEST_FAILURE,
@@ -107,7 +109,7 @@ export const postTest = (
     ).catch((err) => {
       console.log(err);
       console.log(err.message);
-      console.log(err.reponse);
+      console.log(err.response);
       dispatch({
         type: POST_TEST_FAILURE,
         payload: err,
@@ -163,13 +165,37 @@ export const patchTest = (
     ).catch((err) => {
       console.log(err);
       console.log(err.message);
-      console.log(err.reponse);
+      console.log(err.response);
       dispatch({
         type: PATCH_TEST_FAILURE,
         payload: err,
       });
       reject(err);
     });
+  })
+);
+
+export const getTestPrice = (tId, pName) => dispatch => (
+  new Promise((resolve, reject) => {
+    TestAPI.getTestPrice(tId, pName)
+      .then((res) => {
+        console.log(res);
+        dispatch({
+          type: GET_TEST_PRICE_SUCCESS,
+          payload: res,
+        });
+        resolve(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log(err.message);
+        console.log(err.response);
+        dispatch({
+          type: GET_TEST_PRICE_FAILURE,
+          payload: err,
+        });
+        reject(err);
+      });
   })
 );
 
@@ -185,6 +211,7 @@ const initialState = {
   test: {},
   targets: {},
   quests: {},
+  testPrice: {},
 };
 
 export default handleActions({
@@ -403,4 +430,15 @@ export default handleActions({
       postFailure: true,
     };
   },
+  [GET_TEST_PRICE_SUCCESS]: (state, action) => {
+    console.log(action);
+    return {
+      ...state,
+      testPrice: action.payload.data,
+    };
+  },
+  [GET_TEST_PRICE_FAILURE]: state => ({
+    ...state,
+    getFailure: true,
+  }),
 }, initialState);

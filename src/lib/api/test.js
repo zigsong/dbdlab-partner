@@ -45,6 +45,7 @@ export const postTest = (
 export const patchTest = (
   tId,
   pId,
+  step,
   title,
   clientName,
   clientContact,
@@ -61,6 +62,7 @@ export const patchTest = (
 ) => axios.patch(`${baseURL}/tests/${tId}/`, {
   project_id: pId,
   title,
+  step,
   client_name: clientName,
   client_phone_number: clientContact,
   client_email: email,

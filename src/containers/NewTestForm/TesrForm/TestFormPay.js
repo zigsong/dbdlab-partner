@@ -56,7 +56,6 @@ class TestFormPay extends Component {
             // this.setState({ planPrice: planList.find(p => p.name === planValue).price_amount });
           }
         };
-    
         getPlanPriceValue();
       });
     console.log(planList);
@@ -129,7 +128,6 @@ class TestFormPay extends Component {
             />
             <strong className="plan__name">{p.name}</strong>
             <span className="plan__desc">{p.description}</span>
-            <span className="plan__date">YY.MM.DD</span>
           </span>
         ))}
         {hasError && <span className="msg--error">{meta.error}</span>}

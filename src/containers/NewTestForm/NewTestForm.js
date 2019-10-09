@@ -492,6 +492,8 @@ class NewTestForm extends Component {
         const selectedPlan = planList.find(p => p.name === values.pay.plan);
         const cType = values.pay.coupon !== undefined ? values.pay.coupon : undefined;
         const cCode = values.pay.couponNum !== undefined ? values.pay.couponNum : undefined;
+        console.log(cType);
+        console.log(cCode);
 
         if ((cType !== 'WELCOME_BACK' && cType && !cCode) || (!cType && cCode)) {
           const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -644,7 +646,6 @@ class NewTestForm extends Component {
       submitSucceeded,
       handleSubmit,
       categoryList,
-      planList,
       extras,
       error,
     } = this.props;
@@ -906,7 +907,6 @@ class NewTestForm extends Component {
                                   || step === 'testing'
                                   || step === 'completed'
                                 }
-                                // planList={planList}
                                 testId={tId}
                                 extraValues={extras}
                                 extraInfoCategory={extraInfoCategory}
@@ -931,7 +931,6 @@ class NewTestForm extends Component {
                             || step === 'testing'
                             || step === 'completed'
                           }
-                          // planList={planList}
                           testId={tId}
                           extraValues={extras}
                           extraInfoCategory={extraInfoCategory}

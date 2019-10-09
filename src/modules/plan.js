@@ -9,20 +9,26 @@ const GET_PLAN_FAILURE = 'plan/GET_PLAN_FAILURE';
 const GET_PLAN_PRICE_SUCCESS = 'plan/GET_PLAN_PRICE_SUCCESS';
 const GET_PLAN_PRICE_FAILURE = 'plan/GET_PLAN_PRICE_FAILURE';
 
-export const getPlanList = () => dispatch => PlanAPI.getPlanList().then(
-  (res) => {
-    console.log(res);
-    dispatch({
-      type: GET_PLAN_LIST_SUCCESS,
-      payload: res,
+export const getPlanList = () => dispatch => (
+  new Promise((resolve, reject) => {
+    PlanAPI.getPlanList().then(
+      (res) => {
+        console.log(res);
+        dispatch({
+          type: GET_PLAN_LIST_SUCCESS,
+          payload: res,
+        });
+        resolve(res);
+      },
+    ).catch((err) => {
+      dispatch({
+        type: GET_PLAN_LIST_FAILURE,
+        payload: err,
+      });
+      reject(err);
     });
-  },
-).catch((err) => {
-  dispatch({
-    type: GET_PLAN_LIST_FAILURE,
-    payload: err,
-  });
-});
+  })
+);
 
 export const getPlan = planId => dispatch => PlanAPI.getPlan(planId).then(
   (res) => {

@@ -4,51 +4,11 @@ import { connect } from 'react-redux';
 import PageTemplate from 'containers/PageTemplate';
 import NewProjectPopup from 'containers/NewProjectPopup';
 import ProjectList from 'containers/ProjectList';
-import PopupTemplate from 'components/PopupTemplate';
+import UnauthorizedPopup from 'components/UnauthorizedPopup';
 import LoadingIndicator from 'components/LoadingIndicator';
 import { togglePopup } from 'modules/popup';
 import { getProjectList } from 'modules/project';
 import './Project.scss';
-
-const UnauthorizedPopup = () => {
-  const pStyle = {
-    margin: '30px auto',
-    color: '#282828',
-    lineHeight: 3,
-  };
-  const strongStyle = { fontSize: '24px' };
-  const btnStyle = {
-    display: 'inline-block',
-    width: '190px',
-    height: '36px',
-    marginTop: '50px',
-    boxSizing: 'border-box',
-    backgroundColor: '#029bff',
-    borderRadius: '3px',
-    border: '1px solid #029bff',
-    textAlign: 'center',
-    fontSize: '16px',
-    color: '#fff',
-    fontWeight: 500,
-  };
-  const redirect = () => {
-    const { protocol } = window.location;
-    window.location.assign(`${protocol}//qa.realdopt.com/login`);
-    // window.location.assign(`${protocol}//localhost:3000/login`);
-  };
-
-  return (
-    <PopupTemplate isShow>
-      <p style={pStyle}>
-        <strong style={strongStyle}>로그인이 필요합니다.</strong>
-        <br />
-        다시 로그인 해 주세요 :)
-        <br />
-        <button type="button" style={btnStyle} onClick={() => redirect()}>확인</button>
-      </p>
-    </PopupTemplate>
-  );
-};
 
 class Project extends Component {
   constructor(props) {
@@ -94,9 +54,9 @@ class Project extends Component {
         this.setState({ isLoading: false });
       })
       .catch((err) => {
-        const { statusText } = err.response;
+        const { status } = err.response;
         console.log(err.response);
-        if (statusText === 'Unauthorized') {
+        if (status === 401) {
           this.setState({
             isLoading: false,
             isAuthError: true,

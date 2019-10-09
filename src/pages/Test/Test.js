@@ -6,53 +6,13 @@ import ScrollContainer from 'react-indiana-drag-scroll';
 import Header from 'components/Header';
 import TestCard from 'components/TestCard';
 import LoadingIndicator from 'components/LoadingIndicator';
-import PopupTemplate from 'components/PopupTemplate';
+import UnauthorizedPopup from 'components/UnauthorizedPopup';
 import NewTestForm from 'containers/NewTestForm';
 import TeamMemberList from 'containers/TeamMemberList';
 import { getAuthSelf } from 'modules/auth';
 import { getProject } from 'modules/project';
 import { getTestList, getTest, setTestListInit } from 'modules/test';
 import './Test.scss';
-
-const UnauthorizedPopup = () => {
-  const pStyle = {
-    margin: '30px auto',
-    color: '#282828',
-    lineHeight: 3,
-  };
-  const strongStyle = { fontSize: '24px' };
-  const btnStyle = {
-    display: 'inline-block',
-    width: '190px',
-    height: '36px',
-    marginTop: '50px',
-    boxSizing: 'border-box',
-    backgroundColor: '#029bff',
-    borderRadius: '3px',
-    border: '1px solid #029bff',
-    textAlign: 'center',
-    fontSize: '16px',
-    color: '#fff',
-    fontWeight: 500,
-  };
-  const redirect = () => {
-    const { protocol } = window.location;
-    window.location.assign(`${protocol}//qa.realdopt.com/login`);
-    // window.location.assign(`${protocol}//localhost:3000/login`);
-  };
-
-  return (
-    <PopupTemplate isShow>
-      <p style={pStyle}>
-        <strong style={strongStyle}>로그인이 필요합니다.</strong>
-        <br />
-        다시 로그인 해 주세요 :)
-        <br />
-        <button type="button" style={btnStyle} onClick={() => redirect()}>확인</button>
-      </p>
-    </PopupTemplate>
-  );
-};
 
 class Test extends Component {
   constructor(props) {
@@ -87,7 +47,17 @@ class Test extends Component {
       });
     } else {
       authenticate()
-        .then(this.setState({ isLoading: false }));
+        .then(this.setState({ isLoading: false }))
+        .catch((err) => {
+          const { status } = err.response;
+          console.log(err.response);
+          if (status === 401) {
+            this.setState({
+              isLoading: false,
+              isAuthError: true,
+            });
+          }
+        });
     }
   }
 
@@ -114,22 +84,22 @@ class Test extends Component {
       {
         title: 'STEP1. 신청',
         desc: '테스트를 신청해주시면,\n담당 매니저가 배정됩니다.',
-        state: 'apply',
+        state: ['apply'],
       },
       {
         title: 'STEP2. 등록',
         desc: '담당 매니저가 배정되면,\n테스트 등록을 도와드립니다.',
-        state: 'register',
+        state: ['register'],
       },
       {
         title: 'STEP3. 결제',
         desc: '등록 후, 결제가 완료되면\n바로 테스트가 진행됩니다.',
-        state: 'payment',
+        state: ['payment'],
       },
       {
         title: 'STEP4. 진행 및 완료',
         desc: '테스트는 4-5일 진행되며,\n이후 리포트가 제공됩니다.',
-        state: 'testing',
+        state: ['testing', 'completed'],
       },
     ];
     const {
@@ -147,7 +117,6 @@ class Test extends Component {
     const { handleTabToggle, handleNewTestForm } = this;
     const { pId } = match.params;
     const hasTestList = Object.keys(testList).length > 0;
-    console.log(testList);
     const {
       name,
       company_name,
@@ -196,7 +165,7 @@ class Test extends Component {
                                 <ul className="desc__step-list">
                                   { step.map(s => (
                                     <li
-                                      className={`list__item--${s.state}${s.state === 'apply' ? '--active' : ''}`}
+                                      className={`list__item--${s.state[0]}${s.state[0] === 'apply' ? '--active' : ''}`}
                                       key={s.title}
                                     >
                                       <h2 className="item__title">{s.title}</h2>
@@ -207,7 +176,7 @@ class Test extends Component {
                                             <br />
                                           </React.Fragment>
                                         )) }
-                                        { s.state === 'apply'
+                                        { s.state[0] === 'apply'
                                           ? <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
                                           : null }
                                       </p>
@@ -215,7 +184,7 @@ class Test extends Component {
                                         { Object.keys(testList).map((t) => {
                                           const tStep = testList[t].step.toLowerCase();
                                           return (
-                                            s.state === tStep
+                                            s.state.indexOf(tStep) > -1
                                               ? (
                                                 <React.Fragment key={t}>
                                                   <TestCard
@@ -226,7 +195,7 @@ class Test extends Component {
                                                     staff={testList[t].staff}
                                                     createDate={testList[t].created_at}
                                                   />
-                                                  { s.state === 'testing'
+                                                  { tStep === 'completed'
                                                     ? <Link to="/" className="btn-start--blue">결과 리포트 확인하기</Link>
                                                     : null }
                                                 </React.Fragment>
@@ -245,7 +214,7 @@ class Test extends Component {
                                   <ul className="desc__step-list">
                                     { step.map(s => (
                                       <li
-                                        className={`list__item--${s.state}`}
+                                        className={`list__item--${s.state[0]}`}
                                         key={s.title}
                                       >
                                         <h2 className="item__title">{s.title}</h2>

@@ -601,6 +601,7 @@ $imgUrl: '/static/images/';
 
           .field__section {
             min-width: 317px;
+            max-width: 320px;
             margin-right: 80px;
           }
 
@@ -929,6 +930,10 @@ $imgUrl: '/static/images/';
             @extend .btn__default;
             background: transparent url('#{$imgUrl}common/icons/btn_submit--white.svg') no-repeat center / 100%;
           }
+        }
+
+        &--fail {
+          @extend .form-btn-wrapper--pass;
         }
       }
 

@@ -125,7 +125,7 @@ export const getTarget = tgId => dispatch => (
       },
     ).catch((err) => {
       console.log(err);
-      console.log(err.reponse);
+      console.log(err.response);
       console.log(err.message);
       dispatch({
         type: GET_TARGET_FAILURE,

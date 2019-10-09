@@ -1,10 +1,11 @@
 /* eslint-disable jsx-a11y/label-has-for */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
+import { connect } from 'react-redux';
 import FormInput from 'components/FormInput';
 import FormSelect from 'components/FormSelect';
 import Checkbox from 'components/Checkbox';
-import { Field } from 'redux-form';
+import { Field, blur } from 'redux-form';
 
 const mediaRequired = value => (value ? undefined : '카테고리를 선택해주세요');
 const seriveInfoRequired = value => (value ? undefined : 'URL 또는 어플리케이션 명을 입력해주세요');
@@ -15,6 +16,9 @@ const clientContactRegexp = value => (value && !/^(01[016789]{1}|02|0[3-9]{1}[0-
 const emailRequired = value => (value ? undefined : '이메일을 입력해주세요');
 const emailRegexp = value => (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
   ? '이메일 형식을 다시 확인해주세요' : undefined);
+const valueRegExp = value => (value && value.replace(/(^\s*)|(\s*$)/g, '').length < 1 ? '다시 한 번 확인해 주세요' : undefined);
+const valueNumberRegExp = value => (value && value.replace(/^[0-9]/, '').length < 1 ? '정확하게 입력해주세요' : undefined);
+const valueEtcRegExp = value => (value && value.replace(/^[^0-9a-zA-Z]/, '').length < 1 ? '명확하게 입력해주세요' : undefined);
 
 const TestFormDefault = (props) => {
   const serviceStatus = [
@@ -53,6 +57,15 @@ const TestFormDefault = (props) => {
         {hasError && <span className="msg--error">{meta.error}</span>}
       </>
     );
+  };
+
+  const handleContactValue = (e, newValue, preValue, name) => {
+    const { dispatch } = props;
+    e.preventDefault();
+    if (newValue && newValue.indexOf('-') > 0) {
+      const replaceTxt = newValue.replace(/-/g, '');
+      dispatch(blur('testForm', name, replaceTxt));
+    }
   };
 
   const {
@@ -109,7 +122,12 @@ const TestFormDefault = (props) => {
             placeholder="서비스 URL 또는 어플리케이션 명 입력"
             component={FormInput}
             disabled={isDisabled}
-            validate={[seriveInfoRequired]}
+            validate={[
+              seriveInfoRequired,
+              valueRegExp,
+              valueNumberRegExp,
+              valueEtcRegExp,
+            ]}
           />
         </div>
         <div className="field-column">
@@ -188,7 +206,12 @@ const TestFormDefault = (props) => {
             placeholder="텍스트 입력"
             component={FormInput}
             disabled={isDisabled}
-            validate={clientNameRequired}
+            validate={[
+              clientNameRequired,
+              valueRegExp,
+              valueNumberRegExp,
+              valueEtcRegExp,
+            ]}
           />
         </div>
         <div className="field-halfblock">
@@ -203,6 +226,9 @@ const TestFormDefault = (props) => {
             component={FormInput}
             isContact
             disabled={isDisabled}
+            onBlur={
+              (e, newValue, preValue, name) => handleContactValue(e, newValue, preValue, name)
+            }
             validate={[clientContactRequired, clientContactRegexp]}
           />
         </div>
@@ -243,6 +269,7 @@ const TestFormDefault = (props) => {
             label="다음에도 이 정보를 그대로 사용할게요"
             component={Checkbox}
             disabled={isDisabled}
+            isChecked={false}
             onChange={() => alert('클릭해도 소용 없다구..후훟..')}
           />
         </div>
@@ -251,4 +278,4 @@ const TestFormDefault = (props) => {
   );
 };
 
-export default TestFormDefault;
+export default connect()(TestFormDefault);

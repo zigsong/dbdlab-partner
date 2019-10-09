@@ -27,6 +27,7 @@
     "start": "PORT=4000 react-scripts start",
     "build": "react-scripts build",
     "deploy": "aws s3 sync ./build/ s3://dbd-realdopt-partner-web",
+    "cleanup": "aws cloudfront create-invalidation --distribution-id E3ES8GJYEC1VCX --paths '/*'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

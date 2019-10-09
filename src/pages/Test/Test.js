@@ -6,53 +6,13 @@ import ScrollContainer from 'react-indiana-drag-scroll';
 import Header from 'components/Header';
 import TestCard from 'components/TestCard';
 import LoadingIndicator from 'components/LoadingIndicator';
-import PopupTemplate from 'components/PopupTemplate';
+import UnauthorizedPopup from 'components/UnauthorizedPopup';
 import NewTestForm from 'containers/NewTestForm';
 import TeamMemberList from 'containers/TeamMemberList';
 import { getAuthSelf } from 'modules/auth';
 import { getProject } from 'modules/project';
 import { getTestList, getTest, setTestListInit } from 'modules/test';
 import './Test.scss';
-
-const UnauthorizedPopup = () => {
-  const pStyle = {
-    margin: '30px auto',
-    color: '#282828',
-    lineHeight: 3,
-  };
-  const strongStyle = { fontSize: '24px' };
-  const btnStyle = {
-    display: 'inline-block',
-    width: '190px',
-    height: '36px',
-    marginTop: '50px',
-    boxSizing: 'border-box',
-    backgroundColor: '#029bff',
-    borderRadius: '3px',
-    border: '1px solid #029bff',
-    textAlign: 'center',
-    fontSize: '16px',
-    color: '#fff',
-    fontWeight: 500,
-  };
-  const redirect = () => {
-    const { protocol } = window.location;
-    window.location.assign(`${protocol}//qa.realdopt.com/login`);
-    // window.location.assign(`${protocol}//localhost:3000/login`);
-  };
-
-  return (
-    <PopupTemplate isShow>
-      <p style={pStyle}>
-        <strong style={strongStyle}>로그인이 필요합니다.</strong>
-        <br />
-        다시 로그인 해 주세요 :)
-        <br />
-        <button type="button" style={btnStyle} onClick={() => redirect()}>확인</button>
-      </p>
-    </PopupTemplate>
-  );
-};
 
 class Test extends Component {
   constructor(props) {
@@ -87,7 +47,17 @@ class Test extends Component {
       });
     } else {
       authenticate()
-        .then(this.setState({ isLoading: false }));
+        .then(this.setState({ isLoading: false }))
+        .catch((err) => {
+          const { status } = err.response;
+          console.log(err.response);
+          if (status === 401) {
+            this.setState({
+              isLoading: false,
+              isAuthError: true,
+            });
+          }
+        });
     }
   }
 
@@ -244,7 +214,7 @@ class Test extends Component {
                                   <ul className="desc__step-list">
                                     { step.map(s => (
                                       <li
-                                        className={`list__item--${s.state}`}
+                                        className={`list__item--${s.state[0]}`}
                                         key={s.title}
                                       >
                                         <h2 className="item__title">{s.title}</h2>

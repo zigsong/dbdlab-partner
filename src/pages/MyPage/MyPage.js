@@ -14,6 +14,7 @@ import { togglePopup } from 'modules/popup';
 import { getProjectList } from 'modules/project';
 import { getVoucherOrder, getTestOrderList } from 'modules/order';
 import { getNotifications } from 'modules/notification';
+import UnauthorizedPopup from 'components/UnauthorizedPopup';
 import LoadingIndicator from 'components/LoadingIndicator';
 import PageTemplate from 'containers/PageTemplate';
 import NewPasswordPopup from 'containers/NewPasswordPopup';
@@ -28,6 +29,7 @@ const phoneNumRegexp = value => (value && !/^(01[016789]{1}|02|0[3-9]{1}[0-9]{1}
 class MyPage extends Component {
   state = {
     isLoading: false,
+    isAuthError: false,
     isProfileTab: true,
     onEdit: false,
     selectedFile: null,
@@ -53,20 +55,17 @@ class MyPage extends Component {
       await props.getNotifications()
         .then(() => {
           const { notiList } = this.props;
-
           if (notiList.length > 10) notiList.splice(10);
           this.setState({ activityList: notiList });
         });
       await props.getVoucherOrder()
         .then(() => {
           const { voucherList } = this.props;
-
           this.setState({ voucherList });
         });
       await props.getTestOrderList()
         .then(() => {
           const { testList } = this.props;
-
           this.setState({ testList });
         });
     };
@@ -82,6 +81,16 @@ class MyPage extends Component {
         } else {
           this.setState({
             isLoading: false,
+          });
+        }
+      })
+      .catch((err) => {
+        const { status } = err.response;
+        console.log(err.response);
+        if (status === 401) {
+          this.setState({
+            isLoading: false,
+            isAuthError: true,
           });
         }
       });
@@ -217,6 +226,7 @@ class MyPage extends Component {
       testList,
       isProfileTab,
       isLoading,
+      isAuthError,
       onEdit,
     } = this.state;
     const {
@@ -230,200 +240,210 @@ class MyPage extends Component {
     } = this;
 
     return (
-      isLoading
-        ? <LoadingIndicator />
-        : (
-          <PageTemplate>
-            <section className="contents__account">
-              <div className="contents-inner">
-                <ul className="account__tablist">
-                  <li className={`tablist__item${isProfileTab ? '--active' : ''}`}>
-                    <button type="button" className="btn-tab" onClick={() => handleTabToggle()}>Profile</button>
-                  </li>
-                  <li className={`tablist__item${isProfileTab ? '' : '--active'}`}>
-                    <button type="button" className="btn-tab" onClick={() => handleTabToggle()}>Payment</button>
-                  </li>
-                </ul>
-                {isProfileTab
-                  ? (
-                    <div className="account__info">
-                      <section className="info__profile">
-                        <h2 className="info__title--hidden">Account</h2>
-                        <form className="profile__image" encType="multipart/form-data">
-                          <span className="box-image">
-                            <img src={avatar_url} alt="프로필" />
-                          </span>
-                          <span className="box-input">
-                            <label htmlFor="profile">
-                              <input type="file" name="profile" onChange={e => handleFileInput(e)} />
-                            </label>
-                          </span>
-                        </form>
-                        <span className="profile__desc">
-                          <strong className="desc__name">
-                            {prevName !== undefined && prevName !== ''
-                              ? prevName
-                              : email.substring(0, email.indexOf('@'))
-                            }
-                          </strong>
-                          <button type="button" className="btn-edit" onClick={() => handleEdit()}>Edit profile</button>
-                          <span className="desc__mail">{email}</span>
-                        </span>
-                      </section>
-                      {onEdit
+      <>
+        {isAuthError ? <UnauthorizedPopup /> : (
+          <>
+            {isLoading
+              ? <LoadingIndicator />
+              : (
+                <PageTemplate>
+                  <section className="contents__account">
+                    <div className="contents-inner">
+                      <ul className="account__tablist">
+                        <li className={`tablist__item${isProfileTab ? '--active' : ''}`}>
+                          <button type="button" className="btn-tab" onClick={() => handleTabToggle()}>Profile</button>
+                        </li>
+                        <li className={`tablist__item${isProfileTab ? '' : '--active'}`}>
+                          <button type="button" className="btn-tab" onClick={() => handleTabToggle()}>Payment</button>
+                        </li>
+                      </ul>
+                      {isProfileTab
                         ? (
-                          <form className="form-account" onSubmit={handleSubmit(values => onSubmit(values))}>
-                            <section className="form__section">
-                              <p className="form__data-wrapper">
-                                <span className="wrapper__title">
-                                  <strong className="title">이름*</strong>
+                          <div className="account__info">
+                            <section className="info__profile">
+                              <h2 className="info__title--hidden">Account</h2>
+                              <form className="profile__image" encType="multipart/form-data">
+                                <span className="box-image">
+                                  <img src={avatar_url} alt="프로필" />
                                 </span>
-                                <Field
-                                  name="name"
-                                  type="text"
-                                  label="name"
-                                  placeholder="텍스트 입력"
-                                  component={FormInput}
-                                  validate={[nameRequired, nameLength]}
-                                />
-                              </p>
-                              <p className="form__data-wrapper">
-                                <span className="wrapper__title">
-                                  <strong className="title">연락처*</strong>
+                                <span className="box-input">
+                                  <label htmlFor="profile">
+                                    <input type="file" name="profile" onChange={e => handleFileInput(e)} />
+                                  </label>
                                 </span>
-                                <Field
-                                  name="phone"
-                                  type="tel"
-                                  label="phone"
-                                  placeholder="‘-’ 제외하고 입력"
-                                  component={FormInput}
-                                  validate={[phoneNumRequired, phoneNumRegexp]}
-                                />
-                              </p>
+                              </form>
+                              <span className="profile__desc">
+                                <strong className="desc__name">
+                                  {prevName !== undefined && prevName !== ''
+                                    ? prevName
+                                    : email.substring(0, email.indexOf('@'))
+                                  }
+                                </strong>
+                                <button type="button" className="btn-edit" onClick={() => handleEdit()}>Edit profile</button>
+                                <span className="desc__mail">{email}</span>
+                              </span>
                             </section>
-                            <section className="form__section">
-                              <p className="form__data-wrapper">
-                                <span className="wrapper__title">
-                                  <strong className="title">비밀번호</strong>
-                                </span>
-                                <button type="button" className="btn-changePw" onClick={e => handlePwPopup(e)}>비밀번호 수정</button>
-                              </p>
-                            </section>
-                            <div className="form__btn-wrapper">
-                              <button type="button" className="btn-cancle" onClick={() => handleEdit()}>취소</button>
-                              <button type="submit" className={`btn-submit${name !== undefined && name !== '' && phone !== undefined && phone !== '' ? '--active' : ''}`}>확인</button>
-                            </div>
-                          </form>
+                            {onEdit
+                              ? (
+                                <form className="form-account" onSubmit={handleSubmit(values => onSubmit(values))}>
+                                  <section className="form__section">
+                                    <p className="form__data-wrapper">
+                                      <span className="wrapper__title">
+                                        <strong className="title">이름*</strong>
+                                      </span>
+                                      <Field
+                                        name="name"
+                                        type="text"
+                                        label="name"
+                                        placeholder="텍스트 입력"
+                                        component={FormInput}
+                                        validate={[nameRequired, nameLength]}
+                                      />
+                                    </p>
+                                    <p className="form__data-wrapper">
+                                      <span className="wrapper__title">
+                                        <strong className="title">연락처*</strong>
+                                      </span>
+                                      <Field
+                                        name="phone"
+                                        type="tel"
+                                        label="phone"
+                                        placeholder="‘-’ 제외하고 입력"
+                                        component={FormInput}
+                                        validate={[phoneNumRequired, phoneNumRegexp]}
+                                      />
+                                    </p>
+                                  </section>
+                                  <section className="form__section">
+                                    <p className="form__data-wrapper">
+                                      <span className="wrapper__title">
+                                        <strong className="title">비밀번호</strong>
+                                      </span>
+                                      <button type="button" className="btn-changePw" onClick={e => handlePwPopup(e)}>비밀번호 수정</button>
+                                    </p>
+                                  </section>
+                                  <div className="form__btn-wrapper">
+                                    <button type="button" className="btn-cancle" onClick={() => handleEdit()}>취소</button>
+                                    <button type="submit" className={`btn-submit${name !== undefined && name !== '' && phone !== undefined && phone !== '' ? '--active' : ''}`}>확인</button>
+                                  </div>
+                                </form>
+                              )
+                              : (
+                                <>
+                                  <section className="info__teams">
+                                    <h2 className="info__title">Teams</h2>
+                                    <ul className="teams__list">
+                                      {projectList.map(p => (
+                                        <li className="list__item" key={p.id}>
+                                          <Link to={`/project/${p.id}`}>{p.name}</Link>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </section>
+                                  <section className="info__activity">
+                                    <h2 className="info__title">Activity</h2>
+                                    <ul className="activity__list">
+                                      {activityList.map(a => (
+                                        <li className="list__item" key={a.timestamp}>
+                                          <div className="box-item">
+                                            <span className="box-image">
+                                              <img
+                                                src={a.actor.avatar_url}
+                                                alt={a.actor.name !== undefined && a.actor.name !== ''
+                                                  ? a.actor.name
+                                                  : a.actor.email.substring(0, a.actor.email.indexOf('@'))}
+                                              />
+                                            </span>
+                                            <p className="box-text">
+                                              <span className="text__activity">
+                                                {a.verb.indexOf('{actor}') > -1
+                                                  ? (
+                                                    <strong className="name">
+                                                      {a.actor.name !== undefined && a.actor.name !== ''
+                                                        ? a.actor.name
+                                                        : a.actor.email.substring(0, a.actor.email.indexOf('@'))
+                                                      }
+                                                    </strong>
+                                                  )
+                                                  : null
+                                                }
+                                                <span className="activity">
+                                                  {a.target_content_type === '프로젝트'
+                                                    ? a.verb.replace('{actor}', '').replace("'{target}'", a.target.name)
+                                                    : null
+                                                  }
+                                                  {a.target_content_type === '테스트'
+                                                    ? a.verb.replace('{actor}', '').replace("'{target}'", a.target.title)
+                                                    : null
+                                                  }
+                                                  {a.target_content_type === '팀'
+                                                    ? a.verb.replace('{actor}', '').replace("'{target}'", a.target.name)
+                                                    : null
+                                                  }
+                                                </span>
+                                              </span>
+                                              <span className="text__date">{getDate(a.timestamp)}</span>
+                                            </p>
+                                          </div>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </section>
+                                </>
+                              )
+                            }
+                          </div>
                         )
                         : (
-                          <>
-                            <section className="info__teams">
-                              <h2 className="info__title">Teams</h2>
-                              <ul className="teams__list">
-                                {projectList.map(p => (
-                                  <li className="list__item" key={p.id}>
-                                    <Link to={`/project/${p.id}`}>{p.name}</Link>
-                                  </li>
-                                ))}
-                              </ul>
-                            </section>
-                            <section className="info__activity">
-                              <h2 className="info__title">Activity</h2>
-                              <ul className="activity__list">
-                                {activityList.map(a => (
-                                  <li className="list__item" key={a.timestamp}>
-                                    <div className="box-item">
-                                      <span className="box-image">
-                                        <img
-                                          src={a.actor.avatar_url}
-                                          alt={a.actor.name !== undefined && a.actor.name !== ''
-                                            ? a.actor.name
-                                            : a.actor.email.substring(0, a.actor.email.indexOf('@'))}
-                                        />
-                                      </span>
-                                      <p className="box-text">
-                                        <span className="text__activity">
-                                          {a.verb.indexOf('{actor}') > -1
-                                            ? (
-                                              <strong className="name">
-                                                {a.actor.name !== undefined && a.actor.name !== ''
-                                                  ? a.actor.name
-                                                  : a.actor.email.substring(0, a.actor.email.indexOf('@'))
-                                                }
-                                              </strong>
-                                            )
-                                            : null
-                                          }
-                                          <span className="activity">
-                                            {a.target_content_type === '프로젝트'
-                                              ? a.verb.replace('{actor}', '').replace("'{target}'", a.target.name)
-                                              : null
-                                            }
-                                            {a.target_content_type === '테스트'
-                                              ? a.verb.replace('{actor}', '').replace("'{target}'", a.target.title)
-                                              : null
-                                            }
-                                            {a.target_content_type === '팀'
-                                              ? a.verb.replace('{actor}', '').replace("'{target}'", a.target.name)
-                                              : null
-                                            }
-                                          </span>
+                          <div className="payment__info">
+                            <div className="wrapper-inner">
+                              <ul className="info__list">
+                                {voucherList
+                                  .concat(testList)
+                                  .sort((a, b) => a.created_at - b.created_at)
+                                  .map(p => (
+                                    <li className="list__item" key={p.code}>
+                                      <button type="button" className="box-payment">
+                                        <span className="payment__title">
+                                          {p.voucher_amount > 0 ? '대량구매' : '단일구매'}
                                         </span>
-                                        <span className="text__date">{getDate(a.timestamp)}</span>
-                                      </p>
-                                    </div>
-                                  </li>
-                                ))}
+                                        <strong className="payment__plan">{p.plan.name}</strong>
+                                        <span className={`payment__step${p.test === undefined ? '' : `--${p.test.step.toLowerCase()}`}`}>
+                                          {setPaymentStep(
+                                            p.voucher_amount,
+                                            p.test !== undefined ? p.test.step : undefined,
+                                          )}
+                                        </span>
+                                      </button>
+                                      <div className="box-paid">
+                                        <strong className="paid__total">
+                                          {p.ordered_price}
+                                          <i>원</i>
+                                        </strong>
+                                        <span className="paid__date">
+                                          <span>구매일자: </span>
+                                          {getDate(p.created_at)}
+                                        </span>
+                                      </div>
+                                    </li>
+                                  ))}
                               </ul>
-                            </section>
-                          </>
+                            </div>
+                          </div>
                         )
                       }
                     </div>
-                  )
-                  : (
-                    <div className="payment__info">
-                      <div className="wrapper-inner">
-                        <ul className="info__list">
-                          {voucherList
-                            .concat(testList)
-                            .sort((a, b) => a.created_at - b.created_at)
-                            .map(p => (
-                              <li className="list__item" key={p.code}>
-                                <button type="button" className="box-payment">
-                                  <span className="payment__title">
-                                    {p.voucher_amount > 0 ? '대량구매' : '단일구매'}
-                                  </span>
-                                  <strong className="payment__plan">{p.plan.name}</strong>
-                                  <span className={`payment__step${p.test === undefined ? '' : `--${p.test.step.toLowerCase()}`}`}>
-                                    {setPaymentStep(
-                                      p.voucher_amount,
-                                      p.test !== undefined ? p.test.step : undefined,
-                                    )}
-                                  </span>
-                                </button>
-                                <div className="box-paid">
-                                  <strong className="paid__total">
-                                    {p.ordered_price}
-                                    <i>원</i>
-                                  </strong>
-                                  <span className="paid__date">
-                                    <span>구매일자: </span>
-                                    {getDate(p.created_at)}
-                                  </span>
-                                </div>
-                              </li>
-                            ))}
-                        </ul>
-                      </div>
-                    </div>
-                  )
-                }
-              </div>
-            </section>
-            <NewPasswordPopup show={isOpen} onPopup={togglePopup} handleSubmit={handleSubmit} />
-          </PageTemplate>
-        )
+                  </section>
+                  <NewPasswordPopup
+                    show={isOpen}
+                    onPopup={togglePopup}
+                    handleSubmit={handleSubmit}
+                  />
+                </PageTemplate>
+              )}
+          </>
+        )}
+      </>
     );
   }
 }

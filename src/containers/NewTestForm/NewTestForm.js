@@ -4,10 +4,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  Field, FormSection, reduxForm, getFormValues, getFormMeta, SubmissionError,
+  Field, FormSection, reduxForm, getFormValues, getFormMeta,
 } from 'redux-form';
 import PayAccountInfo from 'components/PayAccountInfo';
 import LoadingIndicator from 'components/LoadingIndicator';
+import ToastAlert from 'components/ToastAlert';
 import {
   setTestInit, getTest, postTest, patchTest,
 } from 'modules/test';
@@ -22,6 +23,7 @@ import { getCategories } from 'modules/category';
 import { getPlanList } from 'modules/plan';
 import { orderTest, getTestOrder } from 'modules/order';
 import RightSidebar from './RightSidebar';
+import validate from './validate';
 import {
   TestFormDefault, TestFormTarget, TestFormQuest, TestFormPay, TestFormReport,
 } from './TesrForm';
@@ -47,6 +49,7 @@ class NewTestForm extends Component {
     isAllPassed: false,
     hasReport: false,
     test: {},
+    asyncErrorMsg: '',
   }
 
   componentDidMount() {
@@ -301,9 +304,12 @@ class NewTestForm extends Component {
 
     if (tId) {
       if (isDefaultRendered && hasDefaultPassed) {
+        const step = 'APPLY';
+
         await patchTest(
           tId,
           pId,
+          step,
           titleReg,
           clientName,
           clientContact,
@@ -404,14 +410,19 @@ class NewTestForm extends Component {
         if (submitCheck) {
           const qId = test.quests.map(q => q.id);
           const {
-            registerRequire, issue, issueDetail, issuePurpose,
+            registerRequire,
+            issue,
+            issueDetail,
+            issuePurpose,
           } = values.quest;
           const registerValue = registerRequire !== '아니오';
+          const step = 'REGISTER';
 
           if (registerRequire) {
             await patchTest(
               tId,
               pId,
+              step,
               titleReg,
               clientName,
               clientContact,
@@ -429,6 +440,24 @@ class NewTestForm extends Component {
           }
 
           if (issue[`q${qId[0]}`]) {
+            await patchTest(
+              tId,
+              pId,
+              step,
+              titleReg,
+              clientName,
+              clientContact,
+              media2,
+              email,
+              media1,
+              serviceFormat,
+              serviceInfo,
+              serviceCategory,
+              serviceStatus,
+              serviceDesc,
+              funnel,
+              registerValue,
+            );
             await patchQuest(
               qId[0],
               tId,
@@ -443,12 +472,31 @@ class NewTestForm extends Component {
                   isQuestPassed: true,
                   isPayRendered: true,
                 });
-              }).catch((err) => {
+              })
+              .catch((err) => {
                 console.log(err);
               });
           }
 
           if (issue[`q${qId[1]}`]) {
+            await patchTest(
+              tId,
+              pId,
+              step,
+              titleReg,
+              clientName,
+              clientContact,
+              media2,
+              email,
+              media1,
+              serviceFormat,
+              serviceInfo,
+              serviceCategory,
+              serviceStatus,
+              serviceDesc,
+              funnel,
+              registerValue,
+            );
             await patchQuest(
               qId[1],
               tId,
@@ -463,12 +511,31 @@ class NewTestForm extends Component {
                   isQuestPassed: true,
                   isPayRendered: true,
                 });
-              }).catch((err) => {
+              })
+              .catch((err) => {
                 console.log(err);
               });
           }
 
           if (issue[`q${qId[2]}`]) {
+            await patchTest(
+              tId,
+              pId,
+              step,
+              titleReg,
+              clientName,
+              clientContact,
+              media2,
+              email,
+              media1,
+              serviceFormat,
+              serviceInfo,
+              serviceCategory,
+              serviceStatus,
+              serviceDesc,
+              funnel,
+              registerValue,
+            );
             await patchQuest(
               qId[2],
               tId,
@@ -483,7 +550,8 @@ class NewTestForm extends Component {
                   isQuestPassed: true,
                   isPayRendered: true,
                 });
-              }).catch((err) => {
+              })
+              .catch((err) => {
                 console.log(err);
               });
           }
@@ -492,40 +560,34 @@ class NewTestForm extends Component {
         const selectedPlan = planList.find(p => p.name === values.pay.plan);
         const cType = values.pay.coupon !== undefined ? values.pay.coupon : undefined;
         const cCode = values.pay.couponNum !== undefined ? values.pay.couponNum : undefined;
-        console.log(cType);
-        console.log(cCode);
 
-        if ((cType !== 'WELCOME_BACK' && cType && !cCode) || (!cType && cCode)) {
-          const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+        const submitCheck = window.confirm('PLAN을 선택하셨나요?\n등록 후엔 수정이 되지 않습니다리다리닷닷');
 
-          return sleep(100).then(() => {
-            throw new SubmissionError({
-              couponNum: '쿠폰, 혹은 시리얼 넘버를 정확히 입력해 주셔야 합니다',
-              _error: '쿠폰, 혹은 시리얼 넘버를 정확히 입력해 주셔야 합니다',
+        if (submitCheck) {
+          orderTest(
+            selectedPlan.id,
+            tId,
+            cType,
+            cCode,
+          ).then((res) => {
+            console.log(res);
+            this.setState({
+              isPayRendered: true,
+              isPayPassed: true,
+              isAllRendered: true,
+              test: {
+                order: res.data,
+              },
+            });
+          }).catch((err) => {
+            console.log(err);
+            console.log(err.response);
+            console.log(err.message);
+            this.setState({
+              asyncErrorMsg: err.response.data.coupon_code,
             });
           });
         }
-
-        orderTest(
-          selectedPlan.id,
-          tId,
-          cType,
-          cCode,
-        ).then((res) => {
-          console.log(res);
-          this.setState({
-            isPayRendered: true,
-            isPayPassed: true,
-            isAllRendered: true,
-            test: {
-              order: res.data,
-            },
-          });
-        }).catch((err) => {
-          console.log(err);
-          console.log(err.response);
-          console.log(err.message);
-        });
       }
     } else {
       await postTest(
@@ -637,6 +699,7 @@ class NewTestForm extends Component {
       isAllPassed,
       hasReport,
       test,
+      asyncErrorMsg,
     } = this.state;
     const {
       route,
@@ -647,7 +710,6 @@ class NewTestForm extends Component {
       handleSubmit,
       categoryList,
       extras,
-      error,
     } = this.props;
     const { goBack, handleFormRender, onSubmit } = this;
     const { tId } = route.match.params;
@@ -828,7 +890,14 @@ class NewTestForm extends Component {
             { isTargetRendered
               ? (
                 <>
-                  { isDefaultPassed ? null : <DisabledLayer />}
+                  { isDefaultPassed ? null : <DisabledLayer /> }
+                  { isDefaultPassed ? null : (
+                    <ToastAlert
+                      title="아직은 작성하실 수 없어요!"
+                      subtitle="이전 단계를 모두 완성해 주세요"
+                      isShow
+                    />
+                  ) }
                   <FormSection name="target">
                     <TestFormTarget
                       isDisabled={isNoNamed || isSpacedTitle
@@ -854,6 +923,13 @@ class NewTestForm extends Component {
               ? (
                 <>
                   { isTargetPassed ? null : <DisabledLayer />}
+                  { isDefaultPassed ? null : (
+                    <ToastAlert
+                      title="아직은 작성하실 수 없어요!"
+                      subtitle="이전 단계를 모두 완성해 주세요"
+                      isShow
+                    />
+                  ) }
                   <FormSection name="quest">
                     <TestFormQuest
                       isDisabled={isNoNamed || isSpacedTitle
@@ -879,6 +955,13 @@ class NewTestForm extends Component {
               ? (
                 <>
                   { isQuestPassed ? null : <DisabledLayer />}
+                  { isDefaultPassed ? null : (
+                    <ToastAlert
+                      title="아직은 작성하실 수 없어요!"
+                      subtitle="이전 단계를 모두 완성해 주세요"
+                      isShow
+                    />
+                  ) }
                   { isPayPassed
                     ? (
                       <>
@@ -935,7 +1018,7 @@ class NewTestForm extends Component {
                           extraValues={extras}
                           extraInfoCategory={extraInfoCategory}
                           isRegisterReq={fieldsValues !== undefined && fieldsValues.quest !== undefined ? fieldsValues.quest.registerRequire : '아니오'}
-                          submitErrorMsg={error}
+                          submitErrorMsg={asyncErrorMsg}
                         />
                       </FormSection>
                     )
@@ -954,6 +1037,7 @@ class NewTestForm extends Component {
             : (
               <RightSidebar
                 step={step}
+                submitErrorMsg={asyncErrorMsg}
                 isDisabled={isNoNamed || isSpacedTitle}
                 isDefaultRendered={isDefaultRendered}
                 isTargetRendered={isTargetRendered}
@@ -1147,6 +1231,7 @@ const mapDispatchToProps = dispatch => ({
   patchTest: (
     tId,
     pId,
+    step,
     title,
     clientName,
     clientContact,
@@ -1163,6 +1248,7 @@ const mapDispatchToProps = dispatch => ({
   ) => dispatch(patchTest(
     tId,
     pId,
+    step,
     title,
     clientName,
     clientContact,
@@ -1239,6 +1325,7 @@ export default connect(
 )(reduxForm({
   form: 'testForm',
   enableReinitialize: true,
+  validate,
   onSubmitFail: (errors, dispatch, submitError, props) => {
     console.log(errors, dispatch, submitError, props);
   },

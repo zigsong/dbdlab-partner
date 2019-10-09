@@ -33,6 +33,7 @@ $veryLightGray: #cacaca;
       color: $black;
       transition: border-color .3s;
       outline: none;
+      overflow: auto;
       
       &::placeholder {
         color: $veryLightGray;
@@ -54,7 +55,7 @@ $veryLightGray: #cacaca;
       content: '';
       position: absolute;
       left: 0;
-      bottom: 0;
+      bottom: 4px;
       z-index: 5;
       display: block;
       width: 0;
@@ -78,7 +79,7 @@ $veryLightGray: #cacaca;
     .msg--error {
       position: absolute;
       left: 0;
-      bottom: 3.5px;
+      bottom: 7.5px;
       z-index: 10;
       font-size: 8px;
       color: $red;
@@ -90,7 +91,7 @@ $veryLightGray: #cacaca;
       .msg--error {
         position: absolute;
         left: 0;
-        bottom: 3.5px;
+        bottom: 7.5px;
         z-index: 10;
         font-size: 8px;
         color: $red;

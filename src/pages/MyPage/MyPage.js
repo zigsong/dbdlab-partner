@@ -16,6 +16,7 @@ import { getVoucherOrder, getTestOrderList } from 'modules/order';
 import { getNotifications } from 'modules/notification';
 import UnauthorizedPopup from 'components/UnauthorizedPopup';
 import LoadingIndicator from 'components/LoadingIndicator';
+import ToastAlert from 'components/ToastAlert';
 import PageTemplate from 'containers/PageTemplate';
 import NewPasswordPopup from 'containers/NewPasswordPopup';
 import FormInput from 'components/FormInput';
@@ -37,6 +38,9 @@ class MyPage extends Component {
     activityList: [],
     voucherList: [],
     testList: [],
+    toastTitle: '',
+    toastSubtitle: '',
+    isToastShow: false,
   }
 
   componentDidMount() {
@@ -198,7 +202,12 @@ class MyPage extends Component {
       name,
       phone,
     ).then(() => {
-      handleEdit();
+      this.setState({
+        toastTitle: 'Saved!',
+        toastSubtitle: '성공적으로 수정되었어요:)',
+        isToastShow: true,
+      });
+      setTimeout(() => handleEdit(), 2200);
     }).catch((err) => {
       console.log(err);
       console.log(err.response);
@@ -228,6 +237,9 @@ class MyPage extends Component {
       isLoading,
       isAuthError,
       onEdit,
+      toastTitle,
+      toastSubtitle,
+      isToastShow,
     } = this.state;
     const {
       getDate,
@@ -439,6 +451,15 @@ class MyPage extends Component {
                     onPopup={togglePopup}
                     handleSubmit={handleSubmit}
                   />
+                  {isToastShow
+                    ? (
+                      <ToastAlert
+                        title={toastTitle}
+                        subtitle={toastSubtitle}
+                        isShow={isToastShow}
+                      />
+                    )
+                    : null}
                 </PageTemplate>
               )}
           </>

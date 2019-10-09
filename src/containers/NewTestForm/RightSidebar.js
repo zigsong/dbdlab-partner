@@ -17,6 +17,7 @@ const RightSidebar = (props) => {
     fieldsValues,
     submitFailed,
     step,
+    submitErrorMsg,
   } = props;
 
   // value check
@@ -408,7 +409,7 @@ const RightSidebar = (props) => {
         || (hasTargetRequiredValues && isTargetRendered && (!isAllPassed || step === 'payment'))
         || (hasQuestRequiredValues && isQuestRendered && (!isAllPassed || step === 'payment'))
         || (hasPlanValue && isPayRendered && (!isAllPassed || step === 'payment'))
-          ? '--pass' : ''}${submitFailed ? '--fail' : ''}`}
+          ? '--pass' : ''}${submitFailed || submitErrorMsg ? '--fail' : ''}`}
     >
       {isDisabled
         ? null

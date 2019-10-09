@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -6,6 +7,8 @@ import NewProjectPopup from 'containers/NewProjectPopup';
 import ProjectList from 'containers/ProjectList';
 import UnauthorizedPopup from 'components/UnauthorizedPopup';
 import LoadingIndicator from 'components/LoadingIndicator';
+import ToastAlert from 'components/ToastAlert';
+import { getAuthSelf, getAccount } from 'modules/auth';
 import { togglePopup } from 'modules/popup';
 import { getProjectList } from 'modules/project';
 import './Project.scss';
@@ -16,6 +19,9 @@ class Project extends Component {
     this.state = {
       isLoading: false,
       isAuthError: false,
+      toastTitle: '',
+      toastSubtitle: '',
+      isToastShow: false,
     };
   }
 
@@ -30,6 +36,7 @@ class Project extends Component {
       });
     }
 
+    this.getUserName();
     this.getProject();
     this.setState({ isLoading: true });
   }
@@ -45,6 +52,27 @@ class Project extends Component {
     const { props } = this;
     props.togglePopup(isShow);
   };
+
+  getUserName = async () => {
+    const { getAuthSelf, getAccount } = this.props;
+
+    await getAuthSelf()
+      .then((res) => {
+        console.log(res);
+        getAccount(res.data.id)
+          .then((result) => {
+            console.log(result);
+            const name = result.data.name.length > 0 ? result.data.name : result.data.email.substring(0, result.data.email.indexOf('@'));
+
+            this.setState({
+              isLoading: false,
+              toastTitle: `${name}님, 반갑습니다:)`,
+              toastSubtitle: '프로젝트 관리를 시작해 보세요',
+              isToastShow: true,
+            });
+          });
+      });
+  }
 
   getProject = async () => {
     const { props } = this;
@@ -67,7 +95,13 @@ class Project extends Component {
 
   render() {
     const { isOpen, history, projectList } = this.props;
-    const { isLoading, isAuthError } = this.state;
+    const {
+      isLoading,
+      isAuthError,
+      toastTitle,
+      toastSubtitle,
+      isToastShow,
+    } = this.state;
 
     return (
       <PageTemplate>
@@ -96,6 +130,15 @@ class Project extends Component {
             }
           </div>
         </section>
+        {isToastShow
+          ? (
+            <ToastAlert
+              title={toastTitle}
+              subtitle={toastSubtitle}
+              isShow={isToastShow}
+            />
+          )
+          : null}
       </PageTemplate>
     );
   }
@@ -116,8 +159,10 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  togglePopup: isOpen => (dispatch(togglePopup(isOpen))),
-  getProjectList: () => (dispatch(getProjectList())),
+  getAuthSelf: () => dispatch(getAuthSelf()),
+  getAccount: id => dispatch(getAccount(id)),
+  togglePopup: isOpen => dispatch(togglePopup(isOpen)),
+  getProjectList: () => dispatch(getProjectList()),
 });
 
 export default connect(

@@ -45,6 +45,7 @@ export const postTest = (
 export const patchTest = (
   tId,
   pId,
+  step,
   title,
   clientName,
   clientContact,
@@ -61,6 +62,7 @@ export const patchTest = (
 ) => axios.patch(`${baseURL}/tests/${tId}/`, {
   project_id: pId,
   title,
+  step,
   client_name: clientName,
   client_phone_number: clientContact,
   client_email: email,
@@ -74,4 +76,4 @@ export const patchTest = (
   funnel,
   is_register_required: registerValue,
 }, headers);
-export const getTestPrice = (tId, pName) => axios.get(`${baseURL}/tests/${tId}/calculate/?plan_name=${pName}`);
+export const getTestPrice = (tId, pName) => axios.get(`${baseURL}/tests/${tId}/calculate/?plan_name=${pName}`, headers);

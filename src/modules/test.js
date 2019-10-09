@@ -122,6 +122,7 @@ export const postTest = (
 export const patchTest = (
   tId,
   pId,
+  step,
   title,
   clientName,
   clientContact,
@@ -140,6 +141,7 @@ export const patchTest = (
     TestAPI.patchTest(
       tId,
       pId,
+      step,
       title,
       clientName,
       clientContact,

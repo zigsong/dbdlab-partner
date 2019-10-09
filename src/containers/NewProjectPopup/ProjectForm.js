@@ -1,26 +1,42 @@
+/* eslint-disable no-shadow */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import FormInput from 'components/FormInput';
 import Checkbox from 'components/Checkbox';
 import {
-  Field, reduxForm, formValueSelector, getFormMeta,
+  Field, reduxForm, getFormValues, getFormMeta, change,
 } from 'redux-form';
 
 class ProjectForm extends Component {
   componentDidMount() {
-    const { change, serviceName, isSame } = this.props;
-    if (isSame) change('company', serviceName);
+    const { fieldValue, initialValues, change } = this.props;
+    const same = fieldValue !== undefined ? fieldValue.same : initialValues.same;
+
+    if (same === undefined) change('same', true);
   }
 
   componentDidUpdate() {
-    const { change, serviceName, isSame } = this.props;
-    if (isSame) change('company', serviceName);
+    const { fieldValue, change } = this.props;
+    const service = fieldValue !== undefined ? fieldValue.service : undefined;
+    const same = fieldValue !== undefined ? fieldValue.same : undefined;
+    if (same === undefined) change('same', true);
+    if (same) change('company', service);
   }
 
   handleInputValue = () => {
-    const { change, serviceName, isSame } = this.props;
-    if (isSame) change('company', serviceName);
+    const { fieldValue, change } = this.props;
+    const service = fieldValue !== undefined ? fieldValue.service : undefined;
+    const same = fieldValue !== undefined ? fieldValue.same : undefined;
+
+    if (same) {
+      change('company', service);
+    }
   };
+
+  handleCheckboxValue = () => {
+    const { change } = this.props;
+    change('same', false);
+  }
 
   onReset = () => {
     const { reset, onPopup } = this.props;
@@ -29,8 +45,16 @@ class ProjectForm extends Component {
   }
 
   render() {
-    const { handleSubmit, serviceName, fieldMeta } = this.props;
+    const {
+      handleSubmit,
+      fieldValue,
+      initialValues,
+      fieldMeta,
+    } = this.props;
+    const service = fieldValue !== undefined ? fieldValue.service : undefined;
+    const same = fieldValue !== undefined ? fieldValue.same : initialValues.same;
     const { onReset } = this;
+
     return (
       <form className="form" onSubmit={handleSubmit}>
         <p className="form__data-wrapper">
@@ -44,6 +68,7 @@ class ProjectForm extends Component {
             label="service"
             placeholder="텍스트 입력"
             component={FormInput}
+            onChange={() => this.handleInputValue()}
           />
           <span className="input__placeholder">의 사용성 테스트</span>
         </p>
@@ -54,7 +79,7 @@ class ProjectForm extends Component {
               name="same"
               component={Checkbox}
               label="서비스명과 동일합니다"
-              checked
+              checked={same}
               onChange={() => this.handleInputValue()}
             />
           </span>
@@ -64,27 +89,37 @@ class ProjectForm extends Component {
             label="company"
             placeholder="텍스트 입력"
             component={FormInput}
+            onChange={() => this.handleCheckboxValue()}
           />
         </p>
         <div className="form__btn-wrapper">
           <button type="button" className="btn-cancle" onClick={onReset}>취소</button>
-          <button type="submit" className={`btn-submit${serviceName !== undefined && fieldMeta.service.visited ? '--active' : ''}`} onClick={handleSubmit}>프로젝트 만들기</button>
+          <button type="submit" className={`btn-submit${service !== undefined && fieldMeta.service.visited ? '--active' : ''}`} onClick={handleSubmit}>프로젝트 만들기</button>
         </div>
       </form>
     );
   }
 }
 
-const selector = formValueSelector('projectForm');
 const getFormData = (state) => {
-  const isSame = selector(state, 'same');
-  const serviceName = selector(state, 'service');
+  const fieldValue = getFormValues('projectForm')(state);
   const fieldMeta = getFormMeta('projectForm')(state);
-  return { isSame, serviceName, fieldMeta };
+  const initData = { same: true };
+
+  return {
+    fieldValue,
+    fieldMeta,
+    initialValues: initData,
+  };
 };
+
+const mapDispatchToProps = dispatch => ({
+  change: dispatch(change()),
+});
 
 export default connect(
   getFormData,
+  mapDispatchToProps,
 )(reduxForm({
   form: 'projectForm',
   enableReinitialize: true,

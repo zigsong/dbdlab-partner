@@ -63,7 +63,7 @@ class NewProjectPopup extends Component {
         <ProjectForm
           onPopup={handlePopup}
           onSubmit={this.onSubmit}
-          initialValues={{ same: true }}
+          // initialValues={{ same: true }}
         />
       </PopupTemplate>
     );

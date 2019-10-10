@@ -44,7 +44,7 @@ const TestFormQuest = (props) => {
             <strong className="title">도전과제 1*</strong>
           </span>
           <Field
-            name={`issue.q${qId[2]}`}
+            name={`issue.q${qId[0]}`}
             type="select"
             defaultValue="사용성 이슈 선택"
             component={FormSelect}
@@ -62,9 +62,9 @@ const TestFormQuest = (props) => {
             ))}
           </Field>
           <Field
-            name={`issueDetail.q${qId[2]}`}
+            name={`issueDetail.q${qId[0]}`}
             type="text"
-            label={`quest.issueDetail.q${qId[2]}`}
+            label={`quest.issueDetail.q${qId[0]}`}
             placeholder="선택한 이슈를 상세하게 적어주세요"
             component={FormInput}
             validate={[
@@ -107,7 +107,7 @@ const TestFormQuest = (props) => {
             <strong className="title">도전과제 3</strong>
           </span>
           <Field
-            name={`issue.q${qId[0]}`}
+            name={`issue.q${qId[2]}`}
             type="select"
             defaultValue="사용성 이슈 선택"
             component={FormSelect}
@@ -120,9 +120,9 @@ const TestFormQuest = (props) => {
             ))}
           </Field>
           <Field
-            name={`issueDetail.q${qId[0]}`}
+            name={`issueDetail.q${qId[2]}`}
             type="text"
-            label={`quest.issueDetail.q${qId[0]}`}
+            label={`quest.issueDetail.q${qId[2]}`}
             placeholder="선택한 이슈를 상세하게 적어주세요"
             component={FormInput}
             disabled={isDisabled}
@@ -135,9 +135,9 @@ const TestFormQuest = (props) => {
             <strong className="title">도전과제 1을 통해 어떤 것을 알고 싶은가요?*</strong>
           </span>
           <Field
-            name={`issuePurpose.q${qId[2]}`}
+            name={`issuePurpose.q${qId[0]}`}
             type="text"
-            label={`quest.issuePurpose.q${qId[2]}`}
+            label={`quest.issuePurpose.q${qId[0]}`}
             placeholder="텍스트 입력"
             component={FormTextArea}
             validate={[
@@ -167,9 +167,9 @@ const TestFormQuest = (props) => {
             <strong className="title">도전과제 3을 통해 어떤 것을 알고 싶은가요?</strong>
           </span>
           <Field
-            name={`issuePurpose.q${qId[0]}`}
+            name={`issuePurpose.q${qId[2]}`}
             type="text"
-            label={`quest.issuePurpose.q${qId[0]}`}
+            label={`quest.issuePurpose.q${qId[2]}`}
             placeholder="텍스트 입력"
             component={FormTextArea}
             disabled={isDisabled}

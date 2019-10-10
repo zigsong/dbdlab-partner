@@ -17,8 +17,7 @@ const Plan = (props) => {
     setLoading(true);
 
     if (AUTH_TOKEN === null) {
-      // window.location.assign(`${protocol}//localhost:4000`);
-      window.location.assign(`${protocol}//qa.realdopt.com/plan`);
+      window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/plan`);
     } else {
       setLoading(false);
     }

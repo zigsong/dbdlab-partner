@@ -20,7 +20,7 @@ class NewProjectPopup extends Component {
 
   onSubmit = (values) => {
     // eslint-disable-next-line no-shadow
-    const { handlePopup, getProjectList, handleReset } = this.props;
+    const { getProjectList, handleReset } = this.props;
 
     if (values.service === undefined) {
       throw new SubmissionError({

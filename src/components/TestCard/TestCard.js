@@ -7,7 +7,7 @@ const TestCard = (props) => {
     const setManagerName = () => {
       let name;
       if (staff !== null) {
-        name = staff.name !== '' ? `${staff.name}매니저` : `${staff.email.substring(0, staff.email.indexOf('@'))}매니저`;
+        name = staff.name !== '' ? `${staff.name} 매니저` : `${staff.email.substring(0, staff.email.indexOf('@'))} 매니저`;
       } else {
         name = '매니저 배정중';
       }

@@ -102,8 +102,8 @@ class NewPlanForm extends Component {
 
     if (e.type === 'focus') {
       console.log('Focus!');
-      change('planForm', 'plan', `PLAN 0${idx + 1}`);
-      change('planForm', `plan0${!idx + 1}Amount`, initValue);
+      change('plan', `PLAN 0${idx + 1}`);
+      change(`plan0${!idx + 1}Amount`, initValue);
     }
   };
 

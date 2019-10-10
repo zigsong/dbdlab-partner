@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
 const AUTH_TOKEN = hasTokenCookie !== undefined ? hasTokenCookie.replace(/\s/gi, '').substring(6) : null;
-const baseURL = 'https://qa-server.realdopt.com/api';
+const baseURL = process.env.REACT_APP_API_URL;
 // const baseURL = '';
 const headers = {
   headers: {

@@ -153,8 +153,8 @@ const RightSidebar = (props) => {
   const isIssue1Active = hasQuestFieldMeta
     && questMeta.issue !== undefined
     && Object.keys(questMeta.issue).length > 0
-    && questMeta.issue[Object.keys(questValues.issue)[2]] !== undefined
-    ? questMeta.issue[Object.keys(questValues.issue)[2]].active
+    && questMeta.issue[Object.keys(questValues.issue)[0]] !== undefined
+    ? questMeta.issue[Object.keys(questValues.issue)[0]].active
     : undefined;
   const isIssue2Active = hasQuestFieldMeta
     && questMeta.issue !== undefined
@@ -165,13 +165,13 @@ const RightSidebar = (props) => {
   const isIssue3Active = hasQuestFieldMeta
     && questMeta.issue !== undefined
     && Object.keys(questMeta.issue).length > 0
-    && questMeta.issue[Object.keys(questValues.issue)[0]] !== undefined
-    ? questMeta.issue[Object.keys(questValues.issue)[0]].active
+    && questMeta.issue[Object.keys(questValues.issue)[2]] !== undefined
+    ? questMeta.issue[Object.keys(questValues.issue)[2]].active
     : undefined;
   const isIssueDetail1Active = hasQuestFieldMeta
     && questMeta.issueDetail !== undefined
-    && questMeta.issueDetail[Object.keys(questValues.issueDetail)[2]] !== undefined
-    ? questMeta.issueDetail[Object.keys(questValues.issueDetail)[2]].active
+    && questMeta.issueDetail[Object.keys(questValues.issueDetail)[0]] !== undefined
+    ? questMeta.issueDetail[Object.keys(questValues.issueDetail)[0]].active
     : undefined;
   const isIssueDetail2Active = hasQuestFieldMeta
     && questMeta.issueDetail !== undefined
@@ -180,13 +180,13 @@ const RightSidebar = (props) => {
     : undefined;
   const isIssueDetail3Active = hasQuestFieldMeta
     && questMeta.issueDetail !== undefined
-    && questMeta.issueDetail[Object.keys(questValues.issueDetail)[0]] !== undefined
-    ? questMeta.issueDetail[Object.keys(questValues.issueDetail)[0]].active
+    && questMeta.issueDetail[Object.keys(questValues.issueDetail)[2]] !== undefined
+    ? questMeta.issueDetail[Object.keys(questValues.issueDetail)[2]].active
     : undefined;
   const isIssuePurpose1Active = hasQuestFieldMeta
     && questMeta.issuePurpose !== undefined
-    && questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[2]] !== undefined
-    ? questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[2]].active
+    && questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[0]] !== undefined
+    ? questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[0]].active
     : undefined;
   const isIssuePurpose2Active = hasQuestFieldMeta
     && questMeta.issuePurpose !== undefined
@@ -195,8 +195,8 @@ const RightSidebar = (props) => {
     : undefined;
   const isIssuePurpose3Active = hasQuestFieldMeta
     && questMeta.issuePurpose !== undefined
-    && questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[0]] !== undefined
-    ? questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[0]].active
+    && questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[2]] !== undefined
+    ? questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[2]].active
     : undefined;
   // pay meta
   const payMeta = hasFieldMeta ? fieldsMeta.pay : undefined;

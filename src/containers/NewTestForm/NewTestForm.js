@@ -558,13 +558,17 @@ class NewTestForm extends Component {
         }
       } else if (isPayRendered && hasPayPassed) {
         const selectedPlan = planList.find(p => p.name === values.pay.plan);
-        const cType = values.pay.coupon !== undefined ? values.pay.coupon : null;
+        const cType = values.pay.coupon !== undefined ? values.pay.coupon : undefined;
         // eslint-disable-next-line no-nested-ternary
-        const cCode = cType === 'WELCOME_BACK' || cType === null ? null : (values.pay.couponNum !== undefined ? values.pay.couponNum : undefined);
+        const cCode = cType === 'WELCOME_BACK' || cType === undefined ? undefined : (values.pay.couponNum !== undefined ? values.pay.couponNum : undefined);
 
         const submitCheck = window.confirm('PLAN을 선택하셨나요?\n등록 후엔 수정이 되지 않습니다리다리닷닷');
 
         if (submitCheck) {
+          console.log(selectedPlan.id,
+            tId,
+            cType,
+            cCode);
           orderTest(
             selectedPlan.id,
             tId,

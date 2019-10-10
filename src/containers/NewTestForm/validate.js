@@ -46,23 +46,23 @@ const validate = (values) => {
     const issue2qId = values.quest.issue !== undefined ? Object.keys(values.quest.issue)[1] : 2;
     const issue3qId = values.quest.issue !== undefined ? Object.keys(values.quest.issue)[2] : 3;
     const issue1qValue = values.quest.issue !== undefined
-      ? Object.values(values.quest.issue)[0] : undefined;
+      ? values.quest.issue[issue1qId] : undefined;
     const issue2qValue = values.quest.issue !== undefined
-      ? Object.values(values.quest.issue)[1] : undefined;
+      ? values.quest.issue[issue2qId] : undefined;
     const issue3qValue = values.quest.issue !== undefined
-      ? Object.values(values.quest.issue)[2] : undefined;
+      ? values.quest.issue[issue3qId] : undefined;
     const issueDetail1qValue = values.quest.issueDetail !== undefined
-      ? Object.values(values.quest.issueDetail)[0] : undefined;
+      ? values.quest.issueDetail[issue1qId] : undefined;
     const issueDetail2qValue = values.quest.issueDetail !== undefined
-      ? Object.values(values.quest.issueDetail)[1] : undefined;
+      ? values.quest.issueDetail[issue2qId] : undefined;
     const issueDetail3qValue = values.quest.issueDetail !== undefined
-      ? Object.values(values.quest.issueDetail)[2] : undefined;
+      ? values.quest.issueDetail[issue3qId] : undefined;
     const issuePurpose1qValue = values.quest.issuePurpose !== undefined
-      ? Object.values(values.quest.issuePurpose)[0] : undefined;
+      ? values.quest.issuePurpose[issue1qId] : undefined;
     const issuePurpose2qValue = values.quest.issuePurpose !== undefined
-      ? Object.values(values.quest.issuePurpose)[1] : undefined;
+      ? values.quest.issuePurpose[issue2qId] : null;
     const issuePurpose3qValue = values.quest.issuePurpose !== undefined
-      ? Object.values(values.quest.issuePurpose)[2] : undefined;
+      ? values.quest.issuePurpose[issue3qId] : undefined;
 
     if (issue1qValue === undefined) {
       if (issue2qValue !== undefined) {

@@ -45,25 +45,30 @@ class NewProjectPopup extends Component {
     } else {
       const { company, service } = values;
       const { props } = this;
+      const { protocol } = window.location;
       props.putProject({ company, service })
-        .then(() => {
-          getProjectList();
-          handleReset();
-        })
-        .then(() => {
-          handlePopup(false);
-        })
-        .catch((err) => {
-          const errMsgName = err.response.data.name !== undefined
-            ? err.response.data.name[0]
-            : undefined;
-
+        .then((res) => {
+          console.log(res);
           this.setState({
-            toastTitle: 'Oops! :(',
-            toastSubtitle: errMsgName,
+            toastTitle: '프로젝트가 생성되었습니다 :)',
+            toastSubtitle: '테스트 페이지로 이동합니다',
             isToastShow: true,
           });
-          console.log(errMsgName);
+          getProjectList();
+          handleReset();
+          setTimeout(() => window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project/${res.data.id}`), 2000);
+        })
+        .catch((err) => {
+          console.log(err);
+          // const errMsgName = err.response.data.name !== undefined
+          //   ? err.response.data.name[0]
+          //   : undefined;
+
+          // this.setState({
+          //   toastTitle: 'Oops! :(',
+          //   toastSubtitle: errMsgName,
+          //   isToastShow: true,
+          // });
         });
     }
   };
@@ -79,11 +84,15 @@ class NewProjectPopup extends Component {
           onSubmit={this.onSubmit}
           // initialValues={{ same: true }}
         />
-        <ToastAlert
-          title={toastTitle}
-          subtitle={toastSubtitle}
-          isShow={isToastShow}
-        />
+        {isToastShow
+          ? (
+            <ToastAlert
+              title={toastTitle}
+              subtitle={toastSubtitle}
+              isShow={isToastShow}
+            />
+          )
+          : null}
       </PopupTemplate>
     );
   }

@@ -144,6 +144,7 @@ class TeamMemberList extends Component {
             isToastShow: true,
           }, () => {
             setTimeout(() => {
+              this.setState({ isToastShow: false });
               getProject(project.id);
             }, 2200);
           });

@@ -57,9 +57,9 @@ $imgUrl: '/static/images';
 
         a {
           display: block;
-          width: 79px;
+          width: 90px;
           height: 29px;
-          background: transparent url('#{$imgUrl}/common/img_logo--temp.png') no-repeat center center / 100%;
+          background: transparent url('#{$imgUrl}/common/img_realdopt_partner.svg') no-repeat center center / 100% auto;
           font-size: 0;
           text-indent: -9999px;
           color: #029bff;
@@ -68,7 +68,7 @@ $imgUrl: '/static/images';
       }
 
       .nav__list {
-        width: calc(100% - 79px); //logo 79
+        width: calc(100% - 90px); //logo 90
         display: inline-block;
         padding-left: percentage(43 / 1000);
         margin: 6px 0;

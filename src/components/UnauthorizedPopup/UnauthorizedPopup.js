@@ -4,8 +4,9 @@ import PopupTemplate from 'components/PopupTemplate';
 import { togglePopup } from 'modules/popup';
 import './UnauthorizedPopup.scss';
 
-const UnauthorizedPopup = () => {
+const UnauthorizedPopup = (props) => {
   const redirect = () => {
+    const { inviteToken, pId } = props;
     const { protocol } = window.location;
     const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
     const deleteTokenCookie = () => new Promise(() => {
@@ -20,9 +21,17 @@ const UnauthorizedPopup = () => {
       }
     });
 
-    deleteTokenCookie().then(
-      window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login`),
-    );
+    console.log(inviteToken);
+
+    if (inviteToken !== undefined) {
+      deleteTokenCookie().then(
+        window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/${inviteToken}&project_id=${pId}`),
+      );
+    } else {
+      deleteTokenCookie().then(
+        window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login`),
+      );
+    }
   };
 
   return (

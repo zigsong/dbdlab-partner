@@ -60,9 +60,13 @@ export const putProject = ({ company, service }) => dispatch => (
   })
 );
 
-export const getProject = id => dispatch => (
+export const getProject = (id, inviteToken) => dispatch => (
   new Promise((resolve, reject) => {
-    ProjectAPI.getProject(id).then(
+    console.log(id);
+    console.log(inviteToken);
+    const token = inviteToken === undefined ? '' : inviteToken;
+    console.log(token);
+    ProjectAPI.getProject(id, token).then(
       (res) => {
         console.log(res);
         dispatch({

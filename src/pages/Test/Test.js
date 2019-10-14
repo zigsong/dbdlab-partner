@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
@@ -28,29 +29,100 @@ class Test extends Component {
   componentDidMount() {
     const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
     const AUTH_TOKEN = hasTokenCookie !== undefined ? hasTokenCookie.replace(/\s/gi, '').substring(6) : null;
+    const { protocol } = window.location;
     const { props } = this;
-    const { match } = props;
+    const { match, location } = props;
     const { pId } = match.params;
+    const { search } = location;
+    const isInvited = search.includes('invite_token');
+    console.log(pId);
+    console.log(location);
+    console.log(isInvited);
     const projectId = parseInt(pId, 10);
-    const authenticate = async () => {
-      await props.getAuthSelf();
-      await props.getTestList(projectId);
-      await props.getProject(projectId);
-    };
+    const inviteToken = search.includes('invite_token') ? search : '';
+    console.log(inviteToken);
+    const deleteTokenCookie = () => new Promise(() => {
+      if (hasTokenCookie !== undefined) {
+        console.log('logged in');
+        const setTokenCookie = (expireDate) => {
+          const date = new Date();
+          date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
+          document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=realdopt.com`;
+          // document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=localhost`;
+        };
+        setTokenCookie(-1);
+        alert('초대받은 계정으로 로그인 해주세요 :)');
+      } else {
+        console.log('not logged in');
+        alert('초대받은 계정으로 로그인 해주세요 :)');
+      }
+    });
 
     this.setState({ isLoading: true });
 
     if (AUTH_TOKEN === null) {
       this.setState({
-        isLoading: false,
         isAuthError: true,
+        isLoading: false,
       });
     } else {
-      authenticate()
-        .then(this.setState({ isLoading: false }))
+      console.log(inviteToken);
+      props.getAuthSelf()
+        .then((res) => {
+          console.log(res);
+          console.log(res.data.id);
+          const { id } = res.data;
+          // 기존 멤버인가
+          props.getProject(projectId)
+            .then((res) => {
+              console.log(res);
+              const isMember = res.data.members.find(x => x.id === id);
+              console.log(isMember);
+              console.log(!!isMember);
+
+              if (inviteToken.length > 1 && !!isMember) {
+                deleteTokenCookie().then(
+                  window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/${inviteToken}&project_id=${pId}`),
+                );
+              } else {
+                this.setState({ isLoading: false });
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log(err.response);
+              console.log(err.message);
+
+              console.log(inviteToken);
+              console.log(inviteToken.length);
+
+              if (inviteToken.length > 1) {
+                console.log('기존 멤버가 아닌 경우 다시 체크');
+                // 기존 멤버가 아닌 경우 다시 체크
+                props.getProject(projectId, inviteToken)
+                  .then((res) => {
+                    console.log(res);
+                    window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project`);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                    console.log(err.response);
+                    console.log(err.message);
+
+                    this.setState({
+                      isAuthError: true,
+                      isLoading: false,
+                    });
+                  });
+              }
+            });
+        })
         .catch((err) => {
-          const { status } = err.response;
+          console.log(err);
           console.log(err.response);
+          console.log(err.message);
+          const { status } = err.response;
+
           if (status === 401) {
             this.setState({
               isLoading: false,
@@ -64,7 +136,10 @@ class Test extends Component {
   componentWillUnmount() {
     const { props } = this;
     props.setTestListInit();
-    this.setState({ isNewTestApply: false });
+    this.setState({
+      isLoading: false,
+      isNewTestApply: false,
+    });
   }
 
   handleTabToggle = (e) => {
@@ -110,12 +185,14 @@ class Test extends Component {
     } = this.state;
     const {
       match,
+      location,
       testList,
       project,
       avatar_url,
     } = this.props;
     const { handleTabToggle, handleNewTestForm } = this;
     const { pId } = match.params;
+    const { search } = location;
     const hasTestList = Object.keys(testList).length > 0;
     const {
       name,
@@ -134,131 +211,143 @@ class Test extends Component {
 
     return (
       <>
-        { isLoading ? <LoadingIndicator /> : null }
-        { isAuthError ? <UnauthorizedPopup /> : null }
-        { isNewTestApply || match.params.tId > 0
-          ? (
-            <main className="contents">
-              <NewTestForm route={this.props} />
-            </main>
-          )
+        { isLoading
+          ? <LoadingIndicator />
           : (
             <>
-              <Header global={false} projectName={project.name} avatar_url={avatar_url} />
-              <main className="contents">
-                <section className="contents__test">
-                  <div className="contents-inner">
-                    <ul className="test__tablist">
-                      <li className={`tablist__item${isTestTab ? '--active' : ''}`}>
-                        <button type="button" className="btn-tab" onClick={e => handleTabToggle(e)}>나의 테스트</button>
-                      </li>
-                      <li className={`tablist__item${isTestTab ? '' : '--active'}`}>
-                        <button type="button" className="btn-tab" onClick={e => handleTabToggle(e)}>우리 팀</button>
-                      </li>
-                    </ul>
-                    {
-                      isTestTab
-                        ? (
-                          <div className="test__desc">
-                            { hasTestList
-                              ? (
-                                <ul className="desc__step-list">
-                                  { step.map(s => (
-                                    <li
-                                      className={`list__item--${s.state[0]}${s.state[0] === 'apply' ? '--active' : ''}`}
-                                      key={s.title}
-                                    >
-                                      <h2 className="item__title">{s.title}</h2>
-                                      <p className="item__desc">
-                                        { s.desc.toString().split('\n').map(desc => (
-                                          <React.Fragment key={desc}>
-                                            {desc}
-                                            <br />
-                                          </React.Fragment>
-                                        )) }
-                                        { s.state[0] === 'apply'
-                                          ? <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
-                                          : null }
-                                      </p>
-                                      <ScrollContainer className="item__testbox scroll-container">
-                                        { Object.keys(testList).map((t) => {
-                                          const tStep = testList[t].step.toLowerCase();
-                                          return (
-                                            s.state.indexOf(tStep) > -1
-                                              ? (
-                                                <React.Fragment key={t}>
-                                                  <TestCard
-                                                    pId={pId}
-                                                    tId={testList[t].id}
-                                                    tTitle={testList[t].title}
-                                                    step={tStep}
-                                                    staff={testList[t].staff}
-                                                    createDate={testList[t].created_at}
-                                                  />
-                                                  { tStep === 'completed'
-                                                    ? <Link to="/" className="btn-start--blue">결과 리포트 확인하기</Link>
-                                                    : null }
-                                                </React.Fragment>
-                                              )
-                                              : null
-                                          );
-                                        })
-                                        }
-                                      </ScrollContainer>
-                                    </li>
-                                  )) }
+              { isAuthError
+                ? <UnauthorizedPopup pId={pId} inviteToken={search} />
+                : (
+                  <>
+                    { isNewTestApply || match.params.tId > 0
+                      ? (
+                        <main className="contents">
+                          <NewTestForm route={this.props} />
+                        </main>
+                      )
+                      : (
+                        <>
+                          <Header global={false} projectName={project.name} avatar_url={avatar_url} />
+                          <main className="contents">
+                            <section className="contents__test">
+                              <div className="contents-inner">
+                                <ul className="test__tablist">
+                                  <li className={`tablist__item${isTestTab ? '--active' : ''}`}>
+                                    <button type="button" className="btn-tab" onClick={e => handleTabToggle(e)}>나의 테스트</button>
+                                  </li>
+                                  <li className={`tablist__item${isTestTab ? '' : '--active'}`}>
+                                    <button type="button" className="btn-tab" onClick={e => handleTabToggle(e)}>우리 팀</button>
+                                  </li>
                                 </ul>
-                              )
-                              : (
-                                <>
-                                  <ul className="desc__step-list">
-                                    { step.map(s => (
-                                      <li
-                                        className={`list__item--${s.state[0]}`}
-                                        key={s.title}
-                                      >
-                                        <h2 className="item__title">{s.title}</h2>
-                                        <p className="item__desc">
-                                          { s.desc.toString().split('\n').map(desc => (
-                                            <React.Fragment key={desc}>
-                                              {desc}
-                                              <br />
-                                            </React.Fragment>
-                                          )) }
-                                          { s.state === 'apply' && Object.keys(testList).length > 0
-                                            ? <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
-                                            : null }
-                                        </p>
-                                      </li>
-                                    )) }
-                                  </ul>
-                                  <span className="desc__text">테스트를 통해, 고객에게 더 좋은 서비스를 제공하세요!</span>
-                                  <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
-                                </>
-                              )}
-                          </div>
-                        )
-                        : (
-                          <div className="team__desc">
-                            <TeamMemberList
-                              project={project}
-                              initialValues={{
-                                service: projectName,
-                                company: companyName,
-                                serviceInfo,
-                                serviceCategory,
-                                serviceFormat,
-                                serviceDesc,
-                              }}
-                            />
-                          </div>
-                        )
-                    }
-                  </div>
-                </section>
-              </main>
+                                {
+                                  isTestTab
+                                    ? (
+                                      <div className="test__desc">
+                                        { hasTestList
+                                          ? (
+                                            <ul className="desc__step-list">
+                                              { step.map(s => (
+                                                <li
+                                                  className={`list__item--${s.state[0]}${s.state[0] === 'apply' ? '--active' : ''}`}
+                                                  key={s.title}
+                                                >
+                                                  <h2 className="item__title">{s.title}</h2>
+                                                  <p className="item__desc">
+                                                    { s.desc.toString().split('\n').map(desc => (
+                                                      <React.Fragment key={desc}>
+                                                        {desc}
+                                                        <br />
+                                                      </React.Fragment>
+                                                    )) }
+                                                    { s.state[0] === 'apply'
+                                                      ? <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
+                                                      : null }
+                                                  </p>
+                                                  <ScrollContainer className="item__testbox scroll-container">
+                                                    { Object.keys(testList).map((t) => {
+                                                      const tStep = testList[t].step.toLowerCase();
+                                                      return (
+                                                        s.state.indexOf(tStep) > -1
+                                                          ? (
+                                                            <React.Fragment key={t}>
+                                                              <TestCard
+                                                                pId={pId}
+                                                                tId={testList[t].id}
+                                                                tTitle={testList[t].title}
+                                                                step={tStep}
+                                                                staff={testList[t].staff}
+                                                                createDate={testList[t].created_at}
+                                                              />
+                                                              { tStep === 'completed'
+                                                                ? <Link to="/" className="btn-start--blue">결과 리포트 확인하기</Link>
+                                                                : null }
+                                                            </React.Fragment>
+                                                          )
+                                                          : null
+                                                      );
+                                                    })
+                                                    }
+                                                  </ScrollContainer>
+                                                </li>
+                                              )) }
+                                            </ul>
+                                          )
+                                          : (
+                                            <>
+                                              <ul className="desc__step-list">
+                                                { step.map(s => (
+                                                  <li
+                                                    className={`list__item--${s.state[0]}`}
+                                                    key={s.title}
+                                                  >
+                                                    <h2 className="item__title">{s.title}</h2>
+                                                    <p className="item__desc">
+                                                      { s.desc.toString().split('\n').map(desc => (
+                                                        <React.Fragment key={desc}>
+                                                          {desc}
+                                                          <br />
+                                                        </React.Fragment>
+                                                      )) }
+                                                      { s.state === 'apply' && Object.keys(testList).length > 0
+                                                        ? <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
+                                                        : null }
+                                                    </p>
+                                                  </li>
+                                                )) }
+                                              </ul>
+                                              <span className="desc__text">테스트를 통해, 고객에게 더 좋은 서비스를 제공하세요!</span>
+                                              <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
+                                            </>
+                                          )}
+                                      </div>
+                                    )
+                                    : (
+                                      <div className="team__desc">
+                                        <TeamMemberList
+                                          project={project}
+                                          initialValues={{
+                                            service: projectName,
+                                            company: companyName,
+                                            serviceInfo,
+                                            serviceCategory,
+                                            serviceFormat,
+                                            serviceDesc,
+                                          }}
+                                        />
+                                      </div>
+                                    )
+                                }
+                              </div>
+                            </section>
+                          </main>
+                        </>
+                      )}
+                  </>
+                )
+              }
             </>
-          )}
+          )
+        }
       </>
     );
   }
@@ -267,19 +356,20 @@ class Test extends Component {
 const mapStateToProps = (state) => {
   const { count, testList } = state.test;
   const { project } = state.project;
-  const { avatar_url } = state.auth.users;
+  const { id, avatar_url } = state.auth.users;
 
   return ({
     count,
     testList,
     project,
+    id,
     avatar_url,
   });
 };
 
 const mapDispatchToProps = dispatch => ({
   getAuthSelf: () => dispatch(getAuthSelf()),
-  getProject: id => dispatch(getProject(id)),
+  getProject: (id, inviteToken) => dispatch(getProject(id, inviteToken)),
   getTestList: pId => dispatch(getTestList(pId)),
   getTest: tId => dispatch(getTest(tId)),
   setTestListInit: () => dispatch(setTestListInit()),

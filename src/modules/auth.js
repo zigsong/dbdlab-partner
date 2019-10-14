@@ -45,7 +45,7 @@ export const getAccount = id => dispatch => new Promise(
     },
   ).catch((err) => {
     console.log(err);
-    console.log(err.reponse);
+    console.log(err.response);
     console.log(err.message);
     dispatch({
       type: GET_ACCOUNT_FAILURE,

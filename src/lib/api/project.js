@@ -12,7 +12,12 @@ const headers = {
 };
 
 export const getProjectList = () => axios.get(`${baseURL}/projects/`, headers);
-export const getProject = id => axios.get(`${baseURL}/projects/${id}/`, headers);
+export const getProject = (id, token) => {
+  console.log(id);
+  console.log(token);
+  console.log(`${baseURL}/projects/${id}/${token}`);
+  return axios.get(`${baseURL}/projects/${id}/${token}`, headers);
+};
 export const putProject = ({ company, service }) => axios.post(`${baseURL}/projects/`, {
   company_name: company,
   name: service,

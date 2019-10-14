@@ -26,8 +26,12 @@ class Project extends Component {
   }
 
   componentDidMount() {
+    const { search } = window.location;
     const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
     const AUTH_TOKEN = hasTokenCookie !== undefined ? hasTokenCookie.replace(/\s/gi, '').substring(6) : null;
+    const isInvited = search.includes('invite_token');
+
+    console.log(isInvited);
 
     if (AUTH_TOKEN === null) {
       this.setState({
@@ -48,9 +52,23 @@ class Project extends Component {
     }
   }
 
-  handlePopup = (isShow) => {
+  getProject = async () => {
     const { props } = this;
-    props.togglePopup(isShow);
+
+    await props.getProjectList()
+      .then(() => {
+        this.setState({ isLoading: false });
+      })
+      .catch((err) => {
+        const { status } = err.response;
+        console.log(err.response);
+        if (status === 401) {
+          this.setState({
+            isLoading: false,
+            isAuthError: true,
+          });
+        }
+      });
   };
 
   getUserName = async () => {
@@ -69,28 +87,14 @@ class Project extends Component {
               toastTitle: `${name}님, 반갑습니다:)`,
               toastSubtitle: '프로젝트 관리를 시작해 보세요',
               isToastShow: true,
-            });
+            }, () => setTimeout(() => { this.setState({ isToastShow: false }); }, 2200));
           });
       });
   }
 
-  getProject = async () => {
+  handlePopup = (isShow) => {
     const { props } = this;
-
-    await props.getProjectList()
-      .then(() => {
-        this.setState({ isLoading: false });
-      })
-      .catch((err) => {
-        const { status } = err.response;
-        console.log(err.response);
-        if (status === 401) {
-          this.setState({
-            isLoading: false,
-            isAuthError: true,
-          });
-        }
-      });
+    props.togglePopup(isShow);
   };
 
   render() {

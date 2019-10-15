@@ -85,6 +85,7 @@ class Test extends Component {
                   window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/${inviteToken}&project_id=${pId}`),
                 );
               } else {
+                props.getTestList(pId);
                 this.setState({ isLoading: false });
               }
             })

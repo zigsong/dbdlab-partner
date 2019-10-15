@@ -18,6 +18,8 @@ const RightSidebar = (props) => {
     submitFailed,
     step,
     submitErrorMsg,
+    handleSubmit,
+    onSubmit,
   } = props;
 
   // value check
@@ -663,7 +665,14 @@ const RightSidebar = (props) => {
               {isAllPassed || (isQuestPassed && step !== 'payment') || (isPayRendered && step !== 'payment')
                 ? null
                 : (
-                  <button type="submit" className={`btn__default${(isQuestRendered && isTargetPassed) || (isPayRendered && step === 'payment') ? '--submit' : ''}`}>Next</button>
+                  <button
+                    type="button"
+                    className={`btn__default${(isQuestRendered && isTargetPassed) || (isPayRendered && step === 'payment') ? '--submit' : ''}`}
+                    onClick={handleSubmit(values => onSubmit(values))}
+                    onKeyPress={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
+                  >
+                    Next
+                  </button>
                 )
               }
             </div>

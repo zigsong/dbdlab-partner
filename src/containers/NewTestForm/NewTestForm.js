@@ -775,7 +775,7 @@ class NewTestForm extends Component {
 
     return (
       isLoading ? <LoadingIndicator /> : (
-        <form className="contents__form" onSubmit={handleSubmit(values => onSubmit(values))}>
+        <form className="contents__form">
           <div className="form__nav">
             <span className="box-btn">
               <button type="button" className="btn-back" onClick={e => goBack(e)}>뒤로 가기</button>
@@ -1058,6 +1058,8 @@ class NewTestForm extends Component {
                 fieldsValues={fieldsValues}
                 submitFailed={submitFailed}
                 submitSucceeded={submitSucceeded}
+                handleSubmit={handleSubmit}
+                onSubmit={onSubmit}
               />
             )
           }

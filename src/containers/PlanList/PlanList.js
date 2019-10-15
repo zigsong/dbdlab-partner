@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   Slider, Rail, Handles, Ticks,
 } from 'react-compound-slider';
+import { togglePopup } from 'modules/popup';
+import MailPopup from 'containers/MailPopup';
 import './PlanList.scss';
 
-const PlanList = () => {
+const PlanList = (props) => {
+  const dispatch = useDispatch();
   const [isMore, setMore] = useState(false);
-
   const priceList = [
     {
       title: 'plan 01',
@@ -72,7 +75,6 @@ const PlanList = () => {
       price: 'Customize\nyour own plan',
     },
   ];
-
   const handleToggleList = (e) => {
     e.preventDefault();
 
@@ -291,6 +293,8 @@ const PlanList = () => {
     </>
   );
 
+  const { isOpen } = props;
+
   return (
     <ul className="box-price__list">
       {
@@ -314,7 +318,7 @@ const PlanList = () => {
                       <br />
                       있으신가요?
                     </p>
-                    <button className="btn btn-buy" type="button" onClick={() => alert('클릭해봤자라구..후훟..')}>
+                    <button className="btn btn-buy" type="button" onClick={() => dispatch(togglePopup(true))}>
                       문의하기
                     </button>
                   </>
@@ -324,6 +328,7 @@ const PlanList = () => {
           </li>
         ))
       }
+      <MailPopup isPop={isOpen} />
     </ul>
   );
 };

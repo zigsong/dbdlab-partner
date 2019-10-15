@@ -64,7 +64,8 @@ input {
 
 input[type=text],
 input[type=email],
-input[type=password] {
+input[type=password],
+input[type=tel] {
     -webkit-box-shadow: 0 0 0 1000px white inset;
     box-shadow: 0 0 0 1000px white inset;
 }

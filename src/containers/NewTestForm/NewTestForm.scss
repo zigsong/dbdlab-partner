@@ -544,17 +544,12 @@ $imgUrl: '/static/images/';
 
             .box-input__radio {
               position: relative;
-              display: inline-block;
-              width: 150px;
-              height: 150px;
-              padding: 17px 0 13px;
-              margin-left: 12px;
+              display: block;
+              width: 312px;
+              height: 80px;
+              padding: 15px 22px 19px;
+              margin-bottom: 15px;
               box-sizing: border-box;
-              text-align: center;
-
-              &:first-child {
-                margin-left: 0;
-              }
 
               input[type="radio"] {
                 position: absolute;
@@ -568,7 +563,7 @@ $imgUrl: '/static/images/';
                 height: 100%;
                 margin: 0;
                 box-sizing: border-box;
-                border: 1px solid $lightGray;
+                border: 1px solid #4a4a4a;
                 border-radius: 3px;
 
                 &:checked {
@@ -582,22 +577,29 @@ $imgUrl: '/static/images/';
               }
 
               .plan__name {
-                display: block;
+                display: inline-block;
                 font-size: 16px;
                 font-weight: bold;
                 text-transform: uppercase;
                 color: $black;
                 line-height: 24px;
-                margin: 11px 0;
               }
 
-              .plan__desc {
-                display: block;
+              .plan__desc--eng {
+                display: inline-block;
                 font-size: 14px;
                 color: $black;
                 line-height: 20px;
-                margin-bottom: 17px;
+                margin-left: 5px;
                 text-transform: capitalize;
+              }
+
+              .plan__desc--kor {
+                display: block;
+                margin-top: 5px;
+                font-size: 12px;
+                color: $gray;
+                line-height: 1.25;
               }
 
               .plan__date {

@@ -136,8 +136,8 @@ class TestFormPay extends Component {
               disabled={isDisabled}
             />
             <strong className="plan__name">{p.name}</strong>
-            <span className="plan__desc">{p.description}</span>
-            { idx === 0 ? <span className="helpme">디자이너님</span> : <span className="helpme">헬프미</span> }
+            <span className="plan__desc--eng">{p.description}</span>
+            { idx === 0 ? <span className="plan__desc--kor">테스트만 진행합니다.</span> : <span className="plan__desc--kor">테스트 + 후속 컨설팅을 진행합니다 </span> }
           </span>
         ))}
         {hasError && <span className="msg--error">{meta.error}</span>}

@@ -156,7 +156,7 @@ class MailPopup extends Component {
 
       return (
         checkCompany && checkCategory && checkEmail && checkName && checkContact && checkMassage
-      ) === true;
+      );
     };
 
     elemValue.value = elem.value;
@@ -166,7 +166,7 @@ class MailPopup extends Component {
       [elem.name]: Object.assign(prevState[elem.name], elemValue),
     }));
 
-    if (checkValues()) this.setState({ allValid: checkValues() });
+    if (checkValues()) this.setState({ allValid: true });
   };
 
   onSubmit = (e) => {

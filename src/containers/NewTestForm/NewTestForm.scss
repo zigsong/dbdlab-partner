@@ -571,7 +571,9 @@ $imgUrl: '/static/images/';
                   border-color: $blue;
 
                   &:disabled {
-                    border-color: $gray;
+                    background: $veryLightGray + 30%;
+                    border-color: #4a4a4a;
+                    z-index: -1;
                   }
                 }
               }

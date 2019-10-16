@@ -67,6 +67,7 @@ class NewTestForm extends Component {
     isPayPassed: false,
     isAllPassed: false,
     hasReport: false,
+    isTesting: false,
     test: {},
     asyncErrorMsg: '',
   }
@@ -178,13 +179,14 @@ class NewTestForm extends Component {
                 const issueDetails = test.quests.map(q => q.issue_detail);
                 const hasTargetValue = (age_maximum && age_minimum) !== null;
                 const hasGenderValue = gender !== '';
-                const hasIssue1Value = issues[2] !== '';
-                const hasIssuePurpose1Value = issuePurposes[2] !== '';
-                const hasIssueDetail1Value = issueDetails[2] !== '';
+                const hasIssue1Value = issues[0] !== '';
+                const hasIssuePurpose1Value = issuePurposes[0] !== '';
+                const hasIssueDetail1Value = issueDetails[0] !== '';
                 const hasPayValue = test.order !== null
                   && test.order !== undefined
                   && test.order.plan.name !== undefined;
                 const hasCompleted = test.default.step === 'COMPLETED';
+                const isTesting = test.default.step === 'TESTING';
                 const hasDefaultPassed = () => !!test.default;
 
                 if (hasDefaultPassed) {
@@ -211,16 +213,29 @@ class NewTestForm extends Component {
                     isQuestRendered: false,
                     isQuestPassed: true,
                     isPayRendered: true,
+                    isReportRendered: false,
                   });
                 }
 
                 if (hasPayValue) {
                   this.setState({
                     isLoading: false,
-                    isPayRendered: true,
+                    isReportRendered: false,
                     isPayPassed: true,
                     isAllRendered: false,
                     hasReport: false,
+                  });
+                }
+
+                if (hasPayValue && isTesting) {
+                  this.setState({
+                    isLoading: false,
+                    isReportRendered: true,
+                    isPayRendered: false,
+                    isPayPassed: false,
+                    isAllRendered: false,
+                    hasReport: false,
+                    isTesting: true,
                   });
                 }
 
@@ -230,6 +245,7 @@ class NewTestForm extends Component {
                     isPayRendered: false,
                     isReportRendered: true,
                     hasReport: true,
+                    isTesting: false,
                   });
                 }
               },
@@ -355,6 +371,10 @@ class NewTestForm extends Component {
       funnel,
     } = values.default;
     const titleReg = title.replace(/(^\s*)|(\s*$)/g, '');
+    const clientNameReg = clientName.replace(/(^\s*)|(\s*$)/g, '');
+    const clientContactReg = clientContact.replace(/(^\s*)|(\s*$)/g, '');
+    const emailReg = email.replace(/(^\s*)|(\s*$)/g, '');
+    const serviceInfoReg = serviceInfo.replace(/(^\s*)|(\s*$)/g, '');
     const hasDefaultPassed = () => {
       const hasDefaultValue = Object.keys(values.default).length > 0;
       return !!hasDefaultValue;
@@ -384,13 +404,13 @@ class NewTestForm extends Component {
           pId,
           step,
           titleReg,
-          clientName,
-          clientContact,
+          clientNameReg,
+          clientContactReg,
           media2,
-          email,
+          emailReg,
           media1,
           serviceFormat,
-          serviceInfo,
+          serviceInfoReg,
           serviceCategory,
           serviceStatus,
           serviceDesc,
@@ -500,13 +520,13 @@ class NewTestForm extends Component {
               pId,
               step,
               titleReg,
-              clientName,
-              clientContact,
+              clientNameReg,
+              clientContactReg,
               media2,
-              email,
+              emailReg,
               media1,
               serviceFormat,
-              serviceInfo,
+              serviceInfoReg,
               serviceCategory,
               serviceStatus,
               serviceDesc,
@@ -521,13 +541,13 @@ class NewTestForm extends Component {
               pId,
               step,
               titleReg,
-              clientName,
-              clientContact,
+              clientNameReg,
+              clientContactReg,
               media2,
-              email,
+              emailReg,
               media1,
               serviceFormat,
-              serviceInfo,
+              serviceInfoReg,
               serviceCategory,
               serviceStatus,
               serviceDesc,
@@ -538,8 +558,8 @@ class NewTestForm extends Component {
               qId[0],
               tId,
               issue[`q${qId[0]}`],
-              issueDetail[`q${qId[0]}`],
-              issuePurpose[`q${qId[0]}`],
+              issueDetail[`q${qId[0]}`].replace(/(^\s*)|(\s*$)/g, ''),
+              issuePurpose[`q${qId[0]}`].replace(/(^\s*)|(\s*$)/g, ''),
             )
               .then(() => getTest(tId))
               .then(() => {
@@ -562,13 +582,13 @@ class NewTestForm extends Component {
               pId,
               step,
               titleReg,
-              clientName,
-              clientContact,
+              clientNameReg,
+              clientContactReg,
               media2,
-              email,
+              emailReg,
               media1,
               serviceFormat,
-              serviceInfo,
+              serviceInfoReg,
               serviceCategory,
               serviceStatus,
               serviceDesc,
@@ -579,8 +599,8 @@ class NewTestForm extends Component {
               qId[1],
               tId,
               issue[`q${qId[1]}`],
-              issueDetail[`q${qId[1]}`],
-              issuePurpose[`q${qId[1]}`],
+              issueDetail[`q${qId[1]}`].replace(/(^\s*)|(\s*$)/g, ''),
+              issuePurpose[`q${qId[1]}`].replace(/(^\s*)|(\s*$)/g, ''),
             )
               .then(() => { getTest(tId); })
               .then(() => {
@@ -603,13 +623,13 @@ class NewTestForm extends Component {
               pId,
               step,
               titleReg,
-              clientName,
-              clientContact,
+              clientNameReg,
+              clientContactReg,
               media2,
-              email,
+              emailReg,
               media1,
               serviceFormat,
-              serviceInfo,
+              serviceInfoReg,
               serviceCategory,
               serviceStatus,
               serviceDesc,
@@ -620,8 +640,8 @@ class NewTestForm extends Component {
               qId[2],
               tId,
               issue[`q${qId[2]}`],
-              issueDetail[`q${qId[2]}`],
-              issuePurpose[`q${qId[2]}`],
+              issueDetail[`q${qId[2]}`].replace(/(^\s*)|(\s*$)/g, ''),
+              issuePurpose[`q${qId[2]}`].replace(/(^\s*)|(\s*$)/g, ''),
             )
               .then(() => { getTest(tId); })
               .then(() => {
@@ -680,13 +700,13 @@ class NewTestForm extends Component {
       await postTest(
         pId,
         titleReg,
-        clientName,
-        clientContact,
+        clientNameReg,
+        clientContactReg,
         media2,
-        email,
+        emailReg,
         media1,
         serviceFormat,
-        serviceInfo,
+        serviceInfoReg,
         serviceCategory,
         serviceStatus,
         serviceDesc,
@@ -789,6 +809,7 @@ class NewTestForm extends Component {
       isPayPassed,
       isAllPassed,
       hasReport,
+      isTesting,
       test,
       asyncErrorMsg,
     } = this.state;
@@ -820,8 +841,6 @@ class NewTestForm extends Component {
       : (fieldsValues && fieldsValues !== undefined
         ? Object.keys(fieldsValues.quest.issue).map(q => q.slice(1))
         : [1, 2, 3]);
-    console.log(qId);
-    console.log(test.quests);
     const isNoNamed = fieldsValues === undefined ? true : (fieldsValues.title === undefined || fieldsValues.title === '');
     const isSpacedTitle = fieldsValues === undefined ? true : (fieldsValues.title === undefined || fieldsValues.title.replace(/(^\s*)|(\s*$)/g, '').length < 1);
     const categoryListArr = Object.keys(categoryList).length > 0
@@ -886,7 +905,7 @@ class NewTestForm extends Component {
                           className="btn-nav"
                           type="button"
                           onClick={() => handleFormRender(idx)}
-                          disabled={idx === 4 && !hasReport}
+                          disabled={idx === 4 && (!hasReport && !isTesting)}
                         >
                           {n.title}
                         </button>
@@ -942,7 +961,7 @@ class NewTestForm extends Component {
                           className="btn-nav"
                           type="button"
                           onClick={() => handleFormRender(idx)}
-                          disabled={idx === 4 && !hasReport}
+                          disabled={idx === 4 && (!hasReport && !isTesting)}
                         >
                           {n.title}
                         </button>
@@ -1129,7 +1148,22 @@ class NewTestForm extends Component {
               : null
             }
             { isReportRendered
-              ? <TestFormReport />
+              ? (
+                <>
+                  {hasReport
+                    ? <TestFormReport />
+                    : (
+                      <div>
+                        데이터 수집중입니다.
+                        <br />
+                        며칠만 말미를 주시면 어떻게든 결과를 보여주겠읍니다.
+                        <br />
+                        딩가딩가 으쌰라 으쌰 에오에오
+                      </div>
+                    )
+                  }
+                </>
+              )
               : null
             }
           </div>

@@ -9,7 +9,7 @@ import {
 } from 'redux-form';
 
 const companyRequired = value => (value ? undefined : '이름을 입력해주세요');
-const registNumRequired = value => (value ? undefined : '연락처를 입력해주세요');
+const registNumRequired = value => (value ? undefined : '사업자 등록 번호를 입력해주세요');
 const registNumRegexp = value => (value && !/([0-9]{3})([0-9]{2})([0-9]{5}$)/.test(value) ? '사업자 등록 번호를 다시 확인해주세요' : undefined);
 const registNumLength = value => (value && parseInt(value.length, 10) > 10 ? '사업자 등록 번호를 다시 확인해주세요' : undefined);
 const emailRequired = value => (value ? undefined : '이메일을 입력해주세요');

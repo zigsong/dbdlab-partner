@@ -34,13 +34,19 @@ input::-moz-focus-inner, input[type="checkbox"],
 input[type="radio"], input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button, input[type="search"],
 input[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-decoration {
-  border: none;
-  background-image: none;
-  background-color: transparent;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
+input[type="search"]::-webkit-search-decoration,
+input::-webkit-autofill,
+input::-webkit-autofill:hover,
+input::-webkit-autofill:focus,
+input::-webkit-autofill:active,
+input::-webkit-autofill-selected {
+    border: none;
+    background-image: none;
+    background-color: transparent !important;
+    -webkit-box-shadow: none;
+    -webkit-box-shadow: 0 0 0 1000px white inset;
+    -moz-box-shadow: none;
+    box-shadow: none;
 }
 
 button {
@@ -54,6 +60,14 @@ input {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+}
+
+input[type=text],
+input[type=email],
+input[type=password],
+input[type=tel] {
+    -webkit-box-shadow: 0 0 0 1000px white inset;
+    box-shadow: 0 0 0 1000px white inset;
 }
 
 /* IE10 이상에서 input box 에 추가된 지우기 버튼 제거 */

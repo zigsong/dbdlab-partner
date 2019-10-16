@@ -281,14 +281,14 @@ $blueGray: #f6f7fa;
     .loading--bar-mail {
       position: absolute;
       z-index: 230;
-      animation: loading 2s ease-in-out infinite;
+      animation: loading-mail 2s ease-in-out infinite;
       background-color: $blue;
       height: 100%;
       width: 50%;
     }
   }
   
-  @keyframes loading {
+  @keyframes loading-mail {
     0%, 100% { transform: translateX(-150%); }
     50% { transform: translateX(150%); }
   }

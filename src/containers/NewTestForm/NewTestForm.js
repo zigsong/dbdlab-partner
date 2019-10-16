@@ -252,7 +252,8 @@ class NewTestForm extends Component {
   };
 
   handleBackBtn = () => {
-    const { togglePopup } = this.props;
+    const { togglePopup, test } = this.props;
+    console.log(test);
 
     togglePopup(true);
     this.setState({ isBackConfirmPopup: true });
@@ -316,6 +317,7 @@ class NewTestForm extends Component {
       extras,
       orderTest,
       planList,
+      togglePopup,
     } = this.props;
     const { match, history } = route;
     const { pId, tId } = match.params;
@@ -468,7 +470,7 @@ class NewTestForm extends Component {
           });
       } else if (isQuestRendered && hasQuestPassed) {
         console.log('here');
-        const submitCheck = window.confirm('테스트를 등록하시겠어요?');
+        const submitCheck = window.confirm('테스트를 등록하시겠어요?\n등록 후엔 수정이 되지 않으니, 꼼꼼히 확인해 주세요:)');
 
         if (submitCheck) {
           const qId = test.quests.map(q => q.id);
@@ -529,12 +531,14 @@ class NewTestForm extends Component {
               issueDetail[`q${qId[0]}`],
               issuePurpose[`q${qId[0]}`],
             )
-              .then(() => { getTest(tId); })
+              .then(() => getTest(tId))
               .then(() => {
+                togglePopup(true);
                 this.setState({
                   isQuestRendered: false,
                   isQuestPassed: true,
                   isPayRendered: true,
+                  isNoticePopup: true,
                 });
               })
               .catch((err) => {
@@ -570,10 +574,12 @@ class NewTestForm extends Component {
             )
               .then(() => { getTest(tId); })
               .then(() => {
+                togglePopup(true);
                 this.setState({
                   isQuestRendered: false,
                   isQuestPassed: true,
                   isPayRendered: true,
+                  isNoticePopup: true,
                 });
               })
               .catch((err) => {
@@ -609,10 +615,12 @@ class NewTestForm extends Component {
             )
               .then(() => { getTest(tId); })
               .then(() => {
+                togglePopup(true);
                 this.setState({
                   isQuestRendered: false,
                   isQuestPassed: true,
                   isPayRendered: true,
+                  isNoticePopup: true,
                 });
               })
               .catch((err) => {
@@ -626,7 +634,7 @@ class NewTestForm extends Component {
         // eslint-disable-next-line no-nested-ternary
         const cCode = cType === 'WELCOME_BACK' || cType === undefined ? undefined : (values.pay.couponNum !== undefined ? values.pay.couponNum : undefined);
 
-        const submitCheck = window.confirm('PLAN을 선택하셨나요?\n등록 후엔 수정이 되지 않습니다리다리닷닷');
+        const submitCheck = window.confirm('PLAN을 선택하셨나요?\n등록 후엔 수정이 되지 않으니, 꼼꼼히 확인해 주세요.');
 
         if (submitCheck) {
           console.log(selectedPlan.id,
@@ -802,8 +810,8 @@ class NewTestForm extends Component {
       : (fieldsValues && fieldsValues !== undefined
         ? Object.keys(fieldsValues.quest.issue).map(q => q.slice(1))
         : [1, 2, 3]);
-      console.log(qId);
-      console.log(test.quests);
+    console.log(qId);
+    console.log(test.quests);
     const isNoNamed = fieldsValues === undefined ? true : (fieldsValues.title === undefined || fieldsValues.title === '');
     const isSpacedTitle = fieldsValues === undefined ? true : (fieldsValues.title === undefined || fieldsValues.title.replace(/(^\s*)|(\s*$)/g, '').length < 1);
     const categoryListArr = Object.keys(categoryList).length > 0
@@ -1155,9 +1163,9 @@ class NewTestForm extends Component {
             ? (
               <PopupTemplate isShow={isOpen} title="테스트 목록으로 이동하시겠어요?">
                 <p className="contents__back">
-                  테스트 작성을 중단하고 목록으로 이동합니다.
+                  테스트 목록으로 이동합니다.
                   <br />
-                  계속하시려면 엄지 발가락으로 하트를 그려주세요.
+                  테스트를 작성 중이셨다면 작성 중인 내용이 모두 사라시니 유의해 주세요.
                 </p>
                 <div className="box-btn">
                   <button type="button" className="btn-cancle" onClick={e => handleCancleBtn(e)}>취소</button>
@@ -1169,13 +1177,13 @@ class NewTestForm extends Component {
           }
           {isRegisterConfirmPopup
             ? (
-              <PopupTemplate isShow={isOpen} title="테스트를 제출하시겠어요?">
+              <PopupTemplate isShow={isOpen} title="했다 제출 테스트">
                 <p className="contents__register">
-                  UX튜닝을 위한 준비를 모두 마치셨나요?
+                  UX튜닝을 위한 준비가 모두 완료되었습니다!
                   <br />
-                  테스트를 제출하신 후에는 수정이 되지 않으니, 충분히 검토 후 제출해 주세요.
+                  지금 이 텍스트는 임시 워딩입니다!
                   <br />
-                  확인 버튼을 누르시면 제출합니다.
+                  제플린이 맛이 갔거든요
                 </p>
                 <div className="box-btn">
                   <button type="button" className="btn-cancle" onClick={e => handleCancleBtn(e)}>취소</button>
@@ -1195,8 +1203,18 @@ class NewTestForm extends Component {
           }
           {isNoticePopup
             ? (
-              <PopupTemplate isShow={isOpen} title="테스트 신청이 완료되었습니다">
-                울랄라
+              <PopupTemplate isShow={isOpen} title="했다 제출 테스트">
+                <p className="contents__register">
+                  UX튜닝을 위한 준비가 모두 완료되었습니다!
+                  <br />
+                  지금 이 텍스트는 임시 워딩입니다!
+                  <br />
+                  제플린이 맛이 갔거든요
+                </p>
+                <div className="box-btn">
+                  <button type="button" className="btn-cancle" onClick={e => goBack(e)}>테스트 목록 보기</button>
+                  <button type="button" className="btn-confirm" onClick={e => handleCancleBtn(e)}>확인이었던 거 같아 여기</button>
+                </div>
               </PopupTemplate>
             )
             : null
@@ -1456,7 +1474,6 @@ const mapDispatchToProps = dispatch => ({
   )),
   getTestOrder: oId => dispatch(getTestOrder(oId)),
 });
-
 
 export default connect(
   mapStateToProps,

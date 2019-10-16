@@ -174,7 +174,6 @@ class NewTestForm extends Component {
                 const { test } = this.state;
                 const { age_maximum, age_minimum, gender } = test.targets[0];
                 const issues = test.quests.map(q => q.issue);
-                console.log(issues);
                 const issuePurposes = test.quests.map(q => q.issue_purpose);
                 const issueDetails = test.quests.map(q => q.issue_detail);
                 const hasTargetValue = (age_maximum && age_minimum) !== null;
@@ -185,6 +184,7 @@ class NewTestForm extends Component {
                 const hasPayValue = test.order !== null
                   && test.order !== undefined
                   && test.order.plan.name !== undefined;
+                const hasCompleted = test.default.step === 'COMPLETED';
                 const hasDefaultPassed = () => !!test.default;
 
                 if (hasDefaultPassed) {
@@ -220,6 +220,16 @@ class NewTestForm extends Component {
                     isPayRendered: true,
                     isPayPassed: true,
                     isAllRendered: false,
+                    hasReport: false,
+                  });
+                }
+
+                if (hasCompleted) {
+                  this.setState({
+                    isLoading: false,
+                    isPayRendered: false,
+                    isReportRendered: true,
+                    hasReport: true,
                   });
                 }
               },
@@ -876,7 +886,7 @@ class NewTestForm extends Component {
                           className="btn-nav"
                           type="button"
                           onClick={() => handleFormRender(idx)}
-                          disabled={idx === 4 && hasReport}
+                          disabled={idx === 4 && !hasReport}
                         >
                           {n.title}
                         </button>
@@ -932,7 +942,7 @@ class NewTestForm extends Component {
                           className="btn-nav"
                           type="button"
                           onClick={() => handleFormRender(idx)}
-                          disabled={idx === 4 && !isAllRendered}
+                          disabled={idx === 4 && !hasReport}
                         >
                           {n.title}
                         </button>
@@ -1267,7 +1277,6 @@ const mapStateToProps = (state) => {
     ? test.is_register_required : undefined;
   // eslint-disable-next-line no-nested-ternary
   const registerValue = registerRequire !== undefined ? (registerRequire !== false ? '네(+3,000원/명)' : '아니오') : undefined;
-  console.log(quests);
   const issue1qId = quests !== undefined ? quests[0].id : '';
   const issue2qId = quests !== undefined ? quests[1].id : '';
   const issue3qId = quests !== undefined ? quests[2].id : '';

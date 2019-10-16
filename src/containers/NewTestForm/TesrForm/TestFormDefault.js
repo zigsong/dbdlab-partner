@@ -11,6 +11,7 @@ const mediaRequired = value => (value ? undefined : '카테고리를 선택해�
 const seriveInfoRequired = value => (value ? undefined : 'URL 또는 어플리케이션 명을 입력해주세요');
 const serviceStatusRequired = value => (value ? undefined : '서비스 단계를 선택해주세요');
 const clientNameRequired = value => (value ? undefined : '이름을 입력해주세요');
+const clientNameRegexp = value => (value && /^[^a-zA-Zㄱ-힣]/.test(value) ? '이름을 명확하게 입력해주세요' : undefined);
 const clientContactRequired = value => (value ? undefined : '연락처를 입력해주세요');
 const clientContactRegexp = value => (value && !/^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/.test(value) ? '연락처 형식을 다시 확인해주세요' : undefined);
 const emailRequired = value => (value ? undefined : '이메일을 입력해주세요');
@@ -208,6 +209,7 @@ const TestFormDefault = (props) => {
             disabled={isDisabled}
             validate={[
               clientNameRequired,
+              clientNameRegexp,
               valueRegExp,
               valueNumberRegExp,
               valueEtcRegExp,

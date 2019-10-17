@@ -14,11 +14,12 @@ import { togglePopup } from 'modules/popup';
 import { getProjectList } from 'modules/project';
 import { getVoucherOrder, getTestOrderList } from 'modules/order';
 import { getNotifications } from 'modules/notification';
+import PageTemplate from 'containers/PageTemplate';
+import NewPasswordPopup from 'containers/NewPasswordPopup';
+import OrderConfirmPopup from 'containers/OrderConfirmPopup';
 import UnauthorizedPopup from 'components/UnauthorizedPopup';
 import LoadingIndicator from 'components/LoadingIndicator';
 import ToastAlert from 'components/ToastAlert';
-import PageTemplate from 'containers/PageTemplate';
-import NewPasswordPopup from 'containers/NewPasswordPopup';
 import FormInput from 'components/FormInput';
 import './MyPage.scss';
 
@@ -41,6 +42,9 @@ class MyPage extends Component {
     toastTitle: '',
     toastSubtitle: '',
     isToastShow: false,
+    isPwShow: false,
+    isBillShow: false,
+    billIdx: 0,
   }
 
   componentDidMount() {
@@ -180,6 +184,19 @@ class MyPage extends Component {
     const { props } = this;
 
     e.preventDefault();
+
+    this.setState({ isPwShow: true });
+    props.togglePopup(true);
+  }
+
+  handleTaxBillPopup = (e, idx) => {
+    const { props } = this;
+
+    e.preventDefault();
+    this.setState({
+      isBillShow: true,
+      billIdx: idx,
+    });
     props.togglePopup(true);
   }
 
@@ -240,6 +257,9 @@ class MyPage extends Component {
       toastTitle,
       toastSubtitle,
       isToastShow,
+      isBillShow,
+      isPwShow,
+      billIdx,
     } = this.state;
     const {
       getDate,
@@ -248,6 +268,7 @@ class MyPage extends Component {
       handleTabToggle,
       handleEdit,
       handlePwPopup,
+      handleTaxBillPopup,
       onSubmit,
     } = this;
 
@@ -413,9 +434,13 @@ class MyPage extends Component {
                                 {voucherList
                                   .concat(testList)
                                   .sort((a, b) => a.created_at - b.created_at)
-                                  .map(p => (
+                                  .map((p, idx) => (
                                     <li className="list__item" key={p.code}>
-                                      <button type="button" className="box-payment">
+                                      <button
+                                        type="button"
+                                        className="box-payment"
+                                        // onClick={e => handleTaxBillPopup(e, idx)}
+                                      >
                                         <span className="payment__title">
                                           {p.voucher_amount > 0 ? '대량구매' : '단일구매'}
                                         </span>
@@ -437,6 +462,21 @@ class MyPage extends Component {
                                           {getDate(p.created_at)}
                                         </span>
                                       </div>
+                                      {/* {isBillShow && billIdx === idx
+                                        ? (
+                                          <OrderConfirmPopup
+                                            isOpen={isOpen}
+                                            isVoucher={p.voucher_amount > 0}
+                                            hasTestId={p.test !== undefined ? p.test.id : undefined}
+                                            planName={p.plan.name}
+                                            planAmount={`${p.voucher_amount}개`}
+                                            paidDate={getDate(p.created_at)}
+                                            step={p.test !== undefined ? p.test.step : undefined}
+                                            price={p.ordered_price}
+                                          />
+                                        )
+                                        : null
+                                      } */}
                                     </li>
                                   ))}
                               </ul>
@@ -446,11 +486,15 @@ class MyPage extends Component {
                       }
                     </div>
                   </section>
-                  <NewPasswordPopup
-                    show={isOpen}
-                    onPopup={togglePopup}
-                    handleSubmit={handleSubmit}
-                  />
+                  {isPwShow
+                    ? (
+                      <NewPasswordPopup
+                        show={isOpen}
+                        onPopup={togglePopup}
+                        handleSubmit={handleSubmit}
+                      />
+                    )
+                    : null}
                   {isToastShow
                     ? (
                       <ToastAlert

@@ -66,8 +66,10 @@ class NewTestForm extends Component {
     isQuestPassed: false,
     isPayPassed: false,
     isAllPassed: false,
-    hasReport: false,
-    isTesting: false,
+    isCompleteStep: false,
+    isTestStep: false,
+    isRegisterStep: false,
+    isPaymentStep: false,
     test: {},
     asyncErrorMsg: '',
   }
@@ -186,7 +188,9 @@ class NewTestForm extends Component {
                   && test.order !== undefined
                   && test.order.plan.name !== undefined;
                 const hasCompleted = test.default.step === 'COMPLETED';
-                const isTesting = test.default.step === 'TESTING';
+                const isTestStep = test.default.step === 'TESTING';
+                const isPaymentStep = test.default.step === 'PAYMENT';
+                const isRegisterStep = test.default.step === 'REGISTER';
                 const hasDefaultPassed = () => !!test.default;
 
                 if (hasDefaultPassed) {
@@ -217,25 +221,38 @@ class NewTestForm extends Component {
                   });
                 }
 
+                if (isRegisterStep) this.setState({ isRegisterStep: true });
+
                 if (hasPayValue) {
                   this.setState({
                     isLoading: false,
                     isReportRendered: false,
                     isPayPassed: true,
                     isAllRendered: false,
-                    hasReport: false,
+                    isCompleteStep: false,
                   });
                 }
 
-                if (hasPayValue && isTesting) {
+                if (hasPayValue && isPaymentStep) {
+                  this.setState({
+                    isLoading: false,
+                    isReportRendered: false,
+                    isPayPassed: true,
+                    isAllRendered: false,
+                    isCompleteStep: false,
+                    isPaymentStep: true,
+                  });
+                }
+
+                if (hasPayValue && isTestStep) {
                   this.setState({
                     isLoading: false,
                     isReportRendered: true,
                     isPayRendered: false,
                     isPayPassed: false,
                     isAllRendered: false,
-                    hasReport: false,
-                    isTesting: true,
+                    isCompleteStep: false,
+                    isTestStep: true,
                   });
                 }
 
@@ -244,8 +261,8 @@ class NewTestForm extends Component {
                     isLoading: false,
                     isPayRendered: false,
                     isReportRendered: true,
-                    hasReport: true,
-                    isTesting: false,
+                    isCompleteStep: true,
+                    isTestStep: false,
                   });
                 }
               },
@@ -808,8 +825,10 @@ class NewTestForm extends Component {
       isQuestPassed,
       isPayPassed,
       isAllPassed,
-      hasReport,
-      isTesting,
+      isRegisterStep,
+      isCompleteStep,
+      isPaymentStep,
+      isTestStep,
       test,
       asyncErrorMsg,
     } = this.state;
@@ -905,7 +924,7 @@ class NewTestForm extends Component {
                           className="btn-nav"
                           type="button"
                           onClick={() => handleFormRender(idx)}
-                          disabled={idx === 4 && (!hasReport && !isTesting)}
+                          disabled={idx === 4 && (!isCompleteStep && !isTestStep)}
                         >
                           {n.title}
                         </button>
@@ -961,7 +980,7 @@ class NewTestForm extends Component {
                           className="btn-nav"
                           type="button"
                           onClick={() => handleFormRender(idx)}
-                          disabled={idx === 4 && (!hasReport && !isTesting)}
+                          disabled={idx === 4 && (!isCompleteStep && !isTestStep)}
                         >
                           {n.title}
                         </button>
@@ -1014,7 +1033,7 @@ class NewTestForm extends Component {
                   { isDefaultPassed ? null : (
                     <ToastAlert
                       title="아직은 작성하실 수 없어요!"
-                      subtitle="이전 단계를 모두 완성해 주세요"
+                      subtitle="이전 단계 진행 후 작성하실 수 있습니다"
                       isShow
                     />
                   ) }
@@ -1046,7 +1065,7 @@ class NewTestForm extends Component {
                   { isTargetPassed ? null : (
                     <ToastAlert
                       title="아직은 작성하실 수 없어요!"
-                      subtitle="이전 단계를 모두 완성해 주세요"
+                      subtitle="이전 단계 진행 후 작성하실 수 있습니다"
                       isShow
                     />
                   ) }
@@ -1074,11 +1093,11 @@ class NewTestForm extends Component {
             { isPayRendered
               ? (
                 <>
-                  { isQuestPassed ? null : <DisabledLayer />}
-                  { isQuestPassed ? null : (
+                  { isQuestPassed && !isRegisterStep ? null : <DisabledLayer />}
+                  { isQuestPassed && !isRegisterStep ? null : (
                     <ToastAlert
                       title="아직은 작성하실 수 없어요!"
-                      subtitle="이전 단계를 모두 완성해 주세요"
+                      subtitle="이전 단계 진행 후 작성하실 수 있습니다"
                       isShow
                     />
                   ) }
@@ -1150,7 +1169,7 @@ class NewTestForm extends Component {
             { isReportRendered
               ? (
                 <>
-                  {hasReport
+                  {isCompleteStep
                     ? <TestFormReport />
                     : (
                       <div>
@@ -1167,7 +1186,12 @@ class NewTestForm extends Component {
               : null
             }
           </div>
-          {isPayPassed || isReportRendered
+          {isPayPassed
+          || isReportRendered
+          || isRegisterStep
+          || isTestStep
+          || isCompleteStep
+          || isPaymentStep
             ? null
             : (
               <RightSidebar

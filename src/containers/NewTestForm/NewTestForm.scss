@@ -457,6 +457,7 @@ $imgUrl: '/static/images/';
               position: absolute;
               right: 0;
               top: 0;
+              z-index: 10;
               display: inline-block;
               width: 50px;
               height: 30px;
@@ -730,6 +731,7 @@ $imgUrl: '/static/images/';
 
                 .input__placeholder {
                   position: absolute;
+                  z-index: 10;
                   display: inline-block;
                   height: 30px;
                   padding: 3px;
@@ -897,6 +899,7 @@ $imgUrl: '/static/images/';
       position: absolute;
       top: 0;
       right: 0;
+      z-index: 110;
       width: 210px;
       height: 100vh;
       padding: 88px 23px 87px;
@@ -1003,7 +1006,33 @@ $imgUrl: '/static/images/';
         }
 
         &--fail {
-          @extend .form-btn-wrapper--pass;
+          @extend .form-btn-wrapper--fail;
+        }
+
+        &--disabled {
+          @extend .form-btn-wrapper;
+  
+          .box-info,
+          .box-btn,
+          .btn__default {
+            display: none;
+          }
+  
+          &:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 200;
+            display: block;
+            width: 210px;
+            height: 100vh;
+            background: rgba(0, 0, 0, .3);
+          }
+  
+          &--pass {
+            @extend .form-btn-wrapper--disabled;
+          }
         }
       }
 
@@ -1042,11 +1071,11 @@ $imgUrl: '/static/images/';
     .layer--disabled {
       position: fixed;
       left: 149px;
-      right: 210px;
+      right: 0;
       bottom: 0;
       top: 48px;
       z-index: 100;
-      width: calc(100% - 149px - 210px);
+      width: calc(100% - 149px);
       height: calc(100vh - 48px);
       text-indent: -9999px;
       color: transparent;

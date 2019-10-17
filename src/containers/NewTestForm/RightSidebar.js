@@ -406,12 +406,7 @@ const RightSidebar = (props) => {
 
   return (
     <aside
-      className={`form-btn-wrapper${isDisabled ? '--disabled' : ''}${
-        (hasDefaultRequiredValues && isDefaultRendered && (!isAllPassed || step === 'payment'))
-        || (hasTargetRequiredValues && isTargetRendered && (!isAllPassed || step === 'payment'))
-        || (hasQuestRequiredValues && isQuestRendered && (!isAllPassed || step === 'payment'))
-        || (hasPlanValue && isPayRendered && (!isAllPassed || step === 'payment'))
-          ? '--pass' : ''}${submitFailed || submitErrorMsg ? '--fail' : ''}`}
+      className={`form-btn-wrapper--pass${isDisabled ? '--disabled' : ''}${submitFailed || submitErrorMsg ? '--fail' : ''}`}
     >
       {isDisabled
         ? null

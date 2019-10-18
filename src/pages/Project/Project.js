@@ -31,8 +31,6 @@ class Project extends Component {
     const AUTH_TOKEN = hasTokenCookie !== undefined ? hasTokenCookie.replace(/\s/gi, '').substring(6) : null;
     const isInvited = search.includes('invite_token');
 
-    console.log(isInvited);
-
     if (AUTH_TOKEN === null) {
       this.setState({
         isLoading: false,
@@ -88,7 +86,15 @@ class Project extends Component {
               toastSubtitle: '프로젝트 관리를 시작해 보세요',
               isToastShow: true,
             }, () => setTimeout(() => { this.setState({ isToastShow: false }); }, 2200));
+          })
+          .catch((err) => {
+            console.log(err);
+            console.log(err.response);
           });
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log(err.response);
       });
   }
 

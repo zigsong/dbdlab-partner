@@ -347,7 +347,7 @@ class TeamMemberList extends Component {
                     )
                   }
                 </section>
-                <section className="form__section">
+                {/* <section className="form__section">
                   <div className="section__title">
                     <span className="title__text">우리팀원</span>
                     <button type="button" className="btn-invite" onClick={e => handleInvitePopupToggle(e)}>+ 초대하기</button>
@@ -452,7 +452,7 @@ class TeamMemberList extends Component {
                     </div>
                     <button type="button" className="btn-copy">복사하기</button>
                   </div>
-                </section>
+                </section> */}
               </div>
             </form>
             {isToastShow

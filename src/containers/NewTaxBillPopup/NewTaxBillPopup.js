@@ -82,6 +82,11 @@ class NewTaxBillPopup extends Component {
                 }), () => { handlePopup(false); });
               }, 2000);
             });
+          })
+          .catch((err) => {
+            console.log(err);
+            console.log(err.response);
+            console.log(err.message);
           });
       } else {
         alert('something wrong2');
@@ -99,15 +104,15 @@ class NewTaxBillPopup extends Component {
           onPopup={handlePopup}
           onSubmit={this.onSubmit}
         />
-        <ToastAlert
-          title="신청이 완료되었어요 :)"
-          subtitle="빠른 안내 드리도록 하겠습니다"
-          isShow={hasComplete}
-        />
-        {/* <div className={`box__alert${hasComplete ? ' alert' : ''}`}>
-          <strong>신청이 완료되었어요 :)</strong>
-          <span>빠른 안내 드리도록 하겠습니다.</span>
-        </div> */}
+        {hasComplete
+          ? (
+            <ToastAlert
+              title="신청이 완료되었어요 :)"
+              subtitle="빠른 안내 드리도록 하겠습니다"
+              isShow={hasComplete}
+            />
+          )
+          : null}
       </PopupTemplate>
     );
   }

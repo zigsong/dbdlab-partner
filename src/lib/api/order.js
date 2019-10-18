@@ -12,7 +12,8 @@ const headers = {
 };
 
 // eslint-disable-next-line import/prefer-default-export
-export const getVoucherOrder = () => axios.get(`${baseURL}/orders/voucher/`, headers);
+export const getVoucherOrderList = () => axios.get(`${baseURL}/orders/voucher/`, headers);
+export const getVoucherOrder = oId => axios.get(`${baseURL}/orders/voucher/${oId}/`, headers);
 export const orderVoucher = (companyName, applicantName, depositorName, phone, email, plId, amount) => axios.post(`${baseURL}/orders/voucher/`, {
   company_name: companyName,
   applicant_name: applicantName,
@@ -62,25 +63,65 @@ export const patchTestOrder = (
   taxEmail,
   taxCompany,
   taxCompanyRegistNum,
-) => axios.patch(`${baseURL}/orders/test/${oId}/`, {
-  plan: {
-    name: planName,
-    description: planDesc,
-  },
-  coupon: {
-    code: cCode,
+) => {
+  console.log(oId,
+    cCode,
+    cType,
+    planName,
+    planDesc,
+    originPrice,
+    discountedPrice,
+    totalPrice,
+    isPaid,
+    paidDate,
+    hasTaxBillReq,
+    taxEmail,
+    taxCompany,
+    taxCompanyRegistNum);
+  return axios.patch(`${baseURL}/orders/test/${oId}/`, {
+    plan: {
+      name: planName,
+      description: planDesc,
+    },
+    coupon: {
+      code: cCode,
+      coupon_type: cType,
+    },
     coupon_type: cType,
-  },
-  coupon_type: cType,
-  ordered_price: originPrice,
-  discounted_price: discountedPrice,
-  charged_price: totalPrice,
-  is_paid: isPaid,
-  paid_at: paidDate,
+    ordered_price: originPrice,
+    discounted_price: discountedPrice,
+    charged_price: totalPrice,
+    is_paid: isPaid,
+    paid_at: paidDate,
+    is_tax_bill_requested: hasTaxBillReq,
+    tax_bill_receive_email: taxEmail,
+    tax_bill_company_name: taxCompany,
+    company_registration_number: taxCompanyRegistNum,
+  }, headers);
+};
+export const getTestOrderList = () => axios.get(`${baseURL}/orders/test/`, headers);
+export const getTestOrder = oId => axios.get(`${baseURL}/orders/test/${oId}/`, headers);
+export const patchTestTaxBill = (
+  oId,
+  hasTaxBillReq,
+  taxEmail,
+  taxCompany,
+  taxCompanyRegistNum,
+) => axios.patch(`${baseURL}/orders/test/${oId}/tax_bill/`, {
   is_tax_bill_requested: hasTaxBillReq,
   tax_bill_receive_email: taxEmail,
   tax_bill_company_name: taxCompany,
   company_registration_number: taxCompanyRegistNum,
 }, headers);
-export const getTestOrderList = () => axios.get(`${baseURL}/orders/test/`, headers);
-export const getTestOrder = oId => axios.get(`${baseURL}/orders/test/${oId}/`, headers);
+export const patchVoucherTaxBill = (
+  oId,
+  hasTaxBillReq,
+  taxEmail,
+  taxCompany,
+  taxCompanyRegistNum,
+) => axios.patch(`${baseURL}/orders/voucher/${oId}/tax_bill/`, {
+  is_tax_bill_requested: hasTaxBillReq,
+  tax_bill_receive_email: taxEmail,
+  tax_bill_company_name: taxCompany,
+  company_registration_number: taxCompanyRegistNum,
+}, headers);

@@ -279,9 +279,6 @@ class Test extends Component {
                                                                 staff={testList[t].staff}
                                                                 createDate={testList[t].created_at}
                                                               />
-                                                              { tStep === 'completed'
-                                                                ? <Link to="/" className="btn-start--blue">결과 리포트 확인하기</Link>
-                                                                : null }
                                                             </React.Fragment>
                                                           )
                                                           : null

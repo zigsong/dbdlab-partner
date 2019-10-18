@@ -59,7 +59,7 @@ class HeaderDesktop extends Component {
         this.setState(prevState => ({
           isExtended: !prevState.isExtended,
         }));
-      }, 100);
+      }, 500);
     }
   };
 

@@ -60,13 +60,16 @@ const TestCard = (props) => {
   } = props;
 
   return (
-    <Link to={`/project/${pId}/test/${tId}`} key={tId} className="test">
+    <Link to={`/project/${pId}/test/${tId}`} key={tId} className={`test${step === 'completed' ? '--completed' : ''}`}>
       <div className="card-test" key={tId}>
         <p className="card-test__test">
           {setStepState(step, staff)}
           <span className="test__title">{tTitle}</span>
         </p>
         <p className="card-test__info">{getDate(createDate)}</p>
+        { step === 'completed'
+          ? <button type="button" className="btn-start--blue">결과 리포트 확인하기</button>
+          : null }
       </div>
     </Link>
   );

@@ -6,7 +6,7 @@ import FormInput from 'components/FormInput';
 import {
   Field, formValueSelector, getFormMeta,
 } from 'redux-form';
-import { getTestPrice } from 'modules/test';
+import { getTest, getTestPrice } from 'modules/test';
 import { getPlanList } from 'modules/plan';
 
 const planRequired = value => (value ? undefined : 'Plan을 선택해 주세요:)');
@@ -18,29 +18,58 @@ class TestFormPay extends Component {
     planPrice: 0,
     targetPrice: 0,
     registerPrice: 0,
+    discountPrice: 0,
+    orderedPrice: 0,
+    chargedPrice: 0,
   }
 
   componentDidMount() {
-    const { getPlanList } = this.props;
+    const {
+      planValue,
+      couponValue,
+      getPlanList,
+      testId,
+      getTestPrice,
+      test,
+    } = this.props;
 
     this.mounted = true;
 
-    getPlanList()
-      .then(() => {
-        if (this.mounted) {
-          this.getPlanPriceValue();
-        }
+    getPlanList();
+    getTestPrice(testId, planValue, couponValue).then((res) => {
+      console.log(res);
+      this.setState({
+        planPrice: res.data.plan_price,
+        targetPrice: res.data.target_extra_price,
+        registerPrice: res.data.register_price,
+        discountPrice: res.data.discounted_price,
+        orderedPrice: res.data.ordered_price,
+        chargedPrice: res.data.charged_price,
       });
+    }).then(() => {
+      if (test.test.order !== null && Object.keys(test.test.order).length > 0) {
+        this.setState({
+          discountPrice: test.test.order.discounted_price,
+          orderedPrice: test.test.order.ordered_price,
+          chargedPrice: test.test.order.charged_price,
+        });
+      }
+    });
   }
 
   componentDidUpdate(prevProps) {
-    const { extraValues, isRegisterReq } = this.props;
-    if (prevProps.extraValues !== extraValues) {
-      this.getExtraPrice();
+    const { planValue, couponValue, fields } = this.props;
+
+    if (prevProps.planValue !== planValue) {
+      this.getTestPriceValue(couponValue);
     }
 
-    if (prevProps.isRegisterReq !== isRegisterReq) {
-      this.getRegisterPrice();
+    if (prevProps.fields.pay !== fields.pay) {
+      this.getTestPriceValue(couponValue);
+    }
+
+    if (prevProps.couponValue !== couponValue) {
+      this.getTestPriceValue(couponValue);
     }
   }
 
@@ -48,62 +77,27 @@ class TestFormPay extends Component {
     this.mounted = false;
   }
 
-
-  getPlanPriceValue = () => {
+  getTestPriceValue = (cType) => {
     const {
-      testId,
-      planValue,
-      planList,
-      getTestPrice,
+      testId, planValue, getTestPrice,
     } = this.props;
 
-    if (planValue === undefined
-        || planList === undefined
-        || planList === []
-        || planList.length < 1) {
-      console.log(planValue);
-      this.getExtraPrice();
-      this.getRegisterPrice();
-    } else {
-      console.log(planValue);
-      getTestPrice(testId, planValue)
-        .then((res) => {
-          console.log(res);
-          this.setState({
-            planPrice: res.data.plan_price,
-            targetPrice: res.data.target_extra_price,
-            registerPrice: res.data.register_price,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          console.log(err.message);
-          console.log(err.response);
+    getTestPrice(testId, planValue, cType)
+      .then((res) => {
+        this.setState({
+          planPrice: res.data.plan_price,
+          targetPrice: res.data.target_extra_price,
+          registerPrice: res.data.register_price,
+          discountPrice: res.data.discounted_price,
+          orderedPrice: res.data.ordered_price,
+          chargedPrice: res.data.charged_price,
         });
-    }
-  };
-
-  getExtraPrice = () => {
-    let extraPriceValue = 0;
-    const { extraValues, extraInfoCategory } = this.props;
-    const exValue1Check = extraValues.filter(ex1 => ex1.name === extraInfoCategory[0]).length;
-    const exValue2Check = extraValues.filter(ex1 => ex1.name === extraInfoCategory[1]).length;
-    const exValue3Check = extraValues.filter(ex1 => ex1.name === extraInfoCategory[2]).length;
-    const totalCheck = [
-      (3000 * 15 * exValue1Check),
-      (2000 * 15 * exValue2Check),
-      (3000 * 15 * exValue3Check),
-    ];
-
-    extraPriceValue = totalCheck.length < 1 ? 0 : totalCheck.reduce((acc, cur) => acc + cur);
-
-    this.setState({ targetPrice: extraPriceValue });
-  };
-
-  getRegisterPrice = () => {
-    const { isRegisterReq } = this.props;
-
-    if (isRegisterReq !== '아니오' && isRegisterReq !== undefined) this.setState({ registerPrice: 3000 * 15 });
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log(err.message);
+        console.log(err.response);
+      });
   }
 
   handleInputFocus = () => {
@@ -136,8 +130,8 @@ class TestFormPay extends Component {
               disabled={isDisabled}
             />
             <strong className="plan__name">{p.name}</strong>
-            <span className="plan__desc">{p.description}</span>
-            { idx === 0 ? <span className="helpme">디자이너님</span> : <span className="helpme">헬프미</span> }
+            <span className="plan__desc--eng">{p.description}</span>
+            { idx === 0 ? <span className="plan__desc--kor">테스트만 진행합니다.</span> : <span className="plan__desc--kor">테스트 + 후속 컨설팅을 진행합니다 </span> }
           </span>
         ))}
         {hasError && <span className="msg--error">{meta.error}</span>}
@@ -151,13 +145,21 @@ class TestFormPay extends Component {
       couponValue,
       isDisabled,
       submitErrorMsg,
+      fields,
     } = this.props;
-    const { planPrice, targetPrice, registerPrice } = this.state;
+    const {
+      planPrice,
+      targetPrice,
+      registerPrice,
+      discountPrice,
+      orderedPrice,
+      chargedPrice,
+    } = this.state;
+    const planPriceInt = parseInt(planPrice, 10);
+    const targetPriceInt = parseInt(targetPrice, 10);
+    const registerPriceInt = registerPrice === undefined ? 0 : parseInt(registerPrice, 10);
     const { handleInputFocus, FormRadio } = this;
-    const totalPrice = parseInt(planPrice, 10)
-      + parseInt(targetPrice, 0)
-      + parseInt(registerPrice, 0);
-    const couponDiscount = couponValue !== undefined ? totalPrice * 0.03 : 0;
+    const couponTypeMeta = fields.pay !== undefined ? fields.pay.coupon : undefined;
     const coupon = [
       {
         title: '한달이내에 리얼답을 사용한 적이 있습니다',
@@ -179,15 +181,15 @@ class TestFormPay extends Component {
     const receipt = [
       {
         title: '테스트 비용',
-        price: planPrice === 0 ? 'PLAN을 선택해주세요' : `${planPrice}원`,
+        price: planPriceInt === 0 ? 'PLAN을 선택해주세요' : `${planPriceInt}원`,
       },
       {
         title: '타겟 정보 추가',
-        price: `${targetPrice}원`,
+        price: `${targetPriceInt}원`,
       },
       {
         title: '회원가입',
-        price: `${registerPrice}원`,
+        price: `${registerPriceInt}원`,
       },
     ];
 
@@ -204,6 +206,7 @@ class TestFormPay extends Component {
               name="plan"
               component={FormRadio}
               validate={planRequired}
+              disabled={isDisabled}
             />
           </label>
         </section>
@@ -227,7 +230,7 @@ class TestFormPay extends Component {
               <strong className="total__price">
                 <span>Total</span>
                 <strong>
-                  {totalPrice}
+                  {orderedPrice}
                   <i>원</i>
                 </strong>
               </strong>
@@ -237,7 +240,7 @@ class TestFormPay extends Component {
                 <strong className="title">Coupon</strong>
                 <strong className="coupon__price">
                   -
-                  <span className="price">{couponDiscount}</span>
+                  <span className="price">{discountPrice}</span>
                   원
                 </strong>
               </span>
@@ -275,7 +278,7 @@ class TestFormPay extends Component {
                               disabled={isDisabled}
                               submitError={!!submitErrorMsg}
                             />
-                            {submitErrorMsg && <span className="msg--error">{submitErrorMsg}</span>}
+                            {submitErrorMsg && couponTypeMeta.touched && <span className="msg--error">{submitErrorMsg}</span>}
                           </p>
                         )
                         : (
@@ -291,7 +294,7 @@ class TestFormPay extends Component {
                               disabled={isDisabled}
                               submitError={!!submitErrorMsg}
                             />
-                            {submitErrorMsg && <span className="msg--error">{submitErrorMsg}</span>}
+                            {submitErrorMsg && couponTypeMeta.touched && <span className="msg--error">{submitErrorMsg}</span>}
                           </p>
                         )
                       }
@@ -305,7 +308,7 @@ class TestFormPay extends Component {
               <strong className="total__price">
                 <span>Total</span>
                 <strong>
-                  {totalPrice - couponDiscount}
+                  {chargedPrice}
                   <i>원</i>
                 </strong>
               </strong>
@@ -320,6 +323,7 @@ class TestFormPay extends Component {
 
 const selector = formValueSelector('testForm');
 const mapStateToProps = state => ({
+  test: state.test,
   couponValue: selector(state, 'pay.coupon'),
   planValue: selector(state, 'pay.plan'),
   fields: getFormMeta('testForm')(state),
@@ -328,7 +332,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  getTestPrice: (tId, pName) => dispatch(getTestPrice(tId, pName)),
+  getTest: tId => dispatch(getTest(tId)),
+  getTestPrice: (tId, pName, couponValue) => dispatch(getTestPrice(tId, pName, couponValue)),
   getPlanList: () => dispatch(getPlanList()),
 });
 

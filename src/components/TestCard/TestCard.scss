@@ -18,49 +18,87 @@ $imgUrl: '/static/images';
   word-wrap: break-word;
 }
 
-.card-test {
+.test {
+  display: block;
   width: 100%;
-  padding: 10px 14px 8px;
-  background: $white;
-  border-radius: 3px;
-  border: 1px solid $veryLightGray;
-  box-sizing: border-box;
+  margin-top: 8px;
 
-  .card-test__test {
-    .test__state {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 10px;
-      font-weight: 500;
-      color: $gray;
-      line-height: 15px;
+  &:first-child {
+    margin-top: 14px;
+  }
 
-      &--on {
-        @extend .test__state;
-        color: $blue;
+  .card-test {
+    width: 100%;
+    padding: 10px 14px 8px;
+    background: $white;
+    border-radius: 3px;
+    border: 1px solid $veryLightGray;
+    box-sizing: border-box;
+  
+    .card-test__test {
+      .test__state {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 10px;
+        font-weight: 500;
+        color: $gray;
+        line-height: 15px;
+  
+        &--on {
+          @extend .test__state;
+          color: $blue;
+        }
+  
+        &--off {
+          @extend .test__state;
+          color: $black;
+        }
       }
-
-      &--off {
-        @extend .test__state;
+  
+      .test__title {
+        @include line-clamp(2);
+        height: 44px;
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 1.57;
         color: $black;
       }
     }
-
-    .test__title {
-      @include line-clamp(2);
-      height: 44px;
-      font-size: 14px;
-      font-weight: 300;
-      line-height: 1.57;
-      color: $black;
+  
+    .card-test__info {
+      margin-top: 2px;
+      font-size: 12px;
+      color: $gray;
+      line-height: 15px;
+      text-align: right;
     }
   }
 
-  .card-test__info {
-    margin-top: 2px;
-    font-size: 12px;
-    color: $gray;
-    line-height: 15px;
-    text-align: right;
+  &--completed {
+    @extend .test;
+
+    .card-test {
+      border-color: $blue;
+
+      .card-test__test {
+        .test__state {
+          color: $gray;
+        }
+
+        .test__title {
+          color: $gray;
+        }
+      }
+
+      .btn-start--blue {
+        width: 100%;
+        margin-top: 5px;
+        background: $blue;
+        font-size: 12px;
+        font-weight: 500;
+        color: $white;
+        border-radius: 3px;
+      }
+    }
   }
 }

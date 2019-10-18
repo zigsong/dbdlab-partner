@@ -49,12 +49,10 @@ const DisabledLayer = () => (
 class NewTestForm extends Component {
   state = {
     isLoading: false,
+    isPayLoading: false,
     isBackConfirmPopup: false,
-    isNoticePopup: false,
-    isRegisterConfirmPopup: false,
-    hasRegisterConfirmed: false,
-    isPayConfirmPopup: false,
-    hasPayConfirmed: false,
+    isRegisterInfoPopup: false,
+    isPayInfoPopup: false,
     isDefaultRendered: true,
     isTargetRendered: false,
     isQuestRendered: false,
@@ -66,7 +64,10 @@ class NewTestForm extends Component {
     isQuestPassed: false,
     isPayPassed: false,
     isAllPassed: false,
-    hasReport: false,
+    isCompleteStep: false,
+    isTestStep: false,
+    isRegisterStep: false,
+    isPaymentStep: false,
     test: {},
     asyncErrorMsg: '',
   }
@@ -94,8 +95,6 @@ class NewTestForm extends Component {
               quests,
               order,
             } = this.props;
-            console.log(quests);
-            console.log(res.data.quests);
 
             const {
               id,
@@ -119,8 +118,8 @@ class NewTestForm extends Component {
               is_register_required,
             } = test;
 
-            console.log(res);
-            console.log(targets);
+            const { report_url } = res.data;
+
             if (targets !== undefined) {
               getTarget(targets[0].id);
             } else {
@@ -153,6 +152,7 @@ class NewTestForm extends Component {
                 targets,
                 quests,
                 order,
+                report_url,
               },
             });
           },
@@ -174,17 +174,20 @@ class NewTestForm extends Component {
                 const { test } = this.state;
                 const { age_maximum, age_minimum, gender } = test.targets[0];
                 const issues = test.quests.map(q => q.issue);
-                console.log(issues);
                 const issuePurposes = test.quests.map(q => q.issue_purpose);
                 const issueDetails = test.quests.map(q => q.issue_detail);
                 const hasTargetValue = (age_maximum && age_minimum) !== null;
                 const hasGenderValue = gender !== '';
-                const hasIssue1Value = issues[2] !== '';
-                const hasIssuePurpose1Value = issuePurposes[2] !== '';
-                const hasIssueDetail1Value = issueDetails[2] !== '';
+                const hasIssue1Value = issues[0] !== '';
+                const hasIssuePurpose1Value = issuePurposes[0] !== '';
+                const hasIssueDetail1Value = issueDetails[0] !== '';
                 const hasPayValue = test.order !== null
                   && test.order !== undefined
                   && test.order.plan.name !== undefined;
+                const hasCompleted = test.default.step === 'COMPLETED';
+                const isTestStep = test.default.step === 'TESTING';
+                const isPaymentStep = test.default.step === 'PAYMENT';
+                const isRegisterStep = test.default.step === 'REGISTER';
                 const hasDefaultPassed = () => !!test.default;
 
                 if (hasDefaultPassed) {
@@ -211,15 +214,52 @@ class NewTestForm extends Component {
                     isQuestRendered: false,
                     isQuestPassed: true,
                     isPayRendered: true,
+                    isReportRendered: false,
                   });
                 }
+
+                if (isRegisterStep) this.setState({ isRegisterStep: true });
 
                 if (hasPayValue) {
                   this.setState({
                     isLoading: false,
-                    isPayRendered: true,
+                    isReportRendered: false,
                     isPayPassed: true,
                     isAllRendered: false,
+                    isCompleteStep: false,
+                  });
+                }
+
+                if (hasPayValue && isPaymentStep) {
+                  this.setState({
+                    isLoading: false,
+                    isReportRendered: false,
+                    isPayPassed: true,
+                    isAllRendered: false,
+                    isCompleteStep: false,
+                    isPaymentStep: true,
+                  });
+                }
+
+                if (hasPayValue && isTestStep) {
+                  this.setState({
+                    isLoading: false,
+                    isReportRendered: true,
+                    isPayRendered: false,
+                    isPayPassed: false,
+                    isAllRendered: false,
+                    isCompleteStep: false,
+                    isTestStep: true,
+                  });
+                }
+
+                if (hasCompleted) {
+                  this.setState({
+                    isLoading: false,
+                    isPayRendered: false,
+                    isReportRendered: true,
+                    isCompleteStep: true,
+                    isTestStep: false,
                   });
                 }
               },
@@ -253,7 +293,6 @@ class NewTestForm extends Component {
 
   handleBackBtn = () => {
     const { togglePopup, test } = this.props;
-    console.log(test);
 
     togglePopup(true);
     this.setState({ isBackConfirmPopup: true });
@@ -266,20 +305,10 @@ class NewTestForm extends Component {
     togglePopup(false);
     this.setState({
       isBackConfirmPopup: false,
-      isNoticePopup: false,
-      isRegisterConfirmPopup: false,
-      isPayConfirmPopup: false,
+      isRegisterInfoPopup: false,
+      isPayInfoPopup: false,
     });
   }
-
-  handleRegisterConfirm = async (e) => {
-    e.preventDefault();
-
-    this.setState({
-      hasRegisterConfirmed: true,
-      isBackConfirmPopup: false,
-    });
-  };
 
   handleFormRender = (id) => {
     const renderDefault = id === 0
@@ -345,6 +374,10 @@ class NewTestForm extends Component {
       funnel,
     } = values.default;
     const titleReg = title.replace(/(^\s*)|(\s*$)/g, '');
+    const clientNameReg = clientName.replace(/(^\s*)|(\s*$)/g, '');
+    const clientContactReg = clientContact.replace(/(^\s*)|(\s*$)/g, '');
+    const emailReg = email.replace(/(^\s*)|(\s*$)/g, '');
+    const serviceInfoReg = serviceInfo.replace(/(^\s*)|(\s*$)/g, '');
     const hasDefaultPassed = () => {
       const hasDefaultValue = Object.keys(values.default).length > 0;
       return !!hasDefaultValue;
@@ -361,9 +394,6 @@ class NewTestForm extends Component {
       const hasPayValue = Object.keys(values.pay).length > 0;
       return !!hasPayValue;
     };
-    console.log(values);
-    console.log('summited');
-    // window.alert(`You submitted:\n\n${JSON.stringify(values, null, 2)}`);
 
     if (tId) {
       if (isDefaultRendered && hasDefaultPassed) {
@@ -374,13 +404,13 @@ class NewTestForm extends Component {
           pId,
           step,
           titleReg,
-          clientName,
-          clientContact,
+          clientNameReg,
+          clientContactReg,
           media2,
-          email,
+          emailReg,
           media1,
           serviceFormat,
-          serviceInfo,
+          serviceInfoReg,
           serviceCategory,
           serviceStatus,
           serviceDesc,
@@ -406,7 +436,6 @@ class NewTestForm extends Component {
         } = values.target;
         // eslint-disable-next-line no-nested-ternary
         const genderValue = gender === '여자' ? 'female' : (gender === '남자' ? 'male' : 'both');
-        console.log(values.target);
         const categoryListArr = Object.keys(categoryList).length > 0
           ? Object.keys(categoryList).map(c => categoryList[c].category_items)
           : undefined;
@@ -469,7 +498,6 @@ class NewTestForm extends Component {
             });
           });
       } else if (isQuestRendered && hasQuestPassed) {
-        console.log('here');
         const submitCheck = window.confirm('테스트를 등록하시겠어요?\n등록 후엔 수정이 되지 않으니, 꼼꼼히 확인해 주세요:)');
 
         if (submitCheck) {
@@ -480,7 +508,6 @@ class NewTestForm extends Component {
             issueDetail,
             issuePurpose,
           } = values.quest;
-          console.log(qId);
           const registerValue = registerRequire !== '아니오';
           const step = 'REGISTER';
 
@@ -490,13 +517,13 @@ class NewTestForm extends Component {
               pId,
               step,
               titleReg,
-              clientName,
-              clientContact,
+              clientNameReg,
+              clientContactReg,
               media2,
-              email,
+              emailReg,
               media1,
               serviceFormat,
-              serviceInfo,
+              serviceInfoReg,
               serviceCategory,
               serviceStatus,
               serviceDesc,
@@ -511,13 +538,13 @@ class NewTestForm extends Component {
               pId,
               step,
               titleReg,
-              clientName,
-              clientContact,
+              clientNameReg,
+              clientContactReg,
               media2,
-              email,
+              emailReg,
               media1,
               serviceFormat,
-              serviceInfo,
+              serviceInfoReg,
               serviceCategory,
               serviceStatus,
               serviceDesc,
@@ -528,8 +555,8 @@ class NewTestForm extends Component {
               qId[0],
               tId,
               issue[`q${qId[0]}`],
-              issueDetail[`q${qId[0]}`],
-              issuePurpose[`q${qId[0]}`],
+              issueDetail[`q${qId[0]}`].replace(/(^\s*)|(\s*$)/g, ''),
+              issuePurpose[`q${qId[0]}`].replace(/(^\s*)|(\s*$)/g, ''),
             )
               .then(() => getTest(tId))
               .then(() => {
@@ -538,7 +565,7 @@ class NewTestForm extends Component {
                   isQuestRendered: false,
                   isQuestPassed: true,
                   isPayRendered: true,
-                  isNoticePopup: true,
+                  isRegisterInfoPopup: true,
                 });
               })
               .catch((err) => {
@@ -552,13 +579,13 @@ class NewTestForm extends Component {
               pId,
               step,
               titleReg,
-              clientName,
-              clientContact,
+              clientNameReg,
+              clientContactReg,
               media2,
-              email,
+              emailReg,
               media1,
               serviceFormat,
-              serviceInfo,
+              serviceInfoReg,
               serviceCategory,
               serviceStatus,
               serviceDesc,
@@ -569,8 +596,8 @@ class NewTestForm extends Component {
               qId[1],
               tId,
               issue[`q${qId[1]}`],
-              issueDetail[`q${qId[1]}`],
-              issuePurpose[`q${qId[1]}`],
+              issueDetail[`q${qId[1]}`].replace(/(^\s*)|(\s*$)/g, ''),
+              issuePurpose[`q${qId[1]}`].replace(/(^\s*)|(\s*$)/g, ''),
             )
               .then(() => { getTest(tId); })
               .then(() => {
@@ -579,7 +606,7 @@ class NewTestForm extends Component {
                   isQuestRendered: false,
                   isQuestPassed: true,
                   isPayRendered: true,
-                  isNoticePopup: true,
+                  isRegisterInfoPopup: true,
                 });
               })
               .catch((err) => {
@@ -593,13 +620,13 @@ class NewTestForm extends Component {
               pId,
               step,
               titleReg,
-              clientName,
-              clientContact,
+              clientNameReg,
+              clientContactReg,
               media2,
-              email,
+              emailReg,
               media1,
               serviceFormat,
-              serviceInfo,
+              serviceInfoReg,
               serviceCategory,
               serviceStatus,
               serviceDesc,
@@ -610,8 +637,8 @@ class NewTestForm extends Component {
               qId[2],
               tId,
               issue[`q${qId[2]}`],
-              issueDetail[`q${qId[2]}`],
-              issuePurpose[`q${qId[2]}`],
+              issueDetail[`q${qId[2]}`].replace(/(^\s*)|(\s*$)/g, ''),
+              issuePurpose[`q${qId[2]}`].replace(/(^\s*)|(\s*$)/g, ''),
             )
               .then(() => { getTest(tId); })
               .then(() => {
@@ -620,7 +647,7 @@ class NewTestForm extends Component {
                   isQuestRendered: false,
                   isQuestPassed: true,
                   isPayRendered: true,
-                  isNoticePopup: true,
+                  isRegisterInfoPopup: true,
                 });
               })
               .catch((err) => {
@@ -637,46 +664,48 @@ class NewTestForm extends Component {
         const submitCheck = window.confirm('PLAN을 선택하셨나요?\n등록 후엔 수정이 되지 않으니, 꼼꼼히 확인해 주세요.');
 
         if (submitCheck) {
-          console.log(selectedPlan.id,
-            tId,
-            cType,
-            cCode);
+          this.setState({ isPayLoading: true });
           orderTest(
             selectedPlan.id,
             tId,
             cType,
             cCode,
           ).then((res) => {
-            console.log(res);
             this.setState({
+              isPayLoading: false,
+              isPayInfoPopup: true,
               isPayRendered: true,
               isPayPassed: true,
-              isAllRendered: true,
               test: {
                 order: res.data,
               },
             });
-          }).catch((err) => {
-            console.log(err);
-            console.log(err.response);
-            console.log(err.message);
-            this.setState({
-              asyncErrorMsg: err.response.data.coupon_code,
+          })
+            .then(() => {
+              this.setState({ isAllRendered: true });
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log(err.response);
+              console.log(err.message);
+              this.setState({
+                isPayLoading: false,
+                asyncErrorMsg: err.response.data.coupon_code,
+              });
             });
-          });
         }
       }
     } else {
       await postTest(
         pId,
         titleReg,
-        clientName,
-        clientContact,
+        clientNameReg,
+        clientContactReg,
         media2,
-        email,
+        emailReg,
         media1,
         serviceFormat,
-        serviceInfo,
+        serviceInfoReg,
         serviceCategory,
         serviceStatus,
         serviceDesc,
@@ -763,10 +792,10 @@ class NewTestForm extends Component {
   render() {
     const {
       isLoading,
+      isPayLoading,
       isBackConfirmPopup,
-      isNoticePopup,
-      isRegisterConfirmPopup,
-      isPayConfirmPopup,
+      isRegisterInfoPopup,
+      isPayInfoPopup,
       isDefaultRendered,
       isTargetRendered,
       isQuestRendered,
@@ -778,7 +807,9 @@ class NewTestForm extends Component {
       isQuestPassed,
       isPayPassed,
       isAllPassed,
-      hasReport,
+      isRegisterStep,
+      isCompleteStep,
+      isTestStep,
       test,
       asyncErrorMsg,
     } = this.state;
@@ -792,12 +823,12 @@ class NewTestForm extends Component {
       categoryList,
       extras,
       isOpen,
+      invalid,
     } = this.props;
     const {
       goBack,
       handleBackBtn,
       handleCancleBtn,
-      handleRegisterConfirm,
       handleFormRender,
       onSubmit,
     } = this;
@@ -810,8 +841,6 @@ class NewTestForm extends Component {
       : (fieldsValues && fieldsValues !== undefined
         ? Object.keys(fieldsValues.quest.issue).map(q => q.slice(1))
         : [1, 2, 3]);
-    console.log(qId);
-    console.log(test.quests);
     const isNoNamed = fieldsValues === undefined ? true : (fieldsValues.title === undefined || fieldsValues.title === '');
     const isSpacedTitle = fieldsValues === undefined ? true : (fieldsValues.title === undefined || fieldsValues.title.replace(/(^\s*)|(\s*$)/g, '').length < 1);
     const categoryListArr = Object.keys(categoryList).length > 0
@@ -835,6 +864,7 @@ class NewTestForm extends Component {
     const hasIssue1Value = hasIssueValues !== undefined ? hasIssueValues[`q${qId[0]}`] : undefined;
     const hasIssue2Value = hasIssueValues !== undefined ? hasIssueValues[`q${qId[1]}`] : undefined;
     const hasIssue3Value = hasIssueValues !== undefined ? hasIssueValues[`q${qId[2]}`] : undefined;
+    const hasReport = test !== undefined ? test.report_url : undefined;
     const nav = [
       {
         title: '기본 정보',
@@ -876,7 +906,7 @@ class NewTestForm extends Component {
                           className="btn-nav"
                           type="button"
                           onClick={() => handleFormRender(idx)}
-                          disabled={idx === 4 && hasReport}
+                          disabled={idx === 4 && (!isCompleteStep && !isTestStep)}
                         >
                           {n.title}
                         </button>
@@ -932,7 +962,7 @@ class NewTestForm extends Component {
                           className="btn-nav"
                           type="button"
                           onClick={() => handleFormRender(idx)}
-                          disabled={idx === 4 && !isAllRendered}
+                          disabled={idx === 4 && (!isCompleteStep && !isTestStep)}
                         >
                           {n.title}
                         </button>
@@ -954,27 +984,32 @@ class NewTestForm extends Component {
             />
             { isDefaultRendered
               ? (
-                <FormSection name="default">
-                  <TestFormDefault
-                    isDisabled={isNoNamed || isSpacedTitle
-                      || (isDefaultPassed
-                      && isTargetPassed
-                      && isQuestPassed
-                      && isPayPassed)
-                      || isAllPassed
-                      || (isQuestPassed && step !== 'payment')
-                      || step === 'payment'
-                      || step === 'testing'
-                      || step === 'completed'
-                    }
-                    test={test}
-                    media1Category={media1Category}
-                    media2Category={media2Category}
-                    service1Category={service1Category}
-                    service2Category={service2Category}
-                    funnelCategory={funnelCategory}
-                  />
-                </FormSection>
+                <>
+                  { step === 'register' || step === 'payment' || step === 'testing' || step === 'completed'
+                    ? <DisabledLayer />
+                    : null}
+                  <FormSection name="default">
+                    <TestFormDefault
+                      isDisabled={isNoNamed || isSpacedTitle
+                        || (isDefaultPassed
+                        && isTargetPassed
+                        && isQuestPassed
+                        && isPayPassed)
+                        || isAllPassed
+                        || (isQuestPassed && step !== 'payment')
+                        || step === 'payment'
+                        || step === 'testing'
+                        || step === 'completed'
+                      }
+                      test={test}
+                      media1Category={media1Category}
+                      media2Category={media2Category}
+                      service1Category={service1Category}
+                      service2Category={service2Category}
+                      funnelCategory={funnelCategory}
+                    />
+                  </FormSection>
+                </>
               )
               : null
             }
@@ -982,10 +1017,13 @@ class NewTestForm extends Component {
               ? (
                 <>
                   { isDefaultPassed ? null : <DisabledLayer /> }
+                  { step === 'register' || step === 'payment' || step === 'testing' || step === 'completed'
+                    ? <DisabledLayer />
+                    : null}
                   { isDefaultPassed ? null : (
                     <ToastAlert
                       title="아직은 작성하실 수 없어요!"
-                      subtitle="이전 단계를 모두 완성해 주세요"
+                      subtitle="이전 단계 진행 후 작성하실 수 있습니다"
                       isShow
                     />
                   ) }
@@ -1014,10 +1052,13 @@ class NewTestForm extends Component {
               ? (
                 <>
                   { isTargetPassed ? null : <DisabledLayer />}
+                  { step === 'register' || step === 'payment' || step === 'testing' || step === 'completed'
+                    ? <DisabledLayer />
+                    : null}
                   { isTargetPassed ? null : (
                     <ToastAlert
                       title="아직은 작성하실 수 없어요!"
-                      subtitle="이전 단계를 모두 완성해 주세요"
+                      subtitle="이전 단계 진행 후 작성하실 수 있습니다"
                       isShow
                     />
                   ) }
@@ -1045,11 +1086,14 @@ class NewTestForm extends Component {
             { isPayRendered
               ? (
                 <>
-                  { isQuestPassed ? null : <DisabledLayer />}
-                  { isQuestPassed ? null : (
+                  { isQuestPassed && !isRegisterStep ? null : <DisabledLayer />}
+                  { step === 'testing' || step === 'completed'
+                    ? <DisabledLayer />
+                    : null}
+                  { isQuestPassed && !isRegisterStep ? null : (
                     <ToastAlert
                       title="아직은 작성하실 수 없어요!"
-                      subtitle="이전 단계를 모두 완성해 주세요"
+                      subtitle="이전 단계 진행 후 작성하실 수 있습니다"
                       isShow
                     />
                   ) }
@@ -1062,7 +1106,7 @@ class NewTestForm extends Component {
                               testOrder={test.order}
                               submit={
                               () => this.setState({
-                                isPayPassed: false,
+                                isPayPassed: true,
                                 isAllRendered: false,
                                 isAllPassed: true,
                               })}
@@ -1078,6 +1122,8 @@ class NewTestForm extends Component {
                                   && isPayPassed)
                                   || isAllPassed
                                   || !isQuestPassed
+                                  || step === undefined
+                                  || step === 'payment'
                                   || step === 'testing'
                                   || step === 'completed'
                                 }
@@ -1092,26 +1138,30 @@ class NewTestForm extends Component {
                       </>
                     )
                     : (
-                      <FormSection name="pay">
-                        <TestFormPay
-                          isDisabled={isNoNamed || isSpacedTitle
-                            || (isDefaultPassed
-                            && isTargetPassed
-                            && isQuestPassed
-                            && isPayPassed)
-                            || isAllPassed
-                            || (isQuestPassed && step !== 'payment')
-                            || step === 'apply'
-                            || step === 'testing'
-                            || step === 'completed'
-                          }
-                          testId={tId}
-                          extraValues={extras}
-                          extraInfoCategory={extraInfoCategory}
-                          isRegisterReq={fieldsValues !== undefined && fieldsValues.quest !== undefined ? fieldsValues.quest.registerRequire : '아니오'}
-                          submitErrorMsg={asyncErrorMsg}
-                        />
-                      </FormSection>
+                      <>
+                        {isPayLoading ? <LoadingIndicator /> : null}
+                        <FormSection name="pay">
+                          <TestFormPay
+                            isDisabled={isNoNamed || isSpacedTitle
+                              || (isDefaultPassed
+                              && isTargetPassed
+                              && isQuestPassed
+                              && isPayPassed)
+                              || isAllPassed
+                              || step === undefined
+                              || (isQuestPassed && step !== 'payment')
+                              || step === 'apply'
+                              || step === 'testing'
+                              || step === 'completed'
+                            }
+                            testId={tId}
+                            extraValues={extras}
+                            extraInfoCategory={extraInfoCategory}
+                            isRegisterReq={fieldsValues !== undefined && fieldsValues.quest !== undefined ? fieldsValues.quest.registerRequire : '아니오'}
+                            submitErrorMsg={asyncErrorMsg}
+                          />
+                        </FormSection>
+                      </>
                     )
                   }
                 </>
@@ -1119,36 +1169,50 @@ class NewTestForm extends Component {
               : null
             }
             { isReportRendered
-              ? <TestFormReport />
+              ? (
+                <>
+                  {isCompleteStep
+                    ? <TestFormReport report={hasReport} />
+                    : (
+                      <div className="field-wrapper--testing">
+                        데이터 수집중입니다.
+                        <br />
+                        며칠만 말미를 주시면 어떻게든 결과를 보여주겠읍니다.
+                        <br />
+                        딩가딩가 으쌰라 으쌰 에오에오
+                      </div>
+                    )
+                  }
+                </>
+              )
               : null
             }
           </div>
-          {isPayPassed || isReportRendered
-            ? null
-            : (
-              <RightSidebar
-                step={step}
-                submitErrorMsg={asyncErrorMsg}
-                isDisabled={isNoNamed || isSpacedTitle}
-                isDefaultRendered={isDefaultRendered}
-                isTargetRendered={isTargetRendered}
-                isQuestRendered={isQuestRendered}
-                isPayRendered={isPayRendered}
-                isAllRendered={isAllRendered}
-                isDefaultPassed={isDefaultPassed}
-                isTargetPassed={isTargetPassed}
-                isQuestPassed={isQuestPassed}
-                isPayPassed={isPayPassed}
-                isAllPassed={isAllPassed}
-                fieldsMeta={fieldsMeta}
-                fieldsValues={fieldsValues}
-                submitFailed={submitFailed}
-                submitSucceeded={submitSucceeded}
-                handleSubmit={handleSubmit}
-                onSubmit={onSubmit}
-              />
-            )
-          }
+          <RightSidebar
+            step={step}
+            submitErrorMsg={asyncErrorMsg}
+            isDisabled={isNoNamed || isSpacedTitle}
+            isDefaultRendered={isDefaultRendered}
+            isTargetRendered={isTargetRendered}
+            isQuestRendered={isQuestRendered}
+            isPayRendered={isPayRendered}
+            isReportRendered={isReportRendered}
+            isAllRendered={isAllRendered}
+            isDefaultPassed={isDefaultPassed}
+            isTargetPassed={isTargetPassed}
+            isQuestPassed={isQuestPassed}
+            isPayPassed={isPayPassed}
+            isCompleteStep={isCompleteStep}
+            isTestStep={isTestStep}
+            isAllPassed={isAllPassed}
+            fieldsMeta={fieldsMeta}
+            fieldsValues={fieldsValues}
+            submitFailed={submitFailed}
+            invalid={invalid}
+            submitSucceeded={submitSucceeded}
+            handleSubmit={handleSubmit}
+            onSubmit={onSubmit}
+          />
           {/* 생성된 테스트 페이지 수정 시에도 안 보이게 하려면 아래 주석 삭제 */}
           {/* { isNoNamed && tId === undefined */}
           { isNoNamed || isSpacedTitle
@@ -1161,7 +1225,7 @@ class NewTestForm extends Component {
           }
           {isBackConfirmPopup
             ? (
-              <PopupTemplate isShow={isOpen} title="테스트 목록으로 이동하시겠어요?">
+              <PopupTemplate isShow={isBackConfirmPopup} title="테스트 목록으로 이동하시겠어요?">
                 <p className="contents__back">
                   테스트 목록으로 이동합니다.
                   <br />
@@ -1175,45 +1239,36 @@ class NewTestForm extends Component {
             )
             : null
           }
-          {isRegisterConfirmPopup
+          {isPayInfoPopup
             ? (
-              <PopupTemplate isShow={isOpen} title="했다 제출 테스트">
+              <PopupTemplate isShow={isPayInfoPopup} title="테스트를 신청해주셔서 감사합니다">
                 <p className="contents__register">
-                  UX튜닝을 위한 준비가 모두 완료되었습니다!
-                  <br />
-                  지금 이 텍스트는 임시 워딩입니다!
-                  <br />
-                  제플린이 맛이 갔거든요
+                  테스트 비용 결제 후, 입금 확인 다음 날 부터 테스트가 시작됩니다:)
                 </p>
                 <div className="box-btn">
-                  <button type="button" className="btn-cancle" onClick={e => handleCancleBtn(e)}>취소</button>
-                  <button type="button" className="btn-confirm" onClick={e => handleRegisterConfirm(e)}>확인</button>
+                  <button type="button" className="btn-cancle" onClick={e => goBack(e)}>테스트 목록으로 이동</button>
+                  <button type="button" className="btn-confirm" onClick={e => handleCancleBtn(e)}>닫기</button>
                 </div>
               </PopupTemplate>
             )
             : null
           }
-          {isPayConfirmPopup
+          {isRegisterInfoPopup
             ? (
-              <PopupTemplate isShow={isOpen} title="플랜 선택을 완료하셨나요?">
-                울랄라
-              </PopupTemplate>
-            )
-            : null
-          }
-          {isNoticePopup
-            ? (
-              <PopupTemplate isShow={isOpen} title="했다 제출 테스트">
+              <PopupTemplate isShow={isOpen} title="테스트 신청이 완료되었습니다">
                 <p className="contents__register">
-                  UX튜닝을 위한 준비가 모두 완료되었습니다!
+                  <strong className="contents__subtitle">리얼답 매니저가 입력하신 정보를 검토한 후, 테스트 결제를 도와드립니다.</strong>
+                  Test 신청 정보에 따라 테스트를 설계하기 때문에,
                   <br />
-                  지금 이 텍스트는 임시 워딩입니다!
+                  정보 수정 혹은 확인이 필요할 수 있습니다.
                   <br />
-                  제플린이 맛이 갔거든요
+                  결제는 테스트 설계가 끝난 후 진행됩니다.
+                  <br />
+                  궁금하신 내용이 있다면 언제든지 문의해주세요!
                 </p>
                 <div className="box-btn">
-                  <button type="button" className="btn-cancle" onClick={e => goBack(e)}>테스트 목록 보기</button>
-                  <button type="button" className="btn-confirm" onClick={e => handleCancleBtn(e)}>확인이었던 거 같아 여기</button>
+                  <button type="button" className="btn-cancle" onClick={e => goBack(e)}>테스트 목록으로 이동</button>
+                  <button type="button" className="btn-confirm" onClick={e => handleCancleBtn(e)}>닫기</button>
                 </div>
               </PopupTemplate>
             )
@@ -1267,7 +1322,6 @@ const mapStateToProps = (state) => {
     ? test.is_register_required : undefined;
   // eslint-disable-next-line no-nested-ternary
   const registerValue = registerRequire !== undefined ? (registerRequire !== false ? '네(+3,000원/명)' : '아니오') : undefined;
-  console.log(quests);
   const issue1qId = quests !== undefined ? quests[0].id : '';
   const issue2qId = quests !== undefined ? quests[1].id : '';
   const issue3qId = quests !== undefined ? quests[2].id : '';
@@ -1281,10 +1335,12 @@ const mapStateToProps = (state) => {
   const issueissuePurpose2Value = quests !== undefined && quests[1].issue_purpose !== '' ? quests[1].issue_purpose : undefined;
   const issueissuePurpose3Value = quests !== undefined && quests[2].issue_purpose !== '' ? quests[2].issue_purpose : undefined;
   const planValue = order !== null && order !== undefined && order.plan !== undefined
-    ? order.plan.name : undefined;
+    ? order.plan.name : 'PLAN 01';
   const codeValue = order !== null && order !== undefined && order.coupon_type !== null
     ? order.coupon_type : undefined;
   const orderId = order !== null && order !== undefined ? order.id : undefined;
+  const couponNumValue = order !== null && order !== undefined && order.coupon !== null
+    ? order.coupon.code : undefined;
 
   const initData = {
     title: titleValue,
@@ -1333,6 +1389,7 @@ const mapStateToProps = (state) => {
     pay: {
       plan: planValue,
       coupon: codeValue,
+      couponNum: couponNumValue,
     },
   };
 
@@ -1484,8 +1541,5 @@ export default connect(
   validate,
   onSubmitFail: (errors, dispatch, submitError, props) => {
     console.log(errors, dispatch, submitError, props);
-  },
-  onSubmitSuccess: () => {
-    console.log('success');
   },
 })(NewTestForm));

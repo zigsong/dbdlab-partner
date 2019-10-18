@@ -4,7 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import FormInput from 'components/FormInput';
 import FormSelect from 'components/FormSelect';
-import Checkbox from 'components/Checkbox';
+// import Checkbox from 'components/Checkbox';
 import { Field, blur } from 'redux-form';
 
 const mediaRequired = value => (value ? undefined : '카테고리를 선택해주세요');
@@ -17,7 +17,7 @@ const clientContactRegexp = value => (value && !/^(01[016789]{1}|02|0[3-9]{1}[0-
 const emailRequired = value => (value ? undefined : '이메일을 입력해주세요');
 const emailRegexp = value => (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
   ? '이메일 형식을 다시 확인해주세요' : undefined);
-const valueRegExp = value => (value && value.replace(/(^\s*)|(\s*$)/g, '').length < 1 ? '형식에 맞게 입력해 주세요' : undefined);
+const valueRegExp = value => (value && value.replace(/(^\s*)|(\s*$)/g, '').length < 2 ? '형식에 맞게 입력해 주세요' : undefined);
 const valueNumberRegExp = value => (value && value.replace(/^[0-9]/, '').length < 1 ? '정확하게 입력해주세요' : undefined);
 const valueEtcRegExp = value => (value && value.replace(/^[^0-9a-zA-Z]/, '').length < 2 ? '명확하게 입력해주세요' : undefined);
 
@@ -175,7 +175,7 @@ const TestFormDefault = (props) => {
             name="serviceDesc"
             type="text"
             label="default.serviceDesc"
-            placeholder="00자 내외 텍스트 입력"
+            placeholder="100자 내외 텍스트 입력"
             component={FormInput}
             disabled={isDisabled}
           />
@@ -212,7 +212,6 @@ const TestFormDefault = (props) => {
               clientNameRegexp,
               valueRegExp,
               valueNumberRegExp,
-              valueEtcRegExp,
             ]}
           />
         </div>
@@ -250,7 +249,7 @@ const TestFormDefault = (props) => {
         </div>
         <div className="field">
           <span className="field__title">
-            <strong className="title">리얼답을 어떻게 알게되셨나요?</strong>
+            <strong className="title">리얼답을 어떻게 알게 되셨나요?</strong>
           </span>
           <Field
             name="funnel"
@@ -265,7 +264,7 @@ const TestFormDefault = (props) => {
             ))}
           </Field>
         </div>
-        <div className="field-filled">
+        {/* <div className="field-filled">
           <Field
             name="save"
             label="다음에도 이 정보를 그대로 사용할게요"
@@ -274,7 +273,7 @@ const TestFormDefault = (props) => {
             isChecked={false}
             onChange={() => alert('클릭해도 소용 없다구..후훟..')}
           />
-        </div>
+        </div> */}
       </section>
     </div>
   );

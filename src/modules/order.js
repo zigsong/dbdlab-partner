@@ -1,12 +1,14 @@
 import * as OrderAPI from 'lib/api/order';
 import { handleActions } from 'redux-actions';
 
-const GET_ORDER_VOUCHER_LIST_SUCCESS = 'order/GET_ORDER_VOUCHER_LIST_SUCCESS';
-const GET_ORDER_VOUCHER_LIST_FAILURE = 'order/GET_ORDER_VOUCHER_LIST_FAILURE';
+const GET_ORDER_VOUCHER_SUCCESS = 'order/GET_ORDER_VOUCHER_SUCCESS';
+const GET_ORDER_VOUCHER_FAILURE = 'order/GET_ORDER_VOUCHER_FAILURE';
 const POST_ORDER_VOUCHER_SUCCESS = 'order/POST_ORDER_VOUCHER_SUCCESS';
 const POST_ORDER_VOUCHER_FAILURE = 'order/POST_ORDER_VOUCHER_FAILURE';
 const PATCH_VOUCHER_SUCCESS = 'order/PATCH_VOUCHER_SUCCESS';
 const PATCH_VOUCHER_FAILURE = 'order/PATCH_VOUCHER_FAILURE';
+const GET_ORDER_VOUCHER_LIST_SUCCESS = 'order/GET_ORDER_VOUCHER_LIST_SUCCESS';
+const GET_ORDER_VOUCHER_LIST_FAILURE = 'order/GET_ORDER_VOUCHER_LIST_FAILURE';
 const POST_ORDER_TEST_SUCCESS = 'order/POST_ORDER_TEST_SUCCESS';
 const POST_ORDER_TEST_FAILURE = 'order/POST_ORDER_TEST_FAILURE';
 const GET_ORDER_TEST_SUCCESS = 'order/GET_ORDER_TEST_SUCCESS';
@@ -15,9 +17,28 @@ const GET_ORDER_TEST_LIST_SUCCESS = 'order/GET_ORDER_TEST_LIST_SUCCESS';
 const GET_ORDER_TEST_LIST_FAILURE = 'order/GET_ORDER_TEST_LIST_FAILURE';
 const PATCH_ORDER_TEST_SUCCESS = 'order/PATCH_ORDER_TEST_SUCCESS';
 const PATCH_ORDER_TEST_FAILURE = 'order/PATCH_ORDER_TEST_FAILURE';
+const PATCH_TEST_TAX_BILL_SUCCESS = 'order/PATCH_TEST_TAX_BILL_SUCCESS';
+const PATCH_TEST_TAX_BILL_FAILURE = 'order/PATCH_TEST_TAX_BILL_FAILURE';
+const PATCH_VOUCHER_TAX_BILL_SUCCESS = 'order/PATCH_VOUCHER_TAX_BILL_SUCCESS';
+const PATCH_VOUCHER_TAX_BILL_FAILURE = 'order/PATCH_VOUCHER_TAX_BILL_FAILURE';
 
-export const getVoucherOrder = () => dispatch => (
-  OrderAPI.getVoucherOrder().then((res) => {
+export const getVoucherOrder = oId => dispatch => (
+  OrderAPI.getVoucherOrder(oId).then((res) => {
+    console.log(res);
+    dispatch({
+      type: GET_ORDER_VOUCHER_SUCCESS,
+      payload: res,
+    });
+  }).catch((err) => {
+    dispatch({
+      type: GET_ORDER_VOUCHER_FAILURE,
+      payload: err,
+    });
+  })
+);
+
+export const getVoucherOrderList = () => dispatch => (
+  OrderAPI.getVoucherOrderList().then((res) => {
     console.log(res);
     dispatch({
       type: GET_ORDER_VOUCHER_LIST_SUCCESS,
@@ -136,7 +157,7 @@ export const getTestOrderList = () => dispatch => OrderAPI.getTestOrderList().th
   console.log(err.response);
   console.log(err.message);
   dispatch({
-    type: GET_ORDER_VOUCHER_LIST_FAILURE,
+    type: GET_ORDER_VOUCHER_FAILURE,
     payload: err,
   });
 });
@@ -206,6 +227,66 @@ export const patchTestOrder = (
   reject(err);
 }));
 
+export const patchTestTaxBill = (
+  oId,
+  hasTaxBillReq,
+  taxEmail,
+  taxCompany,
+  taxCompanyRegistNum,
+) => dispatch => OrderAPI.patchTestTaxBill(
+  oId,
+  hasTaxBillReq,
+  taxEmail,
+  taxCompany,
+  taxCompanyRegistNum,
+).then(
+  (res) => {
+    console.log(res);
+    dispatch({
+      type: PATCH_TEST_TAX_BILL_SUCCESS,
+      payload: res,
+    });
+  },
+).catch((err) => {
+  console.log(err);
+  console.log(err.response);
+  console.log(err.message);
+  dispatch({
+    type: PATCH_TEST_TAX_BILL_FAILURE,
+    payload: err,
+  });
+});
+
+export const patchVoucherTaxBill = (
+  oId,
+  hasTaxBillReq,
+  taxEmail,
+  taxCompany,
+  taxCompanyRegistNum,
+) => dispatch => OrderAPI.patchVoucherTaxBill(
+  oId,
+  hasTaxBillReq,
+  taxEmail,
+  taxCompany,
+  taxCompanyRegistNum,
+).then(
+  (res) => {
+    console.log(res);
+    dispatch({
+      type: PATCH_VOUCHER_TAX_BILL_SUCCESS,
+      payload: res,
+    });
+  },
+).catch((err) => {
+  console.log(err);
+  console.log(err.response);
+  console.log(err.message);
+  dispatch({
+    type: PATCH_VOUCHER_TAX_BILL_FAILURE,
+    payload: err,
+  });
+});
+
 const initialState = {
   getVoucherListSuccess: false,
   getVoucherListFailure: false,
@@ -234,6 +315,15 @@ export default handleActions({
   [GET_ORDER_VOUCHER_LIST_FAILURE]: state => ({
     ...state,
     getVoucherListFailure: true,
+  }),
+  [GET_ORDER_VOUCHER_SUCCESS]: (state, action) => ({
+    ...state,
+    getVoucherSuccess: true,
+    voucher: action.payload.data,
+  }),
+  [GET_ORDER_VOUCHER_FAILURE]: state => ({
+    ...state,
+    getVoucherFailure: true,
   }),
   [POST_ORDER_VOUCHER_SUCCESS]: (state, action) => ({
     ...state,
@@ -286,6 +376,22 @@ export default handleActions({
     test: action.payload.data,
   }),
   [PATCH_ORDER_TEST_FAILURE]: state => ({
+    ...state,
+    postTestFailure: true,
+  }),
+  [PATCH_TEST_TAX_BILL_SUCCESS]: state => ({
+    ...state,
+    postTestSuccess: true,
+  }),
+  [PATCH_TEST_TAX_BILL_FAILURE]: state => ({
+    ...state,
+    postTestFailure: true,
+  }),
+  [PATCH_VOUCHER_TAX_BILL_SUCCESS]: state => ({
+    ...state,
+    postTestSuccess: true,
+  }),
+  [PATCH_VOUCHER_TAX_BILL_FAILURE]: state => ({
     ...state,
     postTestFailure: true,
   }),

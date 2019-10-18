@@ -236,7 +236,6 @@ $imgUrl: '/static/images';
       .list__item {
         width: 100%;
         height: 36.5px;
-        padding: 8px 0;
         box-sizing: border-box;
         cursor: auto;
 
@@ -244,10 +243,13 @@ $imgUrl: '/static/images';
         button {
           display: block;
           width: 100%;
+          height: 100%;
+          padding: 8px 0;
           font-size: 14px;
           line-height: 21.5px;
           color: $black;
           text-align: center;
+          box-sizing: border-box;
         }
       }
     }

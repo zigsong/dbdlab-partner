@@ -7,12 +7,15 @@ const RightSidebar = (props) => {
     isTargetRendered,
     isQuestRendered,
     isPayRendered,
+    isReportRendered,
     isAllRendered,
     isDefaultPassed,
     isTargetPassed,
     isQuestPassed,
     isPayPassed,
     isAllPassed,
+    isCompleteStep,
+    isTestStep,
     fieldsMeta,
     fieldsValues,
     submitFailed,
@@ -20,6 +23,7 @@ const RightSidebar = (props) => {
     submitErrorMsg,
     handleSubmit,
     onSubmit,
+    invalid,
   } = props;
 
   // value check
@@ -47,6 +51,7 @@ const RightSidebar = (props) => {
     && hasClientNameValue
     && hasClientContactValue
     && hasEmailValue;
+
   // target value
   const targetValues = fieldsValues !== undefined ? fieldsValues.target : undefined;
   const hasMinAgeValue = hasFieldValues
@@ -56,6 +61,7 @@ const RightSidebar = (props) => {
   const hasGenderValue = hasFieldValues
     ? targetValues.gender !== undefined && targetValues.gender !== '' && targetValues.gender !== '' : undefined;
   const hasTargetRequiredValues = hasMinAgeValue && hasMaxAgeValue && hasGenderValue;
+
   // quest value
   const questValues = fieldsValues !== undefined ? fieldsValues.quest : undefined;
   const hasRegisterRequireValue = hasFieldValues
@@ -103,7 +109,6 @@ const RightSidebar = (props) => {
   // pay value
   const payValues = fieldsValues !== undefined ? fieldsValues.pay : undefined;
   const hasPlanValue = hasFieldValues && payValues !== undefined ? payValues.plan !== undefined && payValues.plan !== null && payValues.plan !== '' : undefined;
-
   // meta check
   const hasFieldMeta = fieldsMeta !== undefined;
 
@@ -141,10 +146,21 @@ const RightSidebar = (props) => {
     ? targetMeta.maxAge.active : undefined;
   const isGenderActive = hasTargetFieldMeta && targetMeta.gender !== undefined
     ? targetMeta.gender.active : undefined;
-  const isExtraInfoCategoryActive = hasTargetFieldMeta
-    && targetMeta.extraInfoCategory !== undefined ? targetMeta.extraInfoCategory.active : undefined;
-  const isExtraInfoDescActive = hasTargetFieldMeta && targetMeta.extraInfoDesc !== undefined
-    ? targetMeta.extraInfoDesc.active : undefined;
+  const isExtraInfoCategory1Active = hasTargetFieldMeta
+    && targetMeta.extraInfoCategory1 !== undefined
+    ? targetMeta.extraInfoCategory1.active : undefined;
+  const isExtraInfoCategory2Active = hasTargetFieldMeta
+    && targetMeta.extraInfoCategory2 !== undefined
+    ? targetMeta.extraInfoCategory2.active : undefined;
+  const isExtraInfoCategory3Active = hasTargetFieldMeta
+    && targetMeta.extraInfoCategory3 !== undefined
+    ? targetMeta.extraInfoCategory3.active : undefined;
+  const isExtraInfoDesc1Active = hasTargetFieldMeta && targetMeta.extraInfoDesc1 !== undefined
+    ? targetMeta.extraInfoDesc1.active : undefined;
+  const isExtraInfoDesc2Active = hasTargetFieldMeta && targetMeta.extraInfoDesc2 !== undefined
+    ? targetMeta.extraInfoDesc2.active : undefined;
+  const isExtraInfoDesc3Active = hasTargetFieldMeta && targetMeta.extraInfoDesc3 !== undefined
+    ? targetMeta.extraInfoDesc3.active : undefined;
   const isInterestActive = hasTargetFieldMeta && targetMeta.interest !== undefined
     ? targetMeta.interest.active : undefined;
   // quest meta
@@ -205,6 +221,8 @@ const RightSidebar = (props) => {
   const hasPayFieldMeta = hasFieldMeta && (payMeta !== undefined);
   const isPlanActive = hasPayFieldMeta && payMeta.plan !== undefined
     ? payMeta.plan.active : undefined;
+  const isCouponActive = hasPayFieldMeta && payMeta.coupon !== undefined
+    ? payMeta.coupon.active : undefined;
 
   const setDefaultTitle = () => {
     switch (isDefaultRendered) {
@@ -227,9 +245,14 @@ const RightSidebar = (props) => {
         return '테스트 신청 경로를\n알려주세요';
       case isServiceStatusActive:
         return '지금\n테스트할 서비스는\n어떤 단계인가요?';
+      case step === 'testing':
+      case step === 'payment':
+      case step === 'completed':
+        return '테스트 정보가\n확정되었습니다.';
       case isAllPassed:
-      case isQuestPassed && step !== 'payment':
-        return '클릭해도\n수정할 수 없다구..\n후훟..';
+      case isQuestPassed && step === 'register':
+      case isDefaultPassed && isTargetPassed && isQuestPassed:
+        return '테스트 검토중입니다.';
       case hasDefaultRequiredValues:
         return '모든 정보를\n다 입력하셨나요?';
       case submitFailed:
@@ -260,9 +283,14 @@ const RightSidebar = (props) => {
         return '이번 테스트를 신청하시게 된 계기를 선택해주세요.';
       case isServiceStatusActive:
         return '현재 시점의 서비스 상태를 선택해주세요';
+      case step === 'testing':
+      case step === 'payment':
+      case step === 'completed':
+        return '확정 후에는\n수정할 수 없습니다.\n문의사항이 있다면,\n리얼답 매니저에게\n알려주세요!';
       case isAllPassed:
-      case isQuestPassed && step !== 'payment':
-        return '이미 테스트가\n등록되었기 때문에\n수정할 수 없습니다.\n문의사항이 있다면\n매니저에게 알려주세요!';
+      case isQuestPassed && step === 'register':
+      case isDefaultPassed && isTargetPassed && isQuestPassed:
+        return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
       case hasDefaultRequiredValues:
         return '누락 된 정보는 없는지\n꼼꼼하게 확인한 후\n다음 스텝으로\n이동해주세요 :)';
       case submitFailed:
@@ -278,14 +306,23 @@ const RightSidebar = (props) => {
       case isMaxAgeActive:
       case isGenderActive:
         return '좁게 설정하실수록\n유의미한 결과를\n얻을 수 있습니다.';
-      case isExtraInfoCategoryActive:
-      case isExtraInfoDescActive:
+      case isExtraInfoCategory1Active:
+      case isExtraInfoCategory2Active:
+      case isExtraInfoCategory3Active:
+      case isExtraInfoDesc1Active:
+      case isExtraInfoDesc2Active:
+      case isExtraInfoDesc3Active:
         return '추가 정보란,';
       case isInterestActive:
         return '어떤 관심사를\n가진 사람에게\n테스트할까요?';
+      case step === 'testing':
+      case step === 'payment':
+      case step === 'completed':
+        return '테스트 정보가\n확정되었습니다.';
       case isAllPassed:
-      case isQuestPassed && step !== 'payment':
-        return '클릭해도\n수정할 수 없다구..\n후훟..';
+      case isQuestPassed && step === 'register':
+      case isDefaultPassed && isTargetPassed && isQuestPassed:
+        return '테스트 검토중입니다.';
       case hasTargetRequiredValues:
         return '모든 정보를\n다 입력하셨나요?';
       case submitFailed:
@@ -301,14 +338,23 @@ const RightSidebar = (props) => {
       case isMaxAgeActive:
       case isGenderActive:
         return '테스트 인원은 15명입니다.\n타겟의 나이 범위가\n20 이상이\n되지 않도록 해주세요';
-      case isExtraInfoCategoryActive:
-      case isExtraInfoDescActive:
+      case isExtraInfoCategory1Active:
+      case isExtraInfoCategory2Active:
+      case isExtraInfoCategory3Active:
+      case isExtraInfoDesc1Active:
+      case isExtraInfoDesc2Active:
+      case isExtraInfoDesc3Active:
         return '타겟의 조건을\n더 상세하게 설정하고\n싶을 때 선택해주세요.\n단, 타겟 한명 당\n추가금이 발생합니다.\n* 3,000원일 경우, 총 45,000원 추가\n(3,000 x 15 = 45,000)';
       case isInterestActive:
         return '기본적으로 제공되는\n테스터 분류 기준입니다.\n서비스의 주요 콘텐츠,\n핵심 고객이 관심있어하는\n분야에 대해 알려주세요';
+      case step === 'testing':
+      case step === 'payment':
+      case step === 'completed':
+        return '확정 후에는\n수정할 수 없습니다.\n문의사항이 있다면,\n리얼답 매니저에게\n알려주세요!';
       case isAllPassed:
-      case isQuestPassed && step !== 'payment':
-        return '이미 테스트가\n등록되었기 때문에\n수정할 수 없습니다.\n문의사항이 있다면\n매니저에게 알려주세요!';
+      case isQuestPassed && step === 'register':
+      case isDefaultPassed && isTargetPassed && isQuestPassed:
+        return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
       case hasTargetRequiredValues:
         return '누락 된 정보는 없는지\n꼼꼼하게 확인한 후\n다음 스텝으로\n이동해주세요 :)';
       case submitFailed:
@@ -335,9 +381,14 @@ const RightSidebar = (props) => {
         return '도전과제 2 에 대해서\n자세히 알려주세요';
       case isIssuePurpose3Active:
         return '도전과제 3 에 대해서\n자세히 알려주세요';
+      case step === 'testing':
+      case step === 'payment':
+      case step === 'completed':
+        return '테스트 정보가\n확정되었습니다.';
       case isAllPassed:
-      case isQuestPassed && step !== 'payment':
-        return '클릭해도\n수정할 수 없다구..\n후훟..';
+      case isDefaultPassed && isTargetPassed && isQuestPassed:
+      case isQuestPassed && step === 'register':
+        return '테스트 검토중입니다.';
       case hasQuestRequiredValues:
         return '모든 정보를\n다 입력하셨나요?';
       case submitFailed:
@@ -362,9 +413,14 @@ const RightSidebar = (props) => {
       case isIssuePurpose2Active:
       case isIssuePurpose3Active:
         return '이 서비스에서 도전과제를 수행한 테스터에게 무엇이 궁금한가요?';
+      case step === 'testing':
+      case step === 'payment':
+      case step === 'completed':
+        return '확정 후에는\n수정할 수 없습니다.\n문의사항이 있다면,\n리얼답 매니저에게\n알려주세요!';
       case isAllPassed:
-      case isQuestPassed && step !== 'payment':
-        return '이미 테스트가\n등록되었기 때문에\n수정할 수 없습니다.\n문의사항이 있다면\n매니저에게 알려주세요!';
+      case isDefaultPassed && isTargetPassed && isQuestPassed:
+      case isQuestPassed && step === 'register':
+        return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
       case hasQuestRequiredValues:
         return '누락 된 정보는 없는지\n꼼꼼하게 확인한 후\n다음 스텝으로\n이동해주세요 :)';
       case submitFailed:
@@ -376,29 +432,51 @@ const RightSidebar = (props) => {
 
   const setPayTitle = () => {
     switch (isPayRendered) {
-      case isAllPassed:
-      case isQuestPassed && step !== 'payment':
-        return '클릭해도\n수정할 수 없다구..\n후훟..';
-      case isPlanActive:
-        return '원하는 Plan을\n선택해주세요.\n시리얼넘버가 있다면,\n입력해주세요';
       case submitFailed:
         return '입력되지 않은\n정보가 있어요!';
+      case step === 'testing':
+        return '으쌰라 으쌰,\n테스트 중 입니다.';
+      case step === 'completed':
+        return '테스트가\n완료되었습니다.';
+      case isPayPassed && step === 'payment':
+        return '입금확인 중 입니다.';
+      case isAllPassed:
+      case isDefaultPassed && isTargetPassed && isQuestPassed && step !== 'payment':
+      case isQuestPassed && step === 'register':
+        return '테스트 검토중입니다.';
+      case isPlanActive:
+        return '원하는 Plan을\n선택해주세요.\n시리얼넘버가 있다면,\n입력해주세요';
+      case isCouponActive:
+        return '테스트 비용을 확인해주세요';
+      case step === 'payment':
+        return '곧\n테스트가 시작됩니다.';
       default:
-        return '입금은';
+        return '테스트 비용을\n확인해주세요';
     }
   };
 
   const setPayDesc = () => {
     switch (isPayRendered) {
-      case isAllPassed:
-      case isQuestPassed && step !== 'payment':
-        return '이미 테스트가\n등록되었기 때문에\n수정할 수 없습니다.\n문의사항이 있다면\n매니저에게 알려주세요!';
-      case isPlanActive:
-        return 'Plan 01 :테스트\nPlan 02 :테스트 + 컨설팅\n엑셀러레이터,\n인큐베이팅 프로그램에서\n시리얼 넘버를 받았다면,\n입력해주세요.\n테스트 비용이 면제됩니다.';
       case submitFailed:
         return '필수 정보를\n모두 입력해주셔야\n다음 단계로 넘어가실 수\n있어요.\n누락된 정보를 모두\n입력해주세요!';
+      case step === 'testing':
+        return '테스트가 시작되었습니다.\n테스트 진행 중에는,\n정보를 수정할 수\n없습니다!\n문의사항이 있으시다면\n매니저에게 연락해주세요.\n리포트가 업로드 되면\n알려드릴게요.';
+      case step === 'completed':
+        return '리포트탭에서\n리포트를 확인해주세요';
+      case isPayPassed && step === 'payment':
+        return '입금 확인 후,\n테스트를 시작합니다.\n테스트 진행은\n입금 다음 날부터\n업무일 기준\n5일이 소요됩니다!';
+      case isAllPassed:
+      case isDefaultPassed && isTargetPassed && isQuestPassed && step !== 'payment':
+      case isQuestPassed && step === 'register':
+        return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
+      case isPlanActive:
+        return 'Plan 01 :테스트\nPlan 02 :테스트 + 컨설팅\n엑셀러레이터,\n인큐베이팅 프로그램에서\n시리얼 넘버를 받았다면,\n입력해주세요.\n테스트 비용이 면제됩니다.';
+      case isCouponActive:
+        return '가격과 할인내역을\n확인해주세요.';
+      case step === 'payment':
+        return '결제 정보를 확인하고,\n제출해주세요.\n입금 확인 다음 날부터\n테스트가 시작됩니다.';
       default:
-        return '기업은행 010-7627-3455\n김인정 앞';
+        return '가격과 할인내역을\n확인해주세요.';
     }
   };
 
@@ -406,12 +484,7 @@ const RightSidebar = (props) => {
 
   return (
     <aside
-      className={`form-btn-wrapper${isDisabled ? '--disabled' : ''}${
-        (hasDefaultRequiredValues && isDefaultRendered && (!isAllPassed || step === 'payment'))
-        || (hasTargetRequiredValues && isTargetRendered && (!isAllPassed || step === 'payment'))
-        || (hasQuestRequiredValues && isQuestRendered && (!isAllPassed || step === 'payment'))
-        || (hasPlanValue && isPayRendered && (!isAllPassed || step === 'payment'))
-          ? '--pass' : ''}${submitFailed || submitErrorMsg ? '--fail' : ''}`}
+      className={`form-btn-wrapper--pass${isDisabled ? '--disabled' : ''}${(submitFailed && invalid) || submitErrorMsg ? '--fail' : ''}${isAllPassed || (isAllRendered && isPayRendered) || (isAllRendered && isReportRendered) || (isCompleteStep && isReportRendered) || (isTestStep && isReportRendered) ? '--hidden' : ''}`}
     >
       {isDisabled
         ? null
@@ -500,9 +573,9 @@ const RightSidebar = (props) => {
                                     ))
                                     : (
                                       <>
-                                        나그네여..
+                                        테스트 정보를
                                         <br />
-                                        아직 결제의 단계가 아니라네
+                                        먼저 입력해주세요
                                       </>
                                     )
                                   }
@@ -617,19 +690,11 @@ const RightSidebar = (props) => {
                                     ))
                                     : (
                                       <>
-                                        기본정보, 타겟, 도전과제를
+                                        테스트 정보
                                         <br />
-                                        모두 입력하신 후
+                                        검토 및 확정 후,
                                         <br />
-                                        테스트를 제출해주세요.
-                                        <br />
-                                        매니저가 검토 후,
-                                        <br />
-                                        신청내역이 확정되면
-                                        <br />
-                                        결제하실 수 있습니다.
-                                        <br />
-                                        (나그닥 나그닥)
+                                        결제하실 수 있습니다!
                                       </>
                                     )
                                   }
@@ -662,7 +727,7 @@ const RightSidebar = (props) => {
               </p>
             </div>
             <div className="box-btn">
-              {isAllPassed || (isQuestPassed && step !== 'payment') || (isPayRendered && step !== 'payment')
+              {isAllPassed || (isQuestPassed && step !== 'payment') || (isPayRendered && step !== 'payment') || isPayPassed
                 ? null
                 : (
                   <button

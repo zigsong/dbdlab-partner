@@ -12,13 +12,14 @@ import {
 } from 'modules/auth';
 import { togglePopup } from 'modules/popup';
 import { getProjectList } from 'modules/project';
-import { getVoucherOrder, getTestOrderList } from 'modules/order';
+import { getVoucherOrderList, getTestOrderList } from 'modules/order';
 import { getNotifications } from 'modules/notification';
+import PageTemplate from 'containers/PageTemplate';
+import NewPasswordPopup from 'containers/NewPasswordPopup';
+import OrderConfirmPopup from 'containers/OrderConfirmPopup';
 import UnauthorizedPopup from 'components/UnauthorizedPopup';
 import LoadingIndicator from 'components/LoadingIndicator';
 import ToastAlert from 'components/ToastAlert';
-import PageTemplate from 'containers/PageTemplate';
-import NewPasswordPopup from 'containers/NewPasswordPopup';
 import FormInput from 'components/FormInput';
 import './MyPage.scss';
 
@@ -41,6 +42,9 @@ class MyPage extends Component {
     toastTitle: '',
     toastSubtitle: '',
     isToastShow: false,
+    isPwShow: false,
+    isBillShow: false,
+    billIdx: 0,
   }
 
   componentDidMount() {
@@ -62,7 +66,7 @@ class MyPage extends Component {
           if (notiList.length > 10) notiList.splice(10);
           this.setState({ activityList: notiList });
         });
-      await props.getVoucherOrder()
+      await props.getVoucherOrderList()
         .then(() => {
           const { voucherList } = this.props;
           this.setState({ voucherList });
@@ -180,6 +184,19 @@ class MyPage extends Component {
     const { props } = this;
 
     e.preventDefault();
+
+    this.setState({ isPwShow: true });
+    props.togglePopup(true);
+  }
+
+  handleTaxBillPopup = (e, idx) => {
+    const { props } = this;
+
+    e.preventDefault();
+    this.setState({
+      isBillShow: true,
+      billIdx: idx,
+    });
     props.togglePopup(true);
   }
 
@@ -240,6 +257,9 @@ class MyPage extends Component {
       toastTitle,
       toastSubtitle,
       isToastShow,
+      isBillShow,
+      isPwShow,
+      billIdx,
     } = this.state;
     const {
       getDate,
@@ -248,6 +268,7 @@ class MyPage extends Component {
       handleTabToggle,
       handleEdit,
       handlePwPopup,
+      handleTaxBillPopup,
       onSubmit,
     } = this;
 
@@ -368,30 +389,11 @@ class MyPage extends Component {
                                             </span>
                                             <p className="box-text">
                                               <span className="text__activity">
-                                                {a.verb.indexOf('{actor}') > -1
-                                                  ? (
-                                                    <strong className="name">
-                                                      {a.actor.name !== undefined && a.actor.name !== ''
-                                                        ? a.actor.name
-                                                        : a.actor.email.substring(0, a.actor.email.indexOf('@'))
-                                                      }
-                                                    </strong>
-                                                  )
-                                                  : null
-                                                }
                                                 <span className="activity">
-                                                  {a.target_content_type === '프로젝트'
-                                                    ? a.verb.replace('{actor}', '').replace("'{target}'", a.target.name)
-                                                    : null
-                                                  }
-                                                  {a.target_content_type === '테스트'
-                                                    ? a.verb.replace('{actor}', '').replace("'{target}'", a.target.title)
-                                                    : null
-                                                  }
-                                                  {a.target_content_type === '팀'
-                                                    ? a.verb.replace('{actor}', '').replace("'{target}'", a.target.name)
-                                                    : null
-                                                  }
+                                                  {a.verb.replace('{actor}', `${a.actor.name !== undefined && a.actor.name !== ''
+                                                    ? a.actor.name
+                                                    : a.actor.email.substring(0, a.actor.email.indexOf('@'))
+                                                  }`).replace("'{target}'", `${a.target.title === undefined ? a.target.plan.name : a.target.title}`)}
                                                 </span>
                                               </span>
                                               <span className="text__date">{getDate(a.timestamp)}</span>
@@ -413,9 +415,13 @@ class MyPage extends Component {
                                 {voucherList
                                   .concat(testList)
                                   .sort((a, b) => a.created_at - b.created_at)
-                                  .map(p => (
+                                  .map((p, idx) => (
                                     <li className="list__item" key={p.code}>
-                                      <button type="button" className="box-payment">
+                                      <button
+                                        type="button"
+                                        className="box-payment"
+                                        onClick={e => handleTaxBillPopup(e, idx)}
+                                      >
                                         <span className="payment__title">
                                           {p.voucher_amount > 0 ? '대량구매' : '단일구매'}
                                         </span>
@@ -437,6 +443,24 @@ class MyPage extends Component {
                                           {getDate(p.created_at)}
                                         </span>
                                       </div>
+                                      {isBillShow && billIdx === idx
+                                        ? (
+                                          <OrderConfirmPopup
+                                            isOpen={isOpen}
+                                            isVoucher={p.voucher_amount > 0}
+                                            isTaxBillReq={p.is_tax_bill_requested}
+                                            voucherId={p.id !== undefined ? p.id : undefined}
+                                            testId={p.test !== undefined ? p.test.id : undefined}
+                                            testName={p.test !== undefined ? p.test.title : undefined}
+                                            planName={p.plan.name}
+                                            planAmount={p.voucher_amount}
+                                            paidDate={getDate(p.created_at)}
+                                            step={p.test !== undefined ? p.test.step : p.is_paid}
+                                            price={p.ordered_price}
+                                          />
+                                        )
+                                        : null
+                                      }
                                     </li>
                                   ))}
                               </ul>
@@ -446,11 +470,15 @@ class MyPage extends Component {
                       }
                     </div>
                   </section>
-                  <NewPasswordPopup
-                    show={isOpen}
-                    onPopup={togglePopup}
-                    handleSubmit={handleSubmit}
-                  />
+                  {isPwShow
+                    ? (
+                      <NewPasswordPopup
+                        show={isOpen}
+                        onPopup={togglePopup}
+                        handleSubmit={handleSubmit}
+                      />
+                    )
+                    : null}
                   {isToastShow
                     ? (
                       <ToastAlert
@@ -519,7 +547,7 @@ const mapDispatchToProps = dispatch => ({
   )),
   togglePopup: isOpen => dispatch(togglePopup(isOpen)),
   getProjectList: () => dispatch(getProjectList()),
-  getVoucherOrder: () => dispatch(getVoucherOrder()),
+  getVoucherOrderList: () => dispatch(getVoucherOrderList()),
   getTestOrderList: () => dispatch(getTestOrderList()),
   getNotifications: () => dispatch(getNotifications()),
 });

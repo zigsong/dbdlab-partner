@@ -249,7 +249,7 @@ const TestFormDefault = (props) => {
         </div>
         <div className="field">
           <span className="field__title">
-            <strong className="title">리얼답을 어떻게 알게되셨나요?</strong>
+            <strong className="title">리얼답을 어떻게 알게 되셨나요?</strong>
           </span>
           <Field
             name="funnel"

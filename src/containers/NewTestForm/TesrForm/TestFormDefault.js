@@ -175,7 +175,7 @@ const TestFormDefault = (props) => {
             name="serviceDesc"
             type="text"
             label="default.serviceDesc"
-            placeholder="00자 내외 텍스트 입력"
+            placeholder="100자 내외 텍스트 입력"
             component={FormInput}
             disabled={isDisabled}
           />

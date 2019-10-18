@@ -1335,7 +1335,7 @@ const mapStateToProps = (state) => {
   const issueissuePurpose2Value = quests !== undefined && quests[1].issue_purpose !== '' ? quests[1].issue_purpose : undefined;
   const issueissuePurpose3Value = quests !== undefined && quests[2].issue_purpose !== '' ? quests[2].issue_purpose : undefined;
   const planValue = order !== null && order !== undefined && order.plan !== undefined
-    ? order.plan.name : undefined;
+    ? order.plan.name : 'PLAN 01';
   const codeValue = order !== null && order !== undefined && order.coupon_type !== null
     ? order.coupon_type : undefined;
   const orderId = order !== null && order !== undefined ? order.id : undefined;

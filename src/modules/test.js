@@ -177,9 +177,9 @@ export const patchTest = (
   })
 );
 
-export const getTestPrice = (tId, pName) => dispatch => (
+export const getTestPrice = (tId, pName, couponValue) => dispatch => (
   new Promise((resolve, reject) => {
-    TestAPI.getTestPrice(tId, pName)
+    TestAPI.getTestPrice(tId, pName, couponValue)
       .then((res) => {
         console.log(res);
         dispatch({

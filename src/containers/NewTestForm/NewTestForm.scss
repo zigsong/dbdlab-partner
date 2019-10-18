@@ -915,14 +915,15 @@ $imgUrl: '/static/images/';
     .form-btn-wrapper {
       position: absolute;
       top: 0;
-      right: 0;
-      z-index: 110;
+      right: -220px;
+      z-index: -1;
       width: 210px;
       height: 100vh;
       padding: 88px 23px 87px;
       background: $white;
       border-left: 1px solid $veryLightGray;
       box-sizing: border-box;
+      transition: all .3s;
 
       .box-info {
         .info__title {
@@ -994,6 +995,10 @@ $imgUrl: '/static/images/';
 
       &--pass {
         @extend .form-btn-wrapper;
+        right: 0;
+        z-index: 110;
+        width: 210px;
+        height: 100vh;
         background-color: $blue;
         transition: all .3s;
 
@@ -1025,13 +1030,18 @@ $imgUrl: '/static/images/';
 
         &--fail {
           @extend .form-btn-wrapper--fail;
+          right: 0;
+          z-index: 110;
+          width: 210px;
+          height: 100vh;
+          transition: all .3s;
 
           &--hidden {
             @extend .form-btn-wrapper;
             right: -220px;
             height: 100vh;
             z-index: -1;
-            transition: right .1s;
+            transition: all .3s;
           }
         }
 
@@ -1066,7 +1076,7 @@ $imgUrl: '/static/images/';
           right: -220px;
           height: 100vh;
           z-index: -1;
-          transition: right .1s;
+          transition: all .3s;
         }
       }
 
@@ -1123,8 +1133,8 @@ $imgUrl: '/static/images/';
       bottom: 0;
       top: 48px;
       z-index: 200;
-      width: calc(100% - 210px);
-      height: calc(100vh);
+      width: 100%;
+      height: 100vh;
       text-indent: -9999px;
       color: transparent;
       background: rgba(0, 0, 0, .3);

@@ -86,4 +86,5 @@ export default connect(
   getFormData,
 )(reduxForm({
   form: 'orderConfirmForm',
+  enableReinitialize: true,
 })(TaxBillForm));

@@ -12,7 +12,7 @@ import {
 } from 'modules/auth';
 import { togglePopup } from 'modules/popup';
 import { getProjectList } from 'modules/project';
-import { getVoucherOrder, getTestOrderList } from 'modules/order';
+import { getVoucherOrderList, getTestOrderList } from 'modules/order';
 import { getNotifications } from 'modules/notification';
 import PageTemplate from 'containers/PageTemplate';
 import NewPasswordPopup from 'containers/NewPasswordPopup';
@@ -66,7 +66,7 @@ class MyPage extends Component {
           if (notiList.length > 10) notiList.splice(10);
           this.setState({ activityList: notiList });
         });
-      await props.getVoucherOrder()
+      await props.getVoucherOrderList()
         .then(() => {
           const { voucherList } = this.props;
           this.setState({ voucherList });
@@ -389,30 +389,11 @@ class MyPage extends Component {
                                             </span>
                                             <p className="box-text">
                                               <span className="text__activity">
-                                                {a.verb.indexOf('{actor}') > -1
-                                                  ? (
-                                                    <strong className="name">
-                                                      {a.actor.name !== undefined && a.actor.name !== ''
-                                                        ? a.actor.name
-                                                        : a.actor.email.substring(0, a.actor.email.indexOf('@'))
-                                                      }
-                                                    </strong>
-                                                  )
-                                                  : null
-                                                }
                                                 <span className="activity">
-                                                  {a.target_content_type === '프로젝트'
-                                                    ? a.verb.replace('{actor}', '').replace("'{target}'", a.target.name)
-                                                    : null
-                                                  }
-                                                  {a.target_content_type === '테스트'
-                                                    ? a.verb.replace('{actor}', '').replace("'{target}'", a.target.title)
-                                                    : null
-                                                  }
-                                                  {a.target_content_type === '팀'
-                                                    ? a.verb.replace('{actor}', '').replace("'{target}'", a.target.name)
-                                                    : null
-                                                  }
+                                                  {a.verb.replace('{actor}', `${a.actor.name !== undefined && a.actor.name !== ''
+                                                    ? a.actor.name
+                                                    : a.actor.email.substring(0, a.actor.email.indexOf('@'))
+                                                  }`).replace("'{target}'", `${a.target.title === undefined ? a.target.plan.name : a.target.title}`)}
                                                 </span>
                                               </span>
                                               <span className="text__date">{getDate(a.timestamp)}</span>
@@ -566,7 +547,7 @@ const mapDispatchToProps = dispatch => ({
   )),
   togglePopup: isOpen => dispatch(togglePopup(isOpen)),
   getProjectList: () => dispatch(getProjectList()),
-  getVoucherOrder: () => dispatch(getVoucherOrder()),
+  getVoucherOrderList: () => dispatch(getVoucherOrderList()),
   getTestOrderList: () => dispatch(getTestOrderList()),
   getNotifications: () => dispatch(getNotifications()),
 });

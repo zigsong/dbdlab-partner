@@ -404,16 +404,15 @@ $imgUrl: '/static/images';
       width: 100%;
 
       .list__item {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
         padding: 29px 14px 20px;
         border-bottom: 1px solid $veryLightGray;
+        overflow: hidden;
       }
 
       .box-payment {
         padding: 0;
         text-align: left;
+        float: left;
 
         .payment__title {
           display: block;
@@ -457,6 +456,7 @@ $imgUrl: '/static/images';
       .box-paid {
         width: percentage(100 / 780);
         text-align: right;
+        float: right;
 
         .paid__total {
           display: block;

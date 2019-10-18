@@ -439,7 +439,7 @@ class MyPage extends Component {
                                       <button
                                         type="button"
                                         className="box-payment"
-                                        // onClick={e => handleTaxBillPopup(e, idx)}
+                                        onClick={e => handleTaxBillPopup(e, idx)}
                                       >
                                         <span className="payment__title">
                                           {p.voucher_amount > 0 ? '대량구매' : '단일구매'}
@@ -462,21 +462,24 @@ class MyPage extends Component {
                                           {getDate(p.created_at)}
                                         </span>
                                       </div>
-                                      {/* {isBillShow && billIdx === idx
+                                      {isBillShow && billIdx === idx
                                         ? (
                                           <OrderConfirmPopup
                                             isOpen={isOpen}
                                             isVoucher={p.voucher_amount > 0}
-                                            hasTestId={p.test !== undefined ? p.test.id : undefined}
+                                            isTaxBillReq={p.is_tax_bill_requested}
+                                            voucherId={p.id !== undefined ? p.id : undefined}
+                                            testId={p.test !== undefined ? p.test.id : undefined}
+                                            testName={p.test !== undefined ? p.test.title : undefined}
                                             planName={p.plan.name}
-                                            planAmount={`${p.voucher_amount}개`}
+                                            planAmount={p.voucher_amount}
                                             paidDate={getDate(p.created_at)}
-                                            step={p.test !== undefined ? p.test.step : undefined}
+                                            step={p.test !== undefined ? p.test.step : p.is_paid}
                                             price={p.ordered_price}
                                           />
                                         )
                                         : null
-                                      } */}
+                                      }
                                     </li>
                                   ))}
                               </ul>

@@ -5,11 +5,8 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 const TestFormReport = (props) => {
   return (
-    <div className="field">
-      <Document file={{
-        url: 'https://dbdlab-storage.s3.amazonaws.com/report/2019/10/16/HowToDesignSNGcompressed_4365f.pdf',
-      }}
-      >
+    <div className="field-wrapper--report">
+      <Document file="https://dbdlab-storage.s3.amazonaws.com/report/2019/10/16/HowToDesignSNGcompressed_4365f.pdf">
         <Page />
       </Document>
     </div>

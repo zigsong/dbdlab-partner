@@ -836,6 +836,7 @@ class NewTestForm extends Component {
       categoryList,
       extras,
       isOpen,
+      invalid,
     } = this.props;
     const {
       goBack,
@@ -1119,6 +1120,7 @@ class NewTestForm extends Component {
                                   && isPayPassed)
                                   || isAllPassed
                                   || !isQuestPassed
+                                  || step === undefined
                                   || step === 'payment'
                                   || step === 'testing'
                                   || step === 'completed'
@@ -1136,6 +1138,7 @@ class NewTestForm extends Component {
                     : (
                       <>
                         {isPayLoading ? <LoadingIndicator /> : null}
+                        {console.log(step)}
                         <FormSection name="pay">
                           <TestFormPay
                             isDisabled={isNoNamed || isSpacedTitle
@@ -1144,6 +1147,7 @@ class NewTestForm extends Component {
                               && isQuestPassed
                               && isPayPassed)
                               || isAllPassed
+                              || step === undefined
                               || (isQuestPassed && step !== 'payment')
                               || step === 'apply'
                               || step === 'testing'
@@ -1233,10 +1237,12 @@ class NewTestForm extends Component {
             fieldsMeta={fieldsMeta}
             fieldsValues={fieldsValues}
             submitFailed={submitFailed}
+            invalid={invalid}
             submitSucceeded={submitSucceeded}
             handleSubmit={handleSubmit}
             onSubmit={onSubmit}
           />
+          {console.log(this.props)}
           {/* 생성된 테스트 페이지 수정 시에도 안 보이게 하려면 아래 주석 삭제 */}
           {/* { isNoNamed && tId === undefined */}
           { isNoNamed || isSpacedTitle

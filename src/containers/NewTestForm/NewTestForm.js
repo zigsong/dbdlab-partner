@@ -95,8 +95,6 @@ class NewTestForm extends Component {
               quests,
               order,
             } = this.props;
-            console.log(quests);
-            console.log(res.data.quests);
 
             const {
               id,
@@ -120,8 +118,8 @@ class NewTestForm extends Component {
               is_register_required,
             } = test;
 
-            console.log(res);
-            console.log(targets);
+            const { report_url } = res.data;
+
             if (targets !== undefined) {
               getTarget(targets[0].id);
             } else {
@@ -154,6 +152,7 @@ class NewTestForm extends Component {
                 targets,
                 quests,
                 order,
+                report_url,
               },
             });
           },
@@ -294,7 +293,6 @@ class NewTestForm extends Component {
 
   handleBackBtn = () => {
     const { togglePopup, test } = this.props;
-    console.log(test);
 
     togglePopup(true);
     this.setState({ isBackConfirmPopup: true });
@@ -396,9 +394,6 @@ class NewTestForm extends Component {
       const hasPayValue = Object.keys(values.pay).length > 0;
       return !!hasPayValue;
     };
-    console.log(values);
-    console.log('summited');
-    // window.alert(`You submitted:\n\n${JSON.stringify(values, null, 2)}`);
 
     if (tId) {
       if (isDefaultRendered && hasDefaultPassed) {
@@ -441,7 +436,6 @@ class NewTestForm extends Component {
         } = values.target;
         // eslint-disable-next-line no-nested-ternary
         const genderValue = gender === '여자' ? 'female' : (gender === '남자' ? 'male' : 'both');
-        console.log(values.target);
         const categoryListArr = Object.keys(categoryList).length > 0
           ? Object.keys(categoryList).map(c => categoryList[c].category_items)
           : undefined;
@@ -504,7 +498,6 @@ class NewTestForm extends Component {
             });
           });
       } else if (isQuestRendered && hasQuestPassed) {
-        console.log('here');
         const submitCheck = window.confirm('테스트를 등록하시겠어요?\n등록 후엔 수정이 되지 않으니, 꼼꼼히 확인해 주세요:)');
 
         if (submitCheck) {
@@ -515,7 +508,6 @@ class NewTestForm extends Component {
             issueDetail,
             issuePurpose,
           } = values.quest;
-          console.log(qId);
           const registerValue = registerRequire !== '아니오';
           const step = 'REGISTER';
 
@@ -673,17 +665,12 @@ class NewTestForm extends Component {
 
         if (submitCheck) {
           this.setState({ isPayLoading: true });
-          console.log(selectedPlan.id,
-            tId,
-            cType,
-            cCode);
           orderTest(
             selectedPlan.id,
             tId,
             cType,
             cCode,
           ).then((res) => {
-            console.log(res);
             this.setState({
               isPayLoading: false,
               isPayInfoPopup: true,
@@ -877,6 +864,7 @@ class NewTestForm extends Component {
     const hasIssue1Value = hasIssueValues !== undefined ? hasIssueValues[`q${qId[0]}`] : undefined;
     const hasIssue2Value = hasIssueValues !== undefined ? hasIssueValues[`q${qId[1]}`] : undefined;
     const hasIssue3Value = hasIssueValues !== undefined ? hasIssueValues[`q${qId[2]}`] : undefined;
+    const hasReport = test !== undefined ? test.report_url : undefined;
     const nav = [
       {
         title: '기본 정보',
@@ -1152,7 +1140,6 @@ class NewTestForm extends Component {
                     : (
                       <>
                         {isPayLoading ? <LoadingIndicator /> : null}
-                        {console.log(step)}
                         <FormSection name="pay">
                           <TestFormPay
                             isDisabled={isNoNamed || isSpacedTitle
@@ -1185,7 +1172,7 @@ class NewTestForm extends Component {
               ? (
                 <>
                   {isCompleteStep
-                    ? <TestFormReport />
+                    ? <TestFormReport report={hasReport} />
                     : (
                       <div className="field-wrapper--testing">
                         데이터 수집중입니다.
@@ -1201,36 +1188,6 @@ class NewTestForm extends Component {
               : null
             }
           </div>
-          {/* {isAllRendered
-          || isCompleteStep
-          || isTestStep
-            ? null
-            : (
-              <RightSidebar
-                step={step}
-                submitErrorMsg={asyncErrorMsg}
-                isDisabled={isNoNamed || isSpacedTitle}
-                isDefaultRendered={isDefaultRendered}
-                isTargetRendered={isTargetRendered}
-                isQuestRendered={isQuestRendered}
-                isPayRendered={isPayRendered}
-                isAllRendered={isAllRendered}
-                isDefaultPassed={isDefaultPassed}
-                isTargetPassed={isTargetPassed}
-                isQuestPassed={isQuestPassed}
-                isPayPassed={isPayPassed}
-                isCompleteStep={isCompleteStep}
-                isTestStep={isTestStep}
-                isAllPassed={isAllPassed}
-                fieldsMeta={fieldsMeta}
-                fieldsValues={fieldsValues}
-                submitFailed={submitFailed}
-                submitSucceeded={submitSucceeded}
-                handleSubmit={handleSubmit}
-                onSubmit={onSubmit}
-              />
-            )
-          } */}
           <RightSidebar
             step={step}
             submitErrorMsg={asyncErrorMsg}
@@ -1256,7 +1213,6 @@ class NewTestForm extends Component {
             handleSubmit={handleSubmit}
             onSubmit={onSubmit}
           />
-          {console.log(this.props)}
           {/* 생성된 테스트 페이지 수정 시에도 안 보이게 하려면 아래 주석 삭제 */}
           {/* { isNoNamed && tId === undefined */}
           { isNoNamed || isSpacedTitle
@@ -1582,8 +1538,5 @@ export default connect(
   validate,
   onSubmitFail: (errors, dispatch, submitError, props) => {
     console.log(errors, dispatch, submitError, props);
-  },
-  onSubmitSuccess: () => {
-    console.log('success');
   },
 })(NewTestForm));

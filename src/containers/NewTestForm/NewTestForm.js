@@ -1339,6 +1339,8 @@ const mapStateToProps = (state) => {
   const codeValue = order !== null && order !== undefined && order.coupon_type !== null
     ? order.coupon_type : undefined;
   const orderId = order !== null && order !== undefined ? order.id : undefined;
+  const couponNumValue = order !== null && order !== undefined && order.coupon !== null
+    ? order.coupon.code : undefined;
 
   const initData = {
     title: titleValue,
@@ -1387,6 +1389,7 @@ const mapStateToProps = (state) => {
     pay: {
       plan: planValue,
       coupon: codeValue,
+      couponNum: couponNumValue,
     },
   };
 

@@ -37,7 +37,7 @@ const PayAccountInfo = (props) => {
             </strong>
             <span className="account__title">입금액</span>
             <strong className="account_info">
-              {voucherOrder === undefined ? testOrder.ordered_price : voucherOrder.totalPrice}
+              {voucherOrder === undefined ? testOrder.charged_price : voucherOrder.totalPrice}
               원
             </strong>
           </p>

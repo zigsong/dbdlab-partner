@@ -26,15 +26,17 @@ class TestFormPay extends Component {
   componentDidMount() {
     const {
       planValue,
+      couponValue,
       getPlanList,
       testId,
       getTestPrice,
+      test,
     } = this.props;
 
     this.mounted = true;
 
     getPlanList();
-    getTestPrice(testId, planValue).then((res) => {
+    getTestPrice(testId, planValue, couponValue).then((res) => {
       console.log(res);
       this.setState({
         planPrice: res.data.plan_price,
@@ -44,6 +46,14 @@ class TestFormPay extends Component {
         orderedPrice: res.data.ordered_price,
         chargedPrice: res.data.charged_price,
       });
+    }).then(() => {
+      if (test.test.order !== null && Object.keys(test.test.order).length > 0) {
+        this.setState({
+          discountPrice: test.test.order.discounted_price,
+          orderedPrice: test.test.order.ordered_price,
+          chargedPrice: test.test.order.charged_price,
+        });
+      }
     });
   }
 
@@ -71,11 +81,9 @@ class TestFormPay extends Component {
     const {
       testId, planValue, getTestPrice,
     } = this.props;
-    console.log(cType);
 
     getTestPrice(testId, planValue, cType)
       .then((res) => {
-        console.log(res);
         this.setState({
           planPrice: res.data.plan_price,
           targetPrice: res.data.target_extra_price,
@@ -144,13 +152,13 @@ class TestFormPay extends Component {
       targetPrice,
       registerPrice,
       discountPrice,
+      orderedPrice,
       chargedPrice,
     } = this.state;
     const planPriceInt = parseInt(planPrice, 10);
     const targetPriceInt = parseInt(targetPrice, 10);
     const registerPriceInt = registerPrice === undefined ? 0 : parseInt(registerPrice, 10);
     const { handleInputFocus, FormRadio } = this;
-    const totalPrice = planPriceInt + targetPriceInt + registerPriceInt;
     const couponTypeMeta = fields.pay !== undefined ? fields.pay.coupon : undefined;
     const coupon = [
       {
@@ -184,7 +192,6 @@ class TestFormPay extends Component {
         price: `${registerPriceInt}원`,
       },
     ];
-    console.log(couponValue);
 
     return (
       <div className="field-wrapper--pay">
@@ -223,7 +230,7 @@ class TestFormPay extends Component {
               <strong className="total__price">
                 <span>Total</span>
                 <strong>
-                  {totalPrice}
+                  {orderedPrice}
                   <i>원</i>
                 </strong>
               </strong>

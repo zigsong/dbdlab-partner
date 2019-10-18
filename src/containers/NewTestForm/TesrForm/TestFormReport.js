@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ScrollContainer from 'react-indiana-drag-scroll';
 import { Document, Page, pdfjs } from 'react-pdf';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -32,7 +31,7 @@ class TestFormReport extends Component {
 
     return (
       <div className="field-wrapper--report">
-        <ScrollContainer className="report__contents scroll-container">
+        <div className="report__contents scroll-container">
           <Document
             file={report}
             onLoadSuccess={this.onDocumentLoadSuccess}
@@ -70,7 +69,7 @@ class TestFormReport extends Component {
               Next
             </button>
           </div>
-        </ScrollContainer>
+        </div>
       </div>
     );
   }

@@ -434,6 +434,12 @@ const RightSidebar = (props) => {
     switch (isPayRendered) {
       case submitFailed:
         return '입력되지 않은\n정보가 있어요!';
+      case step === 'testing':
+        return '으쌰라 으쌰,\n테스트 중 입니다.';
+      case step === 'completed':
+        return '테스트가\n완료되었습니다.';
+      case isPayPassed && step === 'payment':
+        return '입금확인 중 입니다.';
       case isAllPassed:
       case isDefaultPassed && isTargetPassed && isQuestPassed && step !== 'payment':
       case isQuestPassed && step === 'register':
@@ -442,14 +448,8 @@ const RightSidebar = (props) => {
         return '원하는 Plan을\n선택해주세요.\n시리얼넘버가 있다면,\n입력해주세요';
       case isCouponActive:
         return '테스트 비용을 확인해주세요';
-      case isPayPassed && step === 'payment':
-        return '입금확인 중 입니다.';
       case step === 'payment':
         return '곧\n테스트가 시작됩니다.';
-      case step === 'testing':
-        return '으쌰라 으쌰,\n테스트 중 입니다.';
-      case step === 'completed':
-        return '테스트가\n완료되었습니다.';
       default:
         return '테스트 비용을\n확인해주세요';
     }
@@ -459,6 +459,12 @@ const RightSidebar = (props) => {
     switch (isPayRendered) {
       case submitFailed:
         return '필수 정보를\n모두 입력해주셔야\n다음 단계로 넘어가실 수\n있어요.\n누락된 정보를 모두\n입력해주세요!';
+      case step === 'testing':
+        return '테스트가 시작되었습니다.\n테스트 진행 중에는,\n정보를 수정할 수\n없습니다!\n문의사항이 있으시다면\n매니저에게 연락해주세요.\n리포트가 업로드 되면\n알려드릴게요.';
+      case step === 'completed':
+        return '리포트탭에서\n리포트를 확인해주세요';
+      case isPayPassed && step === 'payment':
+        return '입금 확인 후,\n테스트를 시작합니다.\n테스트 진행은\n입금 다음 날부터\n업무일 기준\n5일이 소요됩니다!';
       case isAllPassed:
       case isDefaultPassed && isTargetPassed && isQuestPassed && step !== 'payment':
       case isQuestPassed && step === 'register':
@@ -467,14 +473,8 @@ const RightSidebar = (props) => {
         return 'Plan 01 :테스트\nPlan 02 :테스트 + 컨설팅\n엑셀러레이터,\n인큐베이팅 프로그램에서\n시리얼 넘버를 받았다면,\n입력해주세요.\n테스트 비용이 면제됩니다.';
       case isCouponActive:
         return '가격과 할인내역을\n확인해주세요.';
-      case isPayPassed && step === 'payment':
-        return '입금 확인 후,\n테스트를 시작합니다.\n테스트 진행은\n입금 다음 날부터\n업무일 기준\n5일이 소요됩니다!';
       case step === 'payment':
         return '결제 정보를 확인하고,\n제출해주세요.\n입금 확인 다음 날부터\n테스트가 시작됩니다.';
-      case step === 'testing':
-        return '테스트가 시작되었습니다.\n테스트 진행 중에는,\n정보를 수정할 수\n없습니다!\n문의사항이 있으시다면\n매니저에게 연락해주세요.\n리포트가 업로드 되면\n알려드릴게요.';
-      case step === 'completed':
-        return '리포트탭에서\n리포트를 확인해주세요';
       default:
         return '가격과 할인내역을\n확인해주세요.';
     }

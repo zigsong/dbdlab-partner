@@ -103,7 +103,11 @@ class TestFormPay extends Component {
   getRegisterPrice = () => {
     const { isRegisterReq } = this.props;
 
-    if (isRegisterReq !== '아니오' && isRegisterReq !== undefined) this.setState({ registerPrice: 3000 * 15 });
+    if (isRegisterReq !== '아니오' && isRegisterReq !== undefined) {
+      this.setState({ registerPrice: 3000 * 15 });
+    } else {
+      this.setState({ registerPrice: 0 });
+    }
   }
 
   handleInputFocus = () => {
@@ -153,10 +157,11 @@ class TestFormPay extends Component {
       submitErrorMsg,
     } = this.props;
     const { planPrice, targetPrice, registerPrice } = this.state;
+    const planPriceInt = parseInt(planPrice, 10);
+    const targetPriceInt = parseInt(targetPrice, 10);
+    const registerPriceInt = registerPrice === undefined ? 0 : parseInt(registerPrice, 10);
     const { handleInputFocus, FormRadio } = this;
-    const totalPrice = parseInt(planPrice, 10)
-      + parseInt(targetPrice, 0)
-      + parseInt(registerPrice, 0);
+    const totalPrice = planPriceInt + targetPriceInt + registerPriceInt;
     const couponDiscount = couponValue !== undefined ? totalPrice * 0.03 : 0;
     const coupon = [
       {
@@ -179,15 +184,15 @@ class TestFormPay extends Component {
     const receipt = [
       {
         title: '테스트 비용',
-        price: planPrice === 0 ? 'PLAN을 선택해주세요' : `${planPrice}원`,
+        price: planPriceInt === 0 ? 'PLAN을 선택해주세요' : `${planPriceInt}원`,
       },
       {
         title: '타겟 정보 추가',
-        price: `${targetPrice}원`,
+        price: `${targetPriceInt}원`,
       },
       {
         title: '회원가입',
-        price: `${registerPrice}원`,
+        price: `${registerPriceInt}원`,
       },
     ];
 
@@ -204,6 +209,7 @@ class TestFormPay extends Component {
               name="plan"
               component={FormRadio}
               validate={planRequired}
+              disabled={isDisabled}
             />
           </label>
         </section>

@@ -909,6 +909,12 @@ $imgUrl: '/static/images/';
           line-height: 1.8;
           color: $gray;
         }
+
+        &--report {
+          padding: 0;
+          height: 100%;
+          overflow-y: auto;
+        }
       }
     }
 
@@ -1123,7 +1129,7 @@ $imgUrl: '/static/images/';
       height: calc(100vh - 48px);
       text-indent: -9999px;
       color: transparent;
-      background: rgba(255, 255, 255, .7);
+      background: rgba(255, 255, 255, .4);
     }
 
     .layer--guide {

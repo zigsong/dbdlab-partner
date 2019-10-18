@@ -996,27 +996,32 @@ class NewTestForm extends Component {
             />
             { isDefaultRendered
               ? (
-                <FormSection name="default">
-                  <TestFormDefault
-                    isDisabled={isNoNamed || isSpacedTitle
-                      || (isDefaultPassed
-                      && isTargetPassed
-                      && isQuestPassed
-                      && isPayPassed)
-                      || isAllPassed
-                      || (isQuestPassed && step !== 'payment')
-                      || step === 'payment'
-                      || step === 'testing'
-                      || step === 'completed'
-                    }
-                    test={test}
-                    media1Category={media1Category}
-                    media2Category={media2Category}
-                    service1Category={service1Category}
-                    service2Category={service2Category}
-                    funnelCategory={funnelCategory}
-                  />
-                </FormSection>
+                <>
+                  { step === 'register' || step === 'payment' || step === 'testing' || step === 'completed'
+                    ? <DisabledLayer />
+                    : null}
+                  <FormSection name="default">
+                    <TestFormDefault
+                      isDisabled={isNoNamed || isSpacedTitle
+                        || (isDefaultPassed
+                        && isTargetPassed
+                        && isQuestPassed
+                        && isPayPassed)
+                        || isAllPassed
+                        || (isQuestPassed && step !== 'payment')
+                        || step === 'payment'
+                        || step === 'testing'
+                        || step === 'completed'
+                      }
+                      test={test}
+                      media1Category={media1Category}
+                      media2Category={media2Category}
+                      service1Category={service1Category}
+                      service2Category={service2Category}
+                      funnelCategory={funnelCategory}
+                    />
+                  </FormSection>
+                </>
               )
               : null
             }
@@ -1024,6 +1029,9 @@ class NewTestForm extends Component {
               ? (
                 <>
                   { isDefaultPassed ? null : <DisabledLayer /> }
+                  { step === 'register' || step === 'payment' || step === 'testing' || step === 'completed'
+                    ? <DisabledLayer />
+                    : null}
                   { isDefaultPassed ? null : (
                     <ToastAlert
                       title="아직은 작성하실 수 없어요!"
@@ -1056,6 +1064,9 @@ class NewTestForm extends Component {
               ? (
                 <>
                   { isTargetPassed ? null : <DisabledLayer />}
+                  { step === 'register' || step === 'payment' || step === 'testing' || step === 'completed'
+                    ? <DisabledLayer />
+                    : null}
                   { isTargetPassed ? null : (
                     <ToastAlert
                       title="아직은 작성하실 수 없어요!"
@@ -1088,6 +1099,9 @@ class NewTestForm extends Component {
               ? (
                 <>
                   { isQuestPassed && !isRegisterStep ? null : <DisabledLayer />}
+                  { step === 'testing' || step === 'completed'
+                    ? <DisabledLayer />
+                    : null}
                   { isQuestPassed && !isRegisterStep ? null : (
                     <ToastAlert
                       title="아직은 작성하실 수 없어요!"

@@ -224,13 +224,6 @@ const RightSidebar = (props) => {
   const isCouponActive = hasPayFieldMeta && payMeta.coupon !== undefined
     ? payMeta.coupon.active : undefined;
 
-    console.log(step);
-    console.log(isDefaultPassed);
-    console.log(isTargetPassed);
-    console.log(isQuestPassed);
-    console.log(isPayPassed);
-    console.log(isAllPassed);
-
   const setDefaultTitle = () => {
     switch (isDefaultRendered) {
       case isMedia1Active:
@@ -252,14 +245,14 @@ const RightSidebar = (props) => {
         return '테스트 신청 경로를\n알려주세요';
       case isServiceStatusActive:
         return '지금\n테스트할 서비스는\n어떤 단계인가요?';
-      case isAllPassed:
-      case isQuestPassed && step === 'register':
-        return '테스트 검토중입니다.';
-      case isDefaultPassed && isTargetPassed && isQuestPassed:
       case step === 'testing':
       case step === 'payment':
       case step === 'completed':
         return '테스트 정보가\n확정되었습니다.';
+      case isAllPassed:
+      case isQuestPassed && step === 'register':
+      case isDefaultPassed && isTargetPassed && isQuestPassed:
+        return '테스트 검토중입니다.';
       case hasDefaultRequiredValues:
         return '모든 정보를\n다 입력하셨나요?';
       case submitFailed:
@@ -290,14 +283,14 @@ const RightSidebar = (props) => {
         return '이번 테스트를 신청하시게 된 계기를 선택해주세요.';
       case isServiceStatusActive:
         return '현재 시점의 서비스 상태를 선택해주세요';
-      case isAllPassed:
-      case isQuestPassed && step === 'register':
-        return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
-      case isDefaultPassed && isTargetPassed && isQuestPassed:
       case step === 'testing':
       case step === 'payment':
       case step === 'completed':
         return '확정 후에는\n수정할 수 없습니다.\n문의사항이 있다면,\n리얼답 매니저에게\n알려주세요!';
+      case isAllPassed:
+      case isQuestPassed && step === 'register':
+      case isDefaultPassed && isTargetPassed && isQuestPassed:
+        return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
       case hasDefaultRequiredValues:
         return '누락 된 정보는 없는지\n꼼꼼하게 확인한 후\n다음 스텝으로\n이동해주세요 :)';
       case submitFailed:
@@ -322,14 +315,14 @@ const RightSidebar = (props) => {
         return '추가 정보란,';
       case isInterestActive:
         return '어떤 관심사를\n가진 사람에게\n테스트할까요?';
-      case isAllPassed:
-      case isQuestPassed && step === 'register':
-        return '테스트\n검토중입니다.';
-      case isDefaultPassed && isTargetPassed && isQuestPassed:
       case step === 'testing':
       case step === 'payment':
       case step === 'completed':
         return '테스트 정보가\n확정되었습니다.';
+      case isAllPassed:
+      case isQuestPassed && step === 'register':
+      case isDefaultPassed && isTargetPassed && isQuestPassed:
+        return '테스트 검토중입니다.';
       case hasTargetRequiredValues:
         return '모든 정보를\n다 입력하셨나요?';
       case submitFailed:
@@ -354,14 +347,14 @@ const RightSidebar = (props) => {
         return '타겟의 조건을\n더 상세하게 설정하고\n싶을 때 선택해주세요.\n단, 타겟 한명 당\n추가금이 발생합니다.\n* 3,000원일 경우, 총 45,000원 추가\n(3,000 x 15 = 45,000)';
       case isInterestActive:
         return '기본적으로 제공되는\n테스터 분류 기준입니다.\n서비스의 주요 콘텐츠,\n핵심 고객이 관심있어하는\n분야에 대해 알려주세요';
-      case isAllPassed:
-      case isQuestPassed && step === 'register':
-        return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
-      case isDefaultPassed && isTargetPassed && isQuestPassed:
       case step === 'testing':
       case step === 'payment':
       case step === 'completed':
         return '확정 후에는\n수정할 수 없습니다.\n문의사항이 있다면,\n리얼답 매니저에게\n알려주세요!';
+      case isAllPassed:
+      case isQuestPassed && step === 'register':
+      case isDefaultPassed && isTargetPassed && isQuestPassed:
+        return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
       case hasTargetRequiredValues:
         return '누락 된 정보는 없는지\n꼼꼼하게 확인한 후\n다음 스텝으로\n이동해주세요 :)';
       case submitFailed:
@@ -388,14 +381,14 @@ const RightSidebar = (props) => {
         return '도전과제 2 에 대해서\n자세히 알려주세요';
       case isIssuePurpose3Active:
         return '도전과제 3 에 대해서\n자세히 알려주세요';
-      case isAllPassed:
-      case isQuestPassed && step === 'register':
-        return '테스트\n검토중입니다.';
-      case isDefaultPassed && isTargetPassed && isQuestPassed:
       case step === 'testing':
       case step === 'payment':
       case step === 'completed':
         return '테스트 정보가\n확정되었습니다.';
+      case isAllPassed:
+      case isDefaultPassed && isTargetPassed && isQuestPassed:
+      case isQuestPassed && step === 'register':
+        return '테스트 검토중입니다.';
       case hasQuestRequiredValues:
         return '모든 정보를\n다 입력하셨나요?';
       case submitFailed:
@@ -420,14 +413,14 @@ const RightSidebar = (props) => {
       case isIssuePurpose2Active:
       case isIssuePurpose3Active:
         return '이 서비스에서 도전과제를 수행한 테스터에게 무엇이 궁금한가요?';
-      case isAllPassed:
-      case isQuestPassed && step === 'register':
-        return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
-      case isDefaultPassed && isTargetPassed && isQuestPassed:
       case step === 'testing':
       case step === 'payment':
       case step === 'completed':
         return '확정 후에는\n수정할 수 없습니다.\n문의사항이 있다면,\n리얼답 매니저에게\n알려주세요!';
+      case isAllPassed:
+      case isDefaultPassed && isTargetPassed && isQuestPassed:
+      case isQuestPassed && step === 'register':
+        return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
       case hasQuestRequiredValues:
         return '누락 된 정보는 없는지\n꼼꼼하게 확인한 후\n다음 스텝으로\n이동해주세요 :)';
       case submitFailed:
@@ -439,9 +432,12 @@ const RightSidebar = (props) => {
 
   const setPayTitle = () => {
     switch (isPayRendered) {
+      case submitFailed:
+        return '입력되지 않은\n정보가 있어요!';
       case isAllPassed:
+      case isDefaultPassed && isTargetPassed && isQuestPassed && step !== 'payment':
       case isQuestPassed && step === 'register':
-        return '테스트\n검토중입니다.';
+        return '테스트 검토중입니다.';
       case isPlanActive:
         return '원하는 Plan을\n선택해주세요.\n시리얼넘버가 있다면,\n입력해주세요';
       case isCouponActive:
@@ -454,16 +450,17 @@ const RightSidebar = (props) => {
         return '으쌰라 으쌰,\n테스트 중 입니다.';
       case step === 'completed':
         return '테스트가\n완료되었습니다.';
-      case submitFailed:
-        return '입력되지 않은\n정보가 있어요!';
       default:
-        return '곧\n테스트가 시작됩니다.';
+        return '테스트 비용을\n확인해주세요';
     }
   };
 
   const setPayDesc = () => {
     switch (isPayRendered) {
+      case submitFailed:
+        return '필수 정보를\n모두 입력해주셔야\n다음 단계로 넘어가실 수\n있어요.\n누락된 정보를 모두\n입력해주세요!';
       case isAllPassed:
+      case isDefaultPassed && isTargetPassed && isQuestPassed && step !== 'payment':
       case isQuestPassed && step === 'register':
         return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
       case isPlanActive:
@@ -478,10 +475,8 @@ const RightSidebar = (props) => {
         return '테스트가 시작되었습니다.\n테스트 진행 중에는,\n정보를 수정할 수\n없습니다!\n문의사항이 있으시다면\n매니저에게 연락해주세요.\n리포트가 업로드 되면\n알려드릴게요.';
       case step === 'completed':
         return '리포트탭에서\n리포트를 확인해주세요';
-      case submitFailed:
-        return '필수 정보를\n모두 입력해주셔야\n다음 단계로 넘어가실 수\n있어요.\n누락된 정보를 모두\n입력해주세요!';
       default:
-        return '결제 정보를 확인하고,\n제출해주세요.\n입금 확인 다음 날부터\n테스트가 시작됩니다.';
+        return '가격과 할인내역을\n확인해주세요.';
     }
   };
 

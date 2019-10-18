@@ -78,12 +78,12 @@ class TaxBillForm extends Component {
 
 
 const getFormData = (state) => {
-  const fieldValue = getFormValues('taxForm')(state);
+  const fieldValue = getFormValues('orderConfirmForm')(state);
   return { fieldValue };
 };
 
 export default connect(
   getFormData,
 )(reduxForm({
-  form: 'taxForm',
+  form: 'orderConfirmForm',
 })(TaxBillForm));

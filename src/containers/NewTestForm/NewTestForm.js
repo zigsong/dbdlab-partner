@@ -49,12 +49,10 @@ const DisabledLayer = () => (
 class NewTestForm extends Component {
   state = {
     isLoading: false,
+    isPayLoading: false,
     isBackConfirmPopup: false,
-    isNoticePopup: false,
-    isRegisterConfirmPopup: false,
-    hasRegisterConfirmed: false,
-    isPayConfirmPopup: false,
-    hasPayConfirmed: false,
+    isRegisterInfoPopup: false,
+    isPayInfoPopup: false,
     isDefaultRendered: true,
     isTargetRendered: false,
     isQuestRendered: false,
@@ -309,20 +307,10 @@ class NewTestForm extends Component {
     togglePopup(false);
     this.setState({
       isBackConfirmPopup: false,
-      isNoticePopup: false,
-      isRegisterConfirmPopup: false,
-      isPayConfirmPopup: false,
+      isRegisterInfoPopup: false,
+      isPayInfoPopup: false,
     });
   }
-
-  handleRegisterConfirm = async (e) => {
-    e.preventDefault();
-
-    this.setState({
-      hasRegisterConfirmed: true,
-      isBackConfirmPopup: false,
-    });
-  };
 
   handleFormRender = (id) => {
     const renderDefault = id === 0
@@ -585,7 +573,7 @@ class NewTestForm extends Component {
                   isQuestRendered: false,
                   isQuestPassed: true,
                   isPayRendered: true,
-                  isNoticePopup: true,
+                  isRegisterInfoPopup: true,
                 });
               })
               .catch((err) => {
@@ -626,7 +614,7 @@ class NewTestForm extends Component {
                   isQuestRendered: false,
                   isQuestPassed: true,
                   isPayRendered: true,
-                  isNoticePopup: true,
+                  isRegisterInfoPopup: true,
                 });
               })
               .catch((err) => {
@@ -667,7 +655,7 @@ class NewTestForm extends Component {
                   isQuestRendered: false,
                   isQuestPassed: true,
                   isPayRendered: true,
-                  isNoticePopup: true,
+                  isRegisterInfoPopup: true,
                 });
               })
               .catch((err) => {
@@ -684,6 +672,7 @@ class NewTestForm extends Component {
         const submitCheck = window.confirm('PLAN을 선택하셨나요?\n등록 후엔 수정이 되지 않으니, 꼼꼼히 확인해 주세요.');
 
         if (submitCheck) {
+          this.setState({ isPayLoading: true });
           console.log(selectedPlan.id,
             tId,
             cType,
@@ -696,21 +685,27 @@ class NewTestForm extends Component {
           ).then((res) => {
             console.log(res);
             this.setState({
+              isPayLoading: false,
+              isPayInfoPopup: true,
               isPayRendered: true,
               isPayPassed: true,
-              isAllRendered: true,
               test: {
                 order: res.data,
               },
             });
-          }).catch((err) => {
-            console.log(err);
-            console.log(err.response);
-            console.log(err.message);
-            this.setState({
-              asyncErrorMsg: err.response.data.coupon_code,
+          })
+            .then(() => {
+              this.setState({ isAllRendered: true });
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log(err.response);
+              console.log(err.message);
+              this.setState({
+                isPayLoading: false,
+                asyncErrorMsg: err.response.data.coupon_code,
+              });
             });
-          });
         }
       }
     } else {
@@ -810,10 +805,10 @@ class NewTestForm extends Component {
   render() {
     const {
       isLoading,
+      isPayLoading,
       isBackConfirmPopup,
-      isNoticePopup,
-      isRegisterConfirmPopup,
-      isPayConfirmPopup,
+      isRegisterInfoPopup,
+      isPayInfoPopup,
       isDefaultRendered,
       isTargetRendered,
       isQuestRendered,
@@ -827,7 +822,6 @@ class NewTestForm extends Component {
       isAllPassed,
       isRegisterStep,
       isCompleteStep,
-      isPaymentStep,
       isTestStep,
       test,
       asyncErrorMsg,
@@ -847,7 +841,6 @@ class NewTestForm extends Component {
       goBack,
       handleBackBtn,
       handleCancleBtn,
-      handleRegisterConfirm,
       handleFormRender,
       onSubmit,
     } = this;
@@ -1110,7 +1103,7 @@ class NewTestForm extends Component {
                               testOrder={test.order}
                               submit={
                               () => this.setState({
-                                isPayPassed: false,
+                                isPayPassed: true,
                                 isAllRendered: false,
                                 isAllPassed: true,
                               })}
@@ -1126,6 +1119,7 @@ class NewTestForm extends Component {
                                   && isPayPassed)
                                   || isAllPassed
                                   || !isQuestPassed
+                                  || step === 'payment'
                                   || step === 'testing'
                                   || step === 'completed'
                                 }
@@ -1140,26 +1134,29 @@ class NewTestForm extends Component {
                       </>
                     )
                     : (
-                      <FormSection name="pay">
-                        <TestFormPay
-                          isDisabled={isNoNamed || isSpacedTitle
-                            || (isDefaultPassed
-                            && isTargetPassed
-                            && isQuestPassed
-                            && isPayPassed)
-                            || isAllPassed
-                            || (isQuestPassed && step !== 'payment')
-                            || step === 'apply'
-                            || step === 'testing'
-                            || step === 'completed'
-                          }
-                          testId={tId}
-                          extraValues={extras}
-                          extraInfoCategory={extraInfoCategory}
-                          isRegisterReq={fieldsValues !== undefined && fieldsValues.quest !== undefined ? fieldsValues.quest.registerRequire : '아니오'}
-                          submitErrorMsg={asyncErrorMsg}
-                        />
-                      </FormSection>
+                      <>
+                        {isPayLoading ? <LoadingIndicator /> : null}
+                        <FormSection name="pay">
+                          <TestFormPay
+                            isDisabled={isNoNamed || isSpacedTitle
+                              || (isDefaultPassed
+                              && isTargetPassed
+                              && isQuestPassed
+                              && isPayPassed)
+                              || isAllPassed
+                              || (isQuestPassed && step !== 'payment')
+                              || step === 'apply'
+                              || step === 'testing'
+                              || step === 'completed'
+                            }
+                            testId={tId}
+                            extraValues={extras}
+                            extraInfoCategory={extraInfoCategory}
+                            isRegisterReq={fieldsValues !== undefined && fieldsValues.quest !== undefined ? fieldsValues.quest.registerRequire : '아니오'}
+                            submitErrorMsg={asyncErrorMsg}
+                          />
+                        </FormSection>
+                      </>
                     )
                   }
                 </>
@@ -1172,7 +1169,7 @@ class NewTestForm extends Component {
                   {isCompleteStep
                     ? <TestFormReport />
                     : (
-                      <div>
+                      <div className="field-wrapper--testing">
                         데이터 수집중입니다.
                         <br />
                         며칠만 말미를 주시면 어떻게든 결과를 보여주겠읍니다.
@@ -1186,12 +1183,9 @@ class NewTestForm extends Component {
               : null
             }
           </div>
-          {isPayPassed
-          || isReportRendered
-          || isRegisterStep
-          || isTestStep
+          {/* {isAllRendered
           || isCompleteStep
-          || isPaymentStep
+          || isTestStep
             ? null
             : (
               <RightSidebar
@@ -1207,6 +1201,8 @@ class NewTestForm extends Component {
                 isTargetPassed={isTargetPassed}
                 isQuestPassed={isQuestPassed}
                 isPayPassed={isPayPassed}
+                isCompleteStep={isCompleteStep}
+                isTestStep={isTestStep}
                 isAllPassed={isAllPassed}
                 fieldsMeta={fieldsMeta}
                 fieldsValues={fieldsValues}
@@ -1216,7 +1212,31 @@ class NewTestForm extends Component {
                 onSubmit={onSubmit}
               />
             )
-          }
+          } */}
+          <RightSidebar
+            step={step}
+            submitErrorMsg={asyncErrorMsg}
+            isDisabled={isNoNamed || isSpacedTitle}
+            isDefaultRendered={isDefaultRendered}
+            isTargetRendered={isTargetRendered}
+            isQuestRendered={isQuestRendered}
+            isPayRendered={isPayRendered}
+            isReportRendered={isReportRendered}
+            isAllRendered={isAllRendered}
+            isDefaultPassed={isDefaultPassed}
+            isTargetPassed={isTargetPassed}
+            isQuestPassed={isQuestPassed}
+            isPayPassed={isPayPassed}
+            isCompleteStep={isCompleteStep}
+            isTestStep={isTestStep}
+            isAllPassed={isAllPassed}
+            fieldsMeta={fieldsMeta}
+            fieldsValues={fieldsValues}
+            submitFailed={submitFailed}
+            submitSucceeded={submitSucceeded}
+            handleSubmit={handleSubmit}
+            onSubmit={onSubmit}
+          />
           {/* 생성된 테스트 페이지 수정 시에도 안 보이게 하려면 아래 주석 삭제 */}
           {/* { isNoNamed && tId === undefined */}
           { isNoNamed || isSpacedTitle
@@ -1229,7 +1249,7 @@ class NewTestForm extends Component {
           }
           {isBackConfirmPopup
             ? (
-              <PopupTemplate isShow={isOpen} title="테스트 목록으로 이동하시겠어요?">
+              <PopupTemplate isShow={isBackConfirmPopup} title="테스트 목록으로 이동하시겠어요?">
                 <p className="contents__back">
                   테스트 목록으로 이동합니다.
                   <br />
@@ -1243,45 +1263,36 @@ class NewTestForm extends Component {
             )
             : null
           }
-          {isRegisterConfirmPopup
+          {isPayInfoPopup
             ? (
-              <PopupTemplate isShow={isOpen} title="했다 제출 테스트">
+              <PopupTemplate isShow={isPayInfoPopup} title="테스트를 신청해주셔서 감사합니다">
                 <p className="contents__register">
-                  UX튜닝을 위한 준비가 모두 완료되었습니다!
-                  <br />
-                  지금 이 텍스트는 임시 워딩입니다!
-                  <br />
-                  제플린이 맛이 갔거든요
+                  테스트 비용 결제 후, 입금 확인 다음 날 부터 테스트가 시작됩니다:)
                 </p>
                 <div className="box-btn">
-                  <button type="button" className="btn-cancle" onClick={e => handleCancleBtn(e)}>취소</button>
-                  <button type="button" className="btn-confirm" onClick={e => handleRegisterConfirm(e)}>확인</button>
+                  <button type="button" className="btn-cancle" onClick={e => goBack(e)}>테스트 목록으로 이동</button>
+                  <button type="button" className="btn-confirm" onClick={e => handleCancleBtn(e)}>닫기</button>
                 </div>
               </PopupTemplate>
             )
             : null
           }
-          {isPayConfirmPopup
+          {isRegisterInfoPopup
             ? (
-              <PopupTemplate isShow={isOpen} title="플랜 선택을 완료하셨나요?">
-                울랄라
-              </PopupTemplate>
-            )
-            : null
-          }
-          {isNoticePopup
-            ? (
-              <PopupTemplate isShow={isOpen} title="했다 제출 테스트">
+              <PopupTemplate isShow={isOpen} title="테스트 신청이 완료되었습니다">
                 <p className="contents__register">
-                  UX튜닝을 위한 준비가 모두 완료되었습니다!
+                  <strong className="contents__subtitle">리얼답 매니저가 입력하신 정보를 검토한 후, 테스트 결제를 도와드립니다.</strong>
+                  Test 신청 정보에 따라 테스트를 설계하기 때문에,
                   <br />
-                  지금 이 텍스트는 임시 워딩입니다!
+                  정보 수정 혹은 확인이 필요할 수 있습니다.
                   <br />
-                  제플린이 맛이 갔거든요
+                  결제는 테스트 설계가 끝난 후 진행됩니다.
+                  <br />
+                  궁금하신 내용이 있다면 언제든지 문의해주세요!
                 </p>
                 <div className="box-btn">
-                  <button type="button" className="btn-cancle" onClick={e => goBack(e)}>테스트 목록 보기</button>
-                  <button type="button" className="btn-confirm" onClick={e => handleCancleBtn(e)}>확인이었던 거 같아 여기</button>
+                  <button type="button" className="btn-cancle" onClick={e => goBack(e)}>테스트 목록으로 이동</button>
+                  <button type="button" className="btn-confirm" onClick={e => handleCancleBtn(e)}>닫기</button>
                 </div>
               </PopupTemplate>
             )

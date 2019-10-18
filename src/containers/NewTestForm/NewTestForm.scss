@@ -34,6 +34,7 @@ $imgUrl: '/static/images/';
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
+    overflow-x: hidden;
 
     .form__nav {
       width: 149px;
@@ -200,7 +201,9 @@ $imgUrl: '/static/images/';
         &--default,
         &--target,
         &--quest,
-        &--pay {
+        &--pay,
+        &--testing,
+        &--report {
           @extend .field-wrapper;
         }
 
@@ -892,6 +895,16 @@ $imgUrl: '/static/images/';
             }
           }
         }
+
+        &--testing {
+          background: transparent url('#{$imgUrl}contents/img_testing.png') no-repeat center 112px / 198px 84px;
+          padding-top: 229px;
+          text-align: center;
+          font-size: 13.4px;
+          font-weight: 500;
+          line-height: 1.8;
+          color: $gray;
+        }
       }
     }
 
@@ -978,6 +991,7 @@ $imgUrl: '/static/images/';
       &--pass {
         @extend .form-btn-wrapper;
         background-color: $blue;
+        transition: all .3s;
 
         .box-info {
           .info__title {
@@ -1007,6 +1021,14 @@ $imgUrl: '/static/images/';
 
         &--fail {
           @extend .form-btn-wrapper--fail;
+
+          &--hidden {
+            @extend .form-btn-wrapper;
+            right: -220px;
+            height: 100vh;
+            z-index: -1;
+            transition: right .1s;
+          }
         }
 
         &--disabled {
@@ -1033,6 +1055,14 @@ $imgUrl: '/static/images/';
           &--pass {
             @extend .form-btn-wrapper--disabled;
           }
+        }
+
+        &--hidden {
+          @extend .form-btn-wrapper;
+          right: -220px;
+          height: 100vh;
+          z-index: -1;
+          transition: right .1s;
         }
       }
 
@@ -1136,6 +1166,14 @@ $imgUrl: '/static/images/';
         font-size: 12px;
         color: $black;
         line-height: 1.5;
+      }
+
+      .contents__subtitle {
+        display: block;
+        margin: 5px 0;
+        font-size: 12px;
+        color: $black;
+        font-weight: 500;
       }
 
       .box-btn {

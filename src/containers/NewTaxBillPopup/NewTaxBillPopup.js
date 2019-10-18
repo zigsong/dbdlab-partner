@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { togglePopup } from 'modules/popup';
-import { patchVoucher, patchTestOrder } from 'modules/order';
+import { patchTestTaxBill, patchVoucherTaxBill } from 'modules/order';
 import PopupTemplate from 'components/PopupTemplate';
 import ToastAlert from 'components/ToastAlert';
 import TaxBillForm from './TaxBillForm';
@@ -16,8 +16,8 @@ class NewTaxBillPopup extends Component {
   onSubmit = (values) => {
     const {
       handlePopup,
-      patchVoucher,
-      patchTestOrder,
+      patchVoucherTaxBill,
+      patchTestTaxBill,
       voucherOrder,
       testOrder,
     } = this.props;
@@ -29,17 +29,8 @@ class NewTaxBillPopup extends Component {
 
     if (testOrder !== undefined && testOrder.id) {
       if (hasAllValues) {
-        patchTestOrder(
+        patchTestTaxBill(
           testOrder.id,
-          undefined,
-          testOrder.coupon_type,
-          testOrder.plan.name,
-          testOrder.plan.description,
-          testOrder.ordered_price,
-          undefined,
-          undefined,
-          testOrder.is_paid,
-          testOrder.paid_at,
           true,
           email,
           company,
@@ -63,13 +54,12 @@ class NewTaxBillPopup extends Component {
 
     if (voucherOrder !== undefined && voucherOrder.voucherId) {
       if (hasAllValues) {
-        patchVoucher(
+        patchVoucherTaxBill(
+          voucherOrder.voucherId,
+          true,
+          email,
           company,
           companyRegistNum,
-          email,
-          voucherOrder.voucherId,
-          voucherOrder.totalAmount,
-          true,
         )
           .then((res) => {
             console.log(res);
@@ -124,47 +114,27 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   togglePopup: isOpen => dispatch(togglePopup(isOpen)),
-  patchVoucher: (
+  patchVoucherTaxBill: (
+    voucherId,
+    hasTaxBillReq,
+    email,
     company,
     companyRegistNum,
-    email,
+  ) => dispatch(patchVoucherTaxBill(
     voucherId,
-    voucherAmount,
     hasTaxBillReq,
-  ) => dispatch(patchVoucher(
+    email,
     company,
     companyRegistNum,
-    email,
-    voucherId,
-    voucherAmount,
-    hasTaxBillReq,
   )),
-  patchTestOrder: (
+  patchTestTaxBill: (
     oId,
-    cCode,
-    cType,
-    planName,
-    planDesc,
-    originPrice,
-    discountedPrice,
-    totalPrice,
-    isPaid,
-    paidDate,
     hasTaxBillReq,
     taxEmail,
     taxCompany,
     taxCompanyRegistNum,
-  ) => dispatch(patchTestOrder(
+  ) => dispatch(patchTestTaxBill(
     oId,
-    cCode,
-    cType,
-    planName,
-    planDesc,
-    originPrice,
-    discountedPrice,
-    totalPrice,
-    isPaid,
-    paidDate,
     hasTaxBillReq,
     taxEmail,
     taxCompany,

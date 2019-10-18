@@ -24,10 +24,8 @@ class TaxBillForm extends Component {
   }
 
   render() {
-    const { handleSubmit, fieldValue } = this.props;
-    const { onReset } = this;
     return (
-      <FormSection name="tax" className="form-tax" onSubmit={handleSubmit}>
+      <FormSection name="order" className="form-tax">
         <p className="form__data-wrapper">
           <span className="wrapper__title">
             <strong className="title">기업명*</strong>
@@ -67,10 +65,6 @@ class TaxBillForm extends Component {
             validate={[emailRequired, emailRegexp]}
           />
         </p>
-        {/* <div className="form__btn-wrapper">
-          <button type="button" className="btn-cancle" onClick={onReset}>취소</button>
-          <button type="submit" className={`btn-submit${fieldValue !== undefined ? '--active' : ''}`} onClick={handleSubmit}>신청하기</button>
-        </div> */}
       </FormSection>
     );
   }

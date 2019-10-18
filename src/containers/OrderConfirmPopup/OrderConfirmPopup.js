@@ -21,8 +21,6 @@ class OrderConfirmPopup extends Component {
 
   componentDidMount() {
     const { getVoucherOrder, getTestOrder, voucherId } = this.props;
-    console.log(voucherId);
-
     getVoucherOrder(voucherId);
     getTestOrder(voucherId);
   }
@@ -61,7 +59,6 @@ class OrderConfirmPopup extends Component {
 
   onReset = (e) => {
     e.preventDefault();
-    console.log(this.props);
     const { reset, togglePopup } = this.props;
 
     reset();
@@ -69,18 +66,15 @@ class OrderConfirmPopup extends Component {
   }
 
   onSubmit = (values) => {
-    console.log(values);
     const {
       isVoucher,
-      testId,
       voucherId,
-      planAmount,
       patchVoucherTaxBill,
       patchTestTaxBill,
       togglePopup,
       reset,
     } = this.props;
-    const { company, companyRegistNum, email } = values.tax;
+    const { company, companyRegistNum, email } = values.order;
     const hasAllValues = !!company && !!companyRegistNum && !!email;
 
     if (hasAllValues) {
@@ -93,7 +87,6 @@ class OrderConfirmPopup extends Component {
           companyRegistNum,
         )
           .then((res) => {
-            console.log(res);
             getVoucherOrder(voucherId);
             this.setState({
               hasComplete: true,
@@ -156,8 +149,7 @@ class OrderConfirmPopup extends Component {
     const { hasComplete } = this.state;
     const amount = planAmount === undefined ? '1개' : `${planAmount}개`;
     const hasFieldValue = fieldValue !== undefined
-      ? Object.keys(fieldValue.tax).length : undefined;
-    console.log(hasFieldValue);
+      ? Object.keys(fieldValue.order).length : undefined;
 
     return (
       <PopupTemplate isShow={isOpen}>
@@ -256,13 +248,8 @@ const getFormData = (state) => {
     ? test.tax_bill_receive_email : undefined;
   const isVoucherTaxReq = voucher !== undefined ? voucher.is_tax_bill_requested : false;
   const isTestTaxReq = test !== undefined ? test.is_tax_bill_requested : false;
-  console.log(voucher);
-  console.log(test);
-  console.log(voucherTaxBillCompany);
-  console.log(voucher.tax_bill_company_name);
-
   const initVoucherData = {
-    tax: {
+    order: {
       company: voucherTaxBillCompany,
       companyRegistNum: voucherTaxBillCompanyNum,
       email: voucherTaxBillEmail,
@@ -270,7 +257,7 @@ const getFormData = (state) => {
   };
 
   const initTestData = {
-    tax: {
+    order: {
       company: testTaxBillCompany,
       companyRegistNum: testTaxBillCompanyNum,
       email: testTaxBillEmail,
@@ -325,5 +312,4 @@ export default connect(
   mapDispatchToProps,
 )(reduxForm({
   form: 'orderConfirmForm',
-  enableReinitialize: true,
 })(OrderConfirmPopup));

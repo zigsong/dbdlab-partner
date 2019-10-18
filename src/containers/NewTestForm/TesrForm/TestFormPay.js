@@ -165,7 +165,6 @@ class TestFormPay extends Component {
     const totalPrice = planPriceInt + targetPriceInt + registerPriceInt;
     const couponDiscount = couponValue !== undefined ? totalPrice * 0.03 : 0;
     const couponTypeMeta = fields.pay !== undefined ? fields.pay.coupon : undefined;
-
     const coupon = [
       {
         title: '한달이내에 리얼답을 사용한 적이 있습니다',

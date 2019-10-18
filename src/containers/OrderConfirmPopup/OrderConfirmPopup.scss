@@ -84,6 +84,11 @@ $imgUrl: '/static/images';
         @extend .info__desc;
         color: $blue;
       }
+
+      &--bill {
+        @extend .info__desc;
+        color: $blue;
+      }
     }
   }
 

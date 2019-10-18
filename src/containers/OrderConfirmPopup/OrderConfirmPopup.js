@@ -5,13 +5,26 @@ import { reduxForm, getFormValues } from 'redux-form';
 import PopupTemplate from 'components/PopupTemplate';
 import ToastAlert from 'components/ToastAlert';
 import { togglePopup } from 'modules/popup';
-import { patchVoucher, patchTestOrder } from 'modules/order';
+import {
+  getTestOrder,
+  getVoucherOrder,
+  patchTestTaxBill,
+  patchVoucherTaxBill,
+} from 'modules/order';
 import TaxBillForm from './TaxBillForm';
 import './OrderConfirmPopup.scss';
 
 class OrderConfirmPopup extends Component {
   state = {
     hasComplete: false,
+  }
+
+  componentDidMount() {
+    const { getVoucherOrder, getTestOrder, voucherId } = this.props;
+    console.log(voucherId);
+
+    getVoucherOrder(voucherId);
+    getTestOrder(voucherId);
   }
 
   handleStep = (step) => {
@@ -62,7 +75,8 @@ class OrderConfirmPopup extends Component {
       testId,
       voucherId,
       planAmount,
-      patchVoucher,
+      patchVoucherTaxBill,
+      patchTestTaxBill,
       togglePopup,
       reset,
     } = this.props;
@@ -71,16 +85,16 @@ class OrderConfirmPopup extends Component {
 
     if (hasAllValues) {
       if (isVoucher) {
-        patchVoucher(
+        patchVoucherTaxBill(
+          voucherId,
+          true,
+          email,
           company,
           companyRegistNum,
-          email,
-          voucherId,
-          planAmount,
-          true,
         )
           .then((res) => {
             console.log(res);
+            getVoucherOrder(voucherId);
             this.setState({
               hasComplete: true,
             }, () => {
@@ -97,23 +111,15 @@ class OrderConfirmPopup extends Component {
             console.log(err.message);
           });
       } else {
-        patchTestOrder(
+        patchTestTaxBill(
           voucherId,
-          undefined,
-          undefined,
-          // testOrder.plan.name,
-          // testOrder.plan.description,
-          // testOrder.ordered_price,
-          undefined,
-          undefined,
-          // testOrder.is_paid,
-          undefined,
           true,
           email,
           company,
           companyRegistNum,
         )
           .then(() => {
+            getTestOrder(voucherId);
             this.setState({
               hasComplete: true,
             }, () => {
@@ -142,11 +148,16 @@ class OrderConfirmPopup extends Component {
       isVoucher,
       fieldValue,
       handleSubmit,
+      initVoucherData,
+      initTestData,
+      isVoucherTaxReq,
+      isTestTaxReq,
     } = this.props;
     const { hasComplete } = this.state;
     const amount = planAmount === undefined ? '1개' : `${planAmount}개`;
     const hasFieldValue = fieldValue !== undefined
       ? Object.keys(fieldValue.tax).length : undefined;
+    console.log(hasFieldValue);
 
     return (
       <PopupTemplate isShow={isOpen}>
@@ -196,12 +207,22 @@ class OrderConfirmPopup extends Component {
               <strong className="info__title">세금계산서</strong>
               <span className={`info__desc${isTaxBillReq ? '--bill' : ''}`}>{isTaxBillReq ? '신청' : '미신청'}</span>
             </article>
-            <TaxBillForm />
+            {isVoucher
+              ? <TaxBillForm initialValues={initVoucherData} />
+              : <TaxBillForm initialValues={initTestData} />
+            }
           </section>
         </div>
         <div className="box-btn">
-          <button type="button" className="btn-cancle" onClick={e => onReset(e)}>취소</button>
-          <button type="button" className={`btn-submit${hasFieldValue > 2 ? '--active' : ''}`} onClick={handleSubmit(values => this.onSubmit(values))}>확인</button>
+          {isVoucherTaxReq || isTestTaxReq
+            ? <button type="button" className="btn-submit--active" onClick={e => onReset(e)}>확인</button>
+            : (
+              <>
+                <button type="button" className="btn-cancle" onClick={e => onReset(e)}>취소</button>
+                <button type="button" className={`btn-submit${hasFieldValue > 2 ? '--active' : ''}`} onClick={handleSubmit(values => this.onSubmit(values))}>확인</button>
+              </>
+            )
+          }
         </div>
         {hasComplete
           ? (
@@ -219,52 +240,79 @@ class OrderConfirmPopup extends Component {
 
 const getFormData = (state) => {
   const fieldValue = getFormValues('orderConfirmForm')(state);
-  return { fieldValue };
+  const { voucher } = state.order;
+  const { test } = state.order;
+  const voucherTaxBillCompany = voucher.tax_bill_company_name !== undefined
+    ? voucher.tax_bill_company_name : undefined;
+  const voucherTaxBillCompanyNum = voucher.company_registration_number !== undefined
+    ? voucher.company_registration_number : undefined;
+  const voucherTaxBillEmail = voucher.tax_bill_receive_email !== undefined
+    ? voucher.tax_bill_receive_email : undefined;
+  const testTaxBillCompany = test.tax_bill_company_name !== undefined
+    ? test.tax_bill_company_name : undefined;
+  const testTaxBillCompanyNum = test.company_registration_number !== undefined
+    ? test.company_registration_number : undefined;
+  const testTaxBillEmail = test.tax_bill_receive_email !== undefined
+    ? test.tax_bill_receive_email : undefined;
+  const isVoucherTaxReq = voucher !== undefined ? voucher.is_tax_bill_requested : false;
+  const isTestTaxReq = test !== undefined ? test.is_tax_bill_requested : false;
+  console.log(voucher);
+  console.log(test);
+  console.log(voucherTaxBillCompany);
+  console.log(voucher.tax_bill_company_name);
+
+  const initVoucherData = {
+    tax: {
+      company: voucherTaxBillCompany,
+      companyRegistNum: voucherTaxBillCompanyNum,
+      email: voucherTaxBillEmail,
+    },
+  };
+
+  const initTestData = {
+    tax: {
+      company: testTaxBillCompany,
+      companyRegistNum: testTaxBillCompanyNum,
+      email: testTaxBillEmail,
+    },
+  };
+
+  return {
+    fieldValue,
+    voucher,
+    test,
+    initVoucherData,
+    initTestData,
+    isVoucherTaxReq,
+    isTestTaxReq,
+  };
 };
 
 const mapDispatchToProps = dispatch => ({
   togglePopup: isOpen => dispatch(togglePopup(isOpen)),
-  patchVoucher: (
-    company,
-    companyRegistNum,
-    email,
-    voucherId,
-    voucherAmount,
-    hasTaxBillReq,
-  ) => dispatch(patchVoucher(
-    company,
-    companyRegistNum,
-    email,
-    voucherId,
-    voucherAmount,
-    hasTaxBillReq,
-  )),
-  patchTestOrder: (
+  getTestOrder: oId => dispatch(getTestOrder(oId)),
+  getVoucherOrder: oId => dispatch(getVoucherOrder(oId)),
+  patchVoucherTaxBill: (
     oId,
-    cCode,
-    cType,
-    planName,
-    planDesc,
-    originPrice,
-    discountedPrice,
-    totalPrice,
-    isPaid,
-    paidDate,
     hasTaxBillReq,
     taxEmail,
     taxCompany,
     taxCompanyRegistNum,
-  ) => dispatch(patchTestOrder(
+  ) => dispatch(patchVoucherTaxBill(
     oId,
-    cCode,
-    cType,
-    planName,
-    planDesc,
-    originPrice,
-    discountedPrice,
-    totalPrice,
-    isPaid,
-    paidDate,
+    hasTaxBillReq,
+    taxEmail,
+    taxCompany,
+    taxCompanyRegistNum,
+  )),
+  patchTestTaxBill: (
+    oId,
+    hasTaxBillReq,
+    taxEmail,
+    taxCompany,
+    taxCompanyRegistNum,
+  ) => dispatch(patchTestTaxBill(
+    oId,
     hasTaxBillReq,
     taxEmail,
     taxCompany,
@@ -277,4 +325,5 @@ export default connect(
   mapDispatchToProps,
 )(reduxForm({
   form: 'orderConfirmForm',
+  enableReinitialize: true,
 })(OrderConfirmPopup));

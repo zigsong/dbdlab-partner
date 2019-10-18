@@ -1,26 +1,79 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
+import ScrollContainer from 'react-indiana-drag-scroll';
 import { Document, Page, pdfjs } from 'react-pdf';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-const TestFormReport = (props) => {
-  const [pageNum, setPageNum] = useState(2);
+class TestFormReport extends Component {
+  state = {
+    numPages: null,
+    pageNumber: 1,
+  }
 
-  return (
-    <div className="field-wrapper--report">
-      <Document
-        file="https://dbdlab-storage.s3.amazonaws.com/report/2019/10/16/HowToDesignSNGcompressed_4365f.pdf"
-        onLoadSuccess={() => console.log('success')}
-        onLoadError={(error) => console.log(error.message)}
-        options={{
-          cMapUrl: `//cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/cmaps/`,
-          cMapPacked: true,
-        }}
-      >
-        <Page />
-      </Document>
-    </div>
-  );
-};
+  onDocumentLoadSuccess = (document) => {
+    const { numPages } = document;
+    this.setState({
+      numPages,
+      pageNumber: 1,
+    });
+  };
+
+  changePage = offset => this.setState(prevState => ({
+    pageNumber: prevState.pageNumber + offset,
+  }));
+
+  previousPage = () => this.changePage(-1);
+
+  nextPage = () => this.changePage(1);
+
+  render() {
+    const { pageNumber, numPages } = this.state;
+    const { report } = this.props;
+
+    return (
+      <div className="field-wrapper--report">
+        <ScrollContainer className="report__contents scroll-container">
+          <Document
+            file={report}
+            onLoadSuccess={this.onDocumentLoadSuccess}
+            onLoadError={(error) => console.log(error.message)}
+            options={{
+              cMapUrl: `//cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/cmaps/`,
+              cMapPacked: true,
+            }}
+          >
+            <Page pageNumber={pageNumber} />
+          </Document>
+          <div className="box-btn">
+            <p>
+              Page
+              {' '}
+              {pageNumber || (numPages ? 1 : '--')}
+              {' '}
+              of
+              {numPages || '--'}
+            </p>
+            <button
+              type="button"
+              className="btn--prev"
+              disabled={pageNumber <= 1}
+              onClick={this.previousPage}
+            >
+              Previous
+            </button>
+            <button
+              type="button"
+              className="btn--next"
+              disabled={pageNumber >= numPages}
+              onClick={this.nextPage}
+            >
+              Next
+            </button>
+          </div>
+        </ScrollContainer>
+      </div>
+    );
+  }
+}
 
 export default TestFormReport;

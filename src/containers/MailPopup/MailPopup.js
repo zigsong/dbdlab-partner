@@ -352,8 +352,8 @@ class MailPopup extends Component {
                     <label htmlFor="company">
                       <span>기업명/서비스명*</span>
                       <input
-                        placeholder="(주)서비스"
-                        aria-describedby="(주)서비스"
+                        placeholder="텍스트 입력"
+                        aria-describedby="텍스트 입력"
                         type="text"
                         name="company"
                         onChange={this.onChange}
@@ -367,8 +367,8 @@ class MailPopup extends Component {
                     <label htmlFor="name">
                       <span>이름*</span>
                       <input
-                        placeholder="태수투"
-                        aria-describedby="태수투"
+                        placeholder="텍스트 입력"
+                        aria-describedby="텍스트 입력"
                         type="text"
                         name="name"
                         onChange={this.onChange}
@@ -382,8 +382,8 @@ class MailPopup extends Component {
                     <label htmlFor="contact">
                       <span>휴대폰 번호*</span>
                       <input
-                        placeholder="0101232641"
-                        aria-describedby="0101232641"
+                        placeholder="‘-‘제외하고 입력"
+                        aria-describedby="‘-‘제외하고 입력"
                         type="tel"
                         name="contact"
                         onChange={this.onChange}
@@ -399,8 +399,8 @@ class MailPopup extends Component {
                     <label htmlFor="email">
                       <span>이메일*</span>
                       <input
-                        placeholder="test@realdopt.com"
-                        aria-describedby="이메일 입력"
+                        placeholder="텍스트 입력"
+                        aria-describedby="텍스트 입력"
                         type="email"
                         name="email"
                         onChange={this.onChange}
@@ -423,7 +423,7 @@ class MailPopup extends Component {
                         onChange={this.onChange}
                         required
                       >
-                        <option value="" disabled>선택해주세요</option>
+                        <option value="" disabled>카테고리 선택</option>
                         <option value="plan">plan</option>
                         <option value="테스트 설계">테스트 설계</option>
                         <option value="가격 문의">가격 문의</option>
@@ -442,8 +442,8 @@ class MailPopup extends Component {
                         rows="6"
                         name="message"
                         onChange={this.onChange}
-                        aria-describedby="문의 내용 입력"
-                        placeholder="문의 내용 입력"
+                        aria-describedby="텍스트 입력"
+                        placeholder="텍스트 입력"
                         required
                       />
                     </label>

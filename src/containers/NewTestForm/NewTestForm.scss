@@ -789,6 +789,8 @@ $imgUrl: '/static/images/';
 
                   .msg--error {
                     display: block;
+                    width: 100%;
+                    background-color: $white;
                     position: absolute;
                     left: 0;
                     bottom: 5px;
@@ -837,6 +839,8 @@ $imgUrl: '/static/images/';
 
                   .msg--error {
                     display: block;
+                    width: 100%;
+                    background-color: $white;
                     position: absolute;
                     left: 0;
                     bottom: 5px;

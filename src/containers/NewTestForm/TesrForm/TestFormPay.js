@@ -155,6 +155,7 @@ class TestFormPay extends Component {
       couponValue,
       isDisabled,
       submitErrorMsg,
+      fields,
     } = this.props;
     const { planPrice, targetPrice, registerPrice } = this.state;
     const planPriceInt = parseInt(planPrice, 10);
@@ -163,6 +164,8 @@ class TestFormPay extends Component {
     const { handleInputFocus, FormRadio } = this;
     const totalPrice = planPriceInt + targetPriceInt + registerPriceInt;
     const couponDiscount = couponValue !== undefined ? totalPrice * 0.03 : 0;
+    const couponTypeMeta = fields.pay !== undefined ? fields.pay.coupon : undefined;
+
     const coupon = [
       {
         title: '한달이내에 리얼답을 사용한 적이 있습니다',
@@ -281,7 +284,7 @@ class TestFormPay extends Component {
                               disabled={isDisabled}
                               submitError={!!submitErrorMsg}
                             />
-                            {submitErrorMsg && <span className="msg--error">{submitErrorMsg}</span>}
+                            {submitErrorMsg && couponTypeMeta.touched && <span className="msg--error">{submitErrorMsg}</span>}
                           </p>
                         )
                         : (
@@ -297,7 +300,7 @@ class TestFormPay extends Component {
                               disabled={isDisabled}
                               submitError={!!submitErrorMsg}
                             />
-                            {submitErrorMsg && <span className="msg--error">{submitErrorMsg}</span>}
+                            {submitErrorMsg && couponTypeMeta.touched && <span className="msg--error">{submitErrorMsg}</span>}
                           </p>
                         )
                       }

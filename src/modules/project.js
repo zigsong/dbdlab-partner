@@ -18,7 +18,6 @@ export const getProjectList = () => dispatch => (
   new Promise((resolve, reject) => {
     ProjectAPI.getProjectList().then(
       (res) => {
-        console.log(res);
         dispatch({
           type: GET_PROJECT_LIST_SUCCESS,
           payload: res,
@@ -41,7 +40,6 @@ export const putProject = ({ company, service }) => dispatch => (
   new Promise((resolve, reject) => {
     ProjectAPI.putProject({ company, service }).then(
       (res) => {
-        console.log(res);
         dispatch({
           type: PUT_PROJECT_SUCCESS,
           payload: res,
@@ -62,13 +60,10 @@ export const putProject = ({ company, service }) => dispatch => (
 
 export const getProject = (id, inviteToken) => dispatch => (
   new Promise((resolve, reject) => {
-    console.log(id);
-    console.log(inviteToken);
     const token = inviteToken === undefined ? '' : inviteToken;
-    console.log(token);
+
     ProjectAPI.getProject(id, token).then(
       (res) => {
-        console.log(res);
         dispatch({
           type: GET_PROJECT_SUCCESS,
           payload: res,
@@ -105,7 +100,6 @@ export const patchProject = (
       serviceFormat,
       serviceDesc,
     ).then((res) => {
-      console.log(res);
       dispatch({
         type: PATCH_PROJECT_SUCCESS,
         payload: res,
@@ -125,7 +119,6 @@ export const patchProject = (
 );
 
 export const inviteProject = (id, email) => (dispatch) => {
-  console.log(id, email);
   dispatch({
     type: INVITE_PROJECT_PENDING,
   });
@@ -133,7 +126,6 @@ export const inviteProject = (id, email) => (dispatch) => {
   return (
     new Promise((resolve, reject) => {
       ProjectAPI.inviteProject(id, email).then((res) => {
-        console.log(res);
         dispatch({
           type: INVITE_PROJECT_SUCCESS,
           payload: res,
@@ -193,7 +185,6 @@ export default handleActions({
     getFailure: true,
   }),
   [PUT_PROJECT_SUCCESS]: (state, action) => {
-    console.log(action);
     const {
       id,
       name,

@@ -53,7 +53,6 @@ class MyPage extends Component {
     const authenticate = async () => {
       await props.getAuthSelf()
         .then((res) => {
-          console.log(res);
           props.getAccount(res.data.id);
         });
       await props.getProjectList()
@@ -93,9 +92,10 @@ class MyPage extends Component {
         }
       })
       .catch((err) => {
-        const { status } = err.response;
+        // const { status } = err.response;
         console.log(err.response);
-        if (status === 401) {
+        const stat = err.response.status !== undefined ? err.response.status : undefined;
+        if (stat !== undefined && stat === 401) {
           this.setState({
             isLoading: false,
             isAuthError: true,
@@ -160,7 +160,7 @@ class MyPage extends Component {
       const { selectedFile } = this.state;
       formData.append('file', selectedFile);
       props.postAvatarUpdate(formData)
-        .then(res => console.log(res))
+        .then()
         .catch((err) => {
           console.log(err);
           alert('이미지 파일을 선택해 주세요:)');
@@ -210,8 +210,6 @@ class MyPage extends Component {
     const { props, handleEdit } = this;
     const { id, email } = props;
     const { name, phone } = values;
-    console.log('submit');
-    console.log(values);
 
     props.patchAccountUpdate(
       id,
@@ -393,7 +391,7 @@ class MyPage extends Component {
                                                   {a.verb.replace('{actor}', `${a.actor.name !== undefined && a.actor.name !== ''
                                                     ? a.actor.name
                                                     : a.actor.email.substring(0, a.actor.email.indexOf('@'))
-                                                  }`).replace("'{target}'", `${a.target.title === undefined ? a.target.plan.name : a.target.title}`)}
+                                                  }`).replace("'{target}'", `${a.target.title === undefined ? '' : a.target.title}`)}
                                                 </span>
                                               </span>
                                               <span className="text__date">{getDate(a.timestamp)}</span>

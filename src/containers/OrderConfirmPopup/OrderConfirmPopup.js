@@ -86,7 +86,7 @@ class OrderConfirmPopup extends Component {
           company,
           companyRegistNum,
         )
-          .then((res) => {
+          .then(() => {
             getVoucherOrder(voucherId);
             this.setState({
               hasComplete: true,
@@ -181,7 +181,7 @@ class OrderConfirmPopup extends Component {
               <span className="info__desc">
                 디비디랩주식회사
                 <br />
-                036-107482-04-016
+                기업은행 036-107482-04-016
               </span>
               <strong className="info__title">입금액</strong>
               <span className="info__desc--price">

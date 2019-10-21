@@ -13,7 +13,6 @@ export const getPlanList = () => dispatch => (
   new Promise((resolve, reject) => {
     PlanAPI.getPlanList().then(
       (res) => {
-        console.log(res);
         dispatch({
           type: GET_PLAN_LIST_SUCCESS,
           payload: res,
@@ -32,7 +31,6 @@ export const getPlanList = () => dispatch => (
 
 export const getPlan = planId => dispatch => PlanAPI.getPlan(planId).then(
   (res) => {
-    console.log(res);
     dispatch({
       type: GET_PLAN_SUCCESS,
       payload: res,
@@ -49,7 +47,6 @@ export const getPlanPrice = (pName, cNum) => dispatch => (
   new Promise((resolve, reject) => {
     PlanAPI.getPlanPrice(pName, cNum).then(
       (res) => {
-        console.log(res);
         dispatch({
           type: GET_PLAN_PRICE_SUCCESS,
           payload: res,
@@ -81,7 +78,6 @@ const initialState = {
 export default handleActions({
   [GET_PLAN_LIST_SUCCESS]: (state, action) => {
     const { results } = action.payload.data;
-    console.log(results);
     return {
       ...state,
       getPlanListSuccess: true,
@@ -109,7 +105,6 @@ export default handleActions({
     getPlanFailure: true,
   }),
   [GET_PLAN_PRICE_SUCCESS]: (state, action) => {
-    console.log(action);
     const { data } = action.payload;
 
     return {

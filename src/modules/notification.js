@@ -6,7 +6,6 @@ const GET_NOTI_FAILURE = 'noti/GET_NOTI_FAILURE';
 
 export const getNotifications = () => dispatch => (
   NotificationAPI.getNotifications().then((res) => {
-    console.log(res);
     dispatch({
       type: GET_NOTI_SUCCESS,
       payload: res,
@@ -31,14 +30,11 @@ const initialState = {
 };
 
 export default handleActions({
-  [GET_NOTI_SUCCESS]: (state, action) => {
-    console.log(action);
-    return {
-      ...state,
-      getSuccess: true,
-      notiList: action.payload.data.results,
-    };
-  },
+  [GET_NOTI_SUCCESS]: (state, action) => ({
+    ...state,
+    getSuccess: true,
+    notiList: action.payload.data.results,
+  }),
   [GET_NOTI_FAILURE]: state => ({
     ...state,
     getFailure: true,

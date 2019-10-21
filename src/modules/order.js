@@ -24,7 +24,6 @@ const PATCH_VOUCHER_TAX_BILL_FAILURE = 'order/PATCH_VOUCHER_TAX_BILL_FAILURE';
 
 export const getVoucherOrder = oId => dispatch => (
   OrderAPI.getVoucherOrder(oId).then((res) => {
-    console.log(res);
     dispatch({
       type: GET_ORDER_VOUCHER_SUCCESS,
       payload: res,
@@ -39,7 +38,6 @@ export const getVoucherOrder = oId => dispatch => (
 
 export const getVoucherOrderList = () => dispatch => (
   OrderAPI.getVoucherOrderList().then((res) => {
-    console.log(res);
     dispatch({
       type: GET_ORDER_VOUCHER_LIST_SUCCESS,
       payload: res,
@@ -70,7 +68,6 @@ export const orderVoucher = (
   amount,
 ).then(
   (res) => {
-    console.log(res);
     dispatch({
       type: POST_ORDER_VOUCHER_SUCCESS,
       payload: res,
@@ -128,7 +125,6 @@ export const orderTest = (
   cCode,
 ).then(
   (res) => {
-    console.log(res);
     dispatch({
       type: POST_ORDER_TEST_SUCCESS,
       payload: res,
@@ -147,7 +143,6 @@ export const orderTest = (
 }));
 
 export const getTestOrderList = () => dispatch => OrderAPI.getTestOrderList().then((res) => {
-  console.log(res);
   dispatch({
     type: GET_ORDER_TEST_LIST_SUCCESS,
     payload: res,
@@ -164,7 +159,6 @@ export const getTestOrderList = () => dispatch => OrderAPI.getTestOrderList().th
 
 export const getTestOrder = oId => dispatch => OrderAPI.getTestOrder(oId).then(
   (res) => {
-    console.log(res);
     dispatch({
       type: GET_ORDER_TEST_SUCCESS,
       payload: res,
@@ -209,7 +203,6 @@ export const patchTestOrder = (
   taxCompanyRegistNum,
 ).then(
   (res) => {
-    console.log(res);
     dispatch({
       type: PATCH_ORDER_TEST_SUCCESS,
       payload: res,
@@ -241,7 +234,6 @@ export const patchTestTaxBill = (
   taxCompanyRegistNum,
 ).then(
   (res) => {
-    console.log(res);
     dispatch({
       type: PATCH_TEST_TAX_BILL_SUCCESS,
       payload: res,
@@ -271,7 +263,6 @@ export const patchVoucherTaxBill = (
   taxCompanyRegistNum,
 ).then(
   (res) => {
-    console.log(res);
     dispatch({
       type: PATCH_VOUCHER_TAX_BILL_SUCCESS,
       payload: res,

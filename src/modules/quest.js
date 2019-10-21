@@ -11,35 +11,32 @@ const PATCH_QUEST_SUCCESS = 'quest/PATCH_QUEST_SUCCESS';
 const PATCH_QUEST_FAILURE = 'quest/PATCH_QUEST_FAILURE';
 
 export const setQuestInit = () => ({ type: SET_INIT });
-export const getQuestList = tId => (dispatch) => {
-  return new Promise((resolve, reject) => {
-    QuestAPI.getQuestList(tId).then(
-      (res) => {
-        console.log(res);
-        dispatch({
-          type: GET_QUEST_LIST_SUCCESS,
-          payload: res,
-        });
-        resolve(res);
-      },
-    ).catch((err) => {
-      console.log(err);
-      console.log(err.reponse);
-      console.log(err.message);
+
+export const getQuestList = tId => dispatch => new Promise((resolve, reject) => {
+  QuestAPI.getQuestList(tId).then(
+    (res) => {
       dispatch({
-        type: GET_QUEST_LIST_FAILURE,
-        payload: err,
+        type: GET_QUEST_LIST_SUCCESS,
+        payload: res,
       });
-      reject(err);
+      resolve(res);
+    },
+  ).catch((err) => {
+    console.log(err);
+    console.log(err.reponse);
+    console.log(err.message);
+    dispatch({
+      type: GET_QUEST_LIST_FAILURE,
+      payload: err,
     });
+    reject(err);
   });
-};
+});
 
 export const getQuest = qId => dispatch => (
   new Promise((resolve, reject) => {
     QuestAPI.getQuest(qId).then(
       (res) => {
-        console.log(res);
         dispatch({
           type: GET_QUEST_SUCCESS,
           payload: res,
@@ -63,7 +60,6 @@ export const patchQuest = (qId, tId, issue, issueDetail, issuePurpose) => dispat
   new Promise((resolve, reject) => {
     QuestAPI.patchQuest(qId, tId, issue, issueDetail, issuePurpose).then(
       (res) => {
-        console.log(res);
         dispatch({
           type: PATCH_QUEST_SUCCESS,
           payload: res,
@@ -128,15 +124,11 @@ export default handleActions({
       questList: result,
     };
   },
-  [GET_QUEST_LIST_FAILURE]: (state, action) => {
-    console.log(action);
-    return {
-      ...state,
-      getFailure: true,
-    };
-  },
+  [GET_QUEST_LIST_FAILURE]: state => ({
+    ...state,
+    getFailure: true,
+  }),
   [PATCH_QUEST_SUCCESS]: (state, action) => {
-    console.log(action);
     const {
       id,
       issue,
@@ -156,11 +148,8 @@ export default handleActions({
       },
     };
   },
-  [PATCH_QUEST_FAILURE]: (state, action) => {
-    console.log(action);
-    return {
-      ...state,
-      postFailure: true,
-    };
-  },
+  [PATCH_QUEST_FAILURE]: state => ({
+    ...state,
+    postFailure: true,
+  }),
 }, initialState);

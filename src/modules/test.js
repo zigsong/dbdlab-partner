@@ -23,7 +23,6 @@ export const getTestList = pId => dispatch => (
   new Promise((resolve, reject) => {
     TestAPI.getTestList(pId).then(
       (res) => {
-        console.log(res);
         dispatch({
           type: GET_TEST_LIST_SUCCESS,
           payload: res,
@@ -47,7 +46,6 @@ export const getTest = tId => dispatch => (
   new Promise((resolve, reject) => {
     TestAPI.getTest(tId).then(
       (res) => {
-        console.log(res);
         dispatch({
           type: GET_TEST_SUCCESS,
           payload: res,
@@ -99,7 +97,6 @@ export const postTest = (
       funnel,
     ).then(
       (res) => {
-        console.log(res);
         dispatch({
           type: POST_TEST_SUCCESS,
           payload: res,
@@ -157,7 +154,6 @@ export const patchTest = (
       registerValue,
     ).then(
       (res) => {
-        console.log(res);
         dispatch({
           type: PATCH_TEST_SUCCESS,
           payload: res,
@@ -181,7 +177,6 @@ export const getTestPrice = (tId, pName, couponValue) => dispatch => (
   new Promise((resolve, reject) => {
     TestAPI.getTestPrice(tId, pName, couponValue)
       .then((res) => {
-        console.log(res);
         dispatch({
           type: GET_TEST_PRICE_SUCCESS,
           payload: res,
@@ -247,7 +242,6 @@ export default handleActions({
     getFailure: true,
   }),
   [GET_TEST_SUCCESS]: (state, action) => {
-    console.log(action);
     const {
       id,
       title,
@@ -311,7 +305,6 @@ export default handleActions({
     getFailure: true,
   }),
   [POST_TEST_SUCCESS]: (state, action) => {
-    console.log(action);
     const { testList } = state;
     const {
       id,
@@ -357,7 +350,6 @@ export default handleActions({
       order,
     };
     const key = Object.keys(state.testList).length;
-    console.log(key);
     return {
       ...state,
       postSuccess: true,
@@ -367,15 +359,11 @@ export default handleActions({
       },
     };
   },
-  [POST_TEST_FAILURE]: (state, action) => {
-    console.log(action);
-    return {
-      ...state,
-      postFailure: true,
-    };
-  },
+  [POST_TEST_FAILURE]: state => ({
+    ...state,
+    postFailure: true,
+  }),
   [PATCH_TEST_SUCCESS]: (state, action) => {
-    console.log(action);
     const {
       id,
       title,
@@ -425,20 +413,14 @@ export default handleActions({
       },
     };
   },
-  [PATCH_TEST_FAILURE]: (state, action) => {
-    console.log(action);
-    return {
-      ...state,
-      postFailure: true,
-    };
-  },
-  [GET_TEST_PRICE_SUCCESS]: (state, action) => {
-    console.log(action);
-    return {
-      ...state,
-      testPrice: action.payload.data,
-    };
-  },
+  [PATCH_TEST_FAILURE]: state => ({
+    ...state,
+    postFailure: true,
+  }),
+  [GET_TEST_PRICE_SUCCESS]: (state, action) => ({
+    ...state,
+    testPrice: action.payload.data,
+  }),
   [GET_TEST_PRICE_FAILURE]: state => ({
     ...state,
     getFailure: true,

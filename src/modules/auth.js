@@ -17,7 +17,6 @@ const LOGOUT = 'auth/LOGOUT';
 export const getAuthSelf = () => dispatch => new Promise(
   (resolve, reject) => AuthAPI.getAuthSelf().then(
     (res) => {
-      console.log(res);
       dispatch({
         type: GET_AUTH_SELF_SUCCESS,
         payload: res,
@@ -36,7 +35,6 @@ export const getAuthSelf = () => dispatch => new Promise(
 export const getAccount = id => dispatch => new Promise(
   (resolve, reject) => AuthAPI.getAccount(id).then(
     (res) => {
-      console.log(res);
       dispatch({
         type: GET_ACCOUNT_SUCCESS,
         payload: res,
@@ -58,7 +56,6 @@ export const getAccount = id => dispatch => new Promise(
 export const postAvatarUpdate = file => dispatch => new Promise(
   (resolve, reject) => AuthAPI.postAvatarUpdate(file).then(
     (res) => {
-      console.log(res);
       dispatch({
         type: POST_AVATAR_UPDATE_SUCCESS,
         payload: res,
@@ -80,7 +77,6 @@ export const postAvatarUpdate = file => dispatch => new Promise(
 export const patchAccountUpdate = (id, email, name, phone) => dispatch => new Promise(
   (resolve, reject) => AuthAPI.patchAccountUpdate(id, email, name, phone).then(
     (res) => {
-      console.log(res);
       dispatch({
         type: PATCH_ACCOUNT_UPDATE_SUCCESS,
         payload: res,
@@ -102,7 +98,6 @@ export const patchAccountUpdate = (id, email, name, phone) => dispatch => new Pr
 export const putPasswordUpdate = (email, currentPw, nextPw) => dispatch => new Promise(
   (resolve, reject) => AuthAPI.putPasswordUpdate(email, currentPw, nextPw).then(
     (res) => {
-      console.log(res);
       dispatch({
         type: PUT_PASSWORD_UPDATE_SUCCESS,
         payload: res,

@@ -6,8 +6,8 @@ const ToastAlert = (props) => {
   const [active, setActive] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => { setActive(isShow); }, 200);
-    setTimeout(() => { setActive(false); }, 2000);
+    setTimeout(() => { setActive(isShow); }, 100);
+    setTimeout(() => { setActive(false); }, 1900);
   }, []);
 
   return (

@@ -82,10 +82,10 @@ class Project extends Component {
 
             this.setState({
               isLoading: false,
+              isToastShow: true,
               toastTitle: `${name}님, 반갑습니다:)`,
               toastSubtitle: '프로젝트 관리를 시작해 보세요',
-              isToastShow: true,
-            }, () => setTimeout(() => { this.setState({ isToastShow: false }); }, 2200));
+            }, () => { setTimeout(() => this.setState({ isToastShow: false }), 2200); });
           })
           .catch((err) => {
             console.log(err);
@@ -140,7 +140,7 @@ class Project extends Component {
             }
           </div>
         </section>
-        {isToastShow
+        { isToastShow
           ? (
             <ToastAlert
               title={toastTitle}
@@ -148,7 +148,7 @@ class Project extends Component {
               isShow={isToastShow}
             />
           )
-          : null}
+          : null }
       </PageTemplate>
     );
   }

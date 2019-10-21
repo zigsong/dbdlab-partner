@@ -18,36 +18,39 @@ const PATCH_TARGET_EXTRA_FAILURE = 'target/PATCH_TARGET_EXTRA_FAILURE';
 
 export const setTargetInit = () => ({ type: SET_INIT });
 
-export const postTarget = (tId, gender, minAge, maxAge) => (dispatch) => {
-  console.log(tId, gender, minAge, maxAge);
-  return (
-    new Promise((resolve, reject) => {
-      TargetAPI.postTarget(tId, gender, minAge, maxAge).then(
-        (res) => {
-          console.log(res);
-          dispatch({
-            type: POST_TARGET_SUCCESS,
-            payload: res,
-          });
-          resolve(res);
-        },
-      ).catch((err) => {
-        console.log(err);
-        console.log(err.reponse);
-        console.log(err.message);
+export const postTarget = (tId, gender, minAge, maxAge) => dispatch => (
+  new Promise((resolve, reject) => {
+    TargetAPI.postTarget(tId, gender, minAge, maxAge).then(
+      (res) => {
         dispatch({
-          type: POST_TARGET_FAILURE,
-          payload: err,
+          type: POST_TARGET_SUCCESS,
+          payload: res,
         });
-        reject(err);
+        resolve(res);
+      },
+    ).catch((err) => {
+      console.log(err);
+      console.log(err.reponse);
+      console.log(err.message);
+      dispatch({
+        type: POST_TARGET_FAILURE,
+        payload: err,
       });
-    })
-  );
-};
+      reject(err);
+    });
+  })
+);
 
-export const postTargetExtra = (tgId, cId, cValue) => dispatch => TargetAPI.postTargetExtra(tgId, cId, cValue)
+export const postTargetExtra = (
+  tgId,
+  cId,
+  cValue,
+) => dispatch => TargetAPI.postTargetExtra(
+  tgId,
+  cId,
+  cValue,
+)
   .then((res) => {
-    console.log(res);
     dispatch({
       type: POST_TARGET_EXTRA_SUCCESS,
       payload: res,
@@ -73,7 +76,6 @@ export const patchTargetExtra = (
   exCate1Id,
   extraInfoDesc1,
 ).then((res) => {
-  console.log(res);
   dispatch({
     type: PATCH_TARGET_EXTRA_SUCCESS,
     payload: res,
@@ -92,7 +94,6 @@ export const getTargetList = tId => dispatch => (
   new Promise((resolve, reject) => {
     TargetAPI.getTargetList(tId).then(
       (res) => {
-        console.log(res);
         dispatch({
           type: GET_TARGET_LIST_SUCCESS,
           payload: res,
@@ -116,7 +117,6 @@ export const getTarget = tgId => dispatch => (
   new Promise((resolve, reject) => {
     TargetAPI.getTarget(tgId).then(
       (res) => {
-        console.log(res);
         dispatch({
           type: GET_TARGET_SUCCESS,
           payload: res,
@@ -140,7 +140,6 @@ export const patchTarget = (tgId, tId, gender, minAge, maxAge) => dispatch => (
   new Promise((resolve, reject) => {
     TargetAPI.patchTarget(tgId, tId, gender, minAge, maxAge).then(
       (res) => {
-        console.log(res);
         dispatch({
           type: PATCH_TARGET_SUCCESS,
           payload: res,
@@ -185,7 +184,6 @@ export default handleActions({
     target: {},
   }),
   [POST_TARGET_SUCCESS]: (state, action) => {
-    console.log(action);
     const {
       id,
       tester_amount,
@@ -210,13 +208,10 @@ export default handleActions({
       },
     };
   },
-  [POST_TARGET_FAILURE]: (state, action) => {
-    console.log(action);
-    return {
-      ...state,
-      postFailure: true,
-    };
-  },
+  [POST_TARGET_FAILURE]: state => ({
+    ...state,
+    postFailure: true,
+  }),
   [POST_TARGET_EXTRA_SUCCESS]: (state, action) => {
     const {
       id,
@@ -225,7 +220,6 @@ export default handleActions({
       value,
       name,
     } = action.payload.data;
-    console.log(action);
 
     return {
       ...state,
@@ -243,15 +237,11 @@ export default handleActions({
       },
     };
   },
-  [POST_TARGET_EXTRA_FAILURE]: (state, action) => {
-    console.log(action);
-    return {
-      ...state,
-      postFailure: true,
-    };
-  },
+  [POST_TARGET_EXTRA_FAILURE]: state => ({
+    ...state,
+    postFailure: true,
+  }),
   [GET_TARGET_SUCCESS]: (state, action) => {
-    console.log(action);
     const {
       id,
       tester_amount,
@@ -280,7 +270,6 @@ export default handleActions({
     getFailure: true,
   }),
   [PATCH_TARGET_SUCCESS]: (state, action) => {
-    console.log(action);
     const {
       id,
       tester_amount,
@@ -305,25 +294,16 @@ export default handleActions({
       },
     };
   },
-  [PATCH_TARGET_FAILURE]: (state, action) => {
-    console.log(action);
-    return {
-      ...state,
-      postFailure: true,
-    };
-  },
-  [PATCH_TARGET_EXTRA_SUCCESS]: (state, action) => {
-    console.log(action);
-    return {
-      ...state,
-      postSuccess: true,
-    };
-  },
-  [PATCH_TARGET_EXTRA_FAILURE]: (state, action) => {
-    console.log(action);
-    return {
-      ...state,
-      postFailure: true,
-    };
-  },
+  [PATCH_TARGET_FAILURE]: state => ({
+    ...state,
+    postFailure: true,
+  }),
+  [PATCH_TARGET_EXTRA_SUCCESS]: state => ({
+    ...state,
+    postSuccess: true,
+  }),
+  [PATCH_TARGET_EXTRA_FAILURE]: state => ({
+    ...state,
+    postFailure: true,
+  }),
 }, initialState);

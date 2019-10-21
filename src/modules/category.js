@@ -11,107 +11,89 @@ const GET_ITEM_LIST_FAILURE = 'category/GET_ITEM_LIST_FAILURE';
 const GET_ITEM_SUCCESS = 'category/GET_ITEM_SUCCESS';
 const GET_ITEM_FAILURE = 'category/GET_ITEM_FAILURE';
 
-export const getCategories = () => (dispatch) => {
-  return new Promise((resolve, reject) => {
-    CategoryAPI.getCategories().then(
-      (res) => {
-        console.log(res);
-        dispatch({
-          type: GET_CATEGORY_LIST_SUCCESS,
-          payload: res,
-        });
-        resolve(res);
-      },
-    ).catch((err) => {
-      console.log(err);
-      console.log(err.reponse);
-      console.log(err.message);
+export const getCategories = () => dispatch => new Promise((resolve, reject) => {
+  CategoryAPI.getCategories().then(
+    (res) => {
       dispatch({
-        type: GET_CATEGORY_LIST_FAILURE,
-        payload: err,
+        type: GET_CATEGORY_LIST_SUCCESS,
+        payload: res,
       });
-      reject(err);
+      resolve(res);
+    },
+  ).catch((err) => {
+    console.log(err);
+    console.log(err.reponse);
+    console.log(err.message);
+    dispatch({
+      type: GET_CATEGORY_LIST_FAILURE,
+      payload: err,
     });
+    reject(err);
   });
-};
+});
 
-export const getCategoryItem = cId => (dispatch) => {
-  console.log(cId);
-
-  return new Promise((resolve, reject) => {
-    CategoryAPI.getCategoryItem(cId).then(
-      (res) => {
-        console.log(res);
-        dispatch({
-          type: GET_CATEGORY_SUCCESS,
-          payload: res,
-        });
-        resolve(res);
-      },
-    ).catch((err) => {
-      console.log(err);
-      console.log(err.reponse);
-      console.log(err.message);
+export const getCategoryItem = cId => dispatch => new Promise((resolve, reject) => {
+  CategoryAPI.getCategoryItem(cId).then(
+    (res) => {
       dispatch({
-        type: GET_CATEGORY_FAILURE,
-        payload: err,
+        type: GET_CATEGORY_SUCCESS,
+        payload: res,
       });
-      reject(err);
+      resolve(res);
+    },
+  ).catch((err) => {
+    console.log(err);
+    console.log(err.reponse);
+    console.log(err.message);
+    dispatch({
+      type: GET_CATEGORY_FAILURE,
+      payload: err,
     });
+    reject(err);
   });
-};
+});
 
-export const getItems = () => (dispatch) => {
-  console.log('get Items');
-
-  return new Promise((resolve, reject) => {
-    CategoryAPI.getItems().then(
-      (res) => {
-        console.log(res);
-        dispatch({
-          type: GET_ITEM_LIST_SUCCESS,
-          payload: res,
-        });
-        resolve(res);
-      },
-    ).catch((err) => {
-      console.log(err);
-      console.log(err.reponse);
-      console.log(err.message);
+export const getItems = () => dispatch => new Promise((resolve, reject) => {
+  CategoryAPI.getItems().then(
+    (res) => {
       dispatch({
-        type: GET_ITEM_LIST_FAILURE,
-        payload: err,
+        type: GET_ITEM_LIST_SUCCESS,
+        payload: res,
       });
-      reject(err);
+      resolve(res);
+    },
+  ).catch((err) => {
+    console.log(err);
+    console.log(err.reponse);
+    console.log(err.message);
+    dispatch({
+      type: GET_ITEM_LIST_FAILURE,
+      payload: err,
     });
+    reject(err);
   });
-};
+});
 
-export const getItem = iId => (dispatch) => {
-  console.log(iId);
-
-  return new Promise((resolve, reject) => {
-    CategoryAPI.getCategoryItem(iId).then(
-      (res) => {
-        console.log(res);
-        dispatch({
-          type: GET_ITEM_SUCCESS,
-          payload: res,
-        });
-        resolve(res);
-      },
-    ).catch((err) => {
-      console.log(err);
-      console.log(err.reponse);
-      console.log(err.message);
+export const getItem = iId => dispatch => new Promise((resolve, reject) => {
+  CategoryAPI.getCategoryItem(iId).then(
+    (res) => {
       dispatch({
-        type: GET_ITEM_FAILURE,
-        payload: err,
+        type: GET_ITEM_SUCCESS,
+        payload: res,
       });
-      reject(err);
+      resolve(res);
+    },
+  ).catch((err) => {
+    console.log(err);
+    console.log(err.reponse);
+    console.log(err.message);
+    dispatch({
+      type: GET_ITEM_FAILURE,
+      payload: err,
     });
+    reject(err);
   });
-};
+});
 
 const initialState = {
   getCategoiesSuccess: false,

@@ -74,10 +74,8 @@ class Project extends Component {
 
     await getAuthSelf()
       .then((res) => {
-        console.log(res);
         getAccount(res.data.id)
           .then((result) => {
-            console.log(result);
             const name = result.data.name.length > 0 ? result.data.name : result.data.email.substring(0, result.data.email.indexOf('@'));
 
             this.setState({

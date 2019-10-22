@@ -220,7 +220,7 @@ class TestFormPay extends Component {
                 <p className="receipt__extra" key={r.title}>
                   <span className="extra__title">{r.title}</span>
                   <strong className="extra__price">
-                    {r.price}
+                    {r.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                     {/* <i>원</i> */}
                   </strong>
                 </p>
@@ -230,7 +230,7 @@ class TestFormPay extends Component {
               <strong className="total__price">
                 <span>Total</span>
                 <strong>
-                  {orderedPrice}
+                  {orderedPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                   <i>원</i>
                 </strong>
               </strong>
@@ -240,7 +240,7 @@ class TestFormPay extends Component {
                 <strong className="title">Coupon</strong>
                 <strong className="coupon__price">
                   -
-                  <span className="price">{discountPrice}</span>
+                  <span className="price">{discountPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</span>
                   원
                 </strong>
               </span>
@@ -308,7 +308,7 @@ class TestFormPay extends Component {
               <strong className="total__price">
                 <span>Total</span>
                 <strong>
-                  {chargedPrice}
+                  {chargedPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                   <i>원</i>
                 </strong>
               </strong>

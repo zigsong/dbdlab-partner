@@ -185,7 +185,7 @@ class OrderConfirmPopup extends Component {
               </span>
               <strong className="info__title">입금액</strong>
               <span className="info__desc--price">
-                {price}
+                {price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 <i>원</i>
               </span>
             </article>

@@ -1,7 +1,6 @@
 /* eslint-disable no-shadow */
 /* eslint-disable camelcase */
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ScrollContainer from 'react-indiana-drag-scroll';
 import Header from 'components/Header';
@@ -228,7 +227,11 @@ class Test extends Component {
                       )
                       : (
                         <>
-                          <Header global={false} projectName={project.name} avatar_url={avatar_url} />
+                          <Header
+                            global={false}
+                            projectName={project.name}
+                            avatar_url={avatar_url}
+                          />
                           <main className="contents">
                             <section className="contents__test">
                               <div className="contents-inner">

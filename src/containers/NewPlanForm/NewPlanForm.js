@@ -448,7 +448,7 @@ class NewPlanForm extends Component {
                         <strong className="total__price">
                           <span>Total</span>
                           <strong>
-                            {totalPrice}
+                            {totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                             <i>원</i>
                           </strong>
                         </strong>

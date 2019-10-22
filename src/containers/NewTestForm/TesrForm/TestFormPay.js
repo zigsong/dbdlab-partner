@@ -124,7 +124,7 @@ class TestFormPay extends Component {
                 input.onFocus(e, input.onChange(p.name));
                 this.setState({ planPrice: p.price_amount });
               }}
-              onChange={input.onChange}
+              onChange={e => input.onChange(e, p.name)}
               checked={p.name === input.value}
               value={p.name}
               disabled={isDisabled}

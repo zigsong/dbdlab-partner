@@ -47,7 +47,7 @@ const TestFormDefault = (props) => {
               type="radio"
               name={input.name}
               onFocus={e => input.onFocus(e, input.onChange(step.value))}
-              onChange={input.onChange}
+              onChange={e => input.onChange(e, step.value)}
               value={step.value}
               checked={step.value === input.value}
               disabled={disabled}

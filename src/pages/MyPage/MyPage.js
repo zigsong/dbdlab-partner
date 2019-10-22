@@ -433,7 +433,7 @@ class MyPage extends Component {
                                       </button>
                                       <div className="box-paid">
                                         <strong className="paid__total">
-                                          {p.ordered_price}
+                                          {p.ordered_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                           <i>원</i>
                                         </strong>
                                         <span className="paid__date">
@@ -449,7 +449,9 @@ class MyPage extends Component {
                                             isTaxBillReq={p.is_tax_bill_requested}
                                             voucherId={p.id !== undefined ? p.id : undefined}
                                             testId={p.test !== undefined ? p.test.id : undefined}
-                                            testName={p.test !== undefined ? p.test.title : undefined}
+                                            testName={
+                                              p.test !== undefined ? p.test.title : undefined
+                                            }
                                             planName={p.plan.name}
                                             planAmount={p.voucher_amount}
                                             paidDate={getDate(p.created_at)}

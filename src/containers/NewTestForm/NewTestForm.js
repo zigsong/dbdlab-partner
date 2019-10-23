@@ -9,7 +9,6 @@ import {
   reduxForm,
   getFormValues,
   getFormMeta,
-  change,
 } from 'redux-form';
 import PopupTemplate from 'components/PopupTemplate';
 import PayAccountInfo from 'components/PayAccountInfo';
@@ -191,10 +190,7 @@ class NewTestForm extends Component {
                 const isPaymentStep = test.default.step === 'PAYMENT';
                 const isRegisterStep = test.default.step === 'REGISTER';
                 const isApply = test.default.step === 'APPLY';
-                console.log(test.default);
-                console.log(Object.values(test.default).filter(x => x === '').length)
                 const hasDefaultPassed = Object.values(test.default).filter(x => x === '').length < 3;
-                console.log(hasDefaultPassed);
 
                 if (isApply && !hasDefaultPassed) {
                   this.setState({
@@ -222,7 +218,15 @@ class NewTestForm extends Component {
                   });
                 }
 
-                if (hasIssue1Value && hasIssuePurpose1Value && hasIssueDetail1Value) {
+                if (isApply && hasIssue1Value && hasIssuePurpose1Value && hasIssueDetail1Value) {
+                  this.setState({
+                    isLoading: false,
+                    isQuestRendered: true,
+                    isQuestPassed: false,
+                  });
+                }
+
+                if (!isApply && hasIssue1Value && hasIssuePurpose1Value && hasIssueDetail1Value) {
                   this.setState({
                     isLoading: false,
                     isQuestRendered: false,
@@ -290,568 +294,6 @@ class NewTestForm extends Component {
       });
   }
 
-  // componentDidUpdate() {
-  //   const { fieldsValues, change } = this.props;
-  //   console.log(fieldsValues);
-  //   console.log(change);
-
-  //   const titleValue = fieldsValues !== undefined && fieldsValues.title !== undefined ? fieldsValues.title : undefined;
-  //   const media1Value = fieldsValues !== undefined && fieldsValues.default.media1 !== undefined ? fieldsValues.default.media1 : undefined;
-  //   const media2Value = fieldsValues !== undefined && fieldsValues.default.media2 !== undefined ? fieldsValues.default.media2 : undefined;
-  //   const serviceInfoValue = fieldsValues !== undefined && fieldsValues.default.serviceInfo !== undefined ? fieldsValues.default.serviceInfo : undefined;
-  //   const serviceCategoryValue = fieldsValues !== undefined && fieldsValues.default.serviceCategory !== undefined ? fieldsValues.default.serviceCategory : undefined;
-  //   const serviceFormatValue = fieldsValues !== undefined && fieldsValues.default.serviceFormat !== undefined ? fieldsValues.default.serviceFormat : undefined;
-  //   const serviceDescValue = fieldsValues !== undefined && fieldsValues.default.serviceDesc !== undefined ? fieldsValues.default.serviceDesc : undefined;
-  //   const serviceStatusValue = fieldsValues !== undefined && fieldsValues.default.serviceStatus !== undefined ? fieldsValues.default.serviceStatus : undefined;
-  //   const clientNameValue = fieldsValues !== undefined && fieldsValues.default.clientName !== undefined ? fieldsValues.default.clientName : undefined;
-  //   const clientContactValue = fieldsValues !== undefined && fieldsValues.default.clientContact !== undefined ? fieldsValues.default.clientContact : undefined;
-  //   const emailValue = fieldsValues !== undefined && fieldsValues.default.email !== undefined ? fieldsValues.default.email : undefined;
-  //   const funnelValue = fieldsValues !== undefined && fieldsValues.default.funnel !== undefined ? fieldsValues.default.funnel : undefined;
-  //   const minAgeValue = fieldsValues !== undefined ? fieldsValues.target.minAge : undefined;
-  //   const maxAgeValue = fieldsValues !== undefined ? fieldsValues.target.maxAge : undefined;
-  //   const getGenderValue = fieldsValues !== undefined ? fieldsValues.target.gender : undefined;
-  //   const extraInfoDesc1 = fieldsValues !== undefined
-  //     ? fieldsValues.target.extraInfoDesc1 : undefined;
-  //   const extraInfoDesc2 = fieldsValues !== undefined
-  //     ? fieldsValues.target.extraInfoDesc2 : undefined;
-  //   const extraInfoDesc3 = fieldsValues !== undefined
-  //     ? fieldsValues.target.extraInfoDesc3 : undefined;
-  //   const extraInfoCategory1 = fieldsValues !== undefined
-  //     ? fieldsValues.target.extraInfoCategory1 : undefined;
-  //   const extraInfoCategory2 = fieldsValues !== undefined
-  //     ? fieldsValues.target.extraInfoCategory2 : undefined;
-  //   const extraInfoCategory3 = fieldsValues !== undefined
-  //     ? fieldsValues.target.extraInfoCategory3 : undefined;
-  //   const registerRequire = fieldsValues !== undefined
-  //     ? fieldsValues.quest.registerRequire : undefined;
-  //   const issue1Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issue)[0] !== '' ? Object.values(fieldsValues.quest.issue)[0] : undefined;
-  //   const issue2Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issue)[1] !== '' ? Object.values(fieldsValues.quest.issue)[1] : undefined;
-  //   const issue3Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issue)[2] !== '' ? Object.values(fieldsValues.quest.issue)[2] : undefined;
-  //   const issueDetail1Value = fieldsValues !== undefined
-  //     ? Object.values(fieldsValues.quest.issueDetail)[0] : undefined;
-  //   const issueDetail2Value = fieldsValues !== undefined
-  //     ? Object.values(fieldsValues.quest.issueDetail)[1] : undefined;
-  //   const issueDetail3Value = fieldsValues !== undefined
-  //     ? Object.values(fieldsValues.quest.issueDetail)[2] : undefined;
-  //   const issueissuePurpose1Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issuePurpose)[0] !== '' ? Object.values(fieldsValues.quest.issuePurpose)[0] : undefined;
-  //   const issueissuePurpose2Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issuePurpose)[1] !== '' ? Object.values(fieldsValues.quest.issuePurpose)[1] : undefined;
-  //   const issueissuePurpose3Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issuePurpose)[2] !== '' ? Object.values(fieldsValues.quest.issuePurpose)[2] : undefined;
-
-  //   const planValue = fieldsValues !== undefined ? fieldsValues.pay.plan : undefined;
-  //   const codeValue = fieldsValues !== undefined && fieldsValues.pay.coupon !== undefined
-  //     ? fieldsValues.pay.coupon : undefined;
-  //   const couponNumValue = fieldsValues !== undefined && fieldsValues.pay.coupon !== undefined
-  //     ? fieldsValues.pay.couponNum : undefined;
-  //   console.log(serviceStatusValue);
-  //   console.log(planValue);
-  //   console.log(codeValue);
-  //   console.log(couponNumValue);
-
-  //   // setInterval(() => {
-  //   //   change('title', titleValue);
-  //   //   console.log('--------------SAVED---------------');
-  //   // }, 10000);
-  //   const saveFn = async () => {
-  //     const {
-  //       route,
-  //       postTest,
-  //       patchTest,
-  //       patchTarget,
-  //       postTargetExtra,
-  //       patchTargetExtra,
-  //       patchQuest,
-  //       getTest,
-  //       categoryList,
-  //       extras,
-  //       orderTest,
-  //       planList,
-  //       togglePopup,
-  //     } = this.props;
-  //     const { match, history } = route;
-  //     const { pId, tId } = match.params;
-  //     const {
-  //       test,
-  //       isDefaultRendered,
-  //       isTargetRendered,
-  //       isQuestRendered,
-  //       isPayRendered,
-  //     } = this.state;
-  //     const { targets } = test;
-  //     const tgId = targets !== undefined ? targets[0].id : null;
-  //     // const {
-  //     //   clientName,
-  //     //   clientContact,
-  //     //   media2,
-  //     //   email,
-  //     //   media1,
-  //     //   serviceFormat,
-  //     //   serviceInfo,
-  //     //   serviceCategory,
-  //     //   serviceStatus,
-  //     //   serviceDesc,
-  //     //   funnel,
-  //     // } = values.default;
-  //     console.log(titleValue);
-  //     const titleReg = titleValue !== undefined ? titleValue.replace(/(^\s*)|(\s*$)/g, '') : undefined;
-  //     const clientNameReg = clientNameValue !== undefined ? clientNameValue.replace(/(^\s*)|(\s*$)/g, '') : undefined;
-  //     const clientContactReg = clientContactValue !== undefined ? clientContactValue.replace(/(^\s*)|(\s*$)/g, '') : undefined;
-  //     const emailReg = emailValue !== undefined ? emailValue.replace(/(^\s*)|(\s*$)/g, '') : undefined;
-  //     const serviceInfoReg = serviceInfoValue !== undefined ? serviceInfoValue.replace(/(^\s*)|(\s*$)/g, '') : undefined;
-  //     const defaultValueArr = [
-  //       titleReg,
-  //       media1Value,
-  //       media2Value,
-  //       serviceInfoReg,
-  //       serviceCategoryValue,
-  //       serviceFormatValue,
-  //       serviceDescValue,
-  //       serviceStatusValue,
-  //       clientNameReg,
-  //       clientContactReg,
-  //       emailReg,
-  //       funnelValue,
-  //     ];
-  //     console.log(defaultValueArr);
-  //     const targetValueArr = [
-  //       minAgeValue,
-  //       maxAgeValue,
-  //       getGenderValue,
-  //       extraInfoDesc1,
-  //       extraInfoDesc2,
-  //       extraInfoDesc3,
-  //       extraInfoCategory1,
-  //       extraInfoCategory2,
-  //       extraInfoCategory3,
-  //     ];
-  //     const questValueArr = [
-  //       registerRequire,
-  //       issue1Value,
-  //       issue2Value,
-  //       issue3Value,
-  //       issueDetail1Value,
-  //       issueDetail2Value,
-  //       issueDetail3Value,
-  //       issueissuePurpose1Value,
-  //       issueissuePurpose2Value,
-  //       issueissuePurpose3Value,
-  //     ];
-  //     const payValueArr = [
-  //       planValue,
-  //       codeValue,
-  //       couponNumValue,
-  //     ];
-  //     const hasDefaultPassed = () => {
-  //       const hasDefaultValue = defaultValueArr.length > 0;
-  //       return !!hasDefaultValue;
-  //     };
-  //     const hasTargetPassed = () => {
-  //       const hasTargetValue = targetValueArr.length > 0;
-  //       return !!hasTargetValue;
-  //     };
-  //     const hasQuestPassed = () => {
-  //       const hasQuestValue = questValueArr.length > 0;
-  //       return !!hasQuestValue;
-  //     };
-  //     const hasPayPassed = () => {
-  //       const hasPayValue = payValueArr.length > 0;
-  //       return !!hasPayValue;
-  //     };
-
-  //     if (tId) {
-  //       if (isDefaultRendered && hasDefaultPassed) {
-  //         const step = 'APPLY';
-
-  //         await patchTest(
-  //           tId,
-  //           pId,
-  //           step,
-  //           titleReg,
-  //           clientNameReg,
-  //           clientContactReg,
-  //           media2Value,
-  //           emailReg,
-  //           media1Value,
-  //           serviceFormatValue,
-  //           serviceInfoReg,
-  //           serviceCategoryValue,
-  //           serviceStatusValue,
-  //           serviceDescValue,
-  //           funnelValue,
-  //         ).then(() => {
-  //           console.log('patchTest success');
-  //           // this.setState({
-  //           //   isDefaultRendered: false,
-  //           //   isDefaultPassed: true,
-  //           //   isTargetRendered: true,
-  //           // });
-  //         });
-  //       } else if (isTargetRendered && hasTargetPassed) {
-  //         // const {
-  //         //   getGenderValue,
-  //         //   minAgeValue,
-  //         //   maxAgeValue,
-  //         //   extraInfoCategory1,
-  //         //   extraInfoCategory2,
-  //         //   extraInfoCategory3,
-  //         //   extraInfoDesc1,
-  //         //   extraInfoDesc2,
-  //         //   extraInfoDesc3,
-  //         // } = values.target;
-  //         // eslint-disable-next-line no-nested-ternary
-  //         const genderValue = getGenderValue === '여자' ? 'female' : (getGenderValue === '남자' ? 'male' : 'both');
-  //         const categoryListArr = Object.keys(categoryList).length > 0
-  //           ? Object.keys(categoryList).map(c => categoryList[c].category_items)
-  //           : undefined;
-  //         // submit values 값 확인
-  //         const exCate1Id = extraInfoCategory1 !== undefined
-  //           ? categoryListArr[6].find(e => e.name === extraInfoCategory1).id : undefined;
-  //         const exCate2Id = extraInfoCategory2 !== undefined
-  //           ? categoryListArr[6].find(e => e.name === extraInfoCategory2).id : undefined;
-  //         const exCate3Id = extraInfoCategory3 !== undefined
-  //           ? categoryListArr[6].find(e => e.name === extraInfoCategory3).id : undefined;
-
-  //         // init values 값 확인
-  //         const tgEx1Id = extras !== undefined
-  //           && extras !== [] && extras[0] !== undefined
-  //           && Object.keys(extras[0]).length > 1
-  //           ? extras[0].id : undefined;
-  //         const tgEx2Id = extras !== undefined
-  //           && extras !== [] && extras[1] !== undefined
-  //           && Object.keys(extras[1]).length > 1
-  //           ? extras[1].id : undefined;
-  //         const tgEx3Id = extras !== undefined
-  //           && extras !== [] && extras[2] !== undefined
-  //           && Object.keys(extras[2]).length > 1
-  //           ? extras[2].id : undefined;
-
-  //         if (tgEx1Id) {
-  //           await patchTargetExtra(tgEx1Id, tgId, exCate1Id, extraInfoDesc1);
-  //         } else if (exCate1Id) {
-  //           await getTest(tId);
-  //           await postTargetExtra(tgId, exCate1Id, extraInfoDesc1);
-  //         }
-
-  //         if (tgEx2Id) {
-  //           await patchTargetExtra(tgEx2Id, tgId, exCate2Id, extraInfoDesc2);
-  //         } else if (exCate2Id) {
-  //           await getTest(tId);
-  //           await postTargetExtra(tgId, exCate2Id, extraInfoDesc2);
-  //         }
-
-  //         if (tgEx3Id) {
-  //           await patchTargetExtra(tgEx3Id, tgId, exCate3Id, extraInfoDesc3);
-  //         } else if (exCate3Id) {
-  //           await getTest(tId);
-  //           await postTargetExtra(tgId, exCate3Id, extraInfoDesc3);
-  //         }
-
-  //         await patchTarget(
-  //           tgId,
-  //           tId,
-  //           genderValue,
-  //           minAgeValue,
-  //           maxAgeValue,
-  //         )
-  //           .then(() => { getTest(tId); })
-  //           .then(() => {
-  //             console.log('patchTarget success');
-  //             // this.setState({
-  //             //   isTargetRendered: false,
-  //             //   isTargetPassed: true,
-  //             //   isQuestRendered: true,
-  //             // });
-  //           });
-  //       } else if (isQuestRendered && hasQuestPassed) {
-  //         const qId = test.quests.map(q => q.id);
-  //         // const {
-  //         //   registerRequire,
-  //         //   issue,
-  //         //   issueDetail,
-  //         //   issuePurpose,
-  //         // } = values.quest;
-  //         const registerValue = registerRequire !== '아니오';
-  //         const step = 'REGISTER';
-
-  //         if (registerRequire) {
-  //           await patchTest(
-  //             tId,
-  //             pId,
-  //             step,
-  //             titleReg,
-  //             clientNameReg,
-  //             clientContactReg,
-  //             media2Value,
-  //             emailReg,
-  //             media1Value,
-  //             serviceFormatValue,
-  //             serviceInfoReg,
-  //             serviceCategoryValue,
-  //             serviceStatusValue,
-  //             serviceDescValue,
-  //             funnelValue,
-  //             registerValue,
-  //           );
-  //         }
-
-  //         if (issue1Value) {
-  //           await patchTest(
-  //             tId,
-  //             pId,
-  //             step,
-  //             titleReg,
-  //             clientNameReg,
-  //             clientContactReg,
-  //             media2Value,
-  //             emailReg,
-  //             media1Value,
-  //             serviceFormatValue,
-  //             serviceInfoReg,
-  //             serviceCategoryValue,
-  //             serviceStatusValue,
-  //             serviceDescValue,
-  //             funnelValue,
-  //             registerValue,
-  //           );
-  //           await patchQuest(
-  //             qId[0],
-  //             tId,
-  //             issue1Value,
-  //             issueDetail1Value.replace(/(^\s*)|(\s*$)/g, ''),
-  //             issueissuePurpose1Value.replace(/(^\s*)|(\s*$)/g, ''),
-  //           )
-  //             .then(() => getTest(tId))
-  //             .then(() => {
-  //               console.log('patchQuest 1 success');
-  //               // togglePopup(true);
-  //               // this.setState({
-  //               //   isQuestRendered: false,
-  //               //   isQuestPassed: true,
-  //               //   isPayRendered: true,
-  //               //   isRegisterInfoPopup: true,
-  //               // });
-  //             })
-  //             .catch((err) => {
-  //               console.log(err);
-  //             });
-  //         }
-
-  //         if (issue2Value) {
-  //           await patchTest(
-  //             tId,
-  //             pId,
-  //             step,
-  //             titleReg,
-  //             clientNameReg,
-  //             clientContactReg,
-  //             media2Value,
-  //             emailReg,
-  //             media1Value,
-  //             serviceFormatValue,
-  //             serviceInfoReg,
-  //             serviceCategoryValue,
-  //             serviceStatusValue,
-  //             serviceDescValue,
-  //             funnelValue,
-  //             registerValue,
-  //           );
-  //           await patchQuest(
-  //             qId[1],
-  //             tId,
-  //             issue2Value,
-  //             issueDetail2Value.replace(/(^\s*)|(\s*$)/g, ''),
-  //             issueissuePurpose2Value.replace(/(^\s*)|(\s*$)/g, ''),
-  //           )
-  //             .then(() => { getTest(tId); })
-  //             .then(() => {
-  //               console.log('patchQuest 2 success');
-  //               // togglePopup(true);
-  //               // this.setState({
-  //               //   isQuestRendered: false,
-  //               //   isQuestPassed: true,
-  //               //   isPayRendered: true,
-  //               //   isRegisterInfoPopup: true,
-  //               // });
-  //             })
-  //             .catch((err) => {
-  //               console.log(err);
-  //             });
-  //         }
-
-  //         if (issue3Value) {
-  //           await patchTest(
-  //             tId,
-  //             pId,
-  //             step,
-  //             titleReg,
-  //             clientNameReg,
-  //             clientContactReg,
-  //             media2Value,
-  //             emailReg,
-  //             media1Value,
-  //             serviceFormatValue,
-  //             serviceInfoReg,
-  //             serviceCategoryValue,
-  //             serviceStatusValue,
-  //             serviceDescValue,
-  //             funnelValue,
-  //             registerValue,
-  //           );
-  //           await patchQuest(
-  //             qId[2],
-  //             tId,
-  //             issue3Value,
-  //             issueDetail3Value.replace(/(^\s*)|(\s*$)/g, ''),
-  //             issueissuePurpose3Value.replace(/(^\s*)|(\s*$)/g, ''),
-  //           )
-  //             .then(() => { getTest(tId); })
-  //             .then(() => {
-  //               console.log('patchQuest 3 success');
-  //               // togglePopup(true);
-  //               // this.setState({
-  //               //   isQuestRendered: false,
-  //               //   isQuestPassed: true,
-  //               //   isPayRendered: true,
-  //               //   isRegisterInfoPopup: true,
-  //               // });
-  //             })
-  //             .catch((err) => {
-  //               console.log(err);
-  //             });
-  //         }
-  //       } else if (isPayRendered && hasPayPassed) {
-  //         const selectedPlan = planList.find(p => p.name === planValue);
-  //         const cType = codeValue !== undefined ? codeValue : undefined;
-  //         // eslint-disable-next-line no-nested-ternary
-  //         const cCode = cType === 'WELCOME_BACK' || cType === undefined ? undefined : (couponNumValue !== undefined ? couponNumValue : undefined);
-
-  //         this.setState({ isPayLoading: true });
-  //         orderTest(
-  //           selectedPlan.id,
-  //           tId,
-  //           cType,
-  //           cCode,
-  //         ).then((res) => {
-  //           // this.setState({
-  //           //   isPayLoading: false,
-  //           //   isPayInfoPopup: true,
-  //           //   isPayRendered: true,
-  //           //   isPayPassed: true,
-  //           //   test: {
-  //           //     order: res.data,
-  //           //   },
-  //           // });
-  //           console.log('orderTest success');
-  //         })
-  //           // .then(() => {
-  //           //   this.setState({ isAllRendered: true });
-  //           // })
-  //           .catch((err) => {
-  //             console.log(err);
-  //             console.log(err.response);
-  //             console.log(err.message);
-  //             this.setState({
-  //               isPayLoading: false,
-  //               asyncErrorMsg: err.response.data.coupon_code,
-  //             });
-  //           });
-  //       }
-  //     } else {
-  //       await postTest(
-  //         pId,
-  //         titleReg,
-  //         clientNameReg,
-  //         clientContactReg,
-  //         media2Value,
-  //         emailReg,
-  //         media1Value,
-  //         serviceFormatValue,
-  //         serviceInfoReg,
-  //         serviceCategoryValue,
-  //         serviceStatusValue,
-  //         serviceDescValue,
-  //         funnelValue,
-  //       )
-  //         .then((res) => {
-  //           console.log(res);
-  //           history.push(`/project/${match.params.pId}/test/${res.data.id}`);
-
-  //           // this.setState({
-  //           //   test: { default: { step: res.data.step } },
-  //           // });
-
-  //           // if (hasDefaultPassed) {
-  //           //   this.setState({
-  //           //     isDefaultRendered: false,
-  //           //     isDefaultPassed: true,
-  //           //     isTargetRendered: true,
-  //           //     test: {
-  //           //       targets: [
-  //           //         { id: res.data.targets[0].id },
-  //           //       ],
-  //           //       quests: [
-  //           //         { id: res.data.quests[0].id },
-  //           //         { id: res.data.quests[1].id },
-  //           //         { id: res.data.quests[2].id },
-  //           //       ],
-  //           //     },
-  //           //   });
-  //           // } else if (hasTargetPassed) {
-  //           //   this.setState({
-  //           //     isTargetRendered: false,
-  //           //     isTargetPassed: true,
-  //           //     isQuestRendered: true,
-  //           //     test: {
-  //           //       targets: [
-  //           //         { id: res.data.targets[0].id },
-  //           //       ],
-  //           //       quests: [
-  //           //         { id: res.data.quests[0].id },
-  //           //         { id: res.data.quests[1].id },
-  //           //         { id: res.data.quests[2].id },
-  //           //       ],
-  //           //     },
-  //           //   });
-  //           // } else if (hasQuestPassed) {
-  //           //   this.setState({
-  //           //     isQuestRendered: false,
-  //           //     isQuestPassed: true,
-  //           //     isPayRendered: true,
-  //           //     test: {
-  //           //       targets: [
-  //           //         { id: res.data.targets[0].id },
-  //           //       ],
-  //           //       quests: [
-  //           //         { id: res.data.quests[0].id },
-  //           //         { id: res.data.quests[1].id },
-  //           //         { id: res.data.quests[2].id },
-  //           //       ],
-  //           //     },
-  //           //   });
-  //           // } else if (hasPayPassed) {
-  //           //   this.setState({
-  //           //     isPayRendered: true,
-  //           //     isPayPassed: true,
-  //           //     isAllRendered: false,
-  //           //     test: {
-  //           //       targets: [
-  //           //         { id: res.data.targets[0].id },
-  //           //       ],
-  //           //       quests: [
-  //           //         { id: res.data.quests[0].id },
-  //           //         { id: res.data.quests[1].id },
-  //           //         { id: res.data.quests[2].id },
-  //           //       ],
-  //           //     },
-  //           //   });
-  //           // }
-  //           console.log('first save success');
-  //         });
-  //     }
-
-  //     return null;
-  //   };
-  // }
-
   componentWillUnmount() {
     // eslint-disable-next-line no-shadow
     const { setTestInit } = this.props;
@@ -908,38 +350,42 @@ class NewTestForm extends Component {
     };
   };
 
-  handleBlurSave = (e) => {
-    const { fieldsValues, change } = this.props;
+  handleBlurSave = () => {
+    const { fieldsValues } = this.props;
     const { isDefaultRendered, isTargetRendered, isQuestRendered } = this.state;
     console.log(fieldsValues);
-    console.log(isDefaultRendered);
-    // console.log(isTargetRendered);
-    // console.log(isQuestRendered);
 
-    const titleValue = fieldsValues !== undefined && fieldsValues.title !== undefined ? fieldsValues.title : undefined;
-    const media1Value = fieldsValues !== undefined && fieldsValues.default.media1 !== undefined ? fieldsValues.default.media1 : undefined;
-    const media2Value = fieldsValues !== undefined && fieldsValues.default.media2 !== undefined ? fieldsValues.default.media2 : undefined;
-    const serviceInfoValue = fieldsValues !== undefined && fieldsValues.default.serviceInfo !== undefined ? fieldsValues.default.serviceInfo : undefined;
-    const serviceCategoryValue = fieldsValues !== undefined && fieldsValues.default.serviceCategory !== undefined ? fieldsValues.default.serviceCategory : undefined;
-    const serviceFormatValue = fieldsValues !== undefined && fieldsValues.default.serviceFormat !== undefined ? fieldsValues.default.serviceFormat : undefined;
-    const serviceDescValue = fieldsValues !== undefined && fieldsValues.default.serviceDesc !== undefined ? fieldsValues.default.serviceDesc : undefined;
-    const serviceStatusValue = fieldsValues !== undefined && fieldsValues.default.serviceStatus !== undefined ? fieldsValues.default.serviceStatus : undefined;
-    const clientNameValue = fieldsValues !== undefined && fieldsValues.default.clientName !== undefined ? fieldsValues.default.clientName : undefined;
-    const clientContactValue = fieldsValues !== undefined && fieldsValues.default.clientContact !== undefined ? fieldsValues.default.clientContact : undefined;
-    const emailValue = fieldsValues !== undefined && fieldsValues.default.email !== undefined ? fieldsValues.default.email : undefined;
-    const funnelValue = fieldsValues !== undefined && fieldsValues.default.funnel !== undefined ? fieldsValues.default.funnel : undefined;
-    console.log(titleValue);
-    console.log(media1Value);
-    console.log(media2Value);
-    console.log(serviceInfoValue);
-    console.log(serviceCategoryValue);
-    console.log(serviceFormatValue);
-    console.log(serviceDescValue);
-    console.log(serviceStatusValue);
-    console.log(clientNameValue);
-    console.log(clientContactValue);
-    console.log(emailValue);
-    console.log(funnelValue);
+    const titleValue = fieldsValues !== undefined && fieldsValues.title !== undefined
+      ? fieldsValues.title : undefined;
+    const media1Value = fieldsValues !== undefined && fieldsValues.default.media1 !== undefined
+      ? fieldsValues.default.media1 : undefined;
+    const media2Value = fieldsValues !== undefined && fieldsValues.default.media2 !== undefined
+      ? fieldsValues.default.media2 : undefined;
+    const serviceInfoValue = fieldsValues !== undefined
+      && fieldsValues.default.serviceInfo !== undefined
+      ? fieldsValues.default.serviceInfo : undefined;
+    const serviceCategoryValue = fieldsValues !== undefined
+      && fieldsValues.default.serviceCategory !== undefined
+      ? fieldsValues.default.serviceCategory : undefined;
+    const serviceFormatValue = fieldsValues !== undefined
+      && fieldsValues.default.serviceFormat !== undefined
+      ? fieldsValues.default.serviceFormat : undefined;
+    const serviceDescValue = fieldsValues !== undefined
+      && fieldsValues.default.serviceDesc !== undefined
+      ? fieldsValues.default.serviceDesc : undefined;
+    const serviceStatusValue = fieldsValues !== undefined
+      && fieldsValues.default.serviceStatus !== undefined
+      ? fieldsValues.default.serviceStatus : undefined;
+    const clientNameValue = fieldsValues !== undefined
+      && fieldsValues.default.clientName !== undefined
+      ? fieldsValues.default.clientName : undefined;
+    const clientContactValue = fieldsValues !== undefined
+      && fieldsValues.default.clientContact !== undefined
+      ? fieldsValues.default.clientContact : undefined;
+    const emailValue = fieldsValues !== undefined && fieldsValues.default.email !== undefined
+      ? fieldsValues.default.email : undefined;
+    const funnelValue = fieldsValues !== undefined && fieldsValues.default.funnel !== undefined
+      ? fieldsValues.default.funnel : undefined;
 
     // target
     const minAgeValue = fieldsValues !== undefined ? fieldsValues.target.minAge : undefined;
@@ -957,7 +403,7 @@ class NewTestForm extends Component {
       ? fieldsValues.target.extraInfoCategory2 : undefined;
     const extraInfoCategory3 = fieldsValues !== undefined
       ? fieldsValues.target.extraInfoCategory3 : undefined;
-    
+
     // quest
     const registerRequire = fieldsValues !== undefined
       ? fieldsValues.quest.registerRequire : undefined;
@@ -975,11 +421,11 @@ class NewTestForm extends Component {
     const issueissuePurpose3Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issuePurpose)[2] !== '' ? Object.values(fieldsValues.quest.issuePurpose)[2] : undefined;
 
     // pay
-    const planValue = fieldsValues !== undefined ? fieldsValues.pay.plan : undefined;
-    const codeValue = fieldsValues !== undefined && fieldsValues.pay.coupon !== undefined
-      ? fieldsValues.pay.coupon : undefined;
-    const couponNumValue = fieldsValues !== undefined && fieldsValues.pay.coupon !== undefined
-      ? fieldsValues.pay.couponNum : undefined;
+    // const planValue = fieldsValues !== undefined ? fieldsValues.pay.plan : undefined;
+    // const codeValue = fieldsValues !== undefined && fieldsValues.pay.coupon !== undefined
+    //   ? fieldsValues.pay.coupon : undefined;
+    // const couponNumValue = fieldsValues !== undefined && fieldsValues.pay.coupon !== undefined
+    //   ? fieldsValues.pay.couponNum : undefined;
     const {
       route,
       postTest,
@@ -991,16 +437,12 @@ class NewTestForm extends Component {
       getTest,
       categoryList,
       extras,
-      orderTest,
-      planList,
-      togglePopup,
     } = this.props;
     const { match, history } = route;
     const { pId, tId } = match.params;
     const { test } = this.state;
     const { targets } = test;
     const tgId = targets !== undefined ? targets[0].id : null;
-    console.log(titleValue);
     const titleReg = titleValue !== undefined ? titleValue.replace(/(^\s*)|(\s*$)/g, '') : undefined;
     const clientNameReg = clientNameValue !== undefined ? clientNameValue.replace(/(^\s*)|(\s*$)/g, '') : undefined;
     const clientContactReg = clientContactValue !== undefined ? clientContactValue.replace(/(^\s*)|(\s*$)/g, '').replace(/-/g, '') : undefined;
@@ -1020,7 +462,6 @@ class NewTestForm extends Component {
       emailReg,
       funnelValue,
     ];
-    console.log(defaultValueArr);
     const targetValueArr = [
       minAgeValue,
       maxAgeValue,
@@ -1044,11 +485,6 @@ class NewTestForm extends Component {
       issueissuePurpose2Value,
       issueissuePurpose3Value,
     ];
-    const payValueArr = [
-      planValue,
-      codeValue,
-      couponNumValue,
-    ];
     const hasDefaultPassed = () => {
       const hasDefaultValue = defaultValueArr.length > 0;
       return !!hasDefaultValue;
@@ -1060,10 +496,6 @@ class NewTestForm extends Component {
     const hasQuestPassed = () => {
       const hasQuestValue = questValueArr.length > 0;
       return !!hasQuestValue;
-    };
-    const hasPayPassed = () => {
-      const hasPayValue = payValueArr.length > 0;
-      return !!hasPayValue;
     };
 
     const defaultBlurSave = async () => {
@@ -1093,205 +525,6 @@ class NewTestForm extends Component {
               isBlurSaved: true,
             }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
           });
-          // if (isDefaultRendered && hasDefaultPassed) {
-            
-  
-            
-          // } else if (isTargetRendered && hasTargetPassed) {
-          
-          // } else if (isQuestRendered && hasQuestPassed) {
-          //   const qId = test.quests.map(q => q.id);
-          //   // const {
-          //   //   registerRequire,
-          //   //   issue,
-          //   //   issueDetail,
-          //   //   issuePurpose,
-          //   // } = values.quest;
-          //   const registerValue = registerRequire !== '아니오';
-          //   const step = 'REGISTER';
-  
-          //   if (registerRequire) {
-          //     await patchTest(
-          //       tId,
-          //       pId,
-          //       step,
-          //       titleReg,
-          //       clientNameReg,
-          //       clientContactReg,
-          //       media2Value,
-          //       emailReg,
-          //       media1Value,
-          //       serviceFormatValue,
-          //       serviceInfoReg,
-          //       serviceCategoryValue,
-          //       serviceStatusValue,
-          //       serviceDescValue,
-          //       funnelValue,
-          //       registerValue,
-          //     );
-          //   }
-  
-          //   if (issue1Value) {
-          //     await patchTest(
-          //       tId,
-          //       pId,
-          //       step,
-          //       titleReg,
-          //       clientNameReg,
-          //       clientContactReg,
-          //       media2Value,
-          //       emailReg,
-          //       media1Value,
-          //       serviceFormatValue,
-          //       serviceInfoReg,
-          //       serviceCategoryValue,
-          //       serviceStatusValue,
-          //       serviceDescValue,
-          //       funnelValue,
-          //       registerValue,
-          //     );
-          //     await patchQuest(
-          //       qId[0],
-          //       tId,
-          //       issue1Value,
-          //       issueDetail1Value.replace(/(^\s*)|(\s*$)/g, ''),
-          //       issueissuePurpose1Value.replace(/(^\s*)|(\s*$)/g, ''),
-          //     )
-          //       .then(() => getTest(tId))
-          //       .then(() => {
-          //         console.log('patchQuest 1 success');
-          //         // togglePopup(true);
-          //         // this.setState({
-          //         //   isQuestRendered: false,
-          //         //   isQuestPassed: true,
-          //         //   isPayRendered: true,
-          //         //   isRegisterInfoPopup: true,
-          //         // });
-          //       })
-          //       .catch((err) => {
-          //         console.log(err);
-          //       });
-          //   }
-  
-          //   if (issue2Value) {
-          //     await patchTest(
-          //       tId,
-          //       pId,
-          //       step,
-          //       titleReg,
-          //       clientNameReg,
-          //       clientContactReg,
-          //       media2Value,
-          //       emailReg,
-          //       media1Value,
-          //       serviceFormatValue,
-          //       serviceInfoReg,
-          //       serviceCategoryValue,
-          //       serviceStatusValue,
-          //       serviceDescValue,
-          //       funnelValue,
-          //       registerValue,
-          //     );
-          //     await patchQuest(
-          //       qId[1],
-          //       tId,
-          //       issue2Value,
-          //       issueDetail2Value.replace(/(^\s*)|(\s*$)/g, ''),
-          //       issueissuePurpose2Value.replace(/(^\s*)|(\s*$)/g, ''),
-          //     )
-          //       .then(() => { getTest(tId); })
-          //       .then(() => {
-          //         console.log('patchQuest 2 success');
-          //         // togglePopup(true);
-          //         // this.setState({
-          //         //   isQuestRendered: false,
-          //         //   isQuestPassed: true,
-          //         //   isPayRendered: true,
-          //         //   isRegisterInfoPopup: true,
-          //         // });
-          //       })
-          //       .catch((err) => {
-          //         console.log(err);
-          //       });
-          //   }
-  
-          //   if (issue3Value) {
-          //     await patchTest(
-          //       tId,
-          //       pId,
-          //       step,
-          //       titleReg,
-          //       clientNameReg,
-          //       clientContactReg,
-          //       media2Value,
-          //       emailReg,
-          //       media1Value,
-          //       serviceFormatValue,
-          //       serviceInfoReg,
-          //       serviceCategoryValue,
-          //       serviceStatusValue,
-          //       serviceDescValue,
-          //       funnelValue,
-          //       registerValue,
-          //     );
-          //     await patchQuest(
-          //       qId[2],
-          //       tId,
-          //       issue3Value,
-          //       issueDetail3Value.replace(/(^\s*)|(\s*$)/g, ''),
-          //       issueissuePurpose3Value.replace(/(^\s*)|(\s*$)/g, ''),
-          //     )
-          //       .then(() => { getTest(tId); })
-          //       .then(() => {
-          //         console.log('patchQuest 3 success');
-          //         // togglePopup(true);
-          //         // this.setState({
-          //         //   isQuestRendered: false,
-          //         //   isQuestPassed: true,
-          //         //   isPayRendered: true,
-          //         //   isRegisterInfoPopup: true,
-          //         // });
-          //       })
-          //       .catch((err) => {
-          //         console.log(err);
-          //       });
-          //   }
-          // } else if (isPayRendered && hasPayPassed) {
-          //   const selectedPlan = planList.find(p => p.name === planValue);
-          //   const cType = codeValue !== undefined ? codeValue : undefined;
-          //   // eslint-disable-next-line no-nested-ternary
-          //   const cCode = cType === 'WELCOME_BACK' || cType === undefined ? undefined : (couponNumValue !== undefined ? couponNumValue : undefined);
-  
-          //   this.setState({ isPayLoading: true });
-          //   orderTest(
-          //     selectedPlan.id,
-          //     tId,
-          //     cType,
-          //     cCode,
-          //   ).then((res) => {
-          //     // this.setState({
-          //     //   isPayLoading: false,
-          //     //   isPayInfoPopup: true,
-          //     //   isPayRendered: true,
-          //     //   isPayPassed: true,
-          //     //   test: {
-          //     //     order: res.data,
-          //     //   },
-          //     // });
-          //     console.log('orderTest success');
-          //   })
-          //     // .then(() => {
-          //     //   this.setState({ isAllRendered: true });
-          //     // })
-          //     .catch((err) => {
-          //       console.log(err);
-          //       console.log(err.response);
-          //       console.log(err.message);
-          //       this.setState({
-          //         isPayLoading: false,
-          //         asyncErrorMsg: err.response.data.coupon_code,
-          //       });
-          //     });
         } else {
           await postTest(
             pId,
@@ -1309,93 +542,14 @@ class NewTestForm extends Component {
             funnelValue,
           )
             .then((res) => {
-              console.log(res);
               history.push(`/project/${match.params.pId}/test/${res.data.id}`);
-
-              // this.setState({
-              //   test: { default: { step: res.data.step } },
-              // });
-
-              // if (hasDefaultPassed) {
-              //   this.setState({
-              //     isDefaultRendered: false,
-              //     isDefaultPassed: true,
-              //     isTargetRendered: true,
-              //     test: {
-              //       targets: [
-              //         { id: res.data.targets[0].id },
-              //       ],
-              //       quests: [
-              //         { id: res.data.quests[0].id },
-              //         { id: res.data.quests[1].id },
-              //         { id: res.data.quests[2].id },
-              //       ],
-              //     },
-              //   });
-              // } else if (hasTargetPassed) {
-              //   this.setState({
-              //     isTargetRendered: false,
-              //     isTargetPassed: true,
-              //     isQuestRendered: true,
-              //     test: {
-              //       targets: [
-              //         { id: res.data.targets[0].id },
-              //       ],
-              //       quests: [
-              //         { id: res.data.quests[0].id },
-              //         { id: res.data.quests[1].id },
-              //         { id: res.data.quests[2].id },
-              //       ],
-              //     },
-              //   });
-              // } else if (hasQuestPassed) {
-              //   this.setState({
-              //     isQuestRendered: false,
-              //     isQuestPassed: true,
-              //     isPayRendered: true,
-              //     test: {
-              //       targets: [
-              //         { id: res.data.targets[0].id },
-              //       ],
-              //       quests: [
-              //         { id: res.data.quests[0].id },
-              //         { id: res.data.quests[1].id },
-              //         { id: res.data.quests[2].id },
-              //       ],
-              //     },
-              //   });
-              // } else if (hasPayPassed) {
-              //   this.setState({
-              //     isPayRendered: true,
-              //     isPayPassed: true,
-              //     isAllRendered: false,
-              //     test: {
-              //       targets: [
-              //         { id: res.data.targets[0].id },
-              //       ],
-              //       quests: [
-              //         { id: res.data.quests[0].id },
-              //         { id: res.data.quests[1].id },
-              //         { id: res.data.quests[2].id },
-              //       ],
-              //     },
-              //   });
-              // }
+              this.setState({
+                isBlurSaved: true,
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
               console.log('first save success');
             });
         }
       } else if (isTargetRendered && hasTargetPassed) {
-        // const {
-        //   getGenderValue,
-        //   minAgeValue,
-        //   maxAgeValue,
-        //   extraInfoCategory1,
-        //   extraInfoCategory2,
-        //   extraInfoCategory3,
-        //   extraInfoDesc1,
-        //   extraInfoDesc2,
-        //   extraInfoDesc3,
-        // } = values.target;
         // eslint-disable-next-line no-nested-ternary
         const genderValue = getGenderValue === '여자' ? 'female' : (getGenderValue === '남자' ? 'male' : 'both');
         const categoryListArr = Object.keys(categoryList).length > 0
@@ -1487,7 +641,173 @@ class NewTestForm extends Component {
               isBlurSaved: true,
             }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
             console.log('patchTarget success');
+          })
+          .catch((err) => {
+            console.log(err);
+            console.log(err.response);
           });
+      } else if (isQuestRendered && hasQuestPassed) {
+        const qId = test.quests.map(q => q.id);
+        const issueDetail1ValueReg = issueDetail1Value !== undefined ? issueDetail1Value.replace(/(^\s*)|(\s*$)/g, '') : undefined;
+        const issueDetail2ValueReg = issueDetail2Value !== undefined ? issueDetail2Value.replace(/(^\s*)|(\s*$)/g, '') : undefined;
+        const issueDetail3ValueReg = issueDetail3Value !== undefined ? issueDetail3Value.replace(/(^\s*)|(\s*$)/g, '') : undefined;
+        const issueissuePurpose1ValueReg = issueissuePurpose1Value !== undefined ? issueissuePurpose1Value.replace(/(^\s*)|(\s*$)/g, '') : undefined;
+        const issueissuePurpose2ValueReg = issueissuePurpose2Value !== undefined ? issueissuePurpose2Value.replace(/(^\s*)|(\s*$)/g, '') : undefined;
+        const issueissuePurpose3ValueReg = issueissuePurpose3Value !== undefined ? issueissuePurpose3Value.replace(/(^\s*)|(\s*$)/g, '') : undefined;
+        const registerValue = registerRequire !== '아니오';
+        const step = 'APPLY';
+
+        if (registerRequire) {
+          await patchTest(
+            tId,
+            pId,
+            step,
+            titleReg,
+            clientNameReg,
+            clientContactReg,
+            media2Value,
+            emailReg,
+            media1Value,
+            serviceFormatValue,
+            serviceInfoReg,
+            serviceCategoryValue,
+            serviceStatusValue,
+            serviceDescValue,
+            funnelValue,
+            registerValue,
+          ).then(() => {
+            this.setState({
+              isBlurSaved: true,
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+          });
+        }
+
+        if (issue1Value) {
+          await patchTest(
+            tId,
+            pId,
+            step,
+            titleReg,
+            clientNameReg,
+            clientContactReg,
+            media2Value,
+            emailReg,
+            media1Value,
+            serviceFormatValue,
+            serviceInfoReg,
+            serviceCategoryValue,
+            serviceStatusValue,
+            serviceDescValue,
+            funnelValue,
+            registerValue,
+          ).then(() => {
+            this.setState({
+              isBlurSaved: true,
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+          });
+
+          await patchQuest(
+            qId[0],
+            tId,
+            issue1Value,
+            issueDetail1ValueReg,
+            issueissuePurpose1ValueReg,
+          )
+            .then(() => getTest(tId))
+            .then(() => {
+              this.setState({
+                isBlurSaved: true,
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              console.log('patchQuest 1 success');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+
+        if (issue2Value) {
+          await patchTest(
+            tId,
+            pId,
+            step,
+            titleReg,
+            clientNameReg,
+            clientContactReg,
+            media2Value,
+            emailReg,
+            media1Value,
+            serviceFormatValue,
+            serviceInfoReg,
+            serviceCategoryValue,
+            serviceStatusValue,
+            serviceDescValue,
+            funnelValue,
+            registerValue,
+          ).then(() => {
+            this.setState({
+              isBlurSaved: true,
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+          });
+          await patchQuest(
+            qId[1],
+            tId,
+            issue2Value,
+            issueDetail2ValueReg,
+            issueissuePurpose2ValueReg,
+          )
+            .then(() => { getTest(tId); })
+            .then(() => {
+              this.setState({
+                isBlurSaved: true,
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              console.log('patchQuest 2 success');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+
+        if (issue3Value) {
+          await patchTest(
+            tId,
+            pId,
+            step,
+            titleReg,
+            clientNameReg,
+            clientContactReg,
+            media2Value,
+            emailReg,
+            media1Value,
+            serviceFormatValue,
+            serviceInfoReg,
+            serviceCategoryValue,
+            serviceStatusValue,
+            serviceDescValue,
+            funnelValue,
+            registerValue,
+          ).then(() => {
+            this.setState({
+              isBlurSaved: true,
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+          });
+          await patchQuest(
+            qId[2],
+            tId,
+            issue3Value,
+            issueDetail3ValueReg,
+            issueissuePurpose3ValueReg,
+          )
+            .then(() => { getTest(tId); })
+            .then(() => {
+              this.setState({
+                isBlurSaved: true,
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              console.log('patchQuest 3 success');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
       }
     };
 
@@ -2369,7 +1689,9 @@ class NewTestForm extends Component {
               : null
             }
             <span className={`box-alert--autosave${isBlurSaved ? '--active' : ''}`}>
-              Last Checkpoint: {getTime()} (autosaved)
+              Last Checkpoint:
+              {getTime()}
+              (autosaved)
             </span>
           </div>
           <RightSidebar

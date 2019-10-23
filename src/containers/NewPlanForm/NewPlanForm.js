@@ -450,6 +450,7 @@ class NewPlanForm extends Component {
                           <strong>
                             {totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                             <i>원</i>
+                            <span className="price__desc-text">VAT 포함</span>
                           </strong>
                         </strong>
                       </p>

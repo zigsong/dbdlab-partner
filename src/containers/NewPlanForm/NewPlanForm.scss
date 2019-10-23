@@ -275,11 +275,18 @@ $blueGray: #f6f7fa;
           font-size: 18px;
           color: $black;
           font-weight: bold;
+          text-align: right;
 
           i {
             font-size: inherit;
             color: inherit;
             font-weight: inherit;
+          }
+
+          .price__desc-text {
+            display: block;
+            font-size: 10px;
+            color: $black;
           }
         }
       }

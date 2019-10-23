@@ -39,6 +39,7 @@ const PayAccountInfo = (props) => {
             <strong className="account_info">
               {voucherOrder === undefined ? testOrder.charged_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : voucherOrder.totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               원
+              <span className="price__desc-text">VAT 포함</span>
             </strong>
           </p>
           <button type="button" className="btn__tax-invoice" onClick={() => handlePopup(true)}>세금계산서 신청하기</button>

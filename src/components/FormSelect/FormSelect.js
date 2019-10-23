@@ -17,10 +17,10 @@ const FormSelect = ({
     if (slct.current.value !== defaultValue && input.value !== '') {
       slct.current.value = input.value;
       setValues(input.values);
-      setSelected(true);
+      if (!disabled) setSelected(true);
       onChange(input.value);
     }
-  }, [defaultValue, input, input.value]);
+  }, [defaultValue, disabled, input, input.value]);
 
   const handleBlur = (e) => {
     e.preventDefault();

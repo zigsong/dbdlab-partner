@@ -45,6 +45,8 @@ const TestFormTarget = (props) => {
     return setInfoBox(resultArr);
   };
 
+  const { handleBlurSave } = props;
+
   return (
     <div className="field-wrapper--target">
       <section className="field__section">
@@ -60,6 +62,7 @@ const TestFormTarget = (props) => {
               label="target.minAge"
               placeholder="숫자"
               component={FormInput}
+              onBlur={handleBlurSave}
               validate={[ageRequired, minAgeVerify, maxAgeVerify]}
               disabled={isDisabled}
             />
@@ -72,6 +75,7 @@ const TestFormTarget = (props) => {
               label="target.maxAge"
               placeholder="숫자"
               component={FormInput}
+              onBlur={handleBlurSave}
               validate={[ageRequired, minAgeVerify, maxAgeVerify]}
               disabled={isDisabled}
             />
@@ -82,6 +86,7 @@ const TestFormTarget = (props) => {
             type="select"
             defaultValue="성별 선택"
             component={FormSelect}
+            onBlur={handleBlurSave}
             validate={genderRequired}
             disabled={isDisabled}
           >
@@ -114,6 +119,7 @@ const TestFormTarget = (props) => {
                 type="text"
                 label={`target.extraInfoDesc${idx + 1}`}
                 placeholder="텍스트 입력"
+                onBlur={handleBlurSave}
                 component={FormInput}
                 disabled={isDisabled}
               />
@@ -152,6 +158,7 @@ const TestFormTarget = (props) => {
             label="target.interest"
             placeholder="#해시태그 #형식으로 #입력해주세요"
             component={FormInput}
+            onBlur={handleBlurSave}
             disabled={isDisabled}
           />
         </div>

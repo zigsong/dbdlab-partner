@@ -68,6 +68,7 @@ class NewTestForm extends Component {
     isTestStep: false,
     isRegisterStep: false,
     isPaymentStep: false,
+    isBlurSaved: false,
     test: {},
     asyncErrorMsg: '',
   }
@@ -188,7 +189,16 @@ class NewTestForm extends Component {
                 const isTestStep = test.default.step === 'TESTING';
                 const isPaymentStep = test.default.step === 'PAYMENT';
                 const isRegisterStep = test.default.step === 'REGISTER';
-                const hasDefaultPassed = () => !!test.default;
+                const isApply = test.default.step === 'APPLY';
+                const hasDefaultPassed = Object.values(test.default).filter(x => x === '').length < 3;
+
+                if (isApply && !hasDefaultPassed) {
+                  this.setState({
+                    isLoading: false,
+                    isDefaultRendered: true,
+                    isDefaultPassed: false,
+                  });
+                }
 
                 if (hasDefaultPassed) {
                   this.setState({
@@ -208,7 +218,15 @@ class NewTestForm extends Component {
                   });
                 }
 
-                if (hasIssue1Value && hasIssuePurpose1Value && hasIssueDetail1Value) {
+                if (isApply && hasIssue1Value && hasIssuePurpose1Value && hasIssueDetail1Value) {
+                  this.setState({
+                    isLoading: false,
+                    isQuestRendered: true,
+                    isQuestPassed: false,
+                  });
+                }
+
+                if (!isApply && hasIssue1Value && hasIssuePurpose1Value && hasIssueDetail1Value) {
                   this.setState({
                     isLoading: false,
                     isQuestRendered: false,
@@ -292,7 +310,7 @@ class NewTestForm extends Component {
   };
 
   handleBackBtn = () => {
-    const { togglePopup, test } = this.props;
+    const { togglePopup } = this.props;
 
     togglePopup(true);
     this.setState({ isBackConfirmPopup: true });
@@ -331,6 +349,482 @@ class NewTestForm extends Component {
       renderDefault, renderTarget, renderQuest, renderPay, renderReport,
     };
   };
+
+  handleBlurSave = () => {
+    const { fieldsValues } = this.props;
+    const { isDefaultRendered, isTargetRendered, isQuestRendered } = this.state;
+    console.log(fieldsValues);
+
+    const titleValue = fieldsValues !== undefined && fieldsValues.title !== undefined
+      ? fieldsValues.title : undefined;
+    const media1Value = fieldsValues !== undefined && fieldsValues.default.media1 !== undefined
+      ? fieldsValues.default.media1 : undefined;
+    const media2Value = fieldsValues !== undefined && fieldsValues.default.media2 !== undefined
+      ? fieldsValues.default.media2 : undefined;
+    const serviceInfoValue = fieldsValues !== undefined
+      && fieldsValues.default.serviceInfo !== undefined
+      ? fieldsValues.default.serviceInfo : undefined;
+    const serviceCategoryValue = fieldsValues !== undefined
+      && fieldsValues.default.serviceCategory !== undefined
+      ? fieldsValues.default.serviceCategory : undefined;
+    const serviceFormatValue = fieldsValues !== undefined
+      && fieldsValues.default.serviceFormat !== undefined
+      ? fieldsValues.default.serviceFormat : undefined;
+    const serviceDescValue = fieldsValues !== undefined
+      && fieldsValues.default.serviceDesc !== undefined
+      ? fieldsValues.default.serviceDesc : undefined;
+    const serviceStatusValue = fieldsValues !== undefined
+      && fieldsValues.default.serviceStatus !== undefined
+      ? fieldsValues.default.serviceStatus : undefined;
+    const clientNameValue = fieldsValues !== undefined
+      && fieldsValues.default.clientName !== undefined
+      ? fieldsValues.default.clientName : undefined;
+    const clientContactValue = fieldsValues !== undefined
+      && fieldsValues.default.clientContact !== undefined
+      ? fieldsValues.default.clientContact : undefined;
+    const emailValue = fieldsValues !== undefined && fieldsValues.default.email !== undefined
+      ? fieldsValues.default.email : undefined;
+    const funnelValue = fieldsValues !== undefined && fieldsValues.default.funnel !== undefined
+      ? fieldsValues.default.funnel : undefined;
+
+    // target
+    const minAgeValue = fieldsValues !== undefined ? fieldsValues.target.minAge : undefined;
+    const maxAgeValue = fieldsValues !== undefined ? fieldsValues.target.maxAge : undefined;
+    const getGenderValue = fieldsValues !== undefined ? fieldsValues.target.gender : undefined;
+    const extraInfoDesc1 = fieldsValues !== undefined
+      ? fieldsValues.target.extraInfoDesc1 : undefined;
+    const extraInfoDesc2 = fieldsValues !== undefined
+      ? fieldsValues.target.extraInfoDesc2 : undefined;
+    const extraInfoDesc3 = fieldsValues !== undefined
+      ? fieldsValues.target.extraInfoDesc3 : undefined;
+    const extraInfoCategory1 = fieldsValues !== undefined
+      ? fieldsValues.target.extraInfoCategory1 : undefined;
+    const extraInfoCategory2 = fieldsValues !== undefined
+      ? fieldsValues.target.extraInfoCategory2 : undefined;
+    const extraInfoCategory3 = fieldsValues !== undefined
+      ? fieldsValues.target.extraInfoCategory3 : undefined;
+
+    // quest
+    const registerRequire = fieldsValues !== undefined
+      ? fieldsValues.quest.registerRequire : undefined;
+    const issue1Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issue)[0] !== '' ? Object.values(fieldsValues.quest.issue)[0] : undefined;
+    const issue2Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issue)[1] !== '' ? Object.values(fieldsValues.quest.issue)[1] : undefined;
+    const issue3Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issue)[2] !== '' ? Object.values(fieldsValues.quest.issue)[2] : undefined;
+    const issueDetail1Value = fieldsValues !== undefined
+      ? Object.values(fieldsValues.quest.issueDetail)[0] : undefined;
+    const issueDetail2Value = fieldsValues !== undefined
+      ? Object.values(fieldsValues.quest.issueDetail)[1] : undefined;
+    const issueDetail3Value = fieldsValues !== undefined
+      ? Object.values(fieldsValues.quest.issueDetail)[2] : undefined;
+    const issueissuePurpose1Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issuePurpose)[0] !== '' ? Object.values(fieldsValues.quest.issuePurpose)[0] : undefined;
+    const issueissuePurpose2Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issuePurpose)[1] !== '' ? Object.values(fieldsValues.quest.issuePurpose)[1] : undefined;
+    const issueissuePurpose3Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issuePurpose)[2] !== '' ? Object.values(fieldsValues.quest.issuePurpose)[2] : undefined;
+
+    // pay
+    // const planValue = fieldsValues !== undefined ? fieldsValues.pay.plan : undefined;
+    // const codeValue = fieldsValues !== undefined && fieldsValues.pay.coupon !== undefined
+    //   ? fieldsValues.pay.coupon : undefined;
+    // const couponNumValue = fieldsValues !== undefined && fieldsValues.pay.coupon !== undefined
+    //   ? fieldsValues.pay.couponNum : undefined;
+    const {
+      route,
+      postTest,
+      patchTest,
+      patchTarget,
+      postTargetExtra,
+      patchTargetExtra,
+      patchQuest,
+      getTest,
+      categoryList,
+      extras,
+    } = this.props;
+    const { match, history } = route;
+    const { pId, tId } = match.params;
+    const { test } = this.state;
+    const { targets } = test;
+    const tgId = targets !== undefined ? targets[0].id : null;
+    const titleReg = titleValue !== undefined ? titleValue.replace(/(^\s*)|(\s*$)/g, '') : undefined;
+    const clientNameReg = clientNameValue !== undefined ? clientNameValue.replace(/(^\s*)|(\s*$)/g, '') : undefined;
+    const clientContactReg = clientContactValue !== undefined ? clientContactValue.replace(/(^\s*)|(\s*$)/g, '').replace(/-/g, '') : undefined;
+    const emailReg = emailValue !== undefined ? emailValue.replace(/(^\s*)|(\s*$)/g, '') : undefined;
+    const serviceInfoReg = serviceInfoValue !== undefined ? serviceInfoValue.replace(/(^\s*)|(\s*$)/g, '') : undefined;
+    const defaultValueArr = [
+      titleReg,
+      media1Value,
+      media2Value,
+      serviceInfoReg,
+      serviceCategoryValue,
+      serviceFormatValue,
+      serviceDescValue,
+      serviceStatusValue,
+      clientNameReg,
+      clientContactReg,
+      emailReg,
+      funnelValue,
+    ];
+    const targetValueArr = [
+      minAgeValue,
+      maxAgeValue,
+      getGenderValue,
+      extraInfoDesc1,
+      extraInfoDesc2,
+      extraInfoDesc3,
+      extraInfoCategory1,
+      extraInfoCategory2,
+      extraInfoCategory3,
+    ];
+    const questValueArr = [
+      registerRequire,
+      issue1Value,
+      issue2Value,
+      issue3Value,
+      issueDetail1Value,
+      issueDetail2Value,
+      issueDetail3Value,
+      issueissuePurpose1Value,
+      issueissuePurpose2Value,
+      issueissuePurpose3Value,
+    ];
+    const hasDefaultPassed = () => {
+      const hasDefaultValue = defaultValueArr.length > 0;
+      return !!hasDefaultValue;
+    };
+    const hasTargetPassed = () => {
+      const hasTargetValue = targetValueArr.length > 0;
+      return !!hasTargetValue;
+    };
+    const hasQuestPassed = () => {
+      const hasQuestValue = questValueArr.length > 0;
+      return !!hasQuestValue;
+    };
+
+    const defaultBlurSave = async () => {
+      if (isDefaultRendered && hasDefaultPassed) {
+        if (tId) {
+          const step = 'APPLY';
+
+          await patchTest(
+            tId,
+            pId,
+            step,
+            titleReg,
+            clientNameReg,
+            clientContactReg,
+            media2Value,
+            emailReg,
+            media1Value,
+            serviceFormatValue,
+            serviceInfoReg,
+            serviceCategoryValue,
+            serviceStatusValue,
+            serviceDescValue,
+            funnelValue,
+          ).then(() => {
+            console.log('patchTest success');
+            this.setState({
+              isBlurSaved: true,
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+          });
+        } else {
+          await postTest(
+            pId,
+            titleReg,
+            clientNameReg,
+            clientContactReg,
+            media2Value,
+            emailReg,
+            media1Value,
+            serviceFormatValue,
+            serviceInfoReg,
+            serviceCategoryValue,
+            serviceStatusValue,
+            serviceDescValue,
+            funnelValue,
+          )
+            .then((res) => {
+              history.push(`/project/${match.params.pId}/test/${res.data.id}`);
+              this.setState({
+                isBlurSaved: true,
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              console.log('first save success');
+            });
+        }
+      } else if (isTargetRendered && hasTargetPassed) {
+        // eslint-disable-next-line no-nested-ternary
+        const genderValue = getGenderValue === '여자' ? 'female' : (getGenderValue === '남자' ? 'male' : 'both');
+        const categoryListArr = Object.keys(categoryList).length > 0
+          ? Object.keys(categoryList).map(c => categoryList[c].category_items)
+          : undefined;
+        // submit values 값 확인
+        const exCate1Id = extraInfoCategory1 !== undefined
+          ? categoryListArr[6].find(e => e.name === extraInfoCategory1).id : undefined;
+        const exCate2Id = extraInfoCategory2 !== undefined
+          ? categoryListArr[6].find(e => e.name === extraInfoCategory2).id : undefined;
+        const exCate3Id = extraInfoCategory3 !== undefined
+          ? categoryListArr[6].find(e => e.name === extraInfoCategory3).id : undefined;
+
+        // init values 값 확인
+        const tgEx1Id = extras !== undefined
+          && extras !== [] && extras[0] !== undefined
+          && Object.keys(extras[0]).length > 1
+          ? extras[0].id : undefined;
+        const tgEx2Id = extras !== undefined
+          && extras !== [] && extras[1] !== undefined
+          && Object.keys(extras[1]).length > 1
+          ? extras[1].id : undefined;
+        const tgEx3Id = extras !== undefined
+          && extras !== [] && extras[2] !== undefined
+          && Object.keys(extras[2]).length > 1
+          ? extras[2].id : undefined;
+
+        if (tgEx1Id) {
+          await patchTargetExtra(tgEx1Id, tgId, exCate1Id, extraInfoDesc1).then(() => {
+            this.setState({
+              isBlurSaved: true,
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+            console.log('patchTarget success');
+          });
+        } else if (exCate1Id) {
+          await getTest(tId);
+          await postTargetExtra(tgId, exCate1Id, extraInfoDesc1).then(() => {
+            this.setState({
+              isBlurSaved: true,
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+            console.log('patchTarget success');
+          });
+        }
+
+        if (tgEx2Id) {
+          await patchTargetExtra(tgEx2Id, tgId, exCate2Id, extraInfoDesc2).then(() => {
+            this.setState({
+              isBlurSaved: true,
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+            console.log('patchTarget success');
+          });
+        } else if (exCate2Id) {
+          await getTest(tId);
+          await postTargetExtra(tgId, exCate2Id, extraInfoDesc2).then(() => {
+            this.setState({
+              isBlurSaved: true,
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+            console.log('patchTarget success');
+          });
+        }
+
+        if (tgEx3Id) {
+          await patchTargetExtra(tgEx3Id, tgId, exCate3Id, extraInfoDesc3).then(() => {
+            this.setState({
+              isBlurSaved: true,
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+            console.log('patchTarget success');
+          });
+        } else if (exCate3Id) {
+          await getTest(tId);
+          await postTargetExtra(tgId, exCate3Id, extraInfoDesc3).then(() => {
+            this.setState({
+              isBlurSaved: true,
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+            console.log('patchTarget success');
+          });
+        }
+
+        await patchTarget(
+          tgId,
+          tId,
+          genderValue,
+          minAgeValue,
+          maxAgeValue,
+        )
+          .then(() => { getTest(tId); })
+          .then(() => {
+            this.setState({
+              isBlurSaved: true,
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+            console.log('patchTarget success');
+          })
+          .catch((err) => {
+            console.log(err);
+            console.log(err.response);
+          });
+      } else if (isQuestRendered && hasQuestPassed) {
+        const qId = test.quests.map(q => q.id);
+        const issueDetail1ValueReg = issueDetail1Value !== undefined ? issueDetail1Value.replace(/(^\s*)|(\s*$)/g, '') : undefined;
+        const issueDetail2ValueReg = issueDetail2Value !== undefined ? issueDetail2Value.replace(/(^\s*)|(\s*$)/g, '') : undefined;
+        const issueDetail3ValueReg = issueDetail3Value !== undefined ? issueDetail3Value.replace(/(^\s*)|(\s*$)/g, '') : undefined;
+        const issueissuePurpose1ValueReg = issueissuePurpose1Value !== undefined ? issueissuePurpose1Value.replace(/(^\s*)|(\s*$)/g, '') : undefined;
+        const issueissuePurpose2ValueReg = issueissuePurpose2Value !== undefined ? issueissuePurpose2Value.replace(/(^\s*)|(\s*$)/g, '') : undefined;
+        const issueissuePurpose3ValueReg = issueissuePurpose3Value !== undefined ? issueissuePurpose3Value.replace(/(^\s*)|(\s*$)/g, '') : undefined;
+        const registerValue = registerRequire !== '아니오';
+        const step = 'APPLY';
+
+        if (registerRequire) {
+          await patchTest(
+            tId,
+            pId,
+            step,
+            titleReg,
+            clientNameReg,
+            clientContactReg,
+            media2Value,
+            emailReg,
+            media1Value,
+            serviceFormatValue,
+            serviceInfoReg,
+            serviceCategoryValue,
+            serviceStatusValue,
+            serviceDescValue,
+            funnelValue,
+            registerValue,
+          ).then(() => {
+            this.setState({
+              isBlurSaved: true,
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+          });
+        }
+
+        if (issue1Value) {
+          await patchTest(
+            tId,
+            pId,
+            step,
+            titleReg,
+            clientNameReg,
+            clientContactReg,
+            media2Value,
+            emailReg,
+            media1Value,
+            serviceFormatValue,
+            serviceInfoReg,
+            serviceCategoryValue,
+            serviceStatusValue,
+            serviceDescValue,
+            funnelValue,
+            registerValue,
+          ).then(() => {
+            this.setState({
+              isBlurSaved: true,
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+          });
+
+          await patchQuest(
+            qId[0],
+            tId,
+            issue1Value,
+            issueDetail1ValueReg,
+            issueissuePurpose1ValueReg,
+          )
+            .then(() => getTest(tId))
+            .then(() => {
+              this.setState({
+                isBlurSaved: true,
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              console.log('patchQuest 1 success');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+
+        if (issue2Value) {
+          await patchTest(
+            tId,
+            pId,
+            step,
+            titleReg,
+            clientNameReg,
+            clientContactReg,
+            media2Value,
+            emailReg,
+            media1Value,
+            serviceFormatValue,
+            serviceInfoReg,
+            serviceCategoryValue,
+            serviceStatusValue,
+            serviceDescValue,
+            funnelValue,
+            registerValue,
+          ).then(() => {
+            this.setState({
+              isBlurSaved: true,
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+          });
+          await patchQuest(
+            qId[1],
+            tId,
+            issue2Value,
+            issueDetail2ValueReg,
+            issueissuePurpose2ValueReg,
+          )
+            .then(() => { getTest(tId); })
+            .then(() => {
+              this.setState({
+                isBlurSaved: true,
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              console.log('patchQuest 2 success');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+
+        if (issue3Value) {
+          await patchTest(
+            tId,
+            pId,
+            step,
+            titleReg,
+            clientNameReg,
+            clientContactReg,
+            media2Value,
+            emailReg,
+            media1Value,
+            serviceFormatValue,
+            serviceInfoReg,
+            serviceCategoryValue,
+            serviceStatusValue,
+            serviceDescValue,
+            funnelValue,
+            registerValue,
+          ).then(() => {
+            this.setState({
+              isBlurSaved: true,
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+          });
+          await patchQuest(
+            qId[2],
+            tId,
+            issue3Value,
+            issueDetail3ValueReg,
+            issueissuePurpose3ValueReg,
+          )
+            .then(() => { getTest(tId); })
+            .then(() => {
+              this.setState({
+                isBlurSaved: true,
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              console.log('patchQuest 3 success');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      }
+    };
+
+    defaultBlurSave();
+  }
+
+  getTime = () => {
+    const getValue = new Date();
+    const day = getValue.getDate();
+    const month = getValue.getMonth() + 1;
+    const year = getValue.getFullYear();
+    const hour = getValue.getHours();
+    const minute = getValue.getMinutes();
+    const date = `${year}. ${month} .${day} ${hour}시 ${minute}분`;
+
+    return date;
+  }
 
   onSubmit = async (values) => {
     const {
@@ -810,6 +1304,7 @@ class NewTestForm extends Component {
       isRegisterStep,
       isCompleteStep,
       isTestStep,
+      isBlurSaved,
       test,
       asyncErrorMsg,
     } = this.state;
@@ -830,6 +1325,8 @@ class NewTestForm extends Component {
       handleBackBtn,
       handleCancleBtn,
       handleFormRender,
+      handleBlurSave,
+      getTime,
       onSubmit,
     } = this;
     const { tId } = route.match.params;
@@ -1002,6 +1499,7 @@ class NewTestForm extends Component {
                         || step === 'completed'
                       }
                       test={test}
+                      handleBlurSave={handleBlurSave}
                       media1Category={media1Category}
                       media2Category={media2Category}
                       service1Category={service1Category}
@@ -1042,6 +1540,7 @@ class NewTestForm extends Component {
                         }
                       extraInfoCategory={extraInfoCategory}
                       extraValue={extras}
+                      handleBlurSave={handleBlurSave}
                     />
                   </FormSection>
                 </>
@@ -1077,6 +1576,7 @@ class NewTestForm extends Component {
                       }
                       qId={qId}
                       issueCategory={issueCategory}
+                      handleBlurSave={handleBlurSave}
                     />
                   </FormSection>
                 </>
@@ -1159,6 +1659,7 @@ class NewTestForm extends Component {
                             extraInfoCategory={extraInfoCategory}
                             isRegisterReq={fieldsValues !== undefined && fieldsValues.quest !== undefined ? fieldsValues.quest.registerRequire : '아니오'}
                             submitErrorMsg={asyncErrorMsg}
+                            handleBlurSave={handleBlurSave}
                           />
                         </FormSection>
                       </>
@@ -1187,6 +1688,11 @@ class NewTestForm extends Component {
               )
               : null
             }
+            <span className={`box-alert--autosave${isBlurSaved ? '--active' : ''}`}>
+              Last Checkpoint:
+              {getTime()}
+              (autosaved)
+            </span>
           </div>
           <RightSidebar
             step={step}
@@ -1408,7 +1914,6 @@ const mapStateToProps = (state) => {
     initialValues: initData,
   });
 };
-
 const mapDispatchToProps = dispatch => ({
   togglePopup: isOpen => dispatch(togglePopup(isOpen)),
   postTest: (
@@ -1539,7 +2044,8 @@ export default connect(
   form: 'testForm',
   enableReinitialize: true,
   validate,
-  onSubmitFail: (errors, dispatch, submitError, props) => {
-    console.log(errors, dispatch, submitError, props);
+  onSubmitFail: (errors, dispatch, submitError) => {
+    console.log(errors);
+    console.log(submitError);
   },
 })(NewTestForm));

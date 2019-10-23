@@ -13,7 +13,12 @@ const valueNumberRegExp = value => (value && value.replace(/^[0-9]/, '').length 
 const valueEtcRegExp = value => (value && value.replace(/^[^0-9a-zA-Z]/, '').length < 2 ? '명확하게 입력해주세요' : undefined);
 
 const TestFormQuest = (props) => {
-  const { qId, issueCategory, isDisabled } = props;
+  const {
+    qId,
+    issueCategory,
+    isDisabled,
+    handleBlurSave,
+  } = props;
   const registerCategory = ['아니오', '네(+3,000원/명)'];
 
   return (
@@ -28,6 +33,7 @@ const TestFormQuest = (props) => {
             type="select"
             defaultValue="카테고리 선택"
             component={FormSelect}
+            onBlur={handleBlurSave}
             validate={registerRequired}
             disabled={isDisabled}
           >
@@ -48,6 +54,7 @@ const TestFormQuest = (props) => {
             type="select"
             defaultValue="사용성 이슈 선택"
             component={FormSelect}
+            onBlur={handleBlurSave}
             validate={[
               issue1Required,
               valueRegExp,
@@ -67,6 +74,7 @@ const TestFormQuest = (props) => {
             label={`quest.issueDetail.q${qId[0]}`}
             placeholder="선택한 이슈를 상세하게 적어주세요"
             component={FormInput}
+            onBlur={handleBlurSave}
             validate={[
               issueDetail1Required,
               valueRegExp,
@@ -99,6 +107,7 @@ const TestFormQuest = (props) => {
             label={`quest.issueDetail.q${qId[1]}`}
             placeholder="선택한 이슈를 상세하게 적어주세요"
             component={FormInput}
+            onBlur={handleBlurSave}
             disabled={isDisabled}
           />
         </div>
@@ -125,6 +134,7 @@ const TestFormQuest = (props) => {
             label={`quest.issueDetail.q${qId[2]}`}
             placeholder="선택한 이슈를 상세하게 적어주세요"
             component={FormInput}
+            onBlur={handleBlurSave}
             disabled={isDisabled}
           />
         </div>
@@ -140,6 +150,7 @@ const TestFormQuest = (props) => {
             label={`quest.issuePurpose.q${qId[0]}`}
             placeholder="텍스트 입력"
             component={FormTextArea}
+            onBlur={handleBlurSave}
             validate={[
               issuePurpose1Required,
               valueRegExp,
@@ -159,6 +170,7 @@ const TestFormQuest = (props) => {
             label={`quest.issuePurpose.q${qId[1]}`}
             placeholder="텍스트 입력"
             component={FormTextArea}
+            onBlur={handleBlurSave}
             disabled={isDisabled}
           />
         </div>
@@ -172,6 +184,7 @@ const TestFormQuest = (props) => {
             label={`quest.issuePurpose.q${qId[2]}`}
             placeholder="텍스트 입력"
             component={FormTextArea}
+            onBlur={handleBlurSave}
             disabled={isDisabled}
           />
         </div>

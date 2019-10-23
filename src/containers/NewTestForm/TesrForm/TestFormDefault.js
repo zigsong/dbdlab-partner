@@ -36,6 +36,7 @@ const TestFormDefault = (props) => {
       meta,
       steps,
       disabled,
+      handleBlurSave,
     } = valueProps;
     const hasError = meta.touched && meta.error;
 
@@ -47,7 +48,11 @@ const TestFormDefault = (props) => {
               type="radio"
               name={input.name}
               onFocus={e => input.onFocus(e, input.onChange(step.value))}
-              onChange={input.onChange}
+              onChange={(e) => {
+                input.onChange(e, step.value);
+                handleBlurSave();
+              }}
+              onBlur={e => input.onBlur(e, input.onChange(step.value))}
               value={step.value}
               checked={step.value === input.value}
               disabled={disabled}
@@ -76,6 +81,7 @@ const TestFormDefault = (props) => {
     service1Category,
     service2Category,
     funnelCategory,
+    handleBlurSave,
   } = props;
 
   return (
@@ -91,6 +97,7 @@ const TestFormDefault = (props) => {
             component={FormSelect}
             validate={mediaRequired}
             disabled={isDisabled}
+            onBlur={handleBlurSave}
             defaultValue="카테고리 선택"
           >
             <option value="카테고리 선택" disabled>카테고리 선택</option>
@@ -104,6 +111,7 @@ const TestFormDefault = (props) => {
             component={FormSelect}
             validate={mediaRequired}
             disabled={isDisabled}
+            onBlur={handleBlurSave}
             defaultValue="카테고리 선택"
           >
             <option value="카테고리 선택" disabled>카테고리 선택</option>
@@ -122,6 +130,7 @@ const TestFormDefault = (props) => {
             label="default.serviceInfo"
             placeholder="서비스 URL 또는 어플리케이션 명 입력"
             component={FormInput}
+            onBlur={handleBlurSave}
             disabled={isDisabled}
             validate={[
               seriveInfoRequired,
@@ -141,6 +150,7 @@ const TestFormDefault = (props) => {
             component={FormSelect}
             disabled={isDisabled}
             validate={mediaRequired}
+            onBlur={handleBlurSave}
             defaultValue="카테고리 선택"
           >
             <option value="카테고리 선택" disabled>카테고리 선택</option>
@@ -159,6 +169,7 @@ const TestFormDefault = (props) => {
             component={FormSelect}
             disabled={isDisabled}
             validate={mediaRequired}
+            onBlur={handleBlurSave}
             defaultValue="카테고리 선택"
           >
             <option value="카테고리 선택" disabled>카테고리 선택</option>
@@ -177,6 +188,7 @@ const TestFormDefault = (props) => {
             label="default.serviceDesc"
             placeholder="100자 내외 텍스트 입력"
             component={FormInput}
+            onBlur={handleBlurSave}
             disabled={isDisabled}
           />
         </div>
@@ -189,6 +201,7 @@ const TestFormDefault = (props) => {
               component={FormRadio}
               name="serviceStatus"
               steps={serviceStatus}
+              handleBlurSave={handleBlurSave}
               disabled={isDisabled}
               validate={serviceStatusRequired}
             />
@@ -206,6 +219,7 @@ const TestFormDefault = (props) => {
             label="default.clientName"
             placeholder="텍스트 입력"
             component={FormInput}
+            onBlur={handleBlurSave}
             disabled={isDisabled}
             validate={[
               clientNameRequired,
@@ -228,7 +242,10 @@ const TestFormDefault = (props) => {
             isContact
             disabled={isDisabled}
             onBlur={
-              (e, newValue, preValue, name) => handleContactValue(e, newValue, preValue, name)
+              (e, newValue, preValue, name) => {
+                handleContactValue(e, newValue, preValue, name);
+                handleBlurSave(e);
+              }
             }
             validate={[clientContactRequired, clientContactRegexp]}
           />
@@ -243,6 +260,7 @@ const TestFormDefault = (props) => {
             label="default.email"
             placeholder="텍스트 입력"
             component={FormInput}
+            onBlur={handleBlurSave}
             disabled={isDisabled}
             validate={[emailRequired, emailRegexp]}
           />
@@ -256,6 +274,7 @@ const TestFormDefault = (props) => {
             type="select"
             defaultValue="경로 선택"
             component={FormSelect}
+            onBlur={handleBlurSave}
             disabled={isDisabled}
           >
             <option value="경로 선택" disabled>경로 선택</option>

@@ -96,6 +96,7 @@ $imgUrl: '/static/images';
         &--payment,
         &--testing {
           @extend .list__item;
+          transition: height, padding .3s;
         }
 
         &--apply {

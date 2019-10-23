@@ -325,6 +325,7 @@ export default handleActions({
       project_id,
       create_user_id,
       created_at,
+      is_register_required,
       order,
     } = action.payload.data;
     // const targetObj
@@ -347,12 +348,35 @@ export default handleActions({
       project_id,
       create_user_id,
       created_at,
+      is_register_required,
       order,
     };
     const key = Object.keys(state.testList).length;
     return {
       ...state,
       postSuccess: true,
+      test: {
+        id,
+        title,
+        step,
+        client_name,
+        client_phone_number,
+        client_email,
+        media_category_1,
+        media_category_2,
+        service_extra_info,
+        service_category,
+        service_format,
+        service_description,
+        service_status,
+        funnel,
+        staff,
+        project_id,
+        create_user_id,
+        created_at,
+        is_register_required,
+        order,
+      },
       testList: {
         ...testList,
         [key + 1]: resultObj,

@@ -179,6 +179,7 @@ $imgUrl: '/static/images/';
     }
 
     .form__field {
+      position: relative;
       width: calc(100% - 149px);
 
       input[name="title"] {
@@ -945,6 +946,22 @@ $imgUrl: '/static/images/';
               color: $black;
             }
           }
+        }
+      }
+
+      .box-alert--autosave {
+        position: absolute;
+        top: 74px;
+        right: 234px;
+        color: $veryLightGray;
+        font-size: 10px;
+        opacity: 0;
+        transition: opacity .3s;
+
+        &--active {
+          @extend .box-alert--autosave;
+          opacity: 1;
+          transition: opacity .3s;
         }
       }
     }

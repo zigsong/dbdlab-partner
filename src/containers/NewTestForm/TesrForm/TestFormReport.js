@@ -60,6 +60,15 @@ class TestFormReport extends Component {
             >
               Next
             </button>
+            <p>
+              Page
+              {' '}
+              {pageNumber || (numPages ? 1 : '--')}
+              {' '}
+              of
+              {' '}
+              {numPages || '--'}
+            </p>
           </div>
         </div>
       </div>

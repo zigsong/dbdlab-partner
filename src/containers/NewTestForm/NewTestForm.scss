@@ -933,12 +933,16 @@ $imgUrl: '/static/images/';
             }
           }
 
-          .box-btn {
+          .box-btn--report {
             position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            right: 47px;
+            bottom: 31px;
             z-index: 10;
+            width: 120px;
+            height: 80px;
+            background-color: $white;
+            border: 1px solid $veryLightGray;
+            box-sizing: border-box;
             
             p {
               font-size: 12px;

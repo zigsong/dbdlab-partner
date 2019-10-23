@@ -35,7 +35,7 @@ class TestFormReport extends Component {
           <Document
             file={report}
             onLoadSuccess={this.onDocumentLoadSuccess}
-            onLoadError={(error) => console.log(error.message)}
+            onLoadError={error => console.log(error.message)}
             options={{
               cMapUrl: `//cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/cmaps/`,
               cMapPacked: true,

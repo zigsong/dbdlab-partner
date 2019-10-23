@@ -7,9 +7,21 @@
     <meta name="theme-color" content="#e8454a" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Realdopt</title>
+    <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div class="wrap"></div>
+    <div class="kakao-talk-channel-chat-button"></div>
+    <script type='text/javascript'>
+      //<![CDATA[
+        // 사용할 앱의 JavaScript 키를 설정해 주세요.
+        Kakao.init('%REACT_APP_KAKAO_INIT%');
+        Kakao.Channel.createChatButton({
+          container: '.kakao-talk-channel-chat-button',
+          channelPublicId: '_RxmxoWT', // 카카오톡 채널 홈 URL에 명시된 id로 설정합니다.
+        });
+      //]]>
+    </script>
   </body>
 </html>

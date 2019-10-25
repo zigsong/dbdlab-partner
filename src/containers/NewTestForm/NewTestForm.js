@@ -1380,6 +1380,7 @@ class NewTestForm extends Component {
       extras,
       isOpen,
       invalid,
+      reset,
     } = this.props;
     const {
       goBack,
@@ -1602,6 +1603,7 @@ class NewTestForm extends Component {
                       extraInfoCategory={extraInfoCategory}
                       extraValue={extras}
                       handleBlurSave={handleBlurSave}
+                      reset={reset}
                     />
                   </FormSection>
                 </>
@@ -1873,8 +1875,6 @@ const mapStateToProps = (state) => {
   const getGenderValue = targets !== undefined ? targets[0].gender : undefined;
   // eslint-disable-next-line no-nested-ternary
   const setGenderValue = getGenderValue !== undefined && getGenderValue !== '' ? (getGenderValue === 'female' ? '여자' : (getGenderValue === 'male' ? '남자' : '무관')) : undefined;
-  console.log(getGenderValue);
-  console.log(setGenderValue);
   const getExtraInfo1Value = extras !== undefined && extras !== []
     ? extras.sort((a, b) => a.id - b.id)[0] : undefined;
   const getExtraInfo2Value = extras !== undefined && extras !== []

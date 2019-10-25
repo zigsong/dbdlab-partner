@@ -9,7 +9,8 @@ const maxAgeVerify = value => (value && parseInt(value, 10) < 101 ? undefined : 
 const genderRequired = value => (value ? undefined : '성별을 선택해 주세요');
 
 const TestFormTarget = (props) => {
-  const { extraInfoCategory, extraValue, isDisabled } = props;
+  const { extraInfoCategory, extraValue, isDisabled, reset } = props;
+  console.log(props);
   const setExtraValue = () => {
     if (extraValue.length > 3) {
       extraValue.length = 3;

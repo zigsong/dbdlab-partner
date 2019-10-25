@@ -524,7 +524,11 @@ class NewTestForm extends Component {
             this.setState({
               isBlurSaved: true,
             }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-          });
+          })
+            .catch((err) => {
+              console.log(err);
+              console.log(err.response);
+            });
         } else {
           await postTest(
             pId,
@@ -545,13 +549,30 @@ class NewTestForm extends Component {
               history.push(`/project/${match.params.pId}/test/${res.data.id}`);
               this.setState({
                 isBlurSaved: true,
+                test: {
+                  targets: [
+                    { id: res.data.targets[0].id },
+                  ],
+                  quests: [
+                    { id: res.data.quests[0].id },
+                    { id: res.data.quests[1].id },
+                    { id: res.data.quests[2].id },
+                  ],
+                },
               }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
               console.log('first save success');
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log(err.response);
             });
         }
       } else if (isTargetRendered && hasTargetPassed) {
+        console.log(tgId);
+        console.log(getGenderValue);
         // eslint-disable-next-line no-nested-ternary
-        const genderValue = getGenderValue === '여자' ? 'female' : (getGenderValue === '남자' ? 'male' : 'both');
+        const genderValue = getGenderValue !== undefined && getGenderValue === '여자' ? 'female' : (getGenderValue !== undefined && getGenderValue === '남자' ? 'male' : 'both');
+        console.log(genderValue);
         const categoryListArr = Object.keys(categoryList).length > 0
           ? Object.keys(categoryList).map(c => categoryList[c].category_items)
           : undefined;
@@ -586,12 +607,17 @@ class NewTestForm extends Component {
           });
         } else if (exCate1Id) {
           await getTest(tId);
-          await postTargetExtra(tgId, exCate1Id, extraInfoDesc1).then(() => {
-            this.setState({
-              isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-            console.log('patchTarget success');
-          });
+          await postTargetExtra(tgId, exCate1Id, extraInfoDesc1)
+            .then(() => {
+              this.setState({
+                isBlurSaved: true,
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              console.log('patchTarget success');
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log(err.response);
+            });
         }
 
         if (tgEx2Id) {
@@ -603,12 +629,17 @@ class NewTestForm extends Component {
           });
         } else if (exCate2Id) {
           await getTest(tId);
-          await postTargetExtra(tgId, exCate2Id, extraInfoDesc2).then(() => {
-            this.setState({
-              isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-            console.log('patchTarget success');
-          });
+          await postTargetExtra(tgId, exCate2Id, extraInfoDesc2)
+            .then(() => {
+              this.setState({
+                isBlurSaved: true,
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              console.log('patchTarget success');
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log(err.response);
+            });
         }
 
         if (tgEx3Id) {
@@ -620,12 +651,17 @@ class NewTestForm extends Component {
           });
         } else if (exCate3Id) {
           await getTest(tId);
-          await postTargetExtra(tgId, exCate3Id, extraInfoDesc3).then(() => {
-            this.setState({
-              isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-            console.log('patchTarget success');
-          });
+          await postTargetExtra(tgId, exCate3Id, extraInfoDesc3)
+            .then(() => {
+              this.setState({
+                isBlurSaved: true,
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              console.log('patchTarget success');
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log(err.response);
+            });
         }
 
         await patchTarget(
@@ -679,6 +715,9 @@ class NewTestForm extends Component {
             this.setState({
               isBlurSaved: true,
             }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+          }).catch((err) => {
+            console.log(err);
+            console.log(err.response);
           });
         }
 
@@ -722,6 +761,7 @@ class NewTestForm extends Component {
             })
             .catch((err) => {
               console.log(err);
+              console.log(err.response);
             });
         }
 
@@ -764,6 +804,7 @@ class NewTestForm extends Component {
             })
             .catch((err) => {
               console.log(err);
+              console.log(err.response);
             });
         }
 
@@ -806,6 +847,7 @@ class NewTestForm extends Component {
             })
             .catch((err) => {
               console.log(err);
+              console.log(err.response);
             });
         }
       }
@@ -1812,6 +1854,8 @@ const mapStateToProps = (state) => {
   const getGenderValue = targets !== undefined ? targets[0].gender : undefined;
   // eslint-disable-next-line no-nested-ternary
   const setGenderValue = getGenderValue !== undefined && getGenderValue !== '' ? (getGenderValue === 'female' ? '여자' : (getGenderValue === 'male' ? '남자' : '무관')) : undefined;
+  console.log(getGenderValue);
+  console.log(setGenderValue);
   const getExtraInfo1Value = extras !== undefined && extras !== []
     ? extras.sort((a, b) => a.id - b.id)[0] : undefined;
   const getExtraInfo2Value = extras !== undefined && extras !== []

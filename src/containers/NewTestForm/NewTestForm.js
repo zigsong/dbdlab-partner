@@ -568,11 +568,30 @@ class NewTestForm extends Component {
             });
         }
       } else if (isTargetRendered && hasTargetPassed) {
-        console.log(tgId);
-        console.log(getGenderValue);
         // eslint-disable-next-line no-nested-ternary
-        const genderValue = getGenderValue !== undefined && getGenderValue === '여자' ? 'female' : (getGenderValue !== undefined && getGenderValue === '남자' ? 'male' : 'both');
-        console.log(genderValue);
+        const setGenderValue = () => {
+          let genderValueTxt;
+
+          if (getGenderValue !== undefined) {
+            switch (getGenderValue) {
+              case '여자':
+                genderValueTxt = 'female';
+                break;
+              case '남자':
+                genderValueTxt = 'male';
+                break;
+              case '무관':
+                genderValueTxt = 'both';
+                break;
+              default:
+                genderValueTxt = undefined;
+                break;
+            }
+          }
+
+          return genderValueTxt;
+        };
+        const genderValue = setGenderValue();
         const categoryListArr = Object.keys(categoryList).length > 0
           ? Object.keys(categoryList).map(c => categoryList[c].category_items)
           : undefined;

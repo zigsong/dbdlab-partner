@@ -67,7 +67,6 @@ class NewTestForm extends Component {
     isCompleteStep: false,
     isTestStep: false,
     isRegisterStep: false,
-    isPaymentStep: false,
     isBlurSaved: false,
     test: {},
     asyncErrorMsg: '',
@@ -122,9 +121,13 @@ class NewTestForm extends Component {
             const { report_url } = res.data;
 
             if (targets !== undefined) {
-              getTarget(targets[0].id);
+              getTarget(targets[0].id)
+                .then(res => console.log(res))
+                .catch(err => console.log(err.response));
             } else {
-              getTarget(res.data.targets[0].id);
+              getTarget(res.data.targets[0].id)
+                .then(res => console.log(res))
+                .catch(err => console.log(err.response));
             }
 
             this.setState({
@@ -255,7 +258,6 @@ class NewTestForm extends Component {
                     isPayPassed: true,
                     isAllRendered: false,
                     isCompleteStep: false,
-                    isPaymentStep: true,
                   });
                 }
 
@@ -284,6 +286,8 @@ class NewTestForm extends Component {
             )
             .catch((err) => {
               console.log(err);
+              console.log(err.message);
+              console.log(err.reponse);
             });
         }
 
@@ -419,13 +423,6 @@ class NewTestForm extends Component {
     const issueissuePurpose1Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issuePurpose)[0] !== '' ? Object.values(fieldsValues.quest.issuePurpose)[0] : undefined;
     const issueissuePurpose2Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issuePurpose)[1] !== '' ? Object.values(fieldsValues.quest.issuePurpose)[1] : undefined;
     const issueissuePurpose3Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issuePurpose)[2] !== '' ? Object.values(fieldsValues.quest.issuePurpose)[2] : undefined;
-
-    // pay
-    // const planValue = fieldsValues !== undefined ? fieldsValues.pay.plan : undefined;
-    // const codeValue = fieldsValues !== undefined && fieldsValues.pay.coupon !== undefined
-    //   ? fieldsValues.pay.coupon : undefined;
-    // const couponNumValue = fieldsValues !== undefined && fieldsValues.pay.coupon !== undefined
-    //   ? fieldsValues.pay.couponNum : undefined;
     const {
       route,
       postTest,
@@ -524,7 +521,11 @@ class NewTestForm extends Component {
             this.setState({
               isBlurSaved: true,
             }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-          });
+          })
+            .catch((err) => {
+              console.log(err);
+              console.log(err.response);
+            });
         } else {
           await postTest(
             pId,
@@ -545,13 +546,49 @@ class NewTestForm extends Component {
               history.push(`/project/${match.params.pId}/test/${res.data.id}`);
               this.setState({
                 isBlurSaved: true,
+                test: {
+                  targets: [
+                    { id: res.data.targets[0].id },
+                  ],
+                  quests: [
+                    { id: res.data.quests[0].id },
+                    { id: res.data.quests[1].id },
+                    { id: res.data.quests[2].id },
+                  ],
+                },
               }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
               console.log('first save success');
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log(err.response);
             });
         }
       } else if (isTargetRendered && hasTargetPassed) {
         // eslint-disable-next-line no-nested-ternary
-        const genderValue = getGenderValue === '여자' ? 'female' : (getGenderValue === '남자' ? 'male' : 'both');
+        const setGenderValue = () => {
+          let genderValueTxt;
+
+          if (getGenderValue !== undefined) {
+            switch (getGenderValue) {
+              case '여자':
+                genderValueTxt = 'female';
+                break;
+              case '남자':
+                genderValueTxt = 'male';
+                break;
+              case '무관':
+                genderValueTxt = 'both';
+                break;
+              default:
+                genderValueTxt = undefined;
+                break;
+            }
+          }
+
+          return genderValueTxt;
+        };
+        const genderValue = setGenderValue();
         const categoryListArr = Object.keys(categoryList).length > 0
           ? Object.keys(categoryList).map(c => categoryList[c].category_items)
           : undefined;
@@ -586,12 +623,17 @@ class NewTestForm extends Component {
           });
         } else if (exCate1Id) {
           await getTest(tId);
-          await postTargetExtra(tgId, exCate1Id, extraInfoDesc1).then(() => {
-            this.setState({
-              isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-            console.log('patchTarget success');
-          });
+          await postTargetExtra(tgId, exCate1Id, extraInfoDesc1)
+            .then(() => {
+              this.setState({
+                isBlurSaved: true,
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              console.log('patchTarget success');
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log(err.response);
+            });
         }
 
         if (tgEx2Id) {
@@ -603,12 +645,17 @@ class NewTestForm extends Component {
           });
         } else if (exCate2Id) {
           await getTest(tId);
-          await postTargetExtra(tgId, exCate2Id, extraInfoDesc2).then(() => {
-            this.setState({
-              isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-            console.log('patchTarget success');
-          });
+          await postTargetExtra(tgId, exCate2Id, extraInfoDesc2)
+            .then(() => {
+              this.setState({
+                isBlurSaved: true,
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              console.log('patchTarget success');
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log(err.response);
+            });
         }
 
         if (tgEx3Id) {
@@ -620,12 +667,17 @@ class NewTestForm extends Component {
           });
         } else if (exCate3Id) {
           await getTest(tId);
-          await postTargetExtra(tgId, exCate3Id, extraInfoDesc3).then(() => {
-            this.setState({
-              isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-            console.log('patchTarget success');
-          });
+          await postTargetExtra(tgId, exCate3Id, extraInfoDesc3)
+            .then(() => {
+              this.setState({
+                isBlurSaved: true,
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              console.log('patchTarget success');
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log(err.response);
+            });
         }
 
         await patchTarget(
@@ -679,6 +731,9 @@ class NewTestForm extends Component {
             this.setState({
               isBlurSaved: true,
             }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+          }).catch((err) => {
+            console.log(err);
+            console.log(err.response);
           });
         }
 
@@ -722,6 +777,7 @@ class NewTestForm extends Component {
             })
             .catch((err) => {
               console.log(err);
+              console.log(err.response);
             });
         }
 
@@ -764,6 +820,7 @@ class NewTestForm extends Component {
             })
             .catch((err) => {
               console.log(err);
+              console.log(err.response);
             });
         }
 
@@ -806,6 +863,7 @@ class NewTestForm extends Component {
             })
             .catch((err) => {
               console.log(err);
+              console.log(err.response);
             });
         }
       }
@@ -1332,6 +1390,7 @@ class NewTestForm extends Component {
     const { tId } = route.match.params;
     const step = test.default !== undefined && Object.keys(test.default).length > 0
       ? test.default.step.toLowerCase() : undefined;
+    const tgId = test.targets ? test.targets[0].id : undefined;
     // eslint-disable-next-line no-nested-ternary
     const qId = test.quests
       ? test.quests.map(q => q.id)
@@ -1538,6 +1597,7 @@ class NewTestForm extends Component {
                           || step === 'testing'
                           || step === 'completed'
                         }
+                      tgId={tgId}
                       extraInfoCategory={extraInfoCategory}
                       extraValue={extras}
                       handleBlurSave={handleBlurSave}

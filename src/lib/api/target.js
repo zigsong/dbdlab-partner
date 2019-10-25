@@ -36,3 +36,4 @@ export const patchTargetExtra = (tgEx1Id, tgId, exCate1Id, extraInfoDesc1) => ax
   category_item_id: exCate1Id,
   value: extraInfoDesc1,
 }, headers);
+export const deleteTargetExtra = (tgExId, tgId) => axios.delete(`${baseURL}/targets/${tgId}/extras/${tgExId}/`, headers);

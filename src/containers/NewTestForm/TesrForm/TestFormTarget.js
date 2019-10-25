@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import FormInput from 'components/FormInput';
 import FormSelect from 'components/FormSelect';
 import { Field } from 'redux-form';
+import { getTarget, deleteTargetExtra } from 'modules/target';
 
 const ageRequired = value => (value ? undefined : '나이를 입력해 주세요');
 const minAgeVerify = value => (value && parseInt(value, 10) > 13 ? undefined : '14살 이상부터 가능합니다');
@@ -9,7 +11,13 @@ const maxAgeVerify = value => (value && parseInt(value, 10) < 101 ? undefined : 
 const genderRequired = value => (value ? undefined : '성별을 선택해 주세요');
 
 const TestFormTarget = (props) => {
-  const { extraInfoCategory, extraValue, isDisabled } = props;
+  const {
+    tgId,
+    extraInfoCategory,
+    extraValue,
+    isDisabled,
+  } = props;
+
   const setExtraValue = () => {
     if (extraValue.length > 3) {
       extraValue.length = 3;
@@ -19,11 +27,24 @@ const TestFormTarget = (props) => {
     return extraValue;
   };
   const [extraInfoBox, setInfoBox] = useState(setExtraValue);
+
+  useEffect(() => {
+    setInfoBox(setExtraValue);
+  }, [extraValue]);
+
   const genderCategory = [
     '남자', '여자', '무관',
   ];
 
   const addInfoBox = () => {
+    const hasId = extraInfoBox.filter(x => x.id).length;
+    const hasValue = extraInfoBox.filter(x => x.value).length;
+
+    if (hasId !== hasValue) {
+      alert('추가 정보를 입력해 주세요');
+      return false;
+    }
+
     if (extraInfoBox.length > 2) {
       alert('추가 정보는 3개까지 가능합니다');
       return false;
@@ -35,13 +56,32 @@ const TestFormTarget = (props) => {
     ]);
   };
 
-  const removeInfoBox = () => {
+  const removeInfoBox = (idx) => {
+    // eslint-disable-next-line no-shadow
+    const { deleteTargetExtra, getTarget } = props;
     const tempArr = extraInfoBox.slice();
     const resultArr = tempArr.slice(0, -1);
+    const hasValue = tempArr[idx].value !== undefined ? tempArr[idx].value.length > 0 : undefined;
 
     if (extraInfoBox.length < 2) {
       return false;
     }
+
+    if (hasValue !== undefined && !!hasValue) {
+      const exTgId = tempArr[idx].id;
+
+      deleteTargetExtra(exTgId, tgId)
+        .then((res) => {
+          console.log(res);
+          getTarget(tgId);
+        })
+        .catch((err) => {
+          console.log(err);
+          console.log(err.response);
+          console.log(err.message);
+        });
+    }
+
     return setInfoBox(resultArr);
   };
 
@@ -138,7 +178,7 @@ const TestFormTarget = (props) => {
                   <button
                     type="button"
                     className="btn-target-remove"
-                    onClick={() => removeInfoBox()}
+                    onClick={() => removeInfoBox(idx)}
                     disabled={isDisabled}
                   >
                     타겟 제거하기
@@ -167,4 +207,12 @@ const TestFormTarget = (props) => {
   );
 };
 
-export default TestFormTarget;
+const mapDispatchToProps = dispatch => ({
+  deleteTargetExtra: (exTgId, tgId) => dispatch(deleteTargetExtra(exTgId, tgId)),
+  getTarget: tgId => dispatch(getTarget(tgId)),
+});
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(TestFormTarget);

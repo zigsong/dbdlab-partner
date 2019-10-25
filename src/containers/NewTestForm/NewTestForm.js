@@ -67,7 +67,6 @@ class NewTestForm extends Component {
     isCompleteStep: false,
     isTestStep: false,
     isRegisterStep: false,
-    isPaymentStep: false,
     isBlurSaved: false,
     test: {},
     asyncErrorMsg: '',
@@ -122,9 +121,13 @@ class NewTestForm extends Component {
             const { report_url } = res.data;
 
             if (targets !== undefined) {
-              getTarget(targets[0].id);
+              getTarget(targets[0].id)
+                .then(res => console.log(res))
+                .catch(err => console.log(err.response));
             } else {
-              getTarget(res.data.targets[0].id);
+              getTarget(res.data.targets[0].id)
+                .then(res => console.log(res))
+                .catch(err => console.log(err.response));
             }
 
             this.setState({
@@ -255,7 +258,6 @@ class NewTestForm extends Component {
                     isPayPassed: true,
                     isAllRendered: false,
                     isCompleteStep: false,
-                    isPaymentStep: true,
                   });
                 }
 
@@ -284,6 +286,8 @@ class NewTestForm extends Component {
             )
             .catch((err) => {
               console.log(err);
+              console.log(err.message);
+              console.log(err.reponse);
             });
         }
 
@@ -419,13 +423,6 @@ class NewTestForm extends Component {
     const issueissuePurpose1Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issuePurpose)[0] !== '' ? Object.values(fieldsValues.quest.issuePurpose)[0] : undefined;
     const issueissuePurpose2Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issuePurpose)[1] !== '' ? Object.values(fieldsValues.quest.issuePurpose)[1] : undefined;
     const issueissuePurpose3Value = fieldsValues !== undefined && Object.values(fieldsValues.quest.issuePurpose)[2] !== '' ? Object.values(fieldsValues.quest.issuePurpose)[2] : undefined;
-
-    // pay
-    // const planValue = fieldsValues !== undefined ? fieldsValues.pay.plan : undefined;
-    // const codeValue = fieldsValues !== undefined && fieldsValues.pay.coupon !== undefined
-    //   ? fieldsValues.pay.coupon : undefined;
-    // const couponNumValue = fieldsValues !== undefined && fieldsValues.pay.coupon !== undefined
-    //   ? fieldsValues.pay.couponNum : undefined;
     const {
       route,
       postTest,
@@ -1380,7 +1377,6 @@ class NewTestForm extends Component {
       extras,
       isOpen,
       invalid,
-      reset,
     } = this.props;
     const {
       goBack,
@@ -1394,6 +1390,7 @@ class NewTestForm extends Component {
     const { tId } = route.match.params;
     const step = test.default !== undefined && Object.keys(test.default).length > 0
       ? test.default.step.toLowerCase() : undefined;
+    const tgId = test.targets ? test.targets[0].id : undefined;
     // eslint-disable-next-line no-nested-ternary
     const qId = test.quests
       ? test.quests.map(q => q.id)
@@ -1600,10 +1597,10 @@ class NewTestForm extends Component {
                           || step === 'testing'
                           || step === 'completed'
                         }
+                      tgId={tgId}
                       extraInfoCategory={extraInfoCategory}
                       extraValue={extras}
                       handleBlurSave={handleBlurSave}
-                      reset={reset}
                     />
                   </FormSection>
                 </>

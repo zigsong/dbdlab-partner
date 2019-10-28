@@ -1,13 +1,23 @@
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
-
+import { Router } from 'react-router-dom';
+import ReactGA from 'react-ga';
+import { createBrowserHistory } from 'history';
 import Routes from './Routes';
 import './styles/base.scss';
 
+const history = createBrowserHistory();
+
+ReactGA.initialize(process.env.REACT_APP_GA_ID);
+
+history.listen((location) => {
+  ReactGA.set({ page: location.pathname });
+  ReactGA.pageview(location.pathname);
+});
+
 const App = () => (
-  <BrowserRouter>
+  <Router history={history}>
     <Routes />
-  </BrowserRouter>
+  </Router>
 );
 
 export default App;

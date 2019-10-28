@@ -28,6 +28,8 @@ class Test extends Component {
   componentDidMount() {
     const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
     const AUTH_TOKEN = hasTokenCookie !== undefined ? hasTokenCookie.replace(/\s/gi, '').substring(6) : null;
+    console.log(hasTokenCookie);
+    console.log(AUTH_TOKEN);
     const { protocol } = window.location;
     const { props } = this;
     const { match, location } = props;
@@ -47,7 +49,7 @@ class Test extends Component {
           const date = new Date();
           date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
           document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=realdopt.com`;
-          // document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=localhost`;
+          document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=localhost`;
         };
         setTokenCookie(-1);
         alert('초대받은 계정으로 로그인 해주세요 :)');

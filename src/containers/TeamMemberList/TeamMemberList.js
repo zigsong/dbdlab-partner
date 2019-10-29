@@ -7,7 +7,12 @@ import { reduxForm, Field, getFormValues } from 'redux-form';
 import LoadingIndicator from 'components/LoadingIndicator';
 import ToastAlert from 'components/ToastAlert';
 import { getAuthSelf } from 'modules/auth';
-import { getProject, patchProject, inviteProject } from 'modules/project';
+import {
+  getProject,
+  patchProject,
+  inviteProject,
+  banProject,
+} from 'modules/project';
 import { getCategoryItem } from 'modules/category';
 import './TeamMemberList.scss';
 
@@ -69,6 +74,38 @@ class TeamMemberList extends Component {
     }));
   }
 
+  handleBanProject = (e, id) => {
+    e.preventDefault();
+
+    const { project, getProject, banProject } = this.props;
+    const { email } = project.members.filter(x => x.id === id)[0];
+    const submit = window.confirm('해당 멤버를 팀에서 제외 시키시겠어요?\n제외된 멤버는 프로젝트 확인이 되지 않으며,\n프로젝트 공유를 위해서는 다시 초대해 주셔야 합니다.');
+
+    if (submit) {
+      console.log('submit');
+      banProject(project.id, [email])
+        .then((res) => {
+          console.log(res);
+          if (res.status === 204) {
+            this.setState({
+              toastTitle: '작업이 완료되었어요',
+              toastSubtitle: '팀원이 제외되었습니다',
+              isToastShow: true,
+            }, () => {
+              setTimeout(() => {
+                this.setState({ isToastShow: false });
+                getProject(project.id);
+              }, 2200);
+            });
+          }
+        }).catch((err) => {
+          console.log(err);
+          console.log(err.message);
+          console.log(err.response);
+        });
+    }
+  }
+
   handleInvitePopupToggle = (e) => {
     e.preventDefault();
     this.setState(prevState => ({ isLayerOpen: !prevState.isLayerOpen }));
@@ -120,6 +157,7 @@ class TeamMemberList extends Component {
 
     inviteProject(project.id, emailList)
       .then((res) => {
+        console.log(res);
         if (res.status === 201 && res.data.result === 'success') {
           inputArr.map(a => change([`inviteEmail${a}`], ''));
           this.setState({
@@ -197,6 +235,7 @@ class TeamMemberList extends Component {
     } = this.state;
     const {
       handleMenuToggle,
+      handleBanProject,
       handleInvitePopupToggle,
       handleInputAdd,
       onSend,
@@ -401,7 +440,13 @@ class TeamMemberList extends Component {
                                               className={`menu-list${isExtended && selectedList === idx ? '--extended' : ''}`}
                                             >
                                               <li className="list__item">
-                                                <button type="button">추방하기</button>
+                                                <button
+                                                  type="button"
+                                                  className="btn-ban"
+                                                  onClick={e => handleBanProject(e, m.id)}
+                                                >
+                                                  추방하기
+                                                </button>
                                               </li>
                                             </ul>
                                           </span>
@@ -525,6 +570,7 @@ const mapDispatchToProps = dispatch => ({
     serviceDesc,
   )),
   inviteProject: (id, email) => dispatch(inviteProject(id, email)),
+  banProject: (id, email) => dispatch(banProject(id, email)),
 });
 
 export default connect(

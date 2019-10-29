@@ -13,6 +13,9 @@ const PATCH_PROJECT_FAILURE = 'project/PATCH_PROJECT_FAILURE';
 const INVITE_PROJECT_PENDING = 'project/INVITE_PROJECT_PENDING';
 const INVITE_PROJECT_SUCCESS = 'project/INVITE_PROJECT_SUCCESS';
 const INVITE_PROJECT_FAILURE = 'project/INVITE_PROJECT_FAILURE';
+const DELETE_PROJECT_PENDING = 'project/DELETE_PROJECT_PENDING';
+const DELETE_PROJECT_SUCCESS = 'project/DELETE_PROJECT_SUCCESS';
+const DELETE_PROJECT_FAILURE = 'project/DELETE_PROJECT_FAILURE';
 
 export const getProjectList = () => dispatch => (
   new Promise((resolve, reject) => {
@@ -145,6 +148,33 @@ export const inviteProject = (id, email) => (dispatch) => {
   );
 };
 
+export const banProject = (id, email) => (dispatch) => {
+  dispatch({
+    type: DELETE_PROJECT_PENDING,
+  });
+
+  return (
+    new Promise((resolve, reject) => {
+      ProjectAPI.banProject(id, email).then((res) => {
+        dispatch({
+          type: DELETE_PROJECT_SUCCESS,
+          payload: res,
+        });
+        resolve(res);
+      }).catch((err) => {
+        console.log(err);
+        console.log(err.response);
+        console.log(err.message);
+        dispatch({
+          type: DELETE_PROJECT_FAILURE,
+          payload: err,
+        });
+        reject(err);
+      });
+    })
+  );
+};
+
 const initialState = {
   getSuccess: false,
   getFailure: false,
@@ -155,6 +185,9 @@ const initialState = {
   invitePending: false,
   inviteSuccess: false,
   inviteFailure: false,
+  deletePending: false,
+  deleteSuccess: false,
+  deleteFailure: false,
   count: 0,
   next: '',
   previous: '',
@@ -323,5 +356,19 @@ export default handleActions({
     ...state,
     inviteFailure: true,
     invitePending: false,
+  }),
+  [DELETE_PROJECT_PENDING]: state => ({
+    ...state,
+    deletePending: true,
+  }),
+  [DELETE_PROJECT_SUCCESS]: state => ({
+    ...state,
+    deleteSuccess: true,
+    deletePending: false,
+  }),
+  [DELETE_PROJECT_FAILURE]: state => ({
+    ...state,
+    deleteFailure: true,
+    deletePending: false,
   }),
 }, initialState);

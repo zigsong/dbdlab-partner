@@ -41,3 +41,13 @@ export const patchProject = (
 export const inviteProject = (id, email) => axios.post(`${baseURL}/projects/${id}/invite/`, {
   email_list: email,
 }, headers);
+export const banProject = (id, email) => axios.delete(`${baseURL}/projects/${id}/ban/`,
+  {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `token ${AUTH_TOKEN}`,
+    },
+    data: {
+      email_list: email,
+    },
+  });

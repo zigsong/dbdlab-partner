@@ -62,7 +62,6 @@ class TeamMemberList extends Component {
 
   handleMenuToggle = (e, idx) => {
     e.preventDefault();
-    console.log(idx);
 
     this.setState(prevState => ({
       selectedList: idx,
@@ -92,6 +91,7 @@ class TeamMemberList extends Component {
   // eslint-disable-next-line consistent-return
   onSend = (e) => {
     const {
+      change,
       fieldValues,
       project,
       getProject,
@@ -104,20 +104,10 @@ class TeamMemberList extends Component {
 
     while (emailList.indexOf(undefined) !== -1) {
       emailList.splice(emailList.indexOf(undefined), 1);
-      console.log(emailList);
     }
-
-    console.log(emailList);
-    console.log(emailList.length);
 
     if (emailList.length < 1) {
       alert('1개 이상의 이메일을 입력해 주세요');
-      // this.setState({
-      //   toastTitle: '이메일을 입력해 주세요!',
-      //   toastSubtitle: '1개 이상 입력해 주셔야 합니다',
-      //   isToastShow: true,
-      // });
-
       return false;
     }
 
@@ -125,19 +115,13 @@ class TeamMemberList extends Component {
 
     if (reg.indexOf(true) !== -1) {
       alert('이메일 형식을 다시 한 번 확인해 주세요');
-      // this.setState({
-      //   toastTitle: '다시 한 번 확인해 주세요',
-      //   toastSubtitle: '이메일 형식을 다시 한 번 확인해 주세요',
-      //   isToastShow: true,
-      // });
-
       return false;
     }
 
     inviteProject(project.id, emailList)
       .then((res) => {
-        console.log(res);
         if (res.status === 201 && res.data.result === 'success') {
+          inputArr.map(a => change([`inviteEmail${a}`], ''));
           this.setState({
             toastTitle: '발송되었습니다!',
             toastSubtitle: '팀원을 초대했어요:)',
@@ -157,7 +141,6 @@ class TeamMemberList extends Component {
   }
 
   onSubmit = (values) => {
-    console.log(values);
     const { props } = this;
     const { id } = props.project;
     const {
@@ -177,8 +160,7 @@ class TeamMemberList extends Component {
       serviceCategory,
       serviceFormat,
       serviceDesc,
-    ).then((res) => {
-      console.log(res);
+    ).then(() => {
       this.setState({
         toastTitle: 'Saved!',
         toastSubtitle: '성공적으로 수정되었어요:)',
@@ -231,7 +213,6 @@ class TeamMemberList extends Component {
       : undefined;
     const serviceFormatValue = fieldValues !== undefined ? fieldValues.serviceFormat : undefined;
 
-    console.log(project);
     return (
       isLoading
         ? <LoadingIndicator />

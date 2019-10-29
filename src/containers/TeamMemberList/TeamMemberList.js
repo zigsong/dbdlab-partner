@@ -23,6 +23,8 @@ const emailRegexp = value => (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}
   ? '이메일 형식을 다시 확인해주세요' : undefined);
 
 class TeamMemberList extends Component {
+  mounted = false;
+
   state = {
     isDisabled: false,
     isLoading: false,
@@ -38,6 +40,8 @@ class TeamMemberList extends Component {
   componentDidMount() {
     const { props } = this;
     const { project } = props;
+
+    this.mounted = true;
 
     props.getAuthSelf().then(() => {
       const { id } = props;
@@ -57,6 +61,11 @@ class TeamMemberList extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.mounted = false;
+    this.setState({ isExtended: false });
+  }
+
   getCategory = async () => {
     const { props } = this;
     this.setState({ isLoading: true });
@@ -65,45 +74,11 @@ class TeamMemberList extends Component {
     await props.getCategoryItem(3).then(this.setState({ isLoading: false }));
   };
 
-  handleMenuToggle = (e, idx) => {
-    e.preventDefault();
-
+  handleMenuToggle = (idx) => {
     this.setState(prevState => ({
       selectedList: idx,
       isExtended: !prevState.isExtended,
     }));
-  }
-
-  handleBanProject = (e, id) => {
-    e.preventDefault();
-
-    const { project, getProject, banProject } = this.props;
-    const { email } = project.members.filter(x => x.id === id)[0];
-    const submit = window.confirm('해당 멤버를 팀에서 제외 시키시겠어요?\n제외된 멤버는 프로젝트 확인이 되지 않으며,\n프로젝트 공유를 위해서는 다시 초대해 주셔야 합니다.');
-
-    if (submit) {
-      console.log('submit');
-      banProject(project.id, [email])
-        .then((res) => {
-          console.log(res);
-          if (res.status === 204) {
-            this.setState({
-              toastTitle: '작업이 완료되었어요',
-              toastSubtitle: '팀원이 제외되었습니다',
-              isToastShow: true,
-            }, () => {
-              setTimeout(() => {
-                this.setState({ isToastShow: false });
-                getProject(project.id);
-              }, 2200);
-            });
-          }
-        }).catch((err) => {
-          console.log(err);
-          console.log(err.message);
-          console.log(err.response);
-        });
-    }
   }
 
   handleInvitePopupToggle = (e) => {
@@ -140,6 +115,18 @@ class TeamMemberList extends Component {
     });
 
     e.preventDefault();
+  }
+
+  handleBlur = (e) => {
+    e.preventDefault();
+
+    if (this.mounted) {
+      setTimeout(() => {
+        this.setState({
+          isExtended: false,
+        });
+      }, 300);
+    }
   }
 
   // eslint-disable-next-line consistent-return
@@ -193,6 +180,40 @@ class TeamMemberList extends Component {
         console.log(err.message);
         console.log(err.response);
       });
+  }
+
+  onBan = (e, id) => {
+    e.preventDefault();
+
+    const { project, getProject, banProject } = this.props;
+    const { email } = project.members.filter(x => x.id === id)[0];
+    const submit = window.confirm('해당 멤버를 팀에서 제외 시키시겠어요?\n제외된 멤버는 프로젝트 확인이 되지 않으며,\n프로젝트 공유를 위해서는 다시 초대해 주셔야 합니다.');
+
+    if (submit) {
+      console.log('submit');
+      banProject(project.id, [email])
+        .then((res) => {
+          console.log(res);
+          if (res.status === 204) {
+            this.setState({
+              toastTitle: '작업이 완료되었어요',
+              toastSubtitle: '팀원이 제외되었습니다',
+              isToastShow: true,
+            }, () => {
+              setTimeout(() => {
+                this.setState({ isToastShow: false });
+                getProject(project.id);
+              }, 2200);
+            });
+          }
+        }).catch((err) => {
+          console.log(err);
+          console.log(err.message);
+          console.log(err.response);
+
+          alert(`Oops! :(\n${err.response.data.detail}`);
+        });
+    }
   }
 
   onSubmit = (values) => {
@@ -252,10 +273,11 @@ class TeamMemberList extends Component {
     } = this.state;
     const {
       handleMenuToggle,
-      handleBanProject,
+      onBan,
       handleInvitePopupToggle,
       handleInputAdd,
       handleLinkCopy,
+      handleBlur,
       onSend,
       onSubmit,
     } = this;
@@ -448,7 +470,8 @@ class TeamMemberList extends Component {
                                                 <button
                                                   type="button"
                                                   className="btn-menu"
-                                                  onClick={e => handleMenuToggle(e, idx)}
+                                                  onClick={() => handleMenuToggle(idx)}
+                                                  onBlur={e => handleBlur(e)}
                                                 >
                                                   팀원 관리하기
                                                 </button>
@@ -461,7 +484,7 @@ class TeamMemberList extends Component {
                                                 <button
                                                   type="button"
                                                   className="btn-ban"
-                                                  onClick={e => handleBanProject(e, m.id)}
+                                                  onClick={e => onBan(e, m.id)}
                                                 >
                                                   추방하기
                                                 </button>

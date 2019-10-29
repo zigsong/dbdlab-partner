@@ -49,7 +49,7 @@ class HeaderDesktop extends Component {
       el.style.paddingTop = 0;
       header.className = isHeaderfixed ? 'header header--fixed' : 'header';
     }
-  };
+  }
 
   handleBlur = (e) => {
     e.preventDefault();
@@ -61,7 +61,7 @@ class HeaderDesktop extends Component {
         }));
       }, 500);
     }
-  };
+  }
 
   render() {
     const {

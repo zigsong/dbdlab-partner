@@ -175,6 +175,7 @@ class TeamMemberList extends Component {
 
   render() {
     const {
+      id,
       handleSubmit,
       onReset,
       category,
@@ -338,46 +339,78 @@ class TeamMemberList extends Component {
                       {
                         memberList.length > 0
                           ? (
-                            memberList.sort((a, b) => a.id - b.id).map((m, idx) => {
-                              const userName = m.name === '' ? m.email.substring(0, m.email.indexOf('@')) : m.name;
-                              return (
-                                <li className="list-team__item" key={m.email}>
-                                  <div className="box-member">
-                                    <span className="member__profile">
-                                      <i className="box-img">
-                                        <img src={m.avatar_url} alt={`${userName}님의 프로필`} />
-                                      </i>
-                                    </span>
-                                    <span className="member__info">
-                                      <span className="info__name">
-                                        <span className="name">{userName}</span>
-                                        {m.is_manager ? <i className="badge">팀장</i> : null}
-                                      </span>
-                                      <span className="info__email">{m.email}</span>
-                                    </span>
-                                    {isDisabled
-                                      ? null
-                                      : (
-                                        <button
-                                          type="button"
-                                          className="btn-menu"
-                                          onClick={e => handleMenuToggle(e, idx)}
-                                        >
-                                          팀원 관리하기
-                                        </button>
-                                      )
-                                    }
-                                    <ul
-                                      className={`menu-list${isExtended && selectedList === idx ? '--extended' : ''}`}
-                                    >
-                                      <li className="list__item">
-                                        <button type="button">추방하기</button>
+                            <>
+                              {memberList.map((m) => {
+                                const userName = m.name === '' ? m.email.substring(0, m.email.indexOf('@')) : m.name;
+
+                                return (
+                                  m.is_manager
+                                    ? (
+                                      <li className="list-team__item" key={m.email}>
+                                        <div className="box-member">
+                                          <span className="member__profile">
+                                            <i className="box-img">
+                                              <img src={m.avatar_url} alt={`${userName}님의 프로필`} />
+                                            </i>
+                                          </span>
+                                          <span className="member__info">
+                                            <span className="info__name">
+                                              <span className="name">{userName}</span>
+                                              <i className="badge">팀장</i>
+                                            </span>
+                                            <span className="info__email">{m.email}</span>
+                                          </span>
+                                        </div>
                                       </li>
-                                    </ul>
-                                  </div>
-                                </li>
-                              );
-                            })
+                                    )
+                                    : null
+                                );
+                              })}
+                              {memberList.sort((a, b) => a.id - b.id).map((m, idx) => {
+                                const userName = m.name === '' ? m.email.substring(0, m.email.indexOf('@')) : m.name;
+
+                                return (
+                                  m.is_manager
+                                    ? null
+                                    : (
+                                      <li className="list-team__item" key={m.email}>
+                                        <div className="box-member">
+                                          <span className="member__profile">
+                                            <i className="box-img">
+                                              <img src={m.avatar_url} alt={`${userName}님의 프로필`} />
+                                            </i>
+                                          </span>
+                                          <span className="member__info">
+                                            <span className="info__name">
+                                              <span className="name">{userName}</span>
+                                            </span>
+                                            <span className="info__email">{m.email}</span>
+                                            {isDisabled && (id !== m.id)
+                                              ? null
+                                              : (
+                                                <button
+                                                  type="button"
+                                                  className="btn-menu"
+                                                  onClick={e => handleMenuToggle(e, idx)}
+                                                >
+                                                  팀원 관리하기
+                                                </button>
+                                              )
+                                            }
+                                            <ul
+                                              className={`menu-list${isExtended && selectedList === idx ? '--extended' : ''}`}
+                                            >
+                                              <li className="list__item">
+                                                <button type="button">추방하기</button>
+                                              </li>
+                                            </ul>
+                                          </span>
+                                        </div>
+                                      </li>
+                                    )
+                                );
+                              })}
+                            </>
                           )
                           : (
                             <li className="list-team__item">

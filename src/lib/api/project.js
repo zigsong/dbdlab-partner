@@ -51,3 +51,4 @@ export const banProject = (id, email) => axios.delete(`${baseURL}/projects/${id}
       email_list: email,
     },
   });
+export const getProjectInviteLink = id => axios.get(`${baseURL}/projects/${id}/invite_link/`, headers);

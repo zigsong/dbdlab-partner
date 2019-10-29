@@ -10,7 +10,7 @@ import UnauthorizedPopup from 'components/UnauthorizedPopup';
 import NewTestForm from 'containers/NewTestForm';
 import TeamMemberList from 'containers/TeamMemberList';
 import { getAuthSelf } from 'modules/auth';
-import { getProject } from 'modules/project';
+import { getProject, getProjectInviteLink } from 'modules/project';
 import { getTestList, getTest, setTestListInit } from 'modules/test';
 import './Test.scss';
 
@@ -23,6 +23,7 @@ class Test extends Component {
       isAuthError: false,
       isNewTestApply: false,
       isTestTab: true,
+      inviteLink: '',
     };
   }
 
@@ -94,6 +95,23 @@ class Test extends Component {
                 );
               } else {
                 props.getTestList(pId);
+                props.getProjectInviteLink(projectId)
+                  .then((res) => {
+                    console.log(res);
+                    const inviteLink = res.data.invite_link;
+                    console.log(inviteLink);
+
+                    this.setState({ inviteLink });
+                  }).catch((err) => {
+                    console.log(err);
+                    console.log(err.message);
+                    console.log(err.response);
+
+                    this.setState({
+                      isAuthError: true,
+                      isLoading: false,
+                    });
+                  });
                 this.setState({ isLoading: false });
               }
             })
@@ -192,6 +210,7 @@ class Test extends Component {
       isAuthError,
       isNewTestApply,
       isTestTab,
+      inviteLink,
     } = this.state;
     const {
       match,
@@ -346,6 +365,7 @@ class Test extends Component {
                                             serviceCategory,
                                             serviceFormat,
                                             serviceDesc,
+                                            inviteLink,
                                           }}
                                         />
                                       </div>
@@ -387,6 +407,7 @@ const mapDispatchToProps = dispatch => ({
   getTestList: pId => dispatch(getTestList(pId)),
   getTest: tId => dispatch(getTest(tId)),
   setTestListInit: () => dispatch(setTestListInit()),
+  getProjectInviteLink: id => dispatch(getProjectInviteLink(id)),
 });
 
 export default connect(

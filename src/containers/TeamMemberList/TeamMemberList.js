@@ -125,6 +125,23 @@ class TeamMemberList extends Component {
     }
   }
 
+  handleLinkCopy = (e) => {
+    this.link.select();
+    document.execCommand('copy');
+
+    this.setState({
+      toastTitle: 'Copied!',
+      toastSubtitle: '링크를 복사했습니다',
+      isToastShow: true,
+    }, () => {
+      setTimeout(() => {
+        this.setState({ isToastShow: false });
+      }, 2200);
+    });
+
+    e.preventDefault();
+  }
+
   // eslint-disable-next-line consistent-return
   onSend = (e) => {
     const {
@@ -238,6 +255,7 @@ class TeamMemberList extends Component {
       handleBanProject,
       handleInvitePopupToggle,
       handleInputAdd,
+      handleLinkCopy,
       onSend,
       onSubmit,
     } = this;
@@ -505,11 +523,13 @@ class TeamMemberList extends Component {
                           name="inviteLink"
                           type="text"
                           label="inviteLink"
+                          setRef={(ref) => { this.link = ref; }}
                           component={FormInput}
+                          readOnly
                         />
                       </div>
                     </div>
-                    <button type="button" className="btn-copy">복사하기</button>
+                    <button type="button" className="btn-copy" onClick={e => handleLinkCopy(e)}>복사하기</button>
                   </div>
                 </section>
               </div>

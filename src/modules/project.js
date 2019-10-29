@@ -16,6 +16,9 @@ const INVITE_PROJECT_FAILURE = 'project/INVITE_PROJECT_FAILURE';
 const DELETE_PROJECT_PENDING = 'project/DELETE_PROJECT_PENDING';
 const DELETE_PROJECT_SUCCESS = 'project/DELETE_PROJECT_SUCCESS';
 const DELETE_PROJECT_FAILURE = 'project/DELETE_PROJECT_FAILURE';
+// const GET_INVITE_PROJECT_LINK_PENDING = 'project/GET_INVITE_PROJECT_LINK_PENDING';
+const GET_INVITE_PROJECT_LINK_SUCCESS = 'project/GET_INVITE_PROJECT_LINK_SUCCESS';
+const GET_INVITE_PROJECT_LINK_FAILURE = 'project/GET_INVITE_PROJECT_LINK_FAILURE';
 
 export const getProjectList = () => dispatch => (
   new Promise((resolve, reject) => {
@@ -175,6 +178,25 @@ export const banProject = (id, email) => (dispatch) => {
   );
 };
 
+export const getProjectInviteLink = id => dispatch => new Promise((resolve, reject) => {
+  ProjectAPI.getProjectInviteLink(id).then((res) => {
+    dispatch({
+      type: GET_INVITE_PROJECT_LINK_SUCCESS,
+      payload: res,
+    });
+    resolve(res);
+  }).catch((err) => {
+    console.log(err);
+    console.log(err.response);
+    console.log(err.message);
+    dispatch({
+      type: GET_INVITE_PROJECT_LINK_FAILURE,
+      payload: err,
+    });
+    reject(err);
+  });
+});
+
 const initialState = {
   getSuccess: false,
   getFailure: false,
@@ -188,6 +210,9 @@ const initialState = {
   deletePending: false,
   deleteSuccess: false,
   deleteFailure: false,
+  getInvitePending: false,
+  getInviteSuccess: false,
+  getInviteFailure: false,
   count: 0,
   next: '',
   previous: '',
@@ -370,5 +395,15 @@ export default handleActions({
     ...state,
     deleteFailure: true,
     deletePending: false,
+  }),
+  [GET_INVITE_PROJECT_LINK_SUCCESS]: state => ({
+    ...state,
+    getInviteSuccess: true,
+    getInvitePending: false,
+  }),
+  [GET_INVITE_PROJECT_LINK_FAILURE]: state => ({
+    ...state,
+    getInviteFailure: true,
+    getInvitePending: false,
   }),
 }, initialState);

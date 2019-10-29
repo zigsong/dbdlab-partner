@@ -15,6 +15,8 @@ import PayAccountInfo from 'components/PayAccountInfo';
 import LoadingIndicator from 'components/LoadingIndicator';
 import ToastAlert from 'components/ToastAlert';
 import { togglePopup } from 'modules/popup';
+import { getAuthSelf } from 'modules/auth';
+import { getProject } from 'modules/project';
 import {
   setTestInit,
   getTest,
@@ -48,6 +50,7 @@ const DisabledLayer = () => (
 
 class NewTestForm extends Component {
   state = {
+    isLeader: false,
     isLoading: false,
     isPayLoading: false,
     isBackConfirmPopup: false,
@@ -75,15 +78,42 @@ class NewTestForm extends Component {
   componentDidMount() {
     const {
       route,
+      getAuthSelf,
+      getProject,
       getTest,
       getCategories,
       getPlanList,
       getTarget,
     } = this.props;
     const { match } = route;
-    const { tId } = match.params;
+    const { pId, tId } = match.params;
 
     this.setState({ isLoading: true });
+
+    getAuthSelf()
+      .then((res) => {
+        console.log(res);
+        console.log(res.data.id);
+        const { id } = res.data;
+        getProject(pId)
+          .then((res) => {
+            console.log(res);
+            const isLeader = res.data.members.find(x => x.is_manager).id === id;              console.log(id);
+            console.log(res.data.members.find(x => x.is_manager).id);
+
+            this.setState({ isLeader });
+          })
+          .catch((err) => {
+            console.log(err);
+            console.log(err.response);
+            console.log(err.message);
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log(err.response);
+        console.log(err.message);
+      });
 
     const getTestContent = async () => {
       await getTest(tId)
@@ -1343,6 +1373,7 @@ class NewTestForm extends Component {
 
   render() {
     const {
+      isLeader,
       isLoading,
       isPayLoading,
       isBackConfirmPopup,
@@ -1556,6 +1587,7 @@ class NewTestForm extends Component {
                         || step === 'payment'
                         || step === 'testing'
                         || step === 'completed'
+                        || !isLeader
                       }
                       test={test}
                       handleBlurSave={handleBlurSave}
@@ -1596,6 +1628,7 @@ class NewTestForm extends Component {
                           || step === 'payment'
                           || step === 'testing'
                           || step === 'completed'
+                          || !isLeader
                         }
                       tgId={tgId}
                       extraInfoCategory={extraInfoCategory}
@@ -1633,6 +1666,7 @@ class NewTestForm extends Component {
                         || step === 'payment'
                         || step === 'testing'
                         || step === 'completed'
+                        || !isLeader
                       }
                       qId={qId}
                       issueCategory={issueCategory}
@@ -1686,6 +1720,7 @@ class NewTestForm extends Component {
                                   || step === 'payment'
                                   || step === 'testing'
                                   || step === 'completed'
+                                  || !isLeader
                                 }
                                 testId={tId}
                                 extraValues={extras}
@@ -1713,6 +1748,7 @@ class NewTestForm extends Component {
                               || step === 'apply'
                               || step === 'testing'
                               || step === 'completed'
+                              || !isLeader
                             }
                             testId={tId}
                             extraValues={extras}
@@ -1757,7 +1793,7 @@ class NewTestForm extends Component {
           <RightSidebar
             step={step}
             submitErrorMsg={asyncErrorMsg}
-            isDisabled={isNoNamed || isSpacedTitle}
+            isDisabled={isNoNamed || isSpacedTitle || !isLeader}
             isDefaultRendered={isDefaultRendered}
             isTargetRendered={isTargetRendered}
             isQuestRendered={isQuestRendered}
@@ -1976,6 +2012,8 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = dispatch => ({
   togglePopup: isOpen => dispatch(togglePopup(isOpen)),
+  getAuthSelf: () => dispatch(getAuthSelf()),
+  getProject: id => dispatch(getProject(id)),
   postTest: (
     id,
     title,

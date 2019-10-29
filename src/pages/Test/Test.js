@@ -18,6 +18,7 @@ class Test extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLeader: false,
       isLoading: false,
       isAuthError: false,
       isNewTestApply: false,
@@ -77,9 +78,15 @@ class Test extends Component {
           props.getProject(projectId)
             .then((res) => {
               console.log(res);
+              const isLeader = res.data.members.find(x => x.is_manager).id === id;
               const isMember = res.data.members.find(x => x.id === id);
+              console.log(id);
+              console.log(res.data.members.find(x => x.is_manager).id);
+              console.log(isLeader);
               console.log(isMember);
               console.log(!!isMember);
+
+              this.setState({ isLeader });
 
               if (inviteToken.length > 1 && !!isMember) {
                 deleteTokenCookie().then(
@@ -180,6 +187,7 @@ class Test extends Component {
       },
     ];
     const {
+      isLeader,
       isLoading,
       isAuthError,
       isNewTestApply,
@@ -254,7 +262,7 @@ class Test extends Component {
                                             <ul className="desc__step-list">
                                               { step.map(s => (
                                                 <li
-                                                  className={`list__item--${s.state[0]}${s.state[0] === 'apply' ? '--active' : ''}`}
+                                                  className={`list__item--${s.state[0]}${s.state[0] === 'apply' && isLeader ? '--active' : ''}`}
                                                   key={s.title}
                                                 >
                                                   <h2 className="item__title">{s.title}</h2>
@@ -265,7 +273,7 @@ class Test extends Component {
                                                         <br />
                                                       </React.Fragment>
                                                     )) }
-                                                    { s.state[0] === 'apply'
+                                                    { isLeader && s.state[0] === 'apply'
                                                       ? <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
                                                       : null }
                                                   </p>
@@ -311,15 +319,18 @@ class Test extends Component {
                                                           <br />
                                                         </React.Fragment>
                                                       )) }
-                                                      { s.state === 'apply' && Object.keys(testList).length > 0
-                                                        ? <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
-                                                        : null }
                                                     </p>
                                                   </li>
                                                 )) }
                                               </ul>
                                               <span className="desc__text">테스트를 통해, 고객에게 더 좋은 서비스를 제공하세요!</span>
-                                              <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
+                                              {
+                                                isLeader
+                                                  ? (
+                                                    <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
+                                                  )
+                                                  : null
+                                              }
                                             </>
                                           )}
                                       </div>

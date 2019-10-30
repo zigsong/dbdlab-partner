@@ -9,9 +9,12 @@ import {
   getFormMeta,
   getFormValues,
   change,
+  submit,
   SubmissionError,
   formValueSelector,
 } from 'redux-form';
+import PopupTemplate from 'components/PopupTemplate';
+import { togglePopup } from 'modules/popup';
 import { getPlanList, getPlanPrice } from 'modules/plan';
 import { orderVoucher } from 'modules/order';
 import PageTemplate from 'containers/PageTemplate';
@@ -27,7 +30,6 @@ const emailRequired = value => (value ? undefined : '이메일을 입력해주�
 const emailRegexp = value => (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
   ? '이메일 형식을 다시 확인해주세요' : undefined);
 const phoneRequired = value => (value ? undefined : '연락처를 입력해주세요');
-
 const asyncValidate = async (values) => {
   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -51,14 +53,103 @@ const asyncValidate = async (values) => {
     }
   });
 };
+const onSubmit = (values, dispatch, props) => {
+  const { plans, togglePopup } = props;
+
+  if (values.plan === undefined) {
+    throw new SubmissionError({
+      plan: '플랜을 선택하셔야 합니다',
+      _error: 'must',
+    });
+  } else if (values.plan === 'PLAN 01') {
+    if (values.plan01Amount < 1 || values.plan01Amount === undefined) {
+      throw new SubmissionError({
+        plan01Amount: '1개 이상 입력하셔야 합니다',
+        _error: 'too short',
+      });
+    } else if (values.plan01Amount > 99) {
+      throw new SubmissionError({
+        plan01Amount: '그렇게나 많이...?(왈칵)',
+        _error: 'too long',
+      });
+    } else {
+      const {
+        companyName,
+        applicantName,
+        depositorName,
+        phone,
+        email,
+      } = values;
+      const amount = values.plan01Amount || values.plan02Amount;
+      const plId = plans.find(p => p.name === values.plan).id;
+
+      props.orderVoucher(
+        companyName,
+        applicantName,
+        depositorName,
+        phone,
+        email,
+        plId,
+        amount,
+      ).then(() => {
+        console.log('Plan1 ordered successfully');
+        togglePopup(false);
+      }).catch((err) => {
+        console.log(err);
+        console.log(err.response);
+        console.log(err.message);
+        togglePopup(false);
+      });
+    }
+  } else if (values.plan === 'PLAN 02') {
+    if (values.plan02Amount < 1 || values.plan02Amount === undefined) {
+      throw new SubmissionError({
+        plan02Amount: '1개 이상 입력하셔야 합니다',
+        _error: 'too short',
+      });
+    } else if (values.plan02Amount > 99) {
+      throw new SubmissionError({
+        plan02Amount: '그렇게나 많이...?(왈칵)',
+        _error: 'too long',
+      });
+    } else {
+      const {
+        companyName,
+        applicantName,
+        depositorName,
+        phone,
+        email,
+      } = values;
+      const amount = values.plan01Amount || values.plan02Amount;
+      const plId = plans.find(p => p.name === values.plan).id;
+
+      props.orderVoucher(
+        companyName,
+        applicantName,
+        depositorName,
+        phone,
+        email,
+        plId,
+        amount,
+      ).then(() => {
+        console.log('Plan2 ordered successfully');
+        togglePopup(false);
+      })
+        .catch((err) => {
+          console.log(err);
+          console.log(err.response);
+          console.log(err.message);
+          togglePopup(false);
+        });
+    }
+  }
+};
 
 class NewPlanForm extends Component {
   state={
     isPlan: null,
     totalPrice: 0,
-    totalAmount: 0,
-    hasPassed: false,
-    isDisabled: false,
+    isConfirmPopup: false,
   }
 
   componentDidMount() {
@@ -171,95 +262,31 @@ class NewPlanForm extends Component {
     }
   };
 
-  onSubmit = (values) => {
-    const { props } = this;
-    const { plans } = props;
+  handleCancleBtn = (e) => {
+    e.preventDefault();
+    const { togglePopup } = this.props;
 
-    if (values.plan === undefined) {
-      throw new SubmissionError({
-        plan: '플랜을 선택하셔야 합니다',
-        _error: 'must',
-      });
-    } else if (values.plan === 'PLAN 01') {
-      if (values.plan01Amount < 1 || values.plan01Amount === undefined) {
-        throw new SubmissionError({
-          plan01Amount: '1개 이상 입력하셔야 합니다',
-          _error: 'too short',
-        });
-      } else if (values.plan01Amount > 99) {
-        throw new SubmissionError({
-          plan01Amount: '그렇게나 많이...?(왈칵)',
-          _error: 'too long',
-        });
-      } else {
-        const {
-          companyName,
-          applicantName,
-          depositorName,
-          phone,
-          email,
-        } = values;
-        const amount = values.plan01Amount || values.plan02Amount;
-        const plId = plans.find(p => p.name === values.plan).id;
-        console.log('TADA!');
-        props.orderVoucher(
-          companyName,
-          applicantName,
-          depositorName,
-          phone,
-          email,
-          plId,
-          amount,
-        ).then(() => this.setState({
-          hasPassed: true,
-          isDisabled: true,
-          totalAmount: amount,
-        }));
-      }
-    } else if (values.plan === 'PLAN 02') {
-      if (values.plan02Amount < 1 || values.plan02Amount === undefined) {
-        throw new SubmissionError({
-          plan02Amount: '1개 이상 입력하셔야 합니다',
-          _error: 'too short',
-        });
-      } else if (values.plan02Amount > 99) {
-        throw new SubmissionError({
-          plan02Amount: '그렇게나 많이...?(왈칵)',
-          _error: 'too long',
-        });
-      } else {
-        console.log('TADA2!');
-        const {
-          companyName,
-          applicantName,
-          depositorName,
-          phone,
-          email,
-        } = values;
-        const amount = values.plan01Amount || values.plan02Amount;
-        const plId = plans.find(p => p.name === values.plan).id;
+    togglePopup(false);
+    this.setState({
+      isConfirmPopup: false,
+    });
+  }
 
-        props.orderVoucher(
-          companyName,
-          applicantName,
-          depositorName,
-          phone,
-          email,
-          plId,
-          amount,
-        ).then(() => this.setState({
-          hasPassed: true,
-          isDisabled: true,
-          totalAmount: amount,
-        }));
-      }
-    }
-  };
+  handleConfirmPopup = (e) => {
+    e.preventDefault();
+    const { togglePopup } = this.props;
+
+    togglePopup(true);
+    this.setState({
+      isConfirmPopup: true,
+    });
+  }
 
   render() {
     const {
       plans,
-      handleSubmit,
+      dispatch,
+      postVoucherSuccess,
       companyName,
       applicantName,
       sameName,
@@ -270,6 +297,7 @@ class NewPlanForm extends Component {
       plan01Amount,
       plan02Amount,
       voucherId,
+      voucherAmount,
     } = this.props;
     const hasValues = !!companyName
       && !!applicantName && !!depositorName && !!email && !!phone
@@ -277,18 +305,17 @@ class NewPlanForm extends Component {
     const {
       isPlan,
       totalPrice,
-      hasPassed,
-      isDisabled,
-      totalAmount,
+      isConfirmPopup,
     } = this.state;
     const {
-      onSubmit,
       getRadioValue,
       handleRadioValue,
       handleNameValue,
       handleInputChange,
       handleCheckboxValue,
       handlePrice,
+      handleCancleBtn,
+      handleConfirmPopup,
       getExpiredDate,
     } = this;
     const sameNameValue = sameName !== undefined ? sameName : false;
@@ -298,167 +325,189 @@ class NewPlanForm extends Component {
         <div className="contents__plan">
           <div className="contents-inner">
             {
-              hasPassed
+              postVoucherSuccess
                 ? (
                   <PayAccountInfo
                     voucherOrder={{
                       voucherId,
                       plans,
-                      totalAmount,
+                      voucherAmount,
                       totalPrice,
                     }}
                   />
                 )
                 : (
-                  <form className="form" onSubmit={handleSubmit(values => onSubmit(values))}>
-                    <section className="field__section">
-                      <div className="field">
-                        <span className="field__title">
-                          <strong className="title">기업명*</strong>
-                        </span>
-                        <Field
-                          name="companyName"
-                          type="text"
-                          label="companyName"
-                          placeholder="텍스트 입력"
-                          component={FormInput}
-                          validate={companyNameRequried}
-                          disabled={isDisabled}
-                        />
-                      </div>
-                      <div className="field">
-                        <span className="field__title">
-                          <strong className="title">이름*</strong>
-                        </span>
-                        <Field
-                          name="applicantName"
-                          type="text"
-                          label="applicantName"
-                          placeholder="텍스트 입력"
-                          component={FormInput}
-                          validate={applicantNameRequired}
-                          disabled={isDisabled}
-                        />
-                      </div>
-                      <div className="field">
-                        <span className="field__title">
-                          <strong className="title">입금자명*</strong>
+                  <>
+                    <form className="form">
+                      <section className="field__section">
+                        <div className="field">
+                          <span className="field__title">
+                            <strong className="title">기업명*</strong>
+                          </span>
                           <Field
-                            name="sameName"
-                            label="동일합니다"
-                            isChecked={sameNameValue}
-                            component={Checkbox}
-                            onChange={() => handleNameValue()}
-                            disabled={isDisabled}
+                            name="companyName"
+                            type="text"
+                            label="companyName"
+                            placeholder="텍스트 입력"
+                            component={FormInput}
+                            validate={companyNameRequried}
+                            disabled={postVoucherSuccess}
                           />
+                        </div>
+                        <div className="field">
+                          <span className="field__title">
+                            <strong className="title">이름*</strong>
+                          </span>
+                          <Field
+                            name="applicantName"
+                            type="text"
+                            label="applicantName"
+                            placeholder="텍스트 입력"
+                            component={FormInput}
+                            validate={applicantNameRequired}
+                            disabled={postVoucherSuccess}
+                          />
+                        </div>
+                        <div className="field">
+                          <span className="field__title">
+                            <strong className="title">입금자명*</strong>
+                            <Field
+                              name="sameName"
+                              label="동일합니다"
+                              isChecked={sameNameValue}
+                              component={Checkbox}
+                              onChange={() => handleNameValue()}
+                              disabled={postVoucherSuccess}
+                            />
+                          </span>
+                          <Field
+                            name="depositorName"
+                            type="text"
+                            label="depositorName"
+                            placeholder="텍스트 입력"
+                            component={FormInput}
+                            onChange={() => handleCheckboxValue()}
+                            validate={depositorNameRequired}
+                            value={sameName ? applicantName : undefined}
+                            disabled={postVoucherSuccess}
+                          />
+                        </div>
+                        <div className="field">
+                          <span className="field__title">
+                            <strong className="title">연락처*</strong>
+                          </span>
+                          <Field
+                            name="phone"
+                            type="tel"
+                            label="phone"
+                            placeholder="‘-’ 제외하고 입력"
+                            component={FormInput}
+                            validate={phoneRequired}
+                            disabled={postVoucherSuccess}
+                          />
+                        </div>
+                        <div className="field">
+                          <span className="field__title">
+                            <strong className="title">시리얼 넘버 받을 이메일*</strong>
+                          </span>
+                          <Field
+                            name="email"
+                            type="email"
+                            label="email"
+                            placeholder="텍스트 입력"
+                            component={FormInput}
+                            validate={[emailRequired, emailRegexp]}
+                            disabled={postVoucherSuccess}
+                          />
+                        </div>
+                        <span className="field__info">
+                          ※ 이메일로 시리얼 넘버를 전송해드리기 때문에
+                          <br />
+                          반드시 정확한 이메일 주소를 입력해주세요!
                         </span>
-                        <Field
-                          name="depositorName"
-                          type="text"
-                          label="depositorName"
-                          placeholder="텍스트 입력"
-                          component={FormInput}
-                          onChange={() => handleCheckboxValue()}
-                          validate={depositorNameRequired}
-                          value={sameName ? applicantName : undefined}
-                          disabled={isDisabled}
-                        />
-                      </div>
-                      <div className="field">
-                        <span className="field__title">
-                          <strong className="title">연락처*</strong>
-                        </span>
-                        <Field
-                          name="phone"
-                          type="tel"
-                          label="phone"
-                          placeholder="‘-’ 제외하고 입력"
-                          component={FormInput}
-                          validate={phoneRequired}
-                          disabled={isDisabled}
-                        />
-                      </div>
-                      <div className="field">
-                        <span className="field__title">
-                          <strong className="title">시리얼 넘버 받을 이메일*</strong>
-                        </span>
-                        <Field
-                          name="email"
-                          type="email"
-                          label="email"
-                          placeholder="텍스트 입력"
-                          component={FormInput}
-                          validate={[emailRequired, emailRegexp]}
-                          disabled={isDisabled}
-                        />
-                      </div>
-                      <span className="field__info">
-                        ※ 이메일로 시리얼 넘버를 전송해드리기 때문에
-                        <br />
-                        반드시 정확한 이메일 주소를 입력해주세요!
-                      </span>
-                    </section>
-                    <section className="field__section">
-                      <div className="field">
-                        <span className="field__title">
-                          <strong className="title">어떤 플랜을 구매하실 건가요?</strong>
-                        </span>
-                        {/* eslint-disable-next-line jsx-a11y/label-has-for */}
-                        <label htmlFor="plan">
-                          {plans.map((p, idx) => (
-                            <span className="box-input__radio" key={p.name}>
-                              <Field
-                                name="plan"
-                                component="input"
-                                type="radio"
-                                value={p.name}
-                                onChange={e => getRadioValue(e, idx)}
-                                disabled={isDisabled}
-                              />
-                              <strong className="plan__name">{p.name}</strong>
-                              <span className="plan__desc">{p.description}</span>
-                              <Field
-                                name={`plan0${idx + 1}Amount`}
-                                type="number"
-                                component={FormInput}
-                                label={`plan0${idx + 1}Amount`}
-                                placeholder=""
-                                onFocus={e => handleRadioValue(e, idx)}
-                                onChange={e => handleInputChange(e, idx)}
-                                onBlur={e => handlePrice(e)}
-                                setRef={idx === 0
-                                  ? (input) => { this.inputEl01 = input; }
-                                  : (input) => { this.inputEl02 = input; }
-                                }
-                                disabled={isDisabled}
-                              />
-                              <span className="input__placeholder">개</span>
-                              <span className="plan__date">
-                                유효기간 :
-                                {isPlan === idx
-                                  ? <strong>{getExpiredDate(90)}</strong>
-                                  : <strong>{getExpiredDate(30)}</strong>
-                                }
+                      </section>
+                      <section className="field__section">
+                        <div className="field">
+                          <span className="field__title">
+                            <strong className="title">어떤 플랜을 구매하실 건가요?</strong>
+                          </span>
+                          {/* eslint-disable-next-line jsx-a11y/label-has-for */}
+                          <label htmlFor="plan">
+                            {plans.map((p, idx) => (
+                              <span className="box-input__radio" key={p.name}>
+                                <Field
+                                  name="plan"
+                                  component="input"
+                                  type="radio"
+                                  value={p.name}
+                                  onChange={e => getRadioValue(e, idx)}
+                                  disabled={postVoucherSuccess}
+                                />
+                                <strong className="plan__name">{p.name}</strong>
+                                <span className="plan__desc">{p.description}</span>
+                                <Field
+                                  name={`plan0${idx + 1}Amount`}
+                                  type="number"
+                                  component={FormInput}
+                                  label={`plan0${idx + 1}Amount`}
+                                  placeholder=""
+                                  onFocus={e => handleRadioValue(e, idx)}
+                                  onChange={e => handleInputChange(e, idx)}
+                                  onBlur={e => handlePrice(e)}
+                                  setRef={idx === 0
+                                    ? (input) => { this.inputEl01 = input; }
+                                    : (input) => { this.inputEl02 = input; }
+                                  }
+                                  disabled={postVoucherSuccess}
+                                />
+                                <span className="input__placeholder">개</span>
+                                <span className="plan__date">
+                                  유효기간 :
+                                  {isPlan === idx
+                                    ? <strong>{getExpiredDate(90)}</strong>
+                                    : <strong>{getExpiredDate(30)}</strong>
+                                  }
+                                </span>
                               </span>
-                            </span>
-                          ))}
-                        </label>
-                      </div>
-                      <p className="receipt__total">
-                        <strong className="total__price">
-                          <span>Total</span>
-                          <strong>
-                            {totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                            <i>원</i>
-                            <span className="price__desc-text">VAT 포함</span>
+                            ))}
+                          </label>
+                        </div>
+                        <p className="receipt__total">
+                          <strong className="total__price">
+                            <span>Total</span>
+                            <strong>
+                              {totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                              <i>원</i>
+                              <span className="price__desc-text">VAT 포함</span>
+                            </strong>
                           </strong>
-                        </strong>
-                      </p>
-                      <div className="box-btn">
-                        <button type="submit" className={`btn-purchase${hasValues ? '--active' : ''}`} disabled={isDisabled}>구매하기</button>
-                      </div>
-                    </section>
-                  </form>
+                        </p>
+                        <div className="box-btn">
+                          <button type="button" className={`btn-purchase${hasValues ? '--active' : ''}`} disabled={postVoucherSuccess} onClick={e => handleConfirmPopup(e)}>구매하기</button>
+                        </div>
+                      </section>
+                    </form>
+                    {isConfirmPopup
+                      ? (
+                        <PopupTemplate isShow={isConfirmPopup} title="PLAN을 구매하시겠어요?">
+                          <p className="contents__confirm">
+                            등록 후엔 수정이 되지 않으니, 꼼꼼히 확인해 주세요.
+                          </p>
+                          <div className="box-btn">
+                            <button type="button" className="btn-cancle" onClick={e => handleCancleBtn(e)}>취소</button>
+                            <button
+                              type="submit"
+                              className="btn-confirm"
+                              onClick={() => dispatch(submit('planForm'))}
+                            >
+                              확인
+                            </button>
+                          </div>
+                        </PopupTemplate>
+                      )
+                      : null
+                      }
+                  </>
                 )
             }
           </div>
@@ -485,10 +534,14 @@ const getPlanValues = state => ({
   plans: state.plan.planList,
   planPrice: state.plan.planPrice,
   voucherId: state.order.voucher.id,
+  voucherAmount: state.order.voucher.amount,
+  postVoucherSuccess: state.order.postVoucherSuccess,
+  postVoucherFailure: state.order.postVoucherFailure,
 });
 
 const mapDispatchToProps = dispatch => ({
   change: () => dispatch(change()),
+  togglePopup: isOpen => dispatch(togglePopup(isOpen)),
   getPlanList: () => dispatch(getPlanList()),
   getPlanPrice: (pName, cNum) => dispatch(getPlanPrice(pName, cNum)),
   orderVoucher: (
@@ -517,6 +570,7 @@ export default connect(
   form: 'planForm',
   asyncValidate,
   asyncChangeFields: ['plan01Amount', 'plan02Amount'],
+  onSubmit: (values, dispatch, props) => onSubmit(values, dispatch, props),
   onSubmitFail: (errors, dispatch, submitError, props) => {
     console.log(errors, dispatch, submitError, props);
   },

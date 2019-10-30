@@ -14,6 +14,12 @@ const validate = (values) => {
   console.log(values);
 
   if (hasValue) {
+    // target
+    if (values.target.minAge > values.target.maxAge) {
+      errors.target.minAge = '나이를 다시 확인해 주세요';
+      errors.target.maxAge = '범위를 다시 확인해 주세요';
+    }
+
     if (values.target.minAge > values.target.maxAge) {
       errors.target.minAge = '나이를 다시 확인해 주세요';
       errors.target.maxAge = '범위를 다시 확인해 주세요';
@@ -42,6 +48,8 @@ const validate = (values) => {
     ) {
       errors.target.extraInfoDesc3 = '해당하는 정보를 적어 주세요';
     }
+
+    // quest
     const issue1qId = values.quest.issue !== undefined ? Object.keys(values.quest.issue)[0] : 1;
     const issue2qId = values.quest.issue !== undefined ? Object.keys(values.quest.issue)[1] : 2;
     const issue3qId = values.quest.issue !== undefined ? Object.keys(values.quest.issue)[2] : 3;
@@ -121,11 +129,9 @@ const validate = (values) => {
         errors.pay.couponNum = '명확하게 입력해주세요';
       }
     }
-
-    return errors;
   }
 
-  return false;
+  return errors;
 };
 
 export default validate;

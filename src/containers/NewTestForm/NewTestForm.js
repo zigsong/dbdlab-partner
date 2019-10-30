@@ -98,7 +98,7 @@ class NewTestForm extends Component {
         getProject(pId)
           .then((res) => {
             console.log(res);
-            const isLeader = res.data.members.find(x => x.is_manager).id === id;              console.log(id);
+            const isLeader = res.data.members.find(x => x.is_manager).id === id;
             console.log(res.data.members.find(x => x.is_manager).id);
 
             this.setState({ isLeader });

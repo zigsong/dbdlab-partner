@@ -7,7 +7,12 @@ import { reduxForm, Field, getFormValues } from 'redux-form';
 import LoadingIndicator from 'components/LoadingIndicator';
 import ToastAlert from 'components/ToastAlert';
 import { getAuthSelf } from 'modules/auth';
-import { getProject, patchProject, inviteProject } from 'modules/project';
+import {
+  getProject,
+  patchProject,
+  inviteProject,
+  banProject,
+} from 'modules/project';
 import { getCategoryItem } from 'modules/category';
 import './TeamMemberList.scss';
 
@@ -18,6 +23,8 @@ const emailRegexp = value => (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}
   ? '이메일 형식을 다시 확인해주세요' : undefined);
 
 class TeamMemberList extends Component {
+  mounted = false;
+
   state = {
     isDisabled: false,
     isLoading: false,
@@ -33,6 +40,8 @@ class TeamMemberList extends Component {
   componentDidMount() {
     const { props } = this;
     const { project } = props;
+
+    this.mounted = true;
 
     props.getAuthSelf().then(() => {
       const { id } = props;
@@ -52,6 +61,11 @@ class TeamMemberList extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.mounted = false;
+    this.setState({ isExtended: false });
+  }
+
   getCategory = async () => {
     const { props } = this;
     this.setState({ isLoading: true });
@@ -60,10 +74,7 @@ class TeamMemberList extends Component {
     await props.getCategoryItem(3).then(this.setState({ isLoading: false }));
   };
 
-  handleMenuToggle = (e, idx) => {
-    e.preventDefault();
-    console.log(idx);
-
+  handleMenuToggle = (idx) => {
     this.setState(prevState => ({
       selectedList: idx,
       isExtended: !prevState.isExtended,
@@ -89,9 +100,39 @@ class TeamMemberList extends Component {
     }
   }
 
+  handleLinkCopy = (e) => {
+    this.link.select();
+    document.execCommand('copy');
+
+    this.setState({
+      toastTitle: 'Copied!',
+      toastSubtitle: '링크를 복사했습니다',
+      isToastShow: true,
+    }, () => {
+      setTimeout(() => {
+        this.setState({ isToastShow: false });
+      }, 2200);
+    });
+
+    e.preventDefault();
+  }
+
+  handleBlur = (e) => {
+    e.preventDefault();
+
+    if (this.mounted) {
+      setTimeout(() => {
+        this.setState({
+          isExtended: false,
+        });
+      }, 300);
+    }
+  }
+
   // eslint-disable-next-line consistent-return
   onSend = (e) => {
     const {
+      change,
       fieldValues,
       project,
       getProject,
@@ -104,20 +145,10 @@ class TeamMemberList extends Component {
 
     while (emailList.indexOf(undefined) !== -1) {
       emailList.splice(emailList.indexOf(undefined), 1);
-      console.log(emailList);
     }
-
-    console.log(emailList);
-    console.log(emailList.length);
 
     if (emailList.length < 1) {
       alert('1개 이상의 이메일을 입력해 주세요');
-      // this.setState({
-      //   toastTitle: '이메일을 입력해 주세요!',
-      //   toastSubtitle: '1개 이상 입력해 주셔야 합니다',
-      //   isToastShow: true,
-      // });
-
       return false;
     }
 
@@ -125,12 +156,6 @@ class TeamMemberList extends Component {
 
     if (reg.indexOf(true) !== -1) {
       alert('이메일 형식을 다시 한 번 확인해 주세요');
-      // this.setState({
-      //   toastTitle: '다시 한 번 확인해 주세요',
-      //   toastSubtitle: '이메일 형식을 다시 한 번 확인해 주세요',
-      //   isToastShow: true,
-      // });
-
       return false;
     }
 
@@ -138,6 +163,7 @@ class TeamMemberList extends Component {
       .then((res) => {
         console.log(res);
         if (res.status === 201 && res.data.result === 'success') {
+          inputArr.map(a => change([`inviteEmail${a}`], ''));
           this.setState({
             toastTitle: '발송되었습니다!',
             toastSubtitle: '팀원을 초대했어요:)',
@@ -156,8 +182,41 @@ class TeamMemberList extends Component {
       });
   }
 
+  onBan = (e, id) => {
+    e.preventDefault();
+
+    const { project, getProject, banProject } = this.props;
+    const { email } = project.members.filter(x => x.id === id)[0];
+    const submit = window.confirm('해당 멤버를 팀에서 제외 시키시겠어요?\n제외된 멤버는 프로젝트 확인이 되지 않으며,\n프로젝트 공유를 위해서는 다시 초대해 주셔야 합니다.');
+
+    if (submit) {
+      console.log('submit');
+      banProject(project.id, [email])
+        .then((res) => {
+          console.log(res);
+          if (res.status === 204) {
+            this.setState({
+              toastTitle: '작업이 완료되었어요',
+              toastSubtitle: '팀원이 제외되었습니다',
+              isToastShow: true,
+            }, () => {
+              setTimeout(() => {
+                this.setState({ isToastShow: false });
+                getProject(project.id);
+              }, 2200);
+            });
+          }
+        }).catch((err) => {
+          console.log(err);
+          console.log(err.message);
+          console.log(err.response);
+
+          alert(`Oops! :(\n${err.response.data.detail}`);
+        });
+    }
+  }
+
   onSubmit = (values) => {
-    console.log(values);
     const { props } = this;
     const { id } = props.project;
     const {
@@ -177,8 +236,7 @@ class TeamMemberList extends Component {
       serviceCategory,
       serviceFormat,
       serviceDesc,
-    ).then((res) => {
-      console.log(res);
+    ).then(() => {
       this.setState({
         toastTitle: 'Saved!',
         toastSubtitle: '성공적으로 수정되었어요:)',
@@ -193,6 +251,7 @@ class TeamMemberList extends Component {
 
   render() {
     const {
+      id,
       handleSubmit,
       onReset,
       category,
@@ -214,8 +273,11 @@ class TeamMemberList extends Component {
     } = this.state;
     const {
       handleMenuToggle,
+      onBan,
       handleInvitePopupToggle,
       handleInputAdd,
+      handleLinkCopy,
+      handleBlur,
       onSend,
       onSubmit,
     } = this;
@@ -231,7 +293,6 @@ class TeamMemberList extends Component {
       : undefined;
     const serviceFormatValue = fieldValues !== undefined ? fieldValues.serviceFormat : undefined;
 
-    console.log(project);
     return (
       isLoading
         ? <LoadingIndicator />
@@ -347,7 +408,7 @@ class TeamMemberList extends Component {
                     )
                   }
                 </section>
-                {/* <section className="form__section">
+                <section className="form__section">
                   <div className="section__title">
                     <span className="title__text">우리팀원</span>
                     <button type="button" className="btn-invite" onClick={e => handleInvitePopupToggle(e)}>+ 초대하기</button>
@@ -357,46 +418,85 @@ class TeamMemberList extends Component {
                       {
                         memberList.length > 0
                           ? (
-                            memberList.sort((a, b) => a.id - b.id).map((m, idx) => {
-                              const userName = m.name === '' ? m.email.substring(0, m.email.indexOf('@')) : m.name;
-                              return (
-                                <li className="list-team__item" key={m.email}>
-                                  <div className="box-member">
-                                    <span className="member__profile">
-                                      <i className="box-img">
-                                        <img src={m.avatar_url} alt={`${userName}님의 프로필`} />
-                                      </i>
-                                    </span>
-                                    <span className="member__info">
-                                      <span className="info__name">
-                                        <span className="name">{userName}</span>
-                                        {m.is_manager ? <i className="badge">팀장</i> : null}
-                                      </span>
-                                      <span className="info__email">{m.email}</span>
-                                    </span>
-                                    {isDisabled
-                                      ? null
-                                      : (
-                                        <button
-                                          type="button"
-                                          className="btn-menu"
-                                          onClick={e => handleMenuToggle(e, idx)}
-                                        >
-                                          팀원 관리하기
-                                        </button>
-                                      )
-                                    }
-                                    <ul
-                                      className={`menu-list${isExtended && selectedList === idx ? '--extended' : ''}`}
-                                    >
-                                      <li className="list__item">
-                                        <button type="button">추방하기</button>
+                            <>
+                              {memberList.map((m) => {
+                                const userName = m.name === '' ? m.email.substring(0, m.email.indexOf('@')) : m.name;
+
+                                return (
+                                  m.is_manager
+                                    ? (
+                                      <li className="list-team__item" key={m.email}>
+                                        <div className="box-member">
+                                          <span className="member__profile">
+                                            <i className="box-img">
+                                              <img src={m.avatar_url} alt={`${userName}님의 프로필`} />
+                                            </i>
+                                          </span>
+                                          <span className="member__info">
+                                            <span className="info__name">
+                                              <span className="name">{userName}</span>
+                                              <i className="badge">팀장</i>
+                                            </span>
+                                            <span className="info__email">{m.email}</span>
+                                          </span>
+                                        </div>
                                       </li>
-                                    </ul>
-                                  </div>
-                                </li>
-                              );
-                            })
+                                    )
+                                    : null
+                                );
+                              })}
+                              {memberList.sort((a, b) => a.id - b.id).map((m, idx) => {
+                                const userName = m.name === '' ? m.email.substring(0, m.email.indexOf('@')) : m.name;
+
+                                return (
+                                  m.is_manager
+                                    ? null
+                                    : (
+                                      <li className="list-team__item" key={m.email}>
+                                        <div className="box-member">
+                                          <span className="member__profile">
+                                            <i className="box-img">
+                                              <img src={m.avatar_url} alt={`${userName}님의 프로필`} />
+                                            </i>
+                                          </span>
+                                          <span className="member__info">
+                                            <span className="info__name">
+                                              <span className="name">{userName}</span>
+                                            </span>
+                                            <span className="info__email">{m.email}</span>
+                                            {isDisabled && (id !== m.id)
+                                              ? null
+                                              : (
+                                                <button
+                                                  type="button"
+                                                  className="btn-menu"
+                                                  onClick={() => handleMenuToggle(idx)}
+                                                  onBlur={e => handleBlur(e)}
+                                                >
+                                                  팀원 관리하기
+                                                </button>
+                                              )
+                                            }
+                                            <ul
+                                              className={`menu-list${isExtended && selectedList === idx ? '--extended' : ''}`}
+                                            >
+                                              <li className="list__item">
+                                                <button
+                                                  type="button"
+                                                  className="btn-ban"
+                                                  onClick={e => onBan(e, m.id)}
+                                                >
+                                                  추방하기
+                                                </button>
+                                              </li>
+                                            </ul>
+                                          </span>
+                                        </div>
+                                      </li>
+                                    )
+                                );
+                              })}
+                            </>
                           )
                           : (
                             <li className="list-team__item">
@@ -446,13 +546,15 @@ class TeamMemberList extends Component {
                           name="inviteLink"
                           type="text"
                           label="inviteLink"
+                          setRef={(ref) => { this.link = ref; }}
                           component={FormInput}
+                          readOnly
                         />
                       </div>
                     </div>
-                    <button type="button" className="btn-copy">복사하기</button>
+                    <button type="button" className="btn-copy" onClick={e => handleLinkCopy(e)}>복사하기</button>
                   </div>
-                </section> */}
+                </section>
               </div>
             </form>
             {isToastShow
@@ -511,6 +613,7 @@ const mapDispatchToProps = dispatch => ({
     serviceDesc,
   )),
   inviteProject: (id, email) => dispatch(inviteProject(id, email)),
+  banProject: (id, email) => dispatch(banProject(id, email)),
 });
 
 export default connect(

@@ -12,6 +12,7 @@ const FormInput = ({
     active, touched, error, warning,
   },
   setRef,
+  readOnly,
 }) => (
   <span className={
     `box-input__text${touched && error ? '--error' : ''}${active ? '--active' : ''}`
@@ -25,6 +26,7 @@ const FormInput = ({
         ref={setRef}
         disabled={disabled}
         value={defaultValue !== undefined ? defaultValue : input.value}
+        readOnly={readOnly !== undefined ? readOnly : false}
       />
     </label>
     {touched && ((error && <span className="msg--error">{error}</span>) || (warning && <span className="msg--warning">{warning}</span>))}

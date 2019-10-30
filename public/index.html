@@ -13,8 +13,39 @@
     <meta name="naver-site-verification" content="33423917b3bae3b1cde0e90a57f63db4d043b03d"/>
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Realdopt</title>
+    <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+    <style type="text/css">
+      .kakao-talk-channel-chat-button {
+        position: fixed;
+        right: 37px;
+        bottom: 35px;
+        z-index: 150;
+        width: 48px;
+        height: 48px;
+        background: transparent url("https://trello-attachments.s3.amazonaws.com/5db80d6726ae057c874c266d/187x185/f6e46190aa5882e9262329a94d68e954/btn_kakao-02.png") no-repeat center center;
+        background-size: 100% auto;
+        text-indent: -9999px;
+        font-size: 0;
+        color: transparent;
+        overflow: hidden;
+      }
+    </style>
   </head>
   <body>
     <div class="wrap"></div>
+    <button class="kakao-talk-channel-chat-button" onclick="chatChannel();">
+      카카오톡 채널 채팅
+    </button>
+    <script type='text/javascript'>
+      //<![CDATA[
+        Kakao.init('%REACT_APP_KAKAO_INIT%');
+        function chatChannel() {
+          Kakao.Channel.chat({
+            // container: '.kakao-talk-channel-chat-button',
+            channelPublicId: '_RxmxoWT',
+          });
+        }
+      //]]>
+    </script>
   </body>
 </html>

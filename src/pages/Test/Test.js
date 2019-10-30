@@ -10,7 +10,7 @@ import UnauthorizedPopup from 'components/UnauthorizedPopup';
 import NewTestForm from 'containers/NewTestForm';
 import TeamMemberList from 'containers/TeamMemberList';
 import { getAuthSelf } from 'modules/auth';
-import { getProject } from 'modules/project';
+import { getProject, getProjectInviteLink } from 'modules/project';
 import { getTestList, getTest, setTestListInit } from 'modules/test';
 import './Test.scss';
 
@@ -18,16 +18,20 @@ class Test extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLeader: false,
       isLoading: false,
       isAuthError: false,
       isNewTestApply: false,
       isTestTab: true,
+      inviteLink: '',
     };
   }
 
   componentDidMount() {
     const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
     const AUTH_TOKEN = hasTokenCookie !== undefined ? hasTokenCookie.replace(/\s/gi, '').substring(6) : null;
+    console.log(hasTokenCookie);
+    console.log(AUTH_TOKEN);
     const { protocol } = window.location;
     const { props } = this;
     const { match, location } = props;
@@ -47,7 +51,7 @@ class Test extends Component {
           const date = new Date();
           date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
           document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=realdopt.com`;
-          // document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=localhost`;
+          document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=localhost`;
         };
         setTokenCookie(-1);
         alert('초대받은 계정으로 로그인 해주세요 :)');
@@ -75,9 +79,15 @@ class Test extends Component {
           props.getProject(projectId)
             .then((res) => {
               console.log(res);
+              const isLeader = res.data.members.find(x => x.is_manager).id === id;
               const isMember = res.data.members.find(x => x.id === id);
+              console.log(id);
+              console.log(res.data.members.find(x => x.is_manager).id);
+              console.log(isLeader);
               console.log(isMember);
               console.log(!!isMember);
+
+              this.setState({ isLeader });
 
               if (inviteToken.length > 1 && !!isMember) {
                 deleteTokenCookie().then(
@@ -85,6 +95,23 @@ class Test extends Component {
                 );
               } else {
                 props.getTestList(pId);
+                props.getProjectInviteLink(projectId)
+                  .then((res) => {
+                    console.log(res);
+                    const inviteLink = res.data.invite_link;
+                    console.log(inviteLink);
+
+                    this.setState({ inviteLink });
+                  }).catch((err) => {
+                    console.log(err);
+                    console.log(err.message);
+                    console.log(err.response);
+
+                    this.setState({
+                      isAuthError: true,
+                      isLoading: false,
+                    });
+                  });
                 this.setState({ isLoading: false });
               }
             })
@@ -178,10 +205,12 @@ class Test extends Component {
       },
     ];
     const {
+      isLeader,
       isLoading,
       isAuthError,
       isNewTestApply,
       isTestTab,
+      inviteLink,
     } = this.state;
     const {
       match,
@@ -252,7 +281,7 @@ class Test extends Component {
                                             <ul className="desc__step-list">
                                               { step.map(s => (
                                                 <li
-                                                  className={`list__item--${s.state[0]}${s.state[0] === 'apply' ? '--active' : ''}`}
+                                                  className={`list__item--${s.state[0]}${s.state[0] === 'apply' && isLeader ? '--active' : ''}`}
                                                   key={s.title}
                                                 >
                                                   <h2 className="item__title">{s.title}</h2>
@@ -263,7 +292,7 @@ class Test extends Component {
                                                         <br />
                                                       </React.Fragment>
                                                     )) }
-                                                    { s.state[0] === 'apply'
+                                                    { isLeader && s.state[0] === 'apply'
                                                       ? <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
                                                       : null }
                                                   </p>
@@ -309,15 +338,18 @@ class Test extends Component {
                                                           <br />
                                                         </React.Fragment>
                                                       )) }
-                                                      { s.state === 'apply' && Object.keys(testList).length > 0
-                                                        ? <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
-                                                        : null }
                                                     </p>
                                                   </li>
                                                 )) }
                                               </ul>
                                               <span className="desc__text">테스트를 통해, 고객에게 더 좋은 서비스를 제공하세요!</span>
-                                              <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
+                                              {
+                                                isLeader
+                                                  ? (
+                                                    <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
+                                                  )
+                                                  : null
+                                              }
                                             </>
                                           )}
                                       </div>
@@ -333,6 +365,7 @@ class Test extends Component {
                                             serviceCategory,
                                             serviceFormat,
                                             serviceDesc,
+                                            inviteLink,
                                           }}
                                         />
                                       </div>
@@ -374,6 +407,7 @@ const mapDispatchToProps = dispatch => ({
   getTestList: pId => dispatch(getTestList(pId)),
   getTest: tId => dispatch(getTest(tId)),
   setTestListInit: () => dispatch(setTestListInit()),
+  getProjectInviteLink: id => dispatch(getProjectInviteLink(id)),
 });
 
 export default connect(

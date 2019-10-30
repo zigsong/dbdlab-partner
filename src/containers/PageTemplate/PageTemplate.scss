@@ -1,0 +1,11 @@
+.contents {
+  width: 100%;
+  min-height: calc(100vh - 49px);
+
+  .kakao-talk-channel-chat-button {
+    position: fixed;
+    right: 37px;
+    bottom: 35px;
+    z-index: 150;
+  }
+}

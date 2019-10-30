@@ -35,7 +35,7 @@ class TestFormReport extends Component {
           <Document
             file={report}
             onLoadSuccess={this.onDocumentLoadSuccess}
-            onLoadError={(error) => console.log(error.message)}
+            onLoadError={error => console.log(error.message)}
             options={{
               cMapUrl: `//cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/cmaps/`,
               cMapPacked: true,
@@ -43,15 +43,7 @@ class TestFormReport extends Component {
           >
             <Page pageNumber={pageNumber} />
           </Document>
-          <div className="box-btn">
-            <p>
-              Page
-              {' '}
-              {pageNumber || (numPages ? 1 : '--')}
-              {' '}
-              of
-              {numPages || '--'}
-            </p>
+          <div className="box-btn--report">
             <button
               type="button"
               className="btn--prev"
@@ -68,6 +60,15 @@ class TestFormReport extends Component {
             >
               Next
             </button>
+            <p>
+              Page
+              {' '}
+              {pageNumber || (numPages ? 1 : '--')}
+              {' '}
+              of
+              {' '}
+              {numPages || '--'}
+            </p>
           </div>
         </div>
       </div>

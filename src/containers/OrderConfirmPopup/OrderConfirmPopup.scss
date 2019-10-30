@@ -44,6 +44,10 @@ $imgUrl: '/static/images';
       width: 45%;
       padding: 0 0 0 42.4px;
       border-right: 0;
+
+      .section__info {
+        border-bottom: 0;
+      }
     }
   }
 
@@ -77,6 +81,12 @@ $imgUrl: '/static/images';
           color: inherit;
           font-size: inherit;
           font-weight: inherit;
+        }
+
+        .info__desc-text {
+          padding-left: 10px;
+          font-size: 10px;
+          color: $gray;
         }
       }
 
@@ -135,7 +145,7 @@ $imgUrl: '/static/images';
       overflow: hidden;
 
       .box-input__text {
-        width: 210px;
+        width: 100%;
 
         &--active {
           @extend .box-input__text;
@@ -213,6 +223,7 @@ $imgUrl: '/static/images';
   top: 50%;
   z-index: -1;
   width: 330px;
+  height: auto;
   max-height: 130px;
   margin: -65px 0 0 -165px;
   background-color: $black;

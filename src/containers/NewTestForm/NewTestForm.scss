@@ -26,6 +26,7 @@ $imgUrl: '/static/images/';
 .contents {
   width: 100%;
   height: 100%;
+  min-height: calc(100vh - 49px);
 
   .contents__form {
     position: relative;
@@ -179,6 +180,7 @@ $imgUrl: '/static/images/';
     }
 
     .form__field {
+      position: relative;
       width: calc(100% - 149px);
 
       input[name="title"] {
@@ -933,18 +935,77 @@ $imgUrl: '/static/images/';
             }
           }
 
-          .box-btn {
+          .box-btn--report {
             position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            right: 47px;
+            top: 31px;
             z-index: 10;
+            width: 122px;
+            height: 82px;
+            background-color: $white;
+            border: 1px solid $veryLightGray;
+            box-sizing: border-box;
+
+            .btn--prev,
+            .btn--next {
+              width: 60px;
+              height: 60px;
+              padding: 36px 0 6px;
+              font-size: 12px;
+              line-height: 18px;
+              color: $black;
+              box-sizing: border-box;
+
+              &:disabled {
+                color: $veryLightGray;
+                cursor: not-allowed;
+              }
+            }
+
+            .btn--prev {
+              background: $white url('#{$imgUrl}common/icons/btn_report-prev.png') no-repeat center 12px;
+
+              &:disabled {
+                background: $white url('#{$imgUrl}common/icons/btn_report-prev--disabled.png') no-repeat center 12px;
+              }
+            }
+
+            .btn--next {
+              background: $white url('#{$imgUrl}common/icons/btn_report-next.png') no-repeat center 12px;
+              border-left: 1px solid $veryLightGray;
+
+              &:disabled {
+                background: $white url('#{$imgUrl}common/icons/btn_report-next--disabled.png') no-repeat center 12px;
+              }
+            }
             
             p {
+              display: block;
+              height: 20px;
+              text-align: center;
+              border-top: 1px solid $veryLightGray;
               font-size: 12px;
-              color: $black;
+              line-height: 1.5;
+              color: $gray;
+              box-sizing: border-box;
             }
           }
+        }
+      }
+
+      .box-alert--autosave {
+        position: absolute;
+        top: 74px;
+        right: 234px;
+        color: $veryLightGray;
+        font-size: 10px;
+        opacity: 0;
+        transition: opacity .3s;
+
+        &--active {
+          @extend .box-alert--autosave;
+          opacity: 1;
+          transition: opacity .3s;
         }
       }
     }

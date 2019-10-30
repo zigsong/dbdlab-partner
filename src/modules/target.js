@@ -15,6 +15,8 @@ const PATCH_TARGET_SUCCESS = 'target/PATCH_TARGET_SUCCESS';
 const PATCH_TARGET_FAILURE = 'target/PATCH_TARGET_FAILURE';
 const PATCH_TARGET_EXTRA_SUCCESS = 'target/PATCH_TARGET_EXTRA_SUCCESS';
 const PATCH_TARGET_EXTRA_FAILURE = 'target/PATCH_TARGET_EXTRA_FAILURE';
+const DELETE_EXTRA_SUCCESS = 'target/DELETE_EXTRA_SUCCESS';
+const DELETE_EXTRA_FAILURE = 'target/DELETE_EXTRA_FAILURE';
 
 export const setTargetInit = () => ({ type: SET_INIT });
 
@@ -30,7 +32,7 @@ export const postTarget = (tId, gender, minAge, maxAge) => dispatch => (
       },
     ).catch((err) => {
       console.log(err);
-      console.log(err.reponse);
+      console.log(err.response);
       console.log(err.message);
       dispatch({
         type: POST_TARGET_FAILURE,
@@ -57,7 +59,7 @@ export const postTargetExtra = (
     });
   }).catch((err) => {
     console.log(err);
-    console.log(err.reponse);
+    console.log(err.response);
     console.log(err.message);
     dispatch({
       type: POST_TARGET_EXTRA_FAILURE,
@@ -82,7 +84,7 @@ export const patchTargetExtra = (
   });
 }).catch((err) => {
   console.log(err);
-  console.log(err.reponse);
+  console.log(err.response);
   console.log(err.message);
   dispatch({
     type: PATCH_TARGET_EXTRA_SUCCESS,
@@ -102,7 +104,7 @@ export const getTargetList = tId => dispatch => (
       },
     ).catch((err) => {
       console.log(err);
-      console.log(err.reponse);
+      console.log(err.response);
       console.log(err.message);
       dispatch({
         type: GET_TARGET_LIST_FAILURE,
@@ -149,9 +151,30 @@ export const patchTarget = (tgId, tId, gender, minAge, maxAge) => dispatch => (
     ).catch((err) => {
       console.log(err);
       console.log(err.message);
-      console.log(err.reponse);
+      console.log(err.response);
       dispatch({
         type: PATCH_TARGET_FAILURE,
+        payload: err,
+      });
+      reject(err);
+    });
+  })
+);
+
+export const deleteTargetExtra = (tgExId, tgId) => dispatch => (
+  new Promise((resolve, reject) => {
+    TargetAPI.deleteTargetExtra(tgExId, tgId).then((res) => {
+      dispatch({
+        type: DELETE_EXTRA_SUCCESS,
+        payload: res,
+      });
+      resolve(res);
+    }).catch((err) => {
+      console.log(err);
+      console.log(err.response);
+      console.log(err.message);
+      dispatch({
+        type: DELETE_EXTRA_FAILURE,
         payload: err,
       });
       reject(err);
@@ -305,5 +328,11 @@ export default handleActions({
   [PATCH_TARGET_EXTRA_FAILURE]: state => ({
     ...state,
     postFailure: true,
+  }),
+  [DELETE_EXTRA_SUCCESS]: state => ({
+    ...state,
+  }),
+  [DELETE_EXTRA_FAILURE]: state => ({
+    ...state,
   }),
 }, initialState);

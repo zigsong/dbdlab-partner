@@ -8,7 +8,8 @@ $imgUrl: '/static/images';
 .contents__test {
   .contents-inner {
     max-width: 850px;
-    margin: 43px auto 0;
+    margin: 0 auto;
+    padding-top: 43px;
   }
 
   .test__tablist {
@@ -96,6 +97,7 @@ $imgUrl: '/static/images';
         &--payment,
         &--testing {
           @extend .list__item;
+          transition: height, padding .3s;
         }
 
         &--apply {

@@ -8,6 +8,19 @@ $black: #282828;
 $white: #fff;
 $blueGray: #f6f7fa;
 
+%btnBlue {
+  border: 1px solid $blue;
+  padding:8px 10px 8.5px;
+  border-radius: 5px;
+  box-sizing: border-box;
+  background-color: transparent;
+  color: $blue;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 16.8px;
+  cursor: pointer;
+}
+
 .contents__plan {
   width: 100%;
   padding: 104px 0 183px;
@@ -275,11 +288,18 @@ $blueGray: #f6f7fa;
           font-size: 18px;
           color: $black;
           font-weight: bold;
+          text-align: right;
 
           i {
             font-size: inherit;
             color: inherit;
             font-weight: inherit;
+          }
+
+          .price__desc-text {
+            display: block;
+            font-size: 10px;
+            color: $black;
           }
         }
       }
@@ -306,6 +326,45 @@ $blueGray: #f6f7fa;
             border-color: $veryLightGray;
             background: $veryLightGray;
           }
+        }
+      }
+    }
+  }
+
+  .popup {
+    .box-popup {
+      min-height: 248px;
+
+      .contents__confirm {
+        font-size: 12px;
+        color: $black;
+        line-height: 1.5;
+      }
+  
+      .contents__subtitle {
+        display: block;
+        margin: 5px 0;
+        font-size: 12px;
+        color: $black;
+        font-weight: 500;
+      }
+  
+      .box-btn {
+        padding-top: 55px;
+  
+        .btn-cancle {
+          @extend %btnBlue;
+          min-width: 190px;
+          min-height: 36px;
+        }
+  
+        .btn-confirm {
+          @extend %btnBlue;
+          min-width: 190px;
+          min-height: 36px;
+          margin-left: 20px;
+          background: $blue;
+          color: $white;
         }
       }
     }

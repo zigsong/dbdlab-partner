@@ -92,8 +92,16 @@ const validate = (values) => {
       errors.quest.issuePurpose[issue1qId] = '도전과제 1을 통해 알고 싶으신 것을 작성해 주세요';
     }
 
+    if (issue2qValue === undefined && issuePurpose2qValue !== undefined) {
+      errors.quest.issue[issue2qId] = '도전과제 2를 먼저 선택해 주세요';
+    }
+
     if (issue2qValue !== undefined && issuePurpose2qValue === undefined) {
       errors.quest.issuePurpose[issue2qId] = '도전과제 2를 통해 알고 싶으신 것을 작성해 주세요';
+    }
+
+    if (issue3qValue === undefined && issuePurpose3qValue !== undefined) {
+      errors.quest.issue[issue3qId] = '도전과제 3을 먼저 선택해 주세요';
     }
 
     if (issue3qValue !== undefined && issuePurpose3qValue === undefined) {
@@ -108,8 +116,16 @@ const validate = (values) => {
       errors.quest.issueDetail[issue2qId] = '도전과제 2에 대해 자세히 적어주세요';
     }
 
+    if (issue2qValue === undefined && issueDetail2qValue !== undefined) {
+      errors.quest.issue[issue2qId] = '도전과제 2를 먼저 선택해 주세요';
+    }
+
     if (issue3qValue !== undefined && issueDetail3qValue === undefined) {
       errors.quest.issueDetail[issue3qId] = '도전과제 3에 대해 자세히 적어주세요';
+    }
+
+    if (issue3qValue === undefined && issueDetail3qValue !== undefined) {
+      errors.quest.issue[issue3qId] = '도전과제 3을 먼저 선택해 주세요';
     }
 
     if (values.pay.coupon !== 'WELCOME_BACK' && values.pay.coupon !== undefined) {

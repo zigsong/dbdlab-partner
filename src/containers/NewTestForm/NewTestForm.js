@@ -487,6 +487,7 @@ class NewTestForm extends Component {
       ? fieldsValues.target.extraInfoCategory2 : undefined;
     const extraInfoCategory3 = fieldsValues !== undefined
       ? fieldsValues.target.extraInfoCategory3 : undefined;
+    const interestValue = fieldsValues !== undefined ? fieldsValues.target.interest : undefined;
 
     // quest
     const registerRequire = fieldsValues !== undefined
@@ -512,6 +513,7 @@ class NewTestForm extends Component {
       patchTargetExtra,
       patchQuest,
       getTest,
+      getTarget,
       categoryList,
       extras,
     } = this.props;
@@ -641,9 +643,7 @@ class NewTestForm extends Component {
               this.setState({
                 isBlurSaved: true,
                 test: {
-                  targets: [
-                    { id: res.data.targets[0].id },
-                  ],
+                  target: { id: res.data.targets[0].id },
                   quests: [
                     { id: res.data.quests[0].id },
                     { id: res.data.quests[1].id },
@@ -697,159 +697,143 @@ class NewTestForm extends Component {
         const exValue1Id = extraInfoDesc1 !== undefined && extraInfoDesc1 !== '' ? extraInfoDesc1 : undefined;
         const exValue2Id = extraInfoDesc2 !== undefined && extraInfoDesc2 !== '' ? extraInfoDesc2 : undefined;
         const exValue3Id = extraInfoDesc3 !== undefined && extraInfoDesc3 !== '' ? extraInfoDesc3 : undefined;
-        console.log(extraInfoDesc1);
-        console.log(exCate1Id);
-        console.log(exValue1Id);
-        console.log(exCate2Id);
-        console.log(exValue2Id);
-        console.log(exCate3Id);
-        console.log(exValue3Id);
 
-        // init values 값 확인
-        const tgEx1Id = extras !== undefined
-          && extras !== [] && extras[0] !== undefined
-          && Object.keys(extras[0]).length > 1
-          ? extras[0].id : undefined;
-        const tgEx2Id = extras !== undefined
-          && extras !== [] && extras[1] !== undefined
-          && Object.keys(extras[1]).length > 1
-          ? extras[1].id : undefined;
-        const tgEx3Id = extras !== undefined
-          && extras !== [] && extras[2] !== undefined
-          && Object.keys(extras[2]).length > 1
-          ? extras[2].id : undefined;
+        getTarget(tgId)
+          .then((res) => {
+            console.log(res);
+            const tgEx1Id = extras.length > 0 ? res.data.extras[0].id : undefined;
+            const tgEx2Id = extras.length > 1 ? res.data.extras[1].id : undefined;
+            const tgEx3Id = extras.length > 2 ? res.data.extras[2].id : undefined;
 
-        if ((exCate1Id !== undefined && exValue1Id === undefined)
-        || (exCate1Id === undefined && exValue1Id !== undefined)) {
-          this.setState({
-            hasTargetError: true,
+            if ((exCate1Id !== undefined && exValue1Id === undefined)
+              || (exCate1Id === undefined && exValue1Id !== undefined)) {
+              this.setState({
+                hasTargetError: true,
+              });
+            }
+
+            if ((exCate2Id !== undefined && exValue2Id === undefined)
+            || (exCate2Id === undefined && exValue2Id !== undefined)) {
+              this.setState({
+                hasTargetError: true,
+              });
+            }
+
+            if ((exCate3Id !== undefined && exValue3Id === undefined)
+            || (exCate3Id === undefined && exValue3Id !== undefined)) {
+              this.setState({
+                hasTargetError: true,
+              });
+            }
+
+            if (!hasTargetError) {
+              this.setState({
+                hasTargetError: false,
+              });
+            }
+
+            if (!!tgEx1Id && !hasTargetError && exCate1Id !== undefined && exValue1Id !== undefined) {
+              patchTargetExtra(tgEx1Id, tgId, exCate1Id, extraInfoDesc1)
+                .then(() => {
+                  getTarget(tgId);
+                  this.setState({
+                    isBlurSaved: true,
+                    hasTargetError: false,
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+                  console.log('patchTarget ex1 success');
+                })
+                .catch((err) => {
+                  console.log(err);
+                  console.log(err.response);
+                });
+            } else if (!hasTargetError && exCate1Id !== undefined && exValue1Id !== undefined) {
+              console.log('postTarget ex1 success');
+              getTest(tId);
+              postTargetExtra(tgId, exCate1Id, extraInfoDesc1)
+                .then(() => {
+                  getTarget(tgId);
+                  this.setState({
+                    isBlurSaved: true,
+                    hasTargetError: false,
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+                  console.log('patchTarget success');
+                })
+                .catch((err) => {
+                  console.log(err);
+                  console.log(err.response);
+                });
+            }
+
+            if (!!tgEx2Id && !hasTargetError && exCate2Id !== undefined && exValue2Id !== undefined) {
+              patchTargetExtra(tgEx2Id, tgId, exCate2Id, extraInfoDesc2)
+                .then(() => {
+                  getTarget(tgId);
+                  this.setState({
+                    isBlurSaved: true,
+                    hasTargetError: false,
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+                  console.log('patchTarget ex2 success');
+                })
+                .catch((err) => {
+                  console.log(err);
+                  console.log(err.response);
+                });
+            } else if (!hasTargetError && exCate2Id !== undefined && exValue2Id !== undefined) {
+              console.log('postTarget ex2 success');
+              getTest(tId);
+              postTargetExtra(tgId, exCate2Id, extraInfoDesc2)
+                .then(() => {
+                  getTarget(tgId);
+                  this.setState({
+                    isBlurSaved: true,
+                    hasTargetError: false,
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+                  console.log('patchTarget success');
+                })
+                .catch((err) => {
+                  console.log(err);
+                  console.log(err.response);
+                });
+            }
+
+            if (!!tgEx3Id && !hasTargetError && exCate3Id !== undefined && exValue3Id !== undefined) {
+              patchTargetExtra(tgEx3Id, tgId, exCate3Id, extraInfoDesc3)
+                .then(() => {
+                  getTarget(tgId);
+                  this.setState({
+                    isBlurSaved: true,
+                    hasTargetError: false,
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+                  console.log('patchTarget ex3 success');
+                })
+                .catch((err) => {
+                  console.log(err);
+                  console.log(err.response);
+                });
+            } else if (!hasTargetError && exCate3Id !== undefined && exValue3Id !== undefined) {
+              console.log('postTarget ex3 success');
+              getTest(tId);
+              postTargetExtra(tgId, exCate3Id, extraInfoDesc3)
+                .then(() => {
+                  getTarget(tgId);
+                  this.setState({
+                    isBlurSaved: true,
+                    hasTargetError: false,
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+                  console.log('patchTarget success');
+                })
+                .catch((err) => {
+                  console.log(err);
+                  console.log(err.response);
+                });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            console.log(err.response);
+            console.log(err.message);
           });
-        }
 
-        if ((exCate2Id !== undefined && exValue2Id === undefined)
-        || (exCate2Id === undefined && exValue2Id !== undefined)) {
-          this.setState({
-            hasTargetError: true,
-          });
-        }
-
-        if ((exCate3Id !== undefined && exValue3Id === undefined)
-        || (exCate3Id === undefined && exValue3Id !== undefined)) {
-          this.setState({
-            hasTargetError: true,
-          });
-        }
-
-        if (!hasTargetError) {
-          this.setState({
-            hasTargetError: false,
-          });
-        }
-
-        if (!!tgEx1Id && !hasTargetError && exCate1Id !== undefined && exValue1Id !== undefined) {
-          await patchTargetExtra(tgEx1Id, tgId, exCate1Id, extraInfoDesc1)
-            .then(() => {
-              getTarget(tgId);
-            })
-            .then(() => {
-              this.setState({
-                isBlurSaved: true,
-                hasTargetError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-              console.log('patchTarget success');
-            })
-            .catch((err) => {
-              console.log(err);
-              console.log(err.response);
-            });
-        } else if (!hasTargetError && exCate1Id !== undefined && exValue1Id !== undefined) {
-          await getTest(tId);
-          await postTargetExtra(tgId, exCate1Id, extraInfoDesc1)
-            .then(() => {
-              getTarget(tgId);
-            })
-            .then(() => {
-              this.setState({
-                isBlurSaved: true,
-                hasTargetError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-              console.log('patchTarget success');
-            })
-            .catch((err) => {
-              console.log(err);
-              console.log(err.response);
-            });
-        }
-
-        if (!!tgEx2Id && !hasTargetError && exCate2Id !== undefined && exValue2Id !== undefined) {
-          await patchTargetExtra(tgEx2Id, tgId, exCate2Id, extraInfoDesc2)
-            .then(() => {
-              getTarget(tgId);
-            })
-            .then(() => {
-              this.setState({
-                isBlurSaved: true,
-                hasTargetError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-              console.log('patchTarget success');
-            })
-            .catch((err) => {
-              console.log(err);
-              console.log(err.response);
-            });
-        } else if (!hasTargetError && exCate2Id !== undefined && exValue2Id !== undefined) {
-          await getTest(tId);
-          await postTargetExtra(tgId, exCate2Id, extraInfoDesc2)
-            .then(() => {
-              getTarget(tgId);
-            })
-            .then(() => {
-              this.setState({
-                isBlurSaved: true,
-                hasTargetError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-              console.log('patchTarget success');
-            })
-            .catch((err) => {
-              console.log(err);
-              console.log(err.response);
-            });
-        }
-
-        if (!!tgEx3Id && !hasTargetError && exCate3Id !== undefined && exValue3Id !== undefined) {
-          await patchTargetExtra(tgEx3Id, tgId, exCate3Id, extraInfoDesc3)
-            .then(() => {
-              getTarget(tgId);
-            })
-            .then(() => {
-              this.setState({
-                isBlurSaved: true,
-                hasTargetError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-              console.log('patchTarget success');
-            })
-            .catch((err) => {
-              console.log(err);
-              console.log(err.response);
-            });
-        } else if (!hasTargetError && exCate3Id !== undefined && exValue3Id !== undefined) {
-          await getTest(tId);
-          await postTargetExtra(tgId, exCate3Id, extraInfoDesc3)
-            .then(() => {
-              getTarget(tgId);
-            })
-            .then(() => {
-              this.setState({
-                isBlurSaved: true,
-                hasTargetError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-              console.log('patchTarget success');
-            })
-            .catch((err) => {
-              console.log(err);
-              console.log(err.response);
-            });
-        }
 
         await patchTarget(
           tgId,
@@ -857,9 +841,10 @@ class NewTestForm extends Component {
           genderValue,
           minAgeValue,
           maxAgeValue,
+          interestValue,
         )
-          .then(() => { getTest(tId); })
           .then(() => {
+            getTest(tId);
             this.setState({
               isBlurSaved: true,
               hasTargetError: false,
@@ -1152,6 +1137,7 @@ class NewTestForm extends Component {
           funnel,
         ).then(() => {
           this.setState({
+            hasDefaultError: false,
             isDefaultRendered: false,
             isDefaultPassed: true,
             isTargetRendered: true,
@@ -1168,6 +1154,7 @@ class NewTestForm extends Component {
           extraInfoDesc1,
           extraInfoDesc2,
           extraInfoDesc3,
+          interest,
         } = values.target;
         // eslint-disable-next-line no-nested-ternary
         const genderValue = gender === '여자' ? 'female' : (gender === '남자' ? 'male' : 'both');
@@ -1223,6 +1210,7 @@ class NewTestForm extends Component {
           genderValue,
           minAge,
           maxAge,
+          interest,
         )
           .then(() => {
             console.log('submit patchTarget success');
@@ -1230,6 +1218,7 @@ class NewTestForm extends Component {
           })
           .then(() => {
             this.setState({
+              hasTargetError: false,
               isTargetRendered: false,
               isTargetPassed: true,
               isQuestRendered: true,
@@ -1300,6 +1289,7 @@ class NewTestForm extends Component {
               .then(() => {
                 togglePopup(true);
                 this.setState({
+                  hasQuestError: false,
                   isQuestRendered: false,
                   isQuestPassed: true,
                   isPayRendered: true,
@@ -1342,6 +1332,7 @@ class NewTestForm extends Component {
               .then(() => {
                 togglePopup(true);
                 this.setState({
+                  hasQuestError: false,
                   isQuestRendered: false,
                   isQuestPassed: true,
                   isPayRendered: true,
@@ -1384,6 +1375,7 @@ class NewTestForm extends Component {
               .then(() => {
                 togglePopup(true);
                 this.setState({
+                  hasQuestError: false,
                   isQuestRendered: false,
                   isQuestPassed: true,
                   isPayRendered: true,
@@ -1465,9 +1457,7 @@ class NewTestForm extends Component {
               isDefaultPassed: true,
               isTargetRendered: true,
               test: {
-                targets: [
-                  { id: res.data.targets[0].id },
-                ],
+                target: { id: res.data.targets[0].id },
                 quests: [
                   { id: res.data.quests[0].id },
                   { id: res.data.quests[1].id },
@@ -1481,9 +1471,7 @@ class NewTestForm extends Component {
               isTargetPassed: true,
               isQuestRendered: true,
               test: {
-                targets: [
-                  { id: res.data.targets[0].id },
-                ],
+                target: { id: res.data.targets[0].id },
                 quests: [
                   { id: res.data.quests[0].id },
                   { id: res.data.quests[1].id },
@@ -1497,9 +1485,7 @@ class NewTestForm extends Component {
               isQuestPassed: true,
               isPayRendered: true,
               test: {
-                targets: [
-                  { id: res.data.targets[0].id },
-                ],
+                target: { id: res.data.targets[0].id },
                 quests: [
                   { id: res.data.quests[0].id },
                   { id: res.data.quests[1].id },
@@ -1513,9 +1499,7 @@ class NewTestForm extends Component {
               isPayPassed: true,
               isAllRendered: false,
               test: {
-                targets: [
-                  { id: res.data.targets[0].id },
-                ],
+                target: { id: res.data.targets[0].id },
                 quests: [
                   { id: res.data.quests[0].id },
                   { id: res.data.quests[1].id },
@@ -2121,7 +2105,8 @@ const mapStateToProps = (state) => {
   const funnelValue = test.funnel ? test.funnel : undefined;
   const minAgeValue = target !== undefined ? target.age_minimum : undefined;
   const maxAgeValue = target !== undefined ? target.age_maximum : undefined;
-  const getGenderValue = target !== undefined ? target.gender : undefined;
+  const getGenderValue = target !== undefined && target.gender !== null ? target.gender : undefined;
+  const tagValue = target !== undefined ? target.tags : undefined;
   // eslint-disable-next-line no-nested-ternary
   const setGenderValue = getGenderValue !== undefined && getGenderValue !== '' ? (getGenderValue === 'female' ? '여자' : (getGenderValue === 'male' ? '남자' : '무관')) : undefined;
   const getExtraInfo1Value = extras !== undefined && extras !== []
@@ -2185,6 +2170,7 @@ const mapStateToProps = (state) => {
       extraInfoDesc1,
       extraInfoDesc2,
       extraInfoDesc3,
+      interest: tagValue,
     },
     quest: {
       registerRequire: registerValue,
@@ -2318,12 +2304,14 @@ const mapDispatchToProps = dispatch => ({
     gender,
     minAge,
     maxAge,
+    tags,
   ) => dispatch(patchTarget(
     tgId,
     tId,
     gender,
     minAge,
     maxAge,
+    tags,
   )),
   patchQuest: (
     qId,

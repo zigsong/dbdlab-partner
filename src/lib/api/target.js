@@ -19,12 +19,13 @@ export const postTarget = (tId, genderValue, minAge, maxAge) => axios.post(`${ba
   age_maximum: maxAge,
   gender: genderValue,
 }, headers);
-export const patchTarget = (tgId, tId, gender, minAge, maxAge) => axios.patch(`${baseURL}/targets/${tgId}/`, {
+export const patchTarget = (tgId, tId, gender, minAge, maxAge, tags) => axios.patch(`${baseURL}/targets/${tgId}/`, {
   id: tgId,
   test_id: tId,
   age_minimum: minAge,
   age_maximum: maxAge,
   gender,
+  tags,
 }, headers);
 export const postTargetExtra = (tgId, cId, cValue) => axios.post(`${baseURL}/targets/${tgId}/extras/`, {
   target_id: tgId,

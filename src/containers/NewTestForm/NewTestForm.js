@@ -583,9 +583,9 @@ class NewTestForm extends Component {
 
     const defaultBlurSave = async () => {
       if (isDefaultRendered && hasDefaultPassed) {
-        if (tId) {
-          const step = 'APPLY';
+        const step = 'APPLY';
 
+        if (tId) {
           if (!hasDefaultError) {
             this.setState({
               hasDefaultError: false,
@@ -622,6 +622,7 @@ class NewTestForm extends Component {
         } else {
           await postTest(
             pId,
+            step,
             titleReg,
             clientNameReg,
             clientContactReg,
@@ -1896,6 +1897,8 @@ class NewTestForm extends Component {
                     />
                   )
                     : null }
+                  {console.log(isQuestPassed)}
+                  {console.log(step)}
                   { !isQuestPassed && step === 'apply' ? (
                     <ToastAlert
                       title="아직은 작성하실 수 없어요!"
@@ -2044,9 +2047,7 @@ class NewTestForm extends Component {
             ? (
               <PopupTemplate isShow={isBackConfirmPopup} title="테스트 목록으로 이동하시겠어요?">
                 <p className="contents__back">
-                  테스트 목록으로 이동합니다.
-                  <br />
-                  테스트를 작성 중이셨다면 작성 중인 내용이 모두 사라시니 유의해 주세요.
+                  [확인]을 누르시면 테스트 목록으로 이동합니다.
                 </p>
                 <div className="box-btn">
                   <button type="button" className="btn-cancle" onClick={e => handleCancleBtn(e)}>취소</button>
@@ -2232,6 +2233,7 @@ const mapDispatchToProps = dispatch => ({
   getProject: id => dispatch(getProject(id)),
   postTest: (
     id,
+    step,
     title,
     clientName,
     clientContact,
@@ -2246,6 +2248,7 @@ const mapDispatchToProps = dispatch => ({
     funnel,
   ) => dispatch(postTest(
     id,
+    step,
     title,
     clientName,
     clientContact,

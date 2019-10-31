@@ -21,6 +21,15 @@ const seriveInfoRequired = value => (value ? undefined : 'URL 또는 어플리�
 const servieRequired = value => (value ? undefined : '서비스명을 입력해주세요');
 const emailRegexp = value => (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
   ? '이메일 형식을 다시 확인해주세요' : undefined);
+const hasMember = (value, memberList) => {
+  if (value) {
+    const hasMember = memberList.indexOf(value) > -1;
+
+    if (hasMember) return '이미 초대 된 멤버입니다';
+    return undefined;
+  }
+  return undefined;
+};
 
 class TeamMemberList extends Component {
   mounted = false;
@@ -32,6 +41,7 @@ class TeamMemberList extends Component {
     isLayerOpen: false,
     selectedList: 0,
     inputArr: [0],
+    memberArr: [],
     toastTitle: '',
     toastSubtitle: '',
     isToastShow: false,
@@ -49,6 +59,19 @@ class TeamMemberList extends Component {
 
       if (!isManager) this.setState({ isDisabled: true });
     });
+
+    props.getProject(project.id)
+      .then((res) => {
+        const { members } = res.data;
+        const memberMailList = members.map(x => x.email);
+
+        this.setState({ memberArr: memberMailList });
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log(err.message);
+        console.log(err.response);
+      });
 
     this.getCategory();
   }
@@ -139,13 +162,18 @@ class TeamMemberList extends Component {
       inviteProject,
     } = this.props;
     const { inputArr } = this.state;
-    const emailList = inputArr.map(a => fieldValues[`inviteEmail${a}`]);
+    const emailValueList = inputArr.map(a => fieldValues[`inviteEmail${a}`]);
 
     e.preventDefault();
 
-    while (emailList.indexOf(undefined) !== -1) {
-      emailList.splice(emailList.indexOf(undefined), 1);
+    while (emailValueList.indexOf(undefined) !== -1) {
+      emailValueList.splice(emailValueList.indexOf(undefined), 1);
     }
+
+    const emailList = emailValueList.reduce((a, b) => {
+      if (a.indexOf(b) < 0) a.push(b);
+      return a;
+    }, []);
 
     if (emailList.length < 1) {
       alert('1개 이상의 이메일을 입력해 주세요');
@@ -159,23 +187,39 @@ class TeamMemberList extends Component {
       return false;
     }
 
-    inviteProject(project.id, emailList)
+    getProject(project.id)
       .then((res) => {
-        console.log(res);
-        if (res.status === 201 && res.data.result === 'success') {
-          inputArr.map(a => change([`inviteEmail${a}`], ''));
-          this.setState({
-            toastTitle: '발송되었습니다!',
-            toastSubtitle: '팀원을 초대했어요:)',
-            isToastShow: true,
-          }, () => {
-            setTimeout(() => {
-              this.setState({ isToastShow: false });
-              getProject(project.id);
-            }, 2200);
-          });
+        const { members } = res.data;
+        const memberMailList = members.map(x => x.email);
+        const hasMember = memberMailList.some(m => emailList.indexOf(m) > -1);
+
+        if (hasMember) {
+          alert('이미 팀원인 메일이 있어요!\n팀원은 다시 초대하실 수 없습니다.');
+        } else {
+          inviteProject(project.id, emailList)
+            .then((res) => {
+              console.log(res);
+              if (res.status === 201 && res.data.result === 'success') {
+                inputArr.map(a => change([`inviteEmail${a}`], ''));
+                this.setState({
+                  toastTitle: '발송되었습니다!',
+                  toastSubtitle: '팀원을 초대했어요:)',
+                  isToastShow: true,
+                }, () => {
+                  setTimeout(() => {
+                    this.setState({ isToastShow: false });
+                    getProject(project.id);
+                  }, 2200);
+                });
+              }
+            }).catch((err) => {
+              console.log(err);
+              console.log(err.message);
+              console.log(err.response);
+            });
         }
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.log(err);
         console.log(err.message);
         console.log(err.response);
@@ -282,6 +326,7 @@ class TeamMemberList extends Component {
       selectedList,
       isLayerOpen,
       inputArr,
+      memberArr,
       toastTitle,
       toastSubtitle,
       isToastShow,
@@ -307,6 +352,7 @@ class TeamMemberList extends Component {
       ? fieldValues.serviceCategory
       : undefined;
     const serviceFormatValue = fieldValues !== undefined ? fieldValues.serviceFormat : undefined;
+    console.log(memberArr);
 
     return (
       isLoading
@@ -541,7 +587,7 @@ class TeamMemberList extends Component {
                                 label={`inviteEmail${a}`}
                                 placeholder="텍스트 입력"
                                 component={FormInput}
-                                validate={emailRegexp}
+                                validate={[emailRegexp, value => hasMember(value, memberArr)]}
                               />
                             </li>
                           ))}

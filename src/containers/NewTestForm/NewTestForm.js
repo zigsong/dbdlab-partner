@@ -487,6 +487,7 @@ class NewTestForm extends Component {
       ? fieldsValues.target.extraInfoCategory2 : undefined;
     const extraInfoCategory3 = fieldsValues !== undefined
       ? fieldsValues.target.extraInfoCategory3 : undefined;
+    const interestValue = fieldsValues !== undefined ? fieldsValues.target.interest : undefined;
 
     // quest
     const registerRequire = fieldsValues !== undefined
@@ -840,6 +841,7 @@ class NewTestForm extends Component {
           genderValue,
           minAgeValue,
           maxAgeValue,
+          interestValue,
         )
           .then(() => {
             getTest(tId);
@@ -1152,6 +1154,7 @@ class NewTestForm extends Component {
           extraInfoDesc1,
           extraInfoDesc2,
           extraInfoDesc3,
+          interest,
         } = values.target;
         // eslint-disable-next-line no-nested-ternary
         const genderValue = gender === '여자' ? 'female' : (gender === '남자' ? 'male' : 'both');
@@ -1207,6 +1210,7 @@ class NewTestForm extends Component {
           genderValue,
           minAge,
           maxAge,
+          interest,
         )
           .then(() => {
             console.log('submit patchTarget success');
@@ -2102,6 +2106,7 @@ const mapStateToProps = (state) => {
   const minAgeValue = target !== undefined ? target.age_minimum : undefined;
   const maxAgeValue = target !== undefined ? target.age_maximum : undefined;
   const getGenderValue = target !== undefined && target.gender !== null ? target.gender : undefined;
+  const tagValue = target !== undefined ? target.tags : undefined;
   // eslint-disable-next-line no-nested-ternary
   const setGenderValue = getGenderValue !== undefined && getGenderValue !== '' ? (getGenderValue === 'female' ? '여자' : (getGenderValue === 'male' ? '남자' : '무관')) : undefined;
   const getExtraInfo1Value = extras !== undefined && extras !== []
@@ -2165,6 +2170,7 @@ const mapStateToProps = (state) => {
       extraInfoDesc1,
       extraInfoDesc2,
       extraInfoDesc3,
+      interest: tagValue,
     },
     quest: {
       registerRequire: registerValue,
@@ -2298,12 +2304,14 @@ const mapDispatchToProps = dispatch => ({
     gender,
     minAge,
     maxAge,
+    tags,
   ) => dispatch(patchTarget(
     tgId,
     tId,
     gender,
     minAge,
     maxAge,
+    tags,
   )),
   patchQuest: (
     qId,

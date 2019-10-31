@@ -138,9 +138,9 @@ export const getTarget = tgId => dispatch => (
   })
 );
 
-export const patchTarget = (tgId, tId, gender, minAge, maxAge) => dispatch => (
+export const patchTarget = (tgId, tId, gender, minAge, maxAge, tags) => dispatch => (
   new Promise((resolve, reject) => {
-    TargetAPI.patchTarget(tgId, tId, gender, minAge, maxAge).then(
+    TargetAPI.patchTarget(tgId, tId, gender, minAge, maxAge, tags).then(
       (res) => {
         dispatch({
           type: PATCH_TARGET_SUCCESS,
@@ -198,6 +198,7 @@ const initialState = {
     gender: null,
     test_id: null,
     extras: [],
+    tags: '',
   },
 };
 
@@ -215,6 +216,7 @@ export default handleActions({
       gender,
       test_id,
       extras,
+      tags,
     } = action.payload.data;
 
     return {
@@ -228,6 +230,7 @@ export default handleActions({
         gender,
         test_id,
         extras,
+        tags,
       },
     };
   },
@@ -273,6 +276,7 @@ export default handleActions({
       gender,
       test_id,
       extras,
+      tags,
     } = action.payload.data;
 
     return {
@@ -285,6 +289,7 @@ export default handleActions({
         gender,
         test_id,
         extras,
+        tags,
       },
     };
   },
@@ -301,6 +306,7 @@ export default handleActions({
       gender,
       test_id,
       extras,
+      tags,
     } = action.payload.data;
 
     return {
@@ -314,6 +320,7 @@ export default handleActions({
         gender,
         test_id,
         extras,
+        tags,
       },
     };
   },

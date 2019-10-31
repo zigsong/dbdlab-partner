@@ -53,13 +53,11 @@ const UnauthorizedPopup = (props) => {
   };
 
   return (
-    <PopupTemplate isShow title="Login Failed">
+    <PopupTemplate isShow title="Login Failed :(">
       <p className="box-popup__unauthorized">
+        회원가입 또는
+        <br />
         로그인이 필요합니다.
-        <br />
-        프로젝트에 소속된 리얼답 계정으로
-        <br />
-        다시 로그인 해 주세요 :)
         <br />
         <button type="button" onClick={() => redirect()}>확인</button>
       </p>

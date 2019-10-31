@@ -115,109 +115,109 @@ const RightSidebar = (props) => {
   const hasFieldMeta = fieldsMeta !== undefined;
 
   // default meta
-  const defaultMeta = hasFieldMeta ? fieldsMeta.default : undefined;
-  const hasDefaultFieldMeta = hasFieldMeta && (defaultMeta !== undefined);
-  const isMedia1Active = hasDefaultFieldMeta && defaultMeta.media1 !== undefined
-    ? defaultMeta.media1.active : undefined;
-  const isMedia2Active = hasDefaultFieldMeta && defaultMeta.media2 !== undefined
-    ? defaultMeta.media2.active : undefined;
-  const isServiceInfoActive = hasDefaultFieldMeta && defaultMeta.serviceInfo !== undefined
-    ? defaultMeta.serviceInfo.active : undefined;
-  const isServiceCategoryActive = hasDefaultFieldMeta && defaultMeta.serviceCategory !== undefined
-    ? defaultMeta.serviceCategory.active : undefined;
-  const isServiceFormatActive = hasDefaultFieldMeta && defaultMeta.serviceFormat !== undefined
-    ? defaultMeta.serviceFormat.active : undefined;
-  const isServiceDescActive = hasDefaultFieldMeta && defaultMeta.serviceDesc !== undefined
-    ? defaultMeta.serviceDesc.active : undefined;
-  const isServiceStatusActive = hasDefaultFieldMeta && defaultMeta.serviceStatus !== undefined
-    ? defaultMeta.serviceStatus.active : undefined;
-  const isClientNameActive = hasDefaultFieldMeta && defaultMeta.clientName !== undefined
-    ? defaultMeta.clientName.active : undefined;
-  const isClientContactActive = hasDefaultFieldMeta && defaultMeta.clientContact !== undefined
-    ? defaultMeta.clientContact.active : undefined;
-  const isEmailActive = hasDefaultFieldMeta && defaultMeta.email !== undefined
-    ? defaultMeta.email.active : undefined;
-  const isFunnelActive = hasDefaultFieldMeta && defaultMeta.funnel !== undefined
-    ? defaultMeta.funnel.active : undefined;
+  // const defaultMeta = hasFieldMeta ? fieldsMeta.default : undefined;
+  // const hasDefaultFieldMeta = hasFieldMeta && (defaultMeta !== undefined);
+  // const isMedia1Active = hasDefaultFieldMeta && defaultMeta.media1 !== undefined
+  //   ? defaultMeta.media1.active : undefined;
+  // const isMedia2Active = hasDefaultFieldMeta && defaultMeta.media2 !== undefined
+  //   ? defaultMeta.media2.active : undefined;
+  // const isServiceInfoActive = hasDefaultFieldMeta && defaultMeta.serviceInfo !== undefined
+  //   ? defaultMeta.serviceInfo.active : undefined;
+  // const isServiceCategoryActive = hasDefaultFieldMeta && defaultMeta.serviceCategory !== undefined
+  //   ? defaultMeta.serviceCategory.active : undefined;
+  // const isServiceFormatActive = hasDefaultFieldMeta && defaultMeta.serviceFormat !== undefined
+  //   ? defaultMeta.serviceFormat.active : undefined;
+  // const isServiceDescActive = hasDefaultFieldMeta && defaultMeta.serviceDesc !== undefined
+  //   ? defaultMeta.serviceDesc.active : undefined;
+  // const isServiceStatusActive = hasDefaultFieldMeta && defaultMeta.serviceStatus !== undefined
+  //   ? defaultMeta.serviceStatus.active : undefined;
+  // const isClientNameActive = hasDefaultFieldMeta && defaultMeta.clientName !== undefined
+  //   ? defaultMeta.clientName.active : undefined;
+  // const isClientContactActive = hasDefaultFieldMeta && defaultMeta.clientContact !== undefined
+  //   ? defaultMeta.clientContact.active : undefined;
+  // const isEmailActive = hasDefaultFieldMeta && defaultMeta.email !== undefined
+  //   ? defaultMeta.email.active : undefined;
+  // const isFunnelActive = hasDefaultFieldMeta && defaultMeta.funnel !== undefined
+  //   ? defaultMeta.funnel.active : undefined;
   // target meta
-  const targetMeta = hasFieldMeta ? fieldsMeta.target : undefined;
-  const hasTargetFieldMeta = hasFieldMeta && (targetMeta !== undefined);
-  const isMinAgeActive = hasTargetFieldMeta && targetMeta.minAge !== undefined
-    ? targetMeta.minAge.active : undefined;
-  const isMaxAgeActive = hasTargetFieldMeta && targetMeta.maxAge !== undefined
-    ? targetMeta.maxAge.active : undefined;
-  const isGenderActive = hasTargetFieldMeta && targetMeta.gender !== undefined
-    ? targetMeta.gender.active : undefined;
-  const isExtraInfoCategory1Active = hasTargetFieldMeta
-    && targetMeta.extraInfoCategory1 !== undefined
-    ? targetMeta.extraInfoCategory1.active : undefined;
-  const isExtraInfoCategory2Active = hasTargetFieldMeta
-    && targetMeta.extraInfoCategory2 !== undefined
-    ? targetMeta.extraInfoCategory2.active : undefined;
-  const isExtraInfoCategory3Active = hasTargetFieldMeta
-    && targetMeta.extraInfoCategory3 !== undefined
-    ? targetMeta.extraInfoCategory3.active : undefined;
-  const isExtraInfoDesc1Active = hasTargetFieldMeta && targetMeta.extraInfoDesc1 !== undefined
-    ? targetMeta.extraInfoDesc1.active : undefined;
-  const isExtraInfoDesc2Active = hasTargetFieldMeta && targetMeta.extraInfoDesc2 !== undefined
-    ? targetMeta.extraInfoDesc2.active : undefined;
-  const isExtraInfoDesc3Active = hasTargetFieldMeta && targetMeta.extraInfoDesc3 !== undefined
-    ? targetMeta.extraInfoDesc3.active : undefined;
-  const isInterestActive = hasTargetFieldMeta && targetMeta.interest !== undefined
-    ? targetMeta.interest.active : undefined;
+  // const targetMeta = hasFieldMeta ? fieldsMeta.target : undefined;
+  // const hasTargetFieldMeta = hasFieldMeta && (targetMeta !== undefined);
+  // const isMinAgeActive = hasTargetFieldMeta && targetMeta.minAge !== undefined
+  //   ? targetMeta.minAge.active : undefined;
+  // const isMaxAgeActive = hasTargetFieldMeta && targetMeta.maxAge !== undefined
+  //   ? targetMeta.maxAge.active : undefined;
+  // const isGenderActive = hasTargetFieldMeta && targetMeta.gender !== undefined
+  //   ? targetMeta.gender.active : undefined;
+  // const isExtraInfoCategory1Active = hasTargetFieldMeta
+  //   && targetMeta.extraInfoCategory1 !== undefined
+  //   ? targetMeta.extraInfoCategory1.active : undefined;
+  // const isExtraInfoCategory2Active = hasTargetFieldMeta
+  //   && targetMeta.extraInfoCategory2 !== undefined
+  //   ? targetMeta.extraInfoCategory2.active : undefined;
+  // const isExtraInfoCategory3Active = hasTargetFieldMeta
+  //   && targetMeta.extraInfoCategory3 !== undefined
+  //   ? targetMeta.extraInfoCategory3.active : undefined;
+  // const isExtraInfoDesc1Active = hasTargetFieldMeta && targetMeta.extraInfoDesc1 !== undefined
+  //   ? targetMeta.extraInfoDesc1.active : undefined;
+  // const isExtraInfoDesc2Active = hasTargetFieldMeta && targetMeta.extraInfoDesc2 !== undefined
+  //   ? targetMeta.extraInfoDesc2.active : undefined;
+  // const isExtraInfoDesc3Active = hasTargetFieldMeta && targetMeta.extraInfoDesc3 !== undefined
+  //   ? targetMeta.extraInfoDesc3.active : undefined;
+  // const isInterestActive = hasTargetFieldMeta && targetMeta.interest !== undefined
+  //   ? targetMeta.interest.active : undefined;
   // quest meta
-  const questMeta = hasFieldMeta ? fieldsMeta.quest : undefined;
-  const hasQuestFieldMeta = hasFieldMeta && (questMeta !== undefined);
-  const isRegisterRequiredActive = hasQuestFieldMeta && questMeta.registerRequire !== undefined
-    ? questMeta.registerRequire.active : undefined;
-  const isIssue1Active = hasQuestFieldMeta
-    && questMeta.issue !== undefined
-    && Object.keys(questMeta.issue).length > 0
-    && questMeta.issue[Object.keys(questValues.issue)[0]] !== undefined
-    ? questMeta.issue[Object.keys(questValues.issue)[0]].active
-    : undefined;
-  const isIssue2Active = hasQuestFieldMeta
-    && questMeta.issue !== undefined
-    && Object.keys(questMeta.issue).length > 0
-    && questMeta.issue[Object.keys(questValues.issue)[1]] !== undefined
-    ? questMeta.issue[Object.keys(questValues.issue)[1]].active
-    : undefined;
-  const isIssue3Active = hasQuestFieldMeta
-    && questMeta.issue !== undefined
-    && Object.keys(questMeta.issue).length > 0
-    && questMeta.issue[Object.keys(questValues.issue)[2]] !== undefined
-    ? questMeta.issue[Object.keys(questValues.issue)[2]].active
-    : undefined;
-  const isIssueDetail1Active = hasQuestFieldMeta
-    && questMeta.issueDetail !== undefined
-    && questMeta.issueDetail[Object.keys(questValues.issueDetail)[0]] !== undefined
-    ? questMeta.issueDetail[Object.keys(questValues.issueDetail)[0]].active
-    : undefined;
-  const isIssueDetail2Active = hasQuestFieldMeta
-    && questMeta.issueDetail !== undefined
-    && questMeta.issueDetail[Object.keys(questValues.issueDetail)[1]] !== undefined
-    ? questMeta.issueDetail[Object.keys(questValues.issueDetail)[1]].active
-    : undefined;
-  const isIssueDetail3Active = hasQuestFieldMeta
-    && questMeta.issueDetail !== undefined
-    && questMeta.issueDetail[Object.keys(questValues.issueDetail)[2]] !== undefined
-    ? questMeta.issueDetail[Object.keys(questValues.issueDetail)[2]].active
-    : undefined;
-  const isIssuePurpose1Active = hasQuestFieldMeta
-    && questMeta.issuePurpose !== undefined
-    && questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[0]] !== undefined
-    ? questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[0]].active
-    : undefined;
-  const isIssuePurpose2Active = hasQuestFieldMeta
-    && questMeta.issuePurpose !== undefined
-    && questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[1]] !== undefined
-    ? questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[1]].active
-    : undefined;
-  const isIssuePurpose3Active = hasQuestFieldMeta
-    && questMeta.issuePurpose !== undefined
-    && questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[2]] !== undefined
-    ? questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[2]].active
-    : undefined;
+  // const questMeta = hasFieldMeta ? fieldsMeta.quest : undefined;
+  // const hasQuestFieldMeta = hasFieldMeta && (questMeta !== undefined);
+  // const isRegisterRequiredActive = hasQuestFieldMeta && questMeta.registerRequire !== undefined
+  //   ? questMeta.registerRequire.active : undefined;
+  // const isIssue1Active = hasQuestFieldMeta
+  //   && questMeta.issue !== undefined
+  //   && Object.keys(questMeta.issue).length > 0
+  //   && questMeta.issue[Object.keys(questValues.issue)[0]] !== undefined
+  //   ? questMeta.issue[Object.keys(questValues.issue)[0]].active
+  //   : undefined;
+  // const isIssue2Active = hasQuestFieldMeta
+  //   && questMeta.issue !== undefined
+  //   && Object.keys(questMeta.issue).length > 0
+  //   && questMeta.issue[Object.keys(questValues.issue)[1]] !== undefined
+  //   ? questMeta.issue[Object.keys(questValues.issue)[1]].active
+  //   : undefined;
+  // const isIssue3Active = hasQuestFieldMeta
+  //   && questMeta.issue !== undefined
+  //   && Object.keys(questMeta.issue).length > 0
+  //   && questMeta.issue[Object.keys(questValues.issue)[2]] !== undefined
+  //   ? questMeta.issue[Object.keys(questValues.issue)[2]].active
+  //   : undefined;
+  // const isIssueDetail1Active = hasQuestFieldMeta
+  //   && questMeta.issueDetail !== undefined
+  //   && questMeta.issueDetail[Object.keys(questValues.issueDetail)[0]] !== undefined
+  //   ? questMeta.issueDetail[Object.keys(questValues.issueDetail)[0]].active
+  //   : undefined;
+  // const isIssueDetail2Active = hasQuestFieldMeta
+  //   && questMeta.issueDetail !== undefined
+  //   && questMeta.issueDetail[Object.keys(questValues.issueDetail)[1]] !== undefined
+  //   ? questMeta.issueDetail[Object.keys(questValues.issueDetail)[1]].active
+  //   : undefined;
+  // const isIssueDetail3Active = hasQuestFieldMeta
+  //   && questMeta.issueDetail !== undefined
+  //   && questMeta.issueDetail[Object.keys(questValues.issueDetail)[2]] !== undefined
+  //   ? questMeta.issueDetail[Object.keys(questValues.issueDetail)[2]].active
+  //   : undefined;
+  // const isIssuePurpose1Active = hasQuestFieldMeta
+  //   && questMeta.issuePurpose !== undefined
+  //   && questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[0]] !== undefined
+  //   ? questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[0]].active
+  //   : undefined;
+  // const isIssuePurpose2Active = hasQuestFieldMeta
+  //   && questMeta.issuePurpose !== undefined
+  //   && questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[1]] !== undefined
+  //   ? questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[1]].active
+  //   : undefined;
+  // const isIssuePurpose3Active = hasQuestFieldMeta
+  //   && questMeta.issuePurpose !== undefined
+  //   && questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[2]] !== undefined
+  //   ? questMeta.issuePurpose[Object.keys(questValues.issuePurpose)[2]].active
+  //   : undefined;
   // pay meta
   const payMeta = hasFieldMeta ? fieldsMeta.pay : undefined;
   const hasPayFieldMeta = hasFieldMeta && (payMeta !== undefined);
@@ -225,31 +225,29 @@ const RightSidebar = (props) => {
     ? payMeta.plan.active : undefined;
   const isCouponActive = hasPayFieldMeta && payMeta.coupon !== undefined
     ? payMeta.coupon.active : undefined;
-  console.log(fieldsMeta);
-  console.log(defaultMeta);
-  console.log(isServiceInfoActive);
 
   const setDefaultTitle = () => {
     switch (isDefaultRendered) {
-      case isMedia1Active:
-      case isMedia2Active:
-        return '테스트할 서비스는\n어디서\n테스트하면 될까요?';
-      case isServiceInfoActive:
-        return '테스트할 서비스로\n접근할 경로를\n알려주세요.';
-      case isServiceCategoryActive:
-        return '이 서비스의\n주요 관심사는\n무엇인가요?';
-      case isServiceFormatActive:
-        return '이 서비스는\n어떤 방식으로\n운영되나요?';
-      case isServiceDescActive:
-        return '테스터들에게\n이 서비스를\n어떻게 소개할까요?';
-      case isClientNameActive:
-      case isClientContactActive:
-      case isEmailActive:
-        return '테스트를\n담당하시는 분은\n누구신가요?';
-      case isFunnelActive:
-        return '테스트 신청 경로를\n알려주세요';
-      case isServiceStatusActive:
-        return '지금\n테스트할 서비스는\n어떤 단계인가요?';
+      // case isMedia1Active:
+      // case isMedia2Active:
+      //   return '테스트할 서비스는\n어디서\n테스트하면 될까요?';
+      // case isServiceInfoActive:
+      //   return '테스트할 서비스로\n접근할 경로를\n알려주세요.';
+      // case isServiceCategoryActive:
+      //   return '이 서비스의\n주요 관심사는\n무엇인가요?';
+      // case isServiceFormatActive:
+      //   return '이 서비스는\n어떤 방식으로\n운영되나요?';
+      // case isServiceDescActive:
+      //   return '테스터들에게\n이 서비스를\n어떻게 소개할까요?';
+      // case isClientNameActive:
+      // case isClientContactActive:
+      // case isEmailActive:
+      //   return '테스트를\n담당하시는 분은\n누구신가요?';
+      // case isFunnelActive:
+      //   return '테스트 신청 경로를\n알려주세요';
+      // case isServiceStatusActive:
+      //   return '지금\n테스트할 서비스는\n어떤 단계인가요?';
+      case isPayPassed:
       case step === 'testing':
       case step === 'payment':
       case step === 'completed':
@@ -269,33 +267,34 @@ const RightSidebar = (props) => {
 
   const setDefaultDesc = () => {
     switch (isDefaultRendered) {
-      case isMedia1Active:
-      case isMedia2Active:
-        return '웹사이트에서\n테스트 할까요?\n아니면 어플리케이션?\n휴대폰으로 테스트해야할지,\n컴퓨터로 테스트해야할지\n알려주세요.';
-      case isServiceInfoActive:
-        return '어플리케이션일 경우,\n검색이 되는\n이름만 알려주셔도 좋아요';
-      case isServiceCategoryActive:
-        return '음식, 운동, 패션 등,\n이 서비스에서\n주로 보여지는 콘텐츠는\n어떤 분야인지 알려주세요';
-      case isServiceFormatActive:
-        return '앞서 선택하신\n"서비스 분야"가\n사용자에게 어떤 방식으로\n전달되는지 알려주세요.\n가장 핵심적인 기능\n(이번에 테스트하실 기능)을\n중심으로\n선택하시면 좋아요!';
-      case isServiceDescActive:
-        return '테스터들이 서비스에\n흥미를 느낄수록,\n더 자세한 결과가\n나온답니다.\n최대한 상세하게\n설명해주세요 :)';
-      case isClientNameActive:
-      case isClientContactActive:
-      case isEmailActive:
-        return '테스트 진행상황,\n상태변경 등을\n알려드립니다.\n테스트를 담당하실 분의\n정보를 입력해주세요';
-      case isFunnelActive:
-        return '이번 테스트를 신청하시게 된 계기를 선택해주세요.';
-      case isServiceStatusActive:
-        return '현재 시점의 서비스 상태를 선택해주세요';
+      // case isMedia1Active:
+      // case isMedia2Active:
+      //   return '웹사이트에서\n테스트 할까요?\n아니면 어플리케이션?\n휴대폰으로 테스트해야할지,\n컴퓨터로 테스트해야할지\n알려주세요.';
+      // case isServiceInfoActive:
+      //   return '어플리케이션일 경우,\n검색이 되는\n이름만 알려주셔도 좋아요';
+      // case isServiceCategoryActive:
+      //   return '음식, 운동, 패션 등,\n이 서비스에서\n주로 보여지는 콘텐츠는\n어떤 분야인지 알려주세요';
+      // case isServiceFormatActive:
+      //   return '앞서 선택하신\n"서비스 분야"가\n사용자에게 어떤 방식으로\n전달되는지 알려주세요.\n가장 핵심적인 기능\n(이번에 테스트하실 기능)을\n중심으로\n선택하시면 좋아요!';
+      // case isServiceDescActive:
+      //   return '테스터들이 서비스에\n흥미를 느낄수록,\n더 자세한 결과가\n나온답니다.\n최대한 상세하게\n설명해주세요 :)';
+      // case isClientNameActive:
+      // case isClientContactActive:
+      // case isEmailActive:
+      //   return '테스트 진행상황,\n상태변경 등을\n알려드립니다.\n테스트를 담당하실 분의\n정보를 입력해주세요';
+      // case isFunnelActive:
+      //   return '이번 테스트를 신청하시게 된 계기를 선택해주세요.';
+      // case isServiceStatusActive:
+      //   return '현재 시점의 서비스 상태를 선택해주세요';
       case step === 'testing':
       case step === 'payment':
       case step === 'completed':
+      case isPayPassed:
         return '확정 후에는\n수정할 수 없습니다.\n문의사항이 있다면,\n리얼답 매니저에게\n알려주세요!';
       case isAllPassed:
       case isQuestPassed && step === 'register':
       case justRegistered:
-        return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
+        return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 중에는\n수정할 수 없습니다.\n문의사항이 있다면\n언제든지\n리얼답 매니저에게\n연락주세요';
       case hasDefaultRequiredValues:
         return '누락 된 정보는 없는지\n꼼꼼하게 확인한 후\n다음 스텝으로\n이동해주세요 :)';
       case submitFailed:
@@ -307,22 +306,23 @@ const RightSidebar = (props) => {
 
   const setTargetTitle = () => {
     switch (isTargetRendered) {
-      case isMinAgeActive:
-      case isMaxAgeActive:
-      case isGenderActive:
-        return '좁게 설정하실수록\n유의미한 결과를\n얻을 수 있습니다.';
-      case isExtraInfoCategory1Active:
-      case isExtraInfoCategory2Active:
-      case isExtraInfoCategory3Active:
-      case isExtraInfoDesc1Active:
-      case isExtraInfoDesc2Active:
-      case isExtraInfoDesc3Active:
-        return '추가 정보란,';
-      case isInterestActive:
-        return '어떤 관심사를\n가진 사람에게\n테스트할까요?';
+      // case isMinAgeActive:
+      // case isMaxAgeActive:
+      // case isGenderActive:
+      //   return '좁게 설정하실수록\n유의미한 결과를\n얻을 수 있습니다.';
+      // case isExtraInfoCategory1Active:
+      // case isExtraInfoCategory2Active:
+      // case isExtraInfoCategory3Active:
+      // case isExtraInfoDesc1Active:
+      // case isExtraInfoDesc2Active:
+      // case isExtraInfoDesc3Active:
+      //   return '추가 정보란,';
+      // case isInterestActive:
+      //   return '어떤 관심사를\n가진 사람에게\n테스트할까요?';
       case step === 'testing':
       case step === 'payment':
       case step === 'completed':
+      case isPayPassed:
         return '테스트 정보가\n확정되었습니다.';
       case isAllPassed:
       case isQuestPassed && step === 'register':
@@ -339,56 +339,58 @@ const RightSidebar = (props) => {
 
   const setTargetDesc = () => {
     switch (isTargetRendered) {
-      case isMinAgeActive:
-      case isMaxAgeActive:
-      case isGenderActive:
-        return '테스트 인원은 15명입니다.\n타겟의 나이 범위가\n20 이상이\n되지 않도록 해주세요';
-      case isExtraInfoCategory1Active:
-      case isExtraInfoCategory2Active:
-      case isExtraInfoCategory3Active:
-      case isExtraInfoDesc1Active:
-      case isExtraInfoDesc2Active:
-      case isExtraInfoDesc3Active:
-        return '타겟의 조건을\n더 상세하게 설정하고\n싶을 때 선택해주세요.\n단, 타겟 한명 당\n추가금이 발생합니다.\n* 3,000원일 경우, 총 45,000원 추가\n(3,000 x 15 = 45,000)';
-      case isInterestActive:
-        return '기본적으로 제공되는\n테스터 분류 기준입니다.\n서비스의 주요 콘텐츠,\n핵심 고객이 관심있어하는\n분야에 대해 알려주세요';
+      // case isMinAgeActive:
+      // case isMaxAgeActive:
+      // case isGenderActive:
+      //   return '테스트 인원은 15명입니다.\n타겟의 나이 범위가\n20 이상이\n되지 않도록 해주세요';
+      // case isExtraInfoCategory1Active:
+      // case isExtraInfoCategory2Active:
+      // case isExtraInfoCategory3Active:
+      // case isExtraInfoDesc1Active:
+      // case isExtraInfoDesc2Active:
+      // case isExtraInfoDesc3Active:
+      //   return '타겟의 조건을\n더 상세하게 설정하고\n싶을 때 선택해주세요.\n단, 타겟 한명 당\n추가금이 발생합니다.\n* 3,000원일 경우, 총 45,000원 추가\n(3,000 x 15 = 45,000)';
+      // case isInterestActive:
+      //   return '기본적으로 제공되는\n테스터 분류 기준입니다.\n서비스의 주요 콘텐츠,\n핵심 고객이 관심있어하는\n분야에 대해 알려주세요';
       case step === 'testing':
       case step === 'payment':
       case step === 'completed':
+      case isPayPassed:
         return '확정 후에는\n수정할 수 없습니다.\n문의사항이 있다면,\n리얼답 매니저에게\n알려주세요!';
       case isAllPassed:
       case isQuestPassed && step === 'register':
       case justRegistered:
-        return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
+        return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 중에는\n수정할 수 없습니다.\n문의사항이 있다면\n언제든지\n리얼답 매니저에게\n연락주세요';
       case hasTargetRequiredValues:
         return '누락 된 정보는 없는지\n꼼꼼하게 확인한 후\n다음 스텝으로\n이동해주세요 :)';
       case submitFailed:
         return '필수 정보를\n모두 입력해주셔야\n다음 단계로 넘어가실 수\n있어요.\n누락된 정보를 모두\n입력해주세요!';
       default:
-        return '테스트 대상을\n정하실 수 있습니다.\n안내에 따라\n빈 칸을 채워주세요';
+        return '테스트 대상을\n정하실 수 있습니다.\n우리 서비스를 이용할\n첫번째 사용자를\n테스터로 설정하세요.';
     }
   };
 
   const setQuestTitle = () => {
     switch (isQuestRendered) {
-      case isRegisterRequiredActive:
-        return '서비스를 경험하는데\n회원가입이\n필수적인가요?';
-      case isIssue1Active:
-      case isIssue2Active:
-      case isIssue3Active:
-      case isIssueDetail1Active:
-      case isIssueDetail2Active:
-      case isIssueDetail3Active:
-        return '무엇을\n테스트하고 싶나요?';
-      case isIssuePurpose1Active:
-        return '도전과제 1 에 대해서\n자세히 알려주세요';
-      case isIssuePurpose2Active:
-        return '도전과제 2 에 대해서\n자세히 알려주세요';
-      case isIssuePurpose3Active:
-        return '도전과제 3 에 대해서\n자세히 알려주세요';
+      // case isRegisterRequiredActive:
+      //   return '서비스를 경험하는데\n회원가입이\n필수적인가요?';
+      // case isIssue1Active:
+      // case isIssue2Active:
+      // case isIssue3Active:
+      // case isIssueDetail1Active:
+      // case isIssueDetail2Active:
+      // case isIssueDetail3Active:
+      //   return '무엇을\n테스트하고 싶나요?';
+      // case isIssuePurpose1Active:
+      //   return '도전과제 1 에 대해서\n자세히 알려주세요';
+      // case isIssuePurpose2Active:
+      //   return '도전과제 2 에 대해서\n자세히 알려주세요';
+      // case isIssuePurpose3Active:
+      //   return '도전과제 3 에 대해서\n자세히 알려주세요';
       case step === 'testing':
       case step === 'payment':
       case step === 'completed':
+      case isPayPassed:
         return '테스트 정보가\n확정되었습니다.';
       case isAllPassed:
       case justRegistered:
@@ -405,27 +407,28 @@ const RightSidebar = (props) => {
 
   const setQuestDesc = () => {
     switch (isQuestRendered) {
-      case isRegisterRequiredActive:
-        return '보통의 경우,\n리얼답에서\n테스트 계정을 만들어서\n진행합니다.\nSNS 회원가입만\n가능한 서비스이거나,\n테스트 개별 회원가입이\n필수적이라면\n"네"를 선택해주세요.\n테스터 1명당\n3,000원의 보상이\n추가됩니다.';
-      case isIssue1Active:
-      case isIssue2Active:
-      case isIssue3Active:
-      case isIssueDetail1Active:
-      case isIssueDetail2Active:
-      case isIssueDetail3Active:
-        return '서비스의\n가장 핵심적인 기능을\n선택해주세요.\n테스터가\n도전과제를 수행하며\n서비스를 경험한 후,\n설문조사에 답변합니다';
-      case isIssuePurpose1Active:
-      case isIssuePurpose2Active:
-      case isIssuePurpose3Active:
-        return '이 서비스에서 도전과제를 수행한 테스터에게 무엇이 궁금한가요?';
+      // case isRegisterRequiredActive:
+      //   return '보통의 경우,\n리얼답에서\n테스트 계정을 만들어서\n진행합니다.\nSNS 회원가입만\n가능한 서비스이거나,\n테스트 개별 회원가입이\n필수적이라면\n"네"를 선택해주세요.\n테스터 1명당\n3,000원의 보상이\n추가됩니다.';
+      // case isIssue1Active:
+      // case isIssue2Active:
+      // case isIssue3Active:
+      // case isIssueDetail1Active:
+      // case isIssueDetail2Active:
+      // case isIssueDetail3Active:
+      //   return '서비스의\n가장 핵심적인 기능을\n선택해주세요.\n테스터가\n도전과제를 수행하며\n서비스를 경험한 후,\n설문조사에 답변합니다';
+      // case isIssuePurpose1Active:
+      // case isIssuePurpose2Active:
+      // case isIssuePurpose3Active:
+      //   return '이 서비스에서 도전과제를 수행한 테스터에게 무엇이 궁금한가요?';
       case step === 'testing':
       case step === 'payment':
       case step === 'completed':
+      case isPayPassed:
         return '확정 후에는\n수정할 수 없습니다.\n문의사항이 있다면,\n리얼답 매니저에게\n알려주세요!';
       case isAllPassed:
       case justRegistered:
       case isQuestPassed && step === 'register':
-        return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
+        return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 중에는\n수정할 수 없습니다.\n문의사항이 있다면\n언제든지\n리얼답 매니저에게\n연락주세요';
       case hasQuestRequiredValues:
         return '누락 된 정보는 없는지\n꼼꼼하게 확인한 후\n다음 스텝으로\n이동해주세요 :)';
       case submitFailed:
@@ -434,6 +437,8 @@ const RightSidebar = (props) => {
         return '가장 핵심적인 기능부터,\n차근차근 검증해보세요.\n빠르게 피드백을 받고,\n수정사항을 반영할 수 있습니다.';
     }
   };
+
+  console.log(step);
 
   const setPayTitle = () => {
     switch (isPayRendered) {
@@ -446,9 +451,9 @@ const RightSidebar = (props) => {
       case isPayPassed && step === 'payment':
         return '입금확인 중 입니다.';
       case isAllPassed:
-      case isDefaultPassed && isTargetPassed && isQuestPassed && step !== 'payment':
+      case isDefaultPassed && isTargetPassed && isQuestPassed && step === 'apply':
       case isQuestPassed && step === 'register':
-        return '테스트 검토중입니다.';
+        return '아직은\n결제할 수 없습니다.';
       case isPlanActive:
         return '원하는 Plan을\n선택해주세요.\n시리얼넘버가 있다면,\n입력해주세요';
       case isCouponActive:
@@ -471,9 +476,9 @@ const RightSidebar = (props) => {
       case isPayPassed && step === 'payment':
         return '입금 확인 후,\n테스트를 시작합니다.\n테스트 진행은\n입금 다음 날부터\n업무일 기준\n5일이 소요됩니다!';
       case isAllPassed:
-      case isDefaultPassed && isTargetPassed && isQuestPassed && step !== 'payment':
+      case isDefaultPassed && isTargetPassed && isQuestPassed && step === 'apply':
       case isQuestPassed && step === 'register':
-        return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
+        return '매니저가\n신청내용 검토 후\n결제가 진행됩니다.';
       case isPlanActive:
         return 'Plan 01 :테스트\nPlan 02 :테스트 + 컨설팅\n엑셀러레이터,\n인큐베이팅 프로그램에서\n시리얼 넘버를 받았다면,\n입력해주세요.\n테스트 비용이 면제됩니다.';
       case isCouponActive:
@@ -578,9 +583,9 @@ const RightSidebar = (props) => {
                                     ))
                                     : (
                                       <>
-                                        테스트 정보를
+                                        아직은
                                         <br />
-                                        먼저 입력해주세요
+                                        결제할 수 없습니다
                                       </>
                                     )
                                   }
@@ -695,11 +700,15 @@ const RightSidebar = (props) => {
                                     ))
                                     : (
                                       <>
-                                        테스트 정보
+                                        기본정보, 타겟,
                                         <br />
-                                        검토 및 확정 후,
+                                        도전과제 입력 후,
                                         <br />
-                                        결제하실 수 있습니다!
+                                        테스트를 신청해주세요!
+                                        <br />
+                                        매니저가 신청내용 검토 후
+                                        <br />
+                                        결제 단계로 넘어갑니다.
                                       </>
                                     )
                                   }

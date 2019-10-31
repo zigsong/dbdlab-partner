@@ -6,7 +6,7 @@ import './UnauthorizedPopup.scss';
 
 const UnauthorizedPopup = (props) => {
   const redirect = () => {
-    const { inviteToken, pId } = props;
+    const { inviteToken, pId, tId } = props;
     const { protocol } = window.location;
     const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
     const deleteTokenCookie = () => new Promise(() => {
@@ -23,8 +23,9 @@ const UnauthorizedPopup = (props) => {
 
     console.log(inviteToken);
     console.log(pId);
+    console.log(tId);
 
-    if (inviteToken !== undefined) {
+    if (inviteToken !== undefined && inviteToken !== '') {
       if (inviteToken.includes('user_email') && pId === undefined) {
         // voucher mypage
         const inviteEmail = inviteToken.substring(12);
@@ -32,12 +33,17 @@ const UnauthorizedPopup = (props) => {
         deleteTokenCookie().then(
           window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/?&user_email=${inviteEmail}&project_id=`),
         );
-      } else if (pId > 0 && pId !== '' && pId !== undefined) {
+      } else if (pId > 0 && pId !== '' && pId !== undefined && tId === undefined) {
         // invite team
         deleteTokenCookie().then(
           window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/${inviteToken}&project_id=${pId}`),
         );
       }
+    } else if ((pId && tId) > 0 && tId !== undefined) {
+      // test
+      deleteTokenCookie().then(
+        window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/?test_id=${tId}&project_id=${pId}`),
+      );
     } else {
       console.log('no');
       deleteTokenCookie().then(
@@ -50,6 +56,8 @@ const UnauthorizedPopup = (props) => {
     <PopupTemplate isShow title="Login Failed">
       <p className="box-popup__unauthorized">
         로그인이 필요합니다.
+        <br />
+        프로젝트에 소속된 리얼답 계정으로
         <br />
         다시 로그인 해 주세요 :)
         <br />

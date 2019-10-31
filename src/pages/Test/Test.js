@@ -65,6 +65,7 @@ class Test extends Component {
     });
 
     this.setState({ isLoading: true });
+    console.log(AUTH_TOKEN);
 
     if (AUTH_TOKEN === null) {
       this.setState({
@@ -146,9 +147,17 @@ class Test extends Component {
                 console.log(err);
                 console.log(err.response);
                 console.log(err.message);
-
-                alert('Oops! :(\n오류가 발생했어요. 메인으로 이동합니다.');
-                window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project`);
+                const { tId } = match.params;
+                const { status } = err.response;
+                if (pId > 0 && tId > 0 && status === 403) {
+                  this.setState({
+                    isLoading: false,
+                    isAuthError: true,
+                  });
+                } else {
+                  alert('Oops! :(\n오류가 발생했어요. 메인으로 이동합니다.');
+                  window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project`);
+                }
               });
           }
         })
@@ -228,7 +237,7 @@ class Test extends Component {
       avatar_url,
     } = this.props;
     const { handleTabToggle, handleNewTestForm } = this;
-    const { pId } = match.params;
+    const { pId, tId } = match.params;
     const { search } = location;
     const hasTestList = Object.keys(testList).length > 0;
     const {
@@ -245,6 +254,7 @@ class Test extends Component {
     const serviceCategory = (service_category !== undefined && service_category !== '') ? service_category : undefined;
     const serviceFormat = (service_format !== undefined && service_format !== '') ? service_format : undefined;
     const serviceDesc = (service_description !== undefined && service_description !== '') ? service_description : undefined;
+    console.log(tId);
 
     return (
       <>
@@ -253,7 +263,7 @@ class Test extends Component {
           : (
             <>
               { isAuthError
-                ? <UnauthorizedPopup pId={pId} inviteToken={search} />
+                ? <UnauthorizedPopup pId={pId} tId={tId} inviteToken={search} />
                 : (
                   <>
                     { isNewTestApply || match.params.tId > 0

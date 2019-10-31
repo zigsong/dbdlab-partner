@@ -15,6 +15,7 @@ export const getTest = tId => axios.get(`${baseURL}/tests/${tId}/`, headers);
 export const getTestList = pId => axios.get(`${baseURL}/tests/?project_id=${pId}`, headers);
 export const postTest = (
   id,
+  step,
   title,
   clientName,
   clientContact,
@@ -29,6 +30,7 @@ export const postTest = (
   funnel,
 ) => axios.post(`${baseURL}/tests/`, {
   project_id: id,
+  step,
   title,
   client_name: clientName,
   client_phone_number: clientContact,

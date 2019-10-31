@@ -67,6 +67,7 @@ export const getTest = tId => dispatch => (
 
 export const postTest = (
   id,
+  step,
   title,
   clientName,
   clientContact,
@@ -83,6 +84,7 @@ export const postTest = (
   new Promise((resolve, reject) => {
     TestAPI.postTest(
       id,
+      step,
       title,
       clientName,
       clientContact,

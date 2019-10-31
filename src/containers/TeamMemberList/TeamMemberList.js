@@ -182,37 +182,52 @@ class TeamMemberList extends Component {
       });
   }
 
-  onBan = (e, id) => {
+  onBan = (e, idx) => {
     e.preventDefault();
 
-    const { project, getProject, banProject } = this.props;
-    const { email } = project.members.filter(x => x.id === id)[0];
+    const {
+      project,
+      getProject,
+      banProject,
+      getAuthSelf,
+      id,
+    } = this.props;
+    const { protocol } = window.location;
+    const { email } = project.members.filter(x => x.id === idx)[0];
     const submit = window.confirm('해당 멤버를 팀에서 제외 시키시겠어요?\n제외된 멤버는 프로젝트 확인이 되지 않으며,\n프로젝트 공유를 위해서는 다시 초대해 주셔야 합니다.');
 
     if (submit) {
       console.log('submit');
-      banProject(project.id, [email])
-        .then((res) => {
-          console.log(res);
-          if (res.status === 204) {
-            this.setState({
-              toastTitle: '작업이 완료되었어요',
-              toastSubtitle: '팀원이 제외되었습니다',
-              isToastShow: true,
-            }, () => {
-              setTimeout(() => {
-                this.setState({ isToastShow: false });
-                getProject(project.id);
-              }, 2200);
-            });
-          }
-        }).catch((err) => {
-          console.log(err);
-          console.log(err.message);
-          console.log(err.response);
+      getAuthSelf().then(() => {
+        const isManager = project.members.find(arr => arr.id === id).is_manager;
+        console.log(isManager);
 
-          alert(`Oops! :(\n${err.response.data.detail}`);
-        });
+        banProject(project.id, [email])
+          .then((res) => {
+            console.log(res);
+            if (res.status === 204) {
+              this.setState({
+                toastTitle: '작업이 완료되었어요',
+                toastSubtitle: '팀원이 제외되었습니다',
+                isToastShow: true,
+              }, () => {
+                setTimeout(() => {
+                  this.setState({ isToastShow: false });
+                  getProject(project.id);
+                  if (!isManager) {
+                    window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project`);
+                  }
+                }, 2200);
+              });
+            }
+          }).catch((err) => {
+            console.log(err);
+            console.log(err.message);
+            console.log(err.response);
+
+            alert(`Oops! :(\n${err.response.data.detail}`);
+          });
+      });
     }
   }
 

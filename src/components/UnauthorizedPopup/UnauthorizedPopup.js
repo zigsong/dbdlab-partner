@@ -15,19 +15,31 @@ const UnauthorizedPopup = (props) => {
           const date = new Date();
           date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
           document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=realdopt.com`;
-          // document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=localhost`;
+          document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=localhost`;
         };
         setTokenCookie(-1);
       }
     });
 
     console.log(inviteToken);
+    console.log(pId);
 
     if (inviteToken !== undefined) {
-      deleteTokenCookie().then(
-        window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/${inviteToken}&project_id=${pId}`),
-      );
+      if (inviteToken.includes('user_email') && pId === undefined) {
+        // voucher mypage
+        const inviteEmail = inviteToken.substring(12);
+
+        deleteTokenCookie().then(
+          window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/?&user_email=${inviteEmail}&project_id=`),
+        );
+      } else if (pId > 0 && pId !== '' && pId !== undefined) {
+        // invite team
+        deleteTokenCookie().then(
+          window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/${inviteToken}&project_id=${pId}`),
+        );
+      }
     } else {
+      console.log('no');
       deleteTokenCookie().then(
         window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login`),
       );

@@ -49,7 +49,29 @@ class MyPage extends Component {
 
   componentDidMount() {
     const { props } = this;
-    const { path } = props.match;
+    const { match, location } = props;
+    const { path } = match;
+    const { protocol } = window.location;
+    const { search } = location;
+    const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
+
+    const deleteTokenCookie = () => new Promise(() => {
+      if (hasTokenCookie !== undefined) {
+        console.log('logged in');
+        const setTokenCookie = (expireDate) => {
+          const date = new Date();
+          date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
+          document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=realdopt.com`;
+          document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=localhost`;
+        };
+        setTokenCookie(-1);
+        alert('바우처를 구매하신 계정으로 로그인 해주세요 :)');
+      } else {
+        console.log('not logged in');
+        alert('바우처를 구매하신 계정으로 로그인 해주세요 :)');
+      }
+    });
+    console.log(search);
     const authenticate = async () => {
       await props.getAuthSelf()
         .then((res) => {
@@ -81,15 +103,26 @@ class MyPage extends Component {
     authenticate()
       .then(() => {
         if (path === '/my/payment') {
+          const { email } = this.props;
+          const inviteEmail = search.includes('user_email') ? search.split('=')[1] : '';
+          console.log(inviteEmail);
+          console.log(email);
+          console.log(inviteEmail === email);
+
+          if (search.includes('user_email') && inviteEmail !== email) {
+            deleteTokenCookie().then(
+              window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/?&user_email=${inviteEmail}&project_id=`),
+            );
+          }
+
           this.setState({
-            isLoading: false,
             isProfileTab: false,
           });
-        } else {
-          this.setState({
-            isLoading: false,
-          });
         }
+
+        this.setState({
+          isLoading: false,
+        });
       })
       .catch((err) => {
         // const { status } = err.response;
@@ -256,6 +289,7 @@ class MyPage extends Component {
       isOpen,
       handleSubmit,
       fieldValues,
+      location,
     } = this.props;
     const name = fieldValues !== undefined ? fieldValues.name : undefined;
     const phone = fieldValues !== undefined ? fieldValues.phone : undefined;
@@ -286,10 +320,14 @@ class MyPage extends Component {
       handleActivityLog,
       onSubmit,
     } = this;
+    const { search } = location;
+    const emailToken = search.substring(12);
+    console.log(search);
+    console.log(emailToken);
 
     return (
       <>
-        {isAuthError ? <UnauthorizedPopup /> : (
+        {isAuthError ? <UnauthorizedPopup inviteToken={search} /> : (
           <>
             {isLoading
               ? <LoadingIndicator />

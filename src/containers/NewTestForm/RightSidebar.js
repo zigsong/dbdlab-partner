@@ -16,6 +16,7 @@ const RightSidebar = (props) => {
     isAllPassed,
     isCompleteStep,
     isTestStep,
+    justRegistered,
     fieldsMeta,
     fieldsValues,
     submitFailed,
@@ -107,8 +108,9 @@ const RightSidebar = (props) => {
     && hasIssueDetail1Values
     && hasIssuePurpose1Values;
   // pay value
-  const payValues = fieldsValues !== undefined ? fieldsValues.pay : undefined;
-  const hasPlanValue = hasFieldValues && payValues !== undefined ? payValues.plan !== undefined && payValues.plan !== null && payValues.plan !== '' : undefined;
+  // const payValues = fieldsValues !== undefined ? fieldsValues.pay : undefined;
+  // const hasPlanValue = hasFieldValues && payValues !== undefined
+  // ? payValues.plan !== undefined && payValues.plan !== null && payValues.plan !== '' : undefined;
   // meta check
   const hasFieldMeta = fieldsMeta !== undefined;
 
@@ -223,6 +225,9 @@ const RightSidebar = (props) => {
     ? payMeta.plan.active : undefined;
   const isCouponActive = hasPayFieldMeta && payMeta.coupon !== undefined
     ? payMeta.coupon.active : undefined;
+  console.log(fieldsMeta);
+  console.log(defaultMeta);
+  console.log(isServiceInfoActive);
 
   const setDefaultTitle = () => {
     switch (isDefaultRendered) {
@@ -251,7 +256,7 @@ const RightSidebar = (props) => {
         return '테스트 정보가\n확정되었습니다.';
       case isAllPassed:
       case isQuestPassed && step === 'register':
-      case isDefaultPassed && isTargetPassed && isQuestPassed:
+      case justRegistered:
         return '테스트 검토중입니다.';
       case hasDefaultRequiredValues:
         return '모든 정보를\n다 입력하셨나요?';
@@ -289,7 +294,7 @@ const RightSidebar = (props) => {
         return '확정 후에는\n수정할 수 없습니다.\n문의사항이 있다면,\n리얼답 매니저에게\n알려주세요!';
       case isAllPassed:
       case isQuestPassed && step === 'register':
-      case isDefaultPassed && isTargetPassed && isQuestPassed:
+      case justRegistered:
         return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
       case hasDefaultRequiredValues:
         return '누락 된 정보는 없는지\n꼼꼼하게 확인한 후\n다음 스텝으로\n이동해주세요 :)';
@@ -321,7 +326,7 @@ const RightSidebar = (props) => {
         return '테스트 정보가\n확정되었습니다.';
       case isAllPassed:
       case isQuestPassed && step === 'register':
-      case isDefaultPassed && isTargetPassed && isQuestPassed:
+      case justRegistered:
         return '테스트 검토중입니다.';
       case hasTargetRequiredValues:
         return '모든 정보를\n다 입력하셨나요?';
@@ -353,7 +358,7 @@ const RightSidebar = (props) => {
         return '확정 후에는\n수정할 수 없습니다.\n문의사항이 있다면,\n리얼답 매니저에게\n알려주세요!';
       case isAllPassed:
       case isQuestPassed && step === 'register':
-      case isDefaultPassed && isTargetPassed && isQuestPassed:
+      case justRegistered:
         return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
       case hasTargetRequiredValues:
         return '누락 된 정보는 없는지\n꼼꼼하게 확인한 후\n다음 스텝으로\n이동해주세요 :)';
@@ -386,7 +391,7 @@ const RightSidebar = (props) => {
       case step === 'completed':
         return '테스트 정보가\n확정되었습니다.';
       case isAllPassed:
-      case isDefaultPassed && isTargetPassed && isQuestPassed:
+      case justRegistered:
       case isQuestPassed && step === 'register':
         return '테스트 검토중입니다.';
       case hasQuestRequiredValues:
@@ -418,7 +423,7 @@ const RightSidebar = (props) => {
       case step === 'completed':
         return '확정 후에는\n수정할 수 없습니다.\n문의사항이 있다면,\n리얼답 매니저에게\n알려주세요!';
       case isAllPassed:
-      case isDefaultPassed && isTargetPassed && isQuestPassed:
+      case justRegistered:
       case isQuestPassed && step === 'register':
         return '리얼답 매니저가\n입력하신 정보를\n검토 중입니다.\n검토 완료 후,\n입력하실 수 있습니다!';
       case hasQuestRequiredValues:
@@ -727,7 +732,7 @@ const RightSidebar = (props) => {
               </p>
             </div>
             <div className="box-btn">
-              {isAllPassed || (isQuestPassed && step !== 'payment') || (isPayRendered && step !== 'payment') || isPayPassed
+              {justRegistered || isAllPassed || (isQuestPassed && (step !== 'payment' && step !== 'apply')) || (isPayRendered && step !== 'payment') || isPayPassed
                 ? null
                 : (
                   <button

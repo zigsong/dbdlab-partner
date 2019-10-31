@@ -9,6 +9,7 @@ import {
   reduxForm,
   getFormValues,
   getFormMeta,
+  getFormSyncErrors,
 } from 'redux-form';
 import PopupTemplate from 'components/PopupTemplate';
 import PayAccountInfo from 'components/PayAccountInfo';
@@ -71,6 +72,10 @@ class NewTestForm extends Component {
     isTestStep: false,
     isRegisterStep: false,
     isBlurSaved: false,
+    hasDefaultError: false,
+    hasTargetError: false,
+    hasQuestError: false,
+    justRegistered: false,
     test: {},
     asyncErrorMsg: '',
   }
@@ -115,55 +120,21 @@ class NewTestForm extends Component {
         console.log(err.message);
       });
 
-    const getTestContent = async () => {
-      await getTest(tId)
-        .then(
-          (res) => {
-            const {
-              test,
-              targets,
-              quests,
-              order,
-            } = this.props;
-
-            const {
-              id,
-              title,
-              step,
-              client_name,
-              client_phone_number,
-              client_email,
-              media_category_1,
-              media_category_2,
-              service_extra_info,
-              service_category,
-              service_format,
-              service_description,
-              service_status,
-              funnel,
-              staff,
-              project_id,
-              create_user_id,
-              created_at,
-              is_register_required,
-            } = test;
-
-            const { report_url } = res.data;
-
-            if (targets !== undefined) {
-              getTarget(targets[0].id)
-                .then(res => console.log(res))
-                .catch(err => console.log(err.response));
-            } else {
-              getTarget(res.data.targets[0].id)
-                .then(res => console.log(res))
-                .catch(err => console.log(err.response));
-            }
-
-            this.setState({
-              test: {
-                default: {
-                  tId: id,
+    getCategories()
+      .then(getPlanList())
+      .then(() => {
+        if (tId) {
+          getTest(tId)
+            .then(
+              (res) => {
+                console.log(res);
+                const {
+                  targets,
+                  quests,
+                } = res.data;
+                const { order } = this.props;
+                const {
+                  id,
                   title,
                   step,
                   client_name,
@@ -182,136 +153,208 @@ class NewTestForm extends Component {
                   create_user_id,
                   created_at,
                   is_register_required,
-                },
-                targets,
-                quests,
-                order,
-                report_url,
-              },
-            });
-          },
-        )
-        .catch((err) => {
-          console.log(err);
-          console.log(err.message);
-          console.log(err.reponse);
-        });
-    };
+                } = res.data;
+                const { report_url } = res.data;
+                console.log(targets);
+                const tgId = targets[0].id !== null && targets[0].id !== undefined
+                  ? targets[0].id : null;
 
-    getCategories()
-      .then(getPlanList())
-      .then(() => {
-        if (tId) {
-          getTestContent()
-            .then(
-              () => {
-                const { test } = this.state;
-                const { age_maximum, age_minimum, gender } = test.targets[0];
-                const issues = test.quests.map(q => q.issue);
-                const issuePurposes = test.quests.map(q => q.issue_purpose);
-                const issueDetails = test.quests.map(q => q.issue_detail);
-                const hasTargetValue = (age_maximum && age_minimum) !== null;
-                const hasGenderValue = gender !== '';
-                const hasIssue1Value = issues[0] !== '';
-                const hasIssuePurpose1Value = issuePurposes[0] !== '';
-                const hasIssueDetail1Value = issueDetails[0] !== '';
-                const hasPayValue = test.order !== null
-                  && test.order !== undefined
-                  && test.order.plan.name !== undefined;
-                const hasCompleted = test.default.step === 'COMPLETED';
-                const isTestStep = test.default.step === 'TESTING';
-                const isPaymentStep = test.default.step === 'PAYMENT';
-                const isRegisterStep = test.default.step === 'REGISTER';
-                const isApply = test.default.step === 'APPLY';
-                const hasDefaultPassed = Object.values(test.default).filter(x => x === '').length < 3;
+                getTarget(tgId)
+                  .then((res) => {
+                    console.log(res);
+                    this.setState({
+                      test: {
+                        default: {
+                          tId: id,
+                          title,
+                          step,
+                          client_name,
+                          client_phone_number,
+                          client_email,
+                          media_category_1,
+                          media_category_2,
+                          service_extra_info,
+                          service_category,
+                          service_format,
+                          service_description,
+                          service_status,
+                          funnel,
+                          staff,
+                          project_id,
+                          create_user_id,
+                          created_at,
+                          is_register_required,
+                        },
+                        target: res.data,
+                        quests,
+                        order,
+                        report_url,
+                      },
+                    });
+                  })
+                  .then(() => {
+                    const { test } = this.state;
+                    const { target } = test;
+                    console.log(this.state);
+                    console.log(target);
+                    const ageMax = target !== undefined ? test.target.age_maximum : undefined;
+                    const ageMin = target !== undefined ? test.target.age_minimum : undefined;
+                    const genderValue = target !== undefined ? test.target.gender : undefined;
+                    // const { age_maximum, age_minimum, gender } = test.target;
+                    const hasTargetValue = (ageMax && ageMin) !== null
+                      && (ageMax && ageMin) !== undefined;
+                    const hasGenderValue = genderValue !== '' && genderValue !== undefined;
+                    const hasExtraTargetCate = target !== undefined
+                      && target.extras !== undefined
+                      ? target.extras.filter(x => x.name.length > 0).length : 0;
+                    const hasExtraTargetValue = target !== undefined
+                      && target.extras !== undefined
+                      ? target.extras.filter(x => x.value.length > 0).length : 0;
+                    const isExtraCorrect = hasExtraTargetCate === hasExtraTargetValue;
+                    const issues = test.quests !== undefined
+                      ? test.quests.map(q => q.issue) : undefined;
+                    const issuePurposes = test.quests !== undefined
+                      ? test.quests.map(q => q.issue_purpose) : undefined;
+                    const issueDetails = test.quests !== undefined
+                      ? test.quests.map(q => q.issue_detail) : undefined;
+                    const hasIssue1Value = issues !== undefined ? issues[0] !== '' : false;
+                    const hasIssuePurpose1Value = issuePurposes !== undefined ? issuePurposes[0] !== '' : false;
+                    const hasIssueDetail1Value = issueDetails !== undefined ? issueDetails[0] !== '' : false;
+                    const hasPayValue = test.order !== null
+                      && test.order !== undefined
+                      && test.order.plan.name !== undefined;
+                    const hasCompleted = test.default !== undefined ? test.default.step === 'COMPLETED' : false;
+                    const isTestStep = test.default !== undefined ? test.default.step === 'TESTING' : false;
+                    const isPaymentStep = test.default !== undefined ? test.default.step === 'PAYMENT' : false;
+                    // const isRegisterStep = test.default !== undefined
+                    // ? test.default.step === 'REGISTER' : false;
+                    const isApply = test.default !== undefined ? test.default.step === 'APPLY' : false;
+                    const hasDefaultPassed = Object.values(test.default).filter(x => x === '').length < 3;
+                    const hasTargetPassed = Object.values(test.target).filter(x => x === null).length === 0 && Object.values(test.target).filter(x => x === '').length < 2 && isExtraCorrect;
 
-                if (isApply && !hasDefaultPassed) {
-                  this.setState({
-                    isLoading: false,
-                    isDefaultRendered: true,
-                    isDefaultPassed: false,
-                  });
-                }
+                    if (isApply && !hasDefaultPassed) {
+                      this.setState({
+                        isLoading: false,
+                        isDefaultRendered: true,
+                        isDefaultPassed: false,
+                        isTargetRendered: false,
+                        isQuestRendered: false,
+                        isPayRendered: false,
+                      });
+                    }
 
-                if (hasDefaultPassed) {
-                  this.setState({
-                    isLoading: false,
-                    isDefaultRendered: false,
-                    isDefaultPassed: true,
-                    isTargetRendered: true,
-                  });
-                }
+                    if (hasDefaultPassed) {
+                      this.setState({
+                        isLoading: false,
+                        isDefaultRendered: false,
+                        isDefaultPassed: true,
+                        isTargetRendered: true,
+                        isQuestRendered: false,
+                        isPayRendered: false,
+                      });
+                    }
 
-                if (hasTargetValue && hasGenderValue) {
-                  this.setState({
-                    isLoading: false,
-                    isTargetRendered: false,
-                    isTargetPassed: true,
-                    isQuestRendered: true,
-                  });
-                }
+                    console.log(hasDefaultPassed);
+                    console.log(hasTargetValue);
+                    console.log(hasGenderValue);
+                    console.log(hasTargetPassed);
 
-                if (isApply && hasIssue1Value && hasIssuePurpose1Value && hasIssueDetail1Value) {
-                  this.setState({
-                    isLoading: false,
-                    isQuestRendered: true,
-                    isQuestPassed: false,
-                  });
-                }
+                    if (hasDefaultPassed && hasTargetValue && hasGenderValue && hasTargetPassed) {
+                      this.setState({
+                        isLoading: false,
+                        isDefaultRendered: false,
+                        isTargetRendered: false,
+                        isTargetPassed: true,
+                        isQuestRendered: true,
+                        isPayRendered: false,
+                      });
+                    }
 
-                if (!isApply && hasIssue1Value && hasIssuePurpose1Value && hasIssueDetail1Value) {
-                  this.setState({
-                    isLoading: false,
-                    isQuestRendered: false,
-                    isQuestPassed: true,
-                    isPayRendered: true,
-                    isReportRendered: false,
-                  });
-                }
+                    if (isApply
+                      && hasDefaultPassed
+                      && hasTargetPassed
+                      && hasIssue1Value
+                      && hasIssuePurpose1Value
+                      && hasIssueDetail1Value) {
+                      this.setState({
+                        isLoading: false,
+                        isDefaultRendered: false,
+                        isTargetRendered: false,
+                        isTargetPassed: true,
+                        isPayRendered: false,
+                        isQuestRendered: true,
+                        isQuestPassed: false,
+                      });
+                    }
 
-                if (isRegisterStep) this.setState({ isRegisterStep: true });
+                    if (!isApply
+                      && hasIssue1Value
+                      && hasIssuePurpose1Value
+                      && hasIssueDetail1Value) {
+                      this.setState({
+                        isLoading: false,
+                        isDefaultRendered: false,
+                        isTargetRendered: false,
+                        isTargetPassed: true,
+                        isQuestRendered: false,
+                        isQuestPassed: true,
+                        isPayRendered: true,
+                        isReportRendered: false,
+                      });
+                    }
 
-                if (hasPayValue) {
-                  this.setState({
-                    isLoading: false,
-                    isReportRendered: false,
-                    isPayPassed: true,
-                    isAllRendered: false,
-                    isCompleteStep: false,
-                  });
-                }
+                    if (hasPayValue) {
+                      this.setState({
+                        isLoading: false,
+                        isDefaultRendered: false,
+                        isTargetRendered: false,
+                        isQuestRendered: false,
+                        isReportRendered: false,
+                        isPayPassed: true,
+                        isAllRendered: false,
+                        isCompleteStep: false,
+                      });
+                    }
 
-                if (hasPayValue && isPaymentStep) {
-                  this.setState({
-                    isLoading: false,
-                    isReportRendered: false,
-                    isPayPassed: true,
-                    isAllRendered: false,
-                    isCompleteStep: false,
-                  });
-                }
+                    if (hasPayValue && isPaymentStep) {
+                      this.setState({
+                        isLoading: false,
+                        isDefaultRendered: false,
+                        isTargetRendered: false,
+                        isQuestRendered: false,
+                        isReportRendered: false,
+                        isPayPassed: true,
+                        isAllRendered: false,
+                        isCompleteStep: false,
+                      });
+                    }
 
-                if (hasPayValue && isTestStep) {
-                  this.setState({
-                    isLoading: false,
-                    isReportRendered: true,
-                    isPayRendered: false,
-                    isPayPassed: false,
-                    isAllRendered: false,
-                    isCompleteStep: false,
-                    isTestStep: true,
-                  });
-                }
+                    if (hasPayValue && isTestStep) {
+                      this.setState({
+                        isLoading: false,
+                        isDefaultRendered: false,
+                        isTargetRendered: false,
+                        isQuestRendered: false,
+                        isPayRendered: false,
+                        isReportRendered: true,
+                        isPayPassed: false,
+                        isAllRendered: false,
+                        isCompleteStep: false,
+                        isTestStep: true,
+                      });
+                    }
 
-                if (hasCompleted) {
-                  this.setState({
-                    isLoading: false,
-                    isPayRendered: false,
-                    isReportRendered: true,
-                    isCompleteStep: true,
-                    isTestStep: false,
-                  });
-                }
+                    if (hasCompleted) {
+                      this.setState({
+                        isLoading: false,
+                        isPayRendered: false,
+                        isReportRendered: true,
+                        isCompleteStep: true,
+                        isTestStep: false,
+                      });
+                    }
+                  })
+                  .catch(err => console.log(err.response));
               },
             )
             .catch((err) => {
@@ -332,6 +375,7 @@ class NewTestForm extends Component {
     // eslint-disable-next-line no-shadow
     const { setTestInit } = this.props;
     setTestInit();
+    console.log(this.props);
   }
 
   goBack = (e) => {
@@ -385,9 +429,15 @@ class NewTestForm extends Component {
   };
 
   handleBlurSave = () => {
-    const { fieldsValues } = this.props;
+    const { fieldsValues, fieldError } = this.props;
+    console.log(fieldError);
     const { isDefaultRendered, isTargetRendered, isQuestRendered } = this.state;
-    console.log(fieldsValues);
+    // eslint-disable-next-line max-len
+    const hasDefaultError = fieldError.default !== undefined ? Object.values(fieldError.default).filter(x => Object.values(x).length > 0).length > 0 : false;
+    // eslint-disable-next-line max-len
+    const hasTargetError = fieldError.target !== undefined ? Object.values(fieldError.target).filter(x => Object.values(x).length > 0).length > 0 : false;
+    // eslint-disable-next-line max-len
+    const hasQuestError = fieldError.quest !== undefined ? Object.values(fieldError.quest).filter(y => Object.values(y).length > 0).length > 0 : false;
 
     const titleValue = fieldsValues !== undefined && fieldsValues.title !== undefined
       ? fieldsValues.title : undefined;
@@ -468,8 +518,8 @@ class NewTestForm extends Component {
     const { match, history } = route;
     const { pId, tId } = match.params;
     const { test } = this.state;
-    const { targets } = test;
-    const tgId = targets !== undefined ? targets[0].id : null;
+    const { target } = test;
+    const tgId = target !== undefined ? target.id : null;
     const titleReg = titleValue !== undefined ? titleValue.replace(/(^\s*)|(\s*$)/g, '') : undefined;
     const clientNameReg = clientNameValue !== undefined ? clientNameValue.replace(/(^\s*)|(\s*$)/g, '') : undefined;
     const clientContactReg = clientContactValue !== undefined ? clientContactValue.replace(/(^\s*)|(\s*$)/g, '').replace(/-/g, '') : undefined;
@@ -525,10 +575,23 @@ class NewTestForm extends Component {
       return !!hasQuestValue;
     };
 
+    if (hasDefaultError) this.setState({ hasDefaultError: true });
+
+    if (hasTargetError) this.setState({ hasTargetError: true });
+
+    if (hasQuestError) this.setState({ hasQuestError: true });
+
     const defaultBlurSave = async () => {
       if (isDefaultRendered && hasDefaultPassed) {
         if (tId) {
           const step = 'APPLY';
+
+          if (!hasDefaultError) {
+            this.setState({
+              hasDefaultError: false,
+              isDefaultPassed: true,
+            });
+          }
 
           await patchTest(
             tId,
@@ -630,6 +693,17 @@ class NewTestForm extends Component {
         const exCate3Id = extraInfoCategory3 !== undefined
           ? categoryListArr[6].find(e => e.name === extraInfoCategory3).id : undefined;
 
+        const exValue1Id = extraInfoDesc1 !== undefined && extraInfoDesc1 !== '' ? extraInfoDesc1 : undefined;
+        const exValue2Id = extraInfoDesc2 !== undefined && extraInfoDesc2 !== '' ? extraInfoDesc2 : undefined;
+        const exValue3Id = extraInfoDesc3 !== undefined && extraInfoDesc3 !== '' ? extraInfoDesc3 : undefined;
+        console.log(extraInfoDesc1);
+        console.log(exCate1Id);
+        console.log(exValue1Id);
+        console.log(exCate2Id);
+        console.log(exValue2Id);
+        console.log(exCate3Id);
+        console.log(exValue3Id);
+
         // init values 값 확인
         const tgEx1Id = extras !== undefined
           && extras !== [] && extras[0] !== undefined
@@ -644,19 +718,59 @@ class NewTestForm extends Component {
           && Object.keys(extras[2]).length > 1
           ? extras[2].id : undefined;
 
-        if (tgEx1Id) {
-          await patchTargetExtra(tgEx1Id, tgId, exCate1Id, extraInfoDesc1).then(() => {
-            this.setState({
-              isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-            console.log('patchTarget success');
+        if ((exCate1Id !== undefined && exValue1Id === undefined)
+        || (exCate1Id === undefined && exValue1Id !== undefined)) {
+          this.setState({
+            hasTargetError: true,
           });
-        } else if (exCate1Id) {
+        }
+
+        if ((exCate2Id !== undefined && exValue2Id === undefined)
+        || (exCate2Id === undefined && exValue2Id !== undefined)) {
+          this.setState({
+            hasTargetError: true,
+          });
+        }
+
+        if ((exCate3Id !== undefined && exValue3Id === undefined)
+        || (exCate3Id === undefined && exValue3Id !== undefined)) {
+          this.setState({
+            hasTargetError: true,
+          });
+        }
+
+        if (!hasTargetError) {
+          this.setState({
+            hasTargetError: false,
+          });
+        }
+
+        if (!!tgEx1Id && !hasTargetError && exCate1Id !== undefined && exValue1Id !== undefined) {
+          await patchTargetExtra(tgEx1Id, tgId, exCate1Id, extraInfoDesc1)
+            .then(() => {
+              getTarget(tgId);
+            })
+            .then(() => {
+              this.setState({
+                isBlurSaved: true,
+                hasTargetError: false,
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              console.log('patchTarget success');
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log(err.response);
+            });
+        } else if (!hasTargetError && exCate1Id !== undefined && exValue1Id !== undefined) {
           await getTest(tId);
           await postTargetExtra(tgId, exCate1Id, extraInfoDesc1)
             .then(() => {
+              getTarget(tgId);
+            })
+            .then(() => {
               this.setState({
                 isBlurSaved: true,
+                hasTargetError: false,
               }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
               console.log('patchTarget success');
             })
@@ -666,19 +780,32 @@ class NewTestForm extends Component {
             });
         }
 
-        if (tgEx2Id) {
-          await patchTargetExtra(tgEx2Id, tgId, exCate2Id, extraInfoDesc2).then(() => {
-            this.setState({
-              isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-            console.log('patchTarget success');
-          });
-        } else if (exCate2Id) {
+        if (!!tgEx2Id && !hasTargetError && exCate2Id !== undefined && exValue2Id !== undefined) {
+          await patchTargetExtra(tgEx2Id, tgId, exCate2Id, extraInfoDesc2)
+            .then(() => {
+              getTarget(tgId);
+            })
+            .then(() => {
+              this.setState({
+                isBlurSaved: true,
+                hasTargetError: false,
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              console.log('patchTarget success');
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log(err.response);
+            });
+        } else if (!hasTargetError && exCate2Id !== undefined && exValue2Id !== undefined) {
           await getTest(tId);
           await postTargetExtra(tgId, exCate2Id, extraInfoDesc2)
             .then(() => {
+              getTarget(tgId);
+            })
+            .then(() => {
               this.setState({
                 isBlurSaved: true,
+                hasTargetError: false,
               }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
               console.log('patchTarget success');
             })
@@ -688,19 +815,32 @@ class NewTestForm extends Component {
             });
         }
 
-        if (tgEx3Id) {
-          await patchTargetExtra(tgEx3Id, tgId, exCate3Id, extraInfoDesc3).then(() => {
-            this.setState({
-              isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-            console.log('patchTarget success');
-          });
-        } else if (exCate3Id) {
-          await getTest(tId);
-          await postTargetExtra(tgId, exCate3Id, extraInfoDesc3)
+        if (!!tgEx3Id && !hasTargetError && exCate3Id !== undefined && exValue3Id !== undefined) {
+          await patchTargetExtra(tgEx3Id, tgId, exCate3Id, extraInfoDesc3)
+            .then(() => {
+              getTarget(tgId);
+            })
             .then(() => {
               this.setState({
                 isBlurSaved: true,
+                hasTargetError: false,
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              console.log('patchTarget success');
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log(err.response);
+            });
+        } else if (!hasTargetError && exCate3Id !== undefined && exValue3Id !== undefined) {
+          await getTest(tId);
+          await postTargetExtra(tgId, exCate3Id, extraInfoDesc3)
+            .then(() => {
+              getTarget(tgId);
+            })
+            .then(() => {
+              this.setState({
+                isBlurSaved: true,
+                hasTargetError: false,
               }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
               console.log('patchTarget success');
             })
@@ -721,6 +861,7 @@ class NewTestForm extends Component {
           .then(() => {
             this.setState({
               isBlurSaved: true,
+              hasTargetError: false,
             }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
             console.log('patchTarget success');
           })
@@ -738,6 +879,13 @@ class NewTestForm extends Component {
         const issueissuePurpose3ValueReg = issueissuePurpose3Value !== undefined ? issueissuePurpose3Value.replace(/(^\s*)|(\s*$)/g, '') : undefined;
         const registerValue = registerRequire !== '아니오';
         const step = 'APPLY';
+
+        if (!hasQuestError) {
+          this.setState({
+            hasQuestError: false,
+            isQuestPassed: true,
+          });
+        }
 
         if (registerRequire) {
           await patchTest(
@@ -804,6 +952,7 @@ class NewTestForm extends Component {
                 isBlurSaved: true,
               }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
               console.log('patchQuest 1 success');
+              console.log(this.state);
             })
             .catch((err) => {
               console.log(err);
@@ -938,9 +1087,12 @@ class NewTestForm extends Component {
       isTargetRendered,
       isQuestRendered,
       isPayRendered,
+      hasDefaultError,
+      hasTargetError,
+      hasQuestError,
     } = this.state;
-    const { targets } = test;
-    const tgId = targets !== undefined ? targets[0].id : null;
+    const { target } = test;
+    const tgId = target !== undefined ? target.id : null;
     const { title } = values;
     const {
       clientName,
@@ -1071,7 +1223,10 @@ class NewTestForm extends Component {
           minAge,
           maxAge,
         )
-          .then(() => { getTest(tId); })
+          .then(() => {
+            console.log('submit patchTarget success');
+            getTest(tId);
+          })
           .then(() => {
             this.setState({
               isTargetRendered: false,
@@ -1082,7 +1237,7 @@ class NewTestForm extends Component {
       } else if (isQuestRendered && hasQuestPassed) {
         const submitCheck = window.confirm('테스트를 등록하시겠어요?\n등록 후엔 수정이 되지 않으니, 꼼꼼히 확인해 주세요:)');
 
-        if (submitCheck) {
+        if (submitCheck && !hasDefaultError && !hasTargetError && !hasQuestError) {
           const qId = test.quests.map(q => q.id);
           const {
             registerRequire,
@@ -1147,6 +1302,7 @@ class NewTestForm extends Component {
                   isQuestRendered: false,
                   isQuestPassed: true,
                   isPayRendered: true,
+                  justRegistered: true,
                   isRegisterInfoPopup: true,
                 });
               })
@@ -1188,6 +1344,7 @@ class NewTestForm extends Component {
                   isQuestRendered: false,
                   isQuestPassed: true,
                   isPayRendered: true,
+                  justRegistered: true,
                   isRegisterInfoPopup: true,
                 });
               })
@@ -1229,6 +1386,7 @@ class NewTestForm extends Component {
                   isQuestRendered: false,
                   isQuestPassed: true,
                   isPayRendered: true,
+                  justRegistered: true,
                   isRegisterInfoPopup: true,
                 });
               })
@@ -1390,15 +1548,19 @@ class NewTestForm extends Component {
       isQuestPassed,
       isPayPassed,
       isAllPassed,
-      isRegisterStep,
       isCompleteStep,
       isTestStep,
       isBlurSaved,
       test,
       asyncErrorMsg,
+      hasDefaultError,
+      hasTargetError,
+      // hasQuestError,
+      justRegistered,
     } = this.state;
     const {
       route,
+      change,
       fieldsValues,
       fieldsMeta,
       submitFailed,
@@ -1421,7 +1583,7 @@ class NewTestForm extends Component {
     const { tId } = route.match.params;
     const step = test.default !== undefined && Object.keys(test.default).length > 0
       ? test.default.step.toLowerCase() : undefined;
-    const tgId = test.targets ? test.targets[0].id : undefined;
+    const tgId = test.target ? test.target.id : undefined;
     // eslint-disable-next-line no-nested-ternary
     const qId = test.quests
       ? test.quests.map(q => q.id)
@@ -1475,6 +1637,7 @@ class NewTestForm extends Component {
         class: `report${isReportRendered ? '--active' : ''}`,
       },
     ];
+    console.log(this.props);
 
     return (
       isLoading ? <LoadingIndicator /> : (
@@ -1501,6 +1664,8 @@ class NewTestForm extends Component {
                           && isQuestRendered)
                           || (isDefaultRendered && isTargetPassed)
                           || (isTargetRendered && isTargetPassed)
+                          || (isTargetRendered
+                            && (hasIssue1Value || hasIssue2Value || hasIssue3Value))
                           || (isQuestRendered && isTargetPassed
                             && (hasIssue1Value || hasIssue2Value || hasIssue3Value))
                           || (isPayRendered && isQuestPassed
@@ -1572,7 +1737,10 @@ class NewTestForm extends Component {
             { isDefaultRendered
               ? (
                 <>
-                  { step === 'register' || step === 'payment' || step === 'testing' || step === 'completed'
+                  { step === 'register'
+                  || step === 'payment'
+                  || step === 'testing'
+                  || step === 'completed'
                     ? <DisabledLayer />
                     : null}
                   <FormSection name="default">
@@ -1582,8 +1750,9 @@ class NewTestForm extends Component {
                         && isTargetPassed
                         && isQuestPassed
                         && isPayPassed)
+                        || justRegistered
                         || isAllPassed
-                        || (isQuestPassed && step !== 'payment')
+                        || (isQuestPassed && (step !== 'payment' && step !== 'apply'))
                         || step === 'payment'
                         || step === 'testing'
                         || step === 'completed'
@@ -1605,17 +1774,28 @@ class NewTestForm extends Component {
             { isTargetRendered
               ? (
                 <>
-                  { isDefaultPassed ? null : <DisabledLayer /> }
-                  { step === 'register' || step === 'payment' || step === 'testing' || step === 'completed'
+                  { !isDefaultPassed
+                  || step === 'register'
+                  || step === 'payment'
+                  || step === 'testing'
+                  || step === 'completed'
+                  || hasDefaultError
                     ? <DisabledLayer />
                     : null}
-                  { isDefaultPassed ? null : (
+                  { !isDefaultPassed ? (
                     <ToastAlert
                       title="아직은 작성하실 수 없어요!"
                       subtitle="이전 단계 진행 후 작성하실 수 있습니다"
                       isShow
                     />
-                  ) }
+                  ) : null}
+                  { hasDefaultError ? (
+                    <ToastAlert
+                      title="기본 정보 탭을 확인해 주세요"
+                      subtitle="이전 단계에서 정확하지 않은 정보가 있어요!"
+                      isShow
+                    />
+                  ) : null}
                   <FormSection name="target">
                     <TestFormTarget
                       isDisabled={isNoNamed || isSpacedTitle
@@ -1623,14 +1803,16 @@ class NewTestForm extends Component {
                           && isTargetPassed
                           && isQuestPassed
                           && isPayPassed)
+                          || justRegistered
                           || isAllPassed
-                          || (isQuestPassed && step !== 'payment')
+                          || (isQuestPassed && (step !== 'payment' && step !== 'apply'))
                           || step === 'payment'
                           || step === 'testing'
                           || step === 'completed'
                           || !isLeader
                         }
                       tgId={tgId}
+                      onChange={change}
                       extraInfoCategory={extraInfoCategory}
                       extraValue={extras}
                       handleBlurSave={handleBlurSave}
@@ -1643,17 +1825,37 @@ class NewTestForm extends Component {
             { isQuestRendered
               ? (
                 <>
-                  { isTargetPassed ? null : <DisabledLayer />}
-                  { step === 'register' || step === 'payment' || step === 'testing' || step === 'completed'
+                  {console.log(isTargetPassed)}
+                  { !isTargetPassed
+                  || step === 'register'
+                  || step === 'payment'
+                  || step === 'testing'
+                  || step === 'completed'
+                  || hasDefaultError
+                  || hasTargetError
                     ? <DisabledLayer />
                     : null}
-                  { isTargetPassed ? null : (
+                  { !isTargetPassed ? (
                     <ToastAlert
                       title="아직은 작성하실 수 없어요!"
                       subtitle="이전 단계 진행 후 작성하실 수 있습니다"
                       isShow
                     />
-                  ) }
+                  ) : null}
+                  { hasTargetError ? (
+                    <ToastAlert
+                      title="타겟 설정 탭을 확인해 주세요"
+                      subtitle="이전 단계에서 정확하지 않은 정보가 있어요!"
+                      isShow
+                    />
+                  ) : null }
+                  { hasDefaultError ? (
+                    <ToastAlert
+                      title="기본 정보 탭을 확인해 주세요"
+                      subtitle="이전 단계에서 정확하지 않은 정보가 있어요!"
+                      isShow
+                    />
+                  ) : null }
                   <FormSection name="quest">
                     <TestFormQuest
                       isDisabled={isNoNamed || isSpacedTitle
@@ -1661,8 +1863,9 @@ class NewTestForm extends Component {
                         && isTargetPassed
                         && isQuestPassed
                         && isPayPassed)
+                        || justRegistered
                         || isAllPassed
-                        || (isQuestPassed && step !== 'payment')
+                        || (isQuestPassed && (step !== 'payment' && step !== 'apply'))
                         || step === 'payment'
                         || step === 'testing'
                         || step === 'completed'
@@ -1680,17 +1883,26 @@ class NewTestForm extends Component {
             { isPayRendered
               ? (
                 <>
-                  { isQuestPassed && !isRegisterStep ? null : <DisabledLayer />}
-                  { step === 'testing' || step === 'completed'
+                  {/* { isQuestPassed && step !== 'register' ? null : <DisabledLayer />} */}
+                  { !isQuestPassed
+                    || (step === 'register' || step === 'testing' || step === 'completed')
                     ? <DisabledLayer />
                     : null}
-                  { isQuestPassed && !isRegisterStep ? null : (
+                  { justRegistered || step === 'register' ? (
+                    <ToastAlert
+                      title="테스트가 신청되었습니다!"
+                      subtitle="매니저 검토 후 이후 진행이 가능합니다:)"
+                      isShow
+                    />
+                  )
+                    : null }
+                  { !isQuestPassed && step === 'apply' ? (
                     <ToastAlert
                       title="아직은 작성하실 수 없어요!"
                       subtitle="이전 단계 진행 후 작성하실 수 있습니다"
                       isShow
                     />
-                  ) }
+                  ) : null }
                   { isPayPassed
                     ? (
                       <>
@@ -1714,6 +1926,7 @@ class NewTestForm extends Component {
                                   && isTargetPassed
                                   && isQuestPassed
                                   && isPayPassed)
+                                  || justRegistered
                                   || isAllPassed
                                   || !isQuestPassed
                                   || step === undefined
@@ -1742,9 +1955,10 @@ class NewTestForm extends Component {
                               && isTargetPassed
                               && isQuestPassed
                               && isPayPassed)
+                              || justRegistered
                               || isAllPassed
                               || step === undefined
-                              || (isQuestPassed && step !== 'payment')
+                              || (isQuestPassed && (step !== 'payment' && step !== 'apply'))
                               || step === 'apply'
                               || step === 'testing'
                               || step === 'completed'
@@ -1806,6 +2020,7 @@ class NewTestForm extends Component {
             isPayPassed={isPayPassed}
             isCompleteStep={isCompleteStep}
             isTestStep={isTestStep}
+            justRegistered={justRegistered}
             isAllPassed={isAllPassed}
             fieldsMeta={fieldsMeta}
             fieldsValues={fieldsValues}
@@ -1885,7 +2100,7 @@ class NewTestForm extends Component {
 const mapStateToProps = (state) => {
   const { isOpen } = state.popup;
   const { test } = state.test;
-  const { targets } = state.test.targets;
+  const { target } = state.target;
   const { extras } = state.target.target;
   const { quests } = state.test.quests;
   const { categoryList } = state.category;
@@ -1903,9 +2118,9 @@ const mapStateToProps = (state) => {
   const clientContactValue = test.client_phone_number ? test.client_phone_number : undefined;
   const emailValue = test.client_email ? test.client_email : undefined;
   const funnelValue = test.funnel ? test.funnel : undefined;
-  const minAgeValue = targets !== undefined ? targets[0].age_minimum : undefined;
-  const maxAgeValue = targets !== undefined ? targets[0].age_maximum : undefined;
-  const getGenderValue = targets !== undefined ? targets[0].gender : undefined;
+  const minAgeValue = target !== undefined ? target.age_minimum : undefined;
+  const maxAgeValue = target !== undefined ? target.age_maximum : undefined;
+  const getGenderValue = target !== undefined ? target.gender : undefined;
   // eslint-disable-next-line no-nested-ternary
   const setGenderValue = getGenderValue !== undefined && getGenderValue !== '' ? (getGenderValue === 'female' ? '여자' : (getGenderValue === 'male' ? '남자' : '무관')) : undefined;
   const getExtraInfo1Value = extras !== undefined && extras !== []
@@ -1998,9 +2213,10 @@ const mapStateToProps = (state) => {
   return ({
     fieldsValues: getFormValues('testForm')(state),
     fieldsMeta: getFormMeta('testForm')(state),
+    fieldError: getFormSyncErrors('testForm')(state),
     isOpen,
     test,
-    targets,
+    target,
     extras,
     quests,
     order,

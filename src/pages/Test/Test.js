@@ -79,19 +79,24 @@ class Test extends Component {
           console.log(res);
           console.log(res.data.email);
           const { id, email } = res.data;
-          const isCorrectMail = inviteEmail.substring(11);
+          const isCorrectMail = inviteEmail !== undefined && inviteEmail !== '' ? inviteEmail.substring(11) : undefined;
+          console.log(inviteEmail);
+          console.log(isCorrectMail);
           console.log(isCorrectMail === email);
           console.log(email);
 
           // 접속 계정이 초대받은 자인가 확인
           if (inviteToken.length > 1) {
+            console.log('초대');
             // 초대장 잇서요
-            if (isCorrectMail !== email) {
+            if (isCorrectMail !== undefined && isCorrectMail !== email) {
               // 남의 건 안됩니다
               deleteTokenCookie().then(
                 window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/${inviteToken}&${inviteEmail}&project_id=${pId}`),
               );
             } else {
+              // 링크 타고 왓서요
+              // 초대장 제꼬에오
               // 웰컴
               props.getProject(projectId, inviteToken)
                 .then((res) => {
@@ -102,10 +107,14 @@ class Test extends Component {
                   console.log(err);
                   console.log(err.response);
                   console.log(err.message);
+
+                  alert('Oops! :(\n오류가 발생했어요. 메인으로 이동합니다.');
+                  window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project`);
                 });
             }
           } else {
             // 초대가 아니예요 걍 드러왓소요
+            console.log('not 초대');
             props.getProject(projectId)
               .then((res) => {
                 console.log(res);
@@ -137,6 +146,9 @@ class Test extends Component {
                 console.log(err);
                 console.log(err.response);
                 console.log(err.message);
+
+                alert('Oops! :(\n오류가 발생했어요. 메인으로 이동합니다.');
+                window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project`);
               });
           }
         })

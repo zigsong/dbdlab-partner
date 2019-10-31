@@ -200,6 +200,22 @@ class MyPage extends Component {
     props.togglePopup(true);
   }
 
+  handleActivityLog = (activity) => {
+    const type = activity.target_content_type;
+    const name = activity.actor.name !== undefined && activity.actor.name !== '' ? activity.actor.name : activity.actor.email.substring(0, activity.actor.email.indexOf('@'));
+
+    switch (type) {
+      case '테스트':
+        return activity.verb.replace('{actor}', name).replace("'{target}'", activity.target.title);
+      case '프로젝트':
+        return activity.verb.replace('{actor}', name).replace("'{target}'", activity.target.name);
+      case 'voucher order':
+        return activity.verb.replace('{actor}', name).replace("'{target}'", activity.target.plan.name);
+      default:
+        return activity.verb.replace('{actor}', name).replace("'{target}'", activity.target.name);
+    }
+  }
+
   onReset = () => {
     const { reset, onPopup } = this.props;
     reset();
@@ -267,6 +283,7 @@ class MyPage extends Component {
       handleEdit,
       handlePwPopup,
       handleTaxBillPopup,
+      handleActivityLog,
       onSubmit,
     } = this;
 
@@ -388,10 +405,7 @@ class MyPage extends Component {
                                             <p className="box-text">
                                               <span className="text__activity">
                                                 <span className="activity">
-                                                  {a.verb.replace('{actor}', `${a.actor.name !== undefined && a.actor.name !== ''
-                                                    ? a.actor.name
-                                                    : a.actor.email.substring(0, a.actor.email.indexOf('@'))
-                                                  }`).replace("'{target}'", `${a.target.title === undefined ? '' : a.target.title}`)}
+                                                  {handleActivityLog(a)}
                                                 </span>
                                               </span>
                                               <span className="text__date">{getDate(a.timestamp)}</span>

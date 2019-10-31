@@ -583,9 +583,9 @@ class NewTestForm extends Component {
 
     const defaultBlurSave = async () => {
       if (isDefaultRendered && hasDefaultPassed) {
-        if (tId) {
-          const step = 'APPLY';
+        const step = 'APPLY';
 
+        if (tId) {
           if (!hasDefaultError) {
             this.setState({
               hasDefaultError: false,
@@ -622,6 +622,7 @@ class NewTestForm extends Component {
         } else {
           await postTest(
             pId,
+            step,
             titleReg,
             clientNameReg,
             clientContactReg,
@@ -1896,6 +1897,8 @@ class NewTestForm extends Component {
                     />
                   )
                     : null }
+                  {console.log(isQuestPassed)}
+                  {console.log(step)}
                   { !isQuestPassed && step === 'apply' ? (
                     <ToastAlert
                       title="아직은 작성하실 수 없어요!"
@@ -2230,6 +2233,7 @@ const mapDispatchToProps = dispatch => ({
   getProject: id => dispatch(getProject(id)),
   postTest: (
     id,
+    step,
     title,
     clientName,
     clientContact,
@@ -2244,6 +2248,7 @@ const mapDispatchToProps = dispatch => ({
     funnel,
   ) => dispatch(postTest(
     id,
+    step,
     title,
     clientName,
     clientContact,

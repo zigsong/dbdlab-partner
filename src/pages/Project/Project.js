@@ -26,10 +26,8 @@ class Project extends Component {
   }
 
   componentDidMount() {
-    const { search } = window.location;
     const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
     const AUTH_TOKEN = hasTokenCookie !== undefined ? hasTokenCookie.replace(/\s/gi, '').substring(6) : null;
-    const isInvited = search.includes('invite_token');
 
     if (AUTH_TOKEN === null) {
       this.setState({

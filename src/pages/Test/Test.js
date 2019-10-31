@@ -42,8 +42,11 @@ class Test extends Component {
     console.log(location);
     console.log(isInvited);
     const projectId = parseInt(pId, 10);
-    const inviteToken = search.includes('invite_token') ? search : '';
+    const inviteToken = search.includes('invite_token') ? search.split('&')[0] : '';
+    const inviteEmail = search.includes('user_email') ? search.split('&')[1] : '';
+    console.log(search);
     console.log(inviteToken);
+    console.log(inviteEmail);
     const deleteTokenCookie = () => new Promise(() => {
       if (hasTokenCookie !== undefined) {
         console.log('logged in');
@@ -72,28 +75,44 @@ class Test extends Component {
       console.log(inviteToken);
       props.getAuthSelf()
         .then((res) => {
+          // 로그인 완료
           console.log(res);
-          console.log(res.data.id);
-          const { id } = res.data;
-          // 기존 멤버인가
-          props.getProject(projectId)
-            .then((res) => {
-              console.log(res);
-              const isLeader = res.data.members.find(x => x.is_manager).id === id;
-              const isMember = res.data.members.find(x => x.id === id);
-              console.log(id);
-              console.log(res.data.members.find(x => x.is_manager).id);
-              console.log(isLeader);
-              console.log(isMember);
-              console.log(!!isMember);
+          console.log(res.data.email);
+          const { id, email } = res.data;
+          const isCorrectMail = inviteEmail.substring(11);
+          console.log(isCorrectMail === email);
+          console.log(email);
 
-              this.setState({ isLeader });
+          // 접속 계정이 초대받은 자인가 확인
+          if (inviteToken.length > 1) {
+            // 초대장 잇서요
+            if (isCorrectMail !== email) {
+              // 남의 건 안됩니다
+              deleteTokenCookie().then(
+                window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/${inviteToken}&${inviteEmail}&project_id=${pId}`),
+              );
+            } else {
+              // 웰컴
+              props.getProject(projectId, inviteToken)
+                .then((res) => {
+                  console.log(res);
+                  window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project`);
+                })
+                .catch((err) => {
+                  console.log(err);
+                  console.log(err.response);
+                  console.log(err.message);
+                });
+            }
+          } else {
+            // 초대가 아니예요 걍 드러왓소요
+            props.getProject(projectId)
+              .then((res) => {
+                console.log(res);
+                const isLeader = res.data.members.find(x => x.is_manager).id === id;
 
-              if (inviteToken.length > 1 && !!isMember) {
-                deleteTokenCookie().then(
-                  window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/${inviteToken}&project_id=${pId}`),
-                );
-              } else {
+                this.setState({ isLeader });
+
                 props.getTestList(pId);
                 props.getProjectInviteLink(projectId)
                   .then((res) => {
@@ -113,36 +132,13 @@ class Test extends Component {
                     });
                   });
                 this.setState({ isLoading: false });
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-              console.log(err.response);
-              console.log(err.message);
-
-              console.log(inviteToken);
-              console.log(inviteToken.length);
-
-              if (inviteToken.length > 1) {
-                console.log('기존 멤버가 아닌 경우 다시 체크');
-                // 기존 멤버가 아닌 경우 다시 체크
-                props.getProject(projectId, inviteToken)
-                  .then((res) => {
-                    console.log(res);
-                    window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project`);
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                    console.log(err.response);
-                    console.log(err.message);
-
-                    this.setState({
-                      isAuthError: true,
-                      isLoading: false,
-                    });
-                  });
-              }
-            });
+              })
+              .catch((err) => {
+                console.log(err);
+                console.log(err.response);
+                console.log(err.message);
+              });
+          }
         })
         .catch((err) => {
           console.log(err);

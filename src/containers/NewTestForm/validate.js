@@ -1,7 +1,9 @@
 const validate = (values) => {
   const errors = {
     default: {},
-    target: {},
+    target: {
+      extra: {},
+    },
     quest: {
       issue: {},
       issueDetail: {},
@@ -25,28 +27,22 @@ const validate = (values) => {
       errors.target.maxAge = '범위를 다시 확인해 주세요';
     }
 
-    if (
-      values.target.extraInfoCategory1 !== undefined
+    if (values.target.extraInfoCategory1 !== undefined
         && (values.target.extraInfoDesc1 === undefined
-          || values.target.extraInfoDesc1.length < 1)
-    ) {
-      errors.target.extraInfoDesc1 = '해당하는 정보를 적어 주세요';
+          || values.target.extraInfoDesc1.length < 1)) {
+      errors.target.extra.extraInfoDesc1 = '해당하는 정보를 적어 주세요';
     }
 
-    if (
-      values.target.extraInfoCategory2 !== undefined
+    if (values.target.extraInfoCategory2 !== undefined
         && (values.target.extraInfoDesc2 === undefined
-          || values.target.extraInfoDesc2.length < 1)
-    ) {
-      errors.target.extraInfoDesc2 = '해당하는 정보를 적어 주세요';
+          || values.target.extraInfoDesc2.length < 1)) {
+      errors.target.extra.extraInfoDesc2 = '해당하는 정보를 적어 주세요';
     }
 
-    if (
-      values.target.extraInfoCategory3 !== undefined
+    if (values.target.extraInfoCategory3 !== undefined
         && (values.target.extraInfoDesc3 === undefined
-          || values.target.extraInfoDesc3.length < 1)
-    ) {
-      errors.target.extraInfoDesc3 = '해당하는 정보를 적어 주세요';
+          || values.target.extraInfoDesc3.length < 1)) {
+      errors.target.extra.extraInfoDesc3 = '해당하는 정보를 적어 주세요';
     }
 
     // quest

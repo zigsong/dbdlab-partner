@@ -17,25 +17,16 @@ class TestFormTarget extends Component {
   }
 
   componentDidMount() {
-    const { extraValue } = this.props;
-
-    if (extraValue.length > 0) {
-      this.setState({
-        extraInfoBox: extraValue,
-      });
-    } else {
-      this.setState({
-        extraInfoBox: { id: 1 },
-      });
-    }
+    this.setExtraValueArr();
   }
 
   componentWillUnmount() {
     const { extraInfoBox } = this.state;
     const { extraValue, onChange } = this.props;
     const tempArr = [];
-    const inputArr = extraValue.length > extraInfoBox.length
-    || extraValue.length === extraInfoBox.length
+    const inputArr = extraValue.length === extraInfoBox.length
+    || extraValue.length > extraInfoBox.length
+    || extraInfoBox.length === undefined
       ? tempArr.concat(extraValue) : tempArr.concat(extraInfoBox);
     const hasId = inputArr.filter(x => x.id).length;
     const hasValue = inputArr.filter(x => x.value).length;
@@ -55,25 +46,77 @@ class TestFormTarget extends Component {
     });
   }
 
+  setExtraValueArr = () => {
+    const { extraValue } = this.props;
+
+    if (extraValue.length > 0) {
+      this.setState({
+        extraInfoBox: extraValue,
+      });
+    } else {
+      this.setState({
+        extraInfoBox: { id: 1 },
+      });
+    }
+  }
+
   addInfoBox = () => {
     const { extraValue } = this.props;
     const { extraInfoBox } = this.state;
+    const { fieldsValues } = this.props;
+    const { target } = fieldsValues;
+    const {
+      extraInfoCategory1,
+      extraInfoCategory2,
+      extraInfoCategory3,
+      extraInfoDesc1,
+      extraInfoDesc2,
+      extraInfoDesc3,
+    } = target;
     const tempArr = [];
-    const inputArr = extraValue.length > extraInfoBox.length
-    || extraValue.length === extraInfoBox.length
+    const inputArr = extraValue.length !== 0
+    && (extraValue.length === extraInfoBox.length
+    || extraValue.length > extraInfoBox.length
+    || extraInfoBox.length === undefined)
       ? tempArr.concat(extraValue) : tempArr.concat(extraInfoBox);
-    const hasId = inputArr.filter(x => x.id).length;
-    const hasValue = inputArr.filter(x => x.value).length;
+    // const hasId = inputArr.filter(x => x.id).length;
+    // const hasValue = inputArr.filter(x => x.value).length;
+    const exCate = [extraInfoCategory1, extraInfoCategory2, extraInfoCategory3];
+    const exDesc = [extraInfoDesc1, extraInfoDesc2, extraInfoDesc3];
 
-    if (hasId !== hasValue) {
+    while (exCate.indexOf(undefined) !== -1) {
+      exCate.splice(exCate.indexOf(undefined), 1);
+    }
+
+    while (exCate.indexOf('') !== -1) {
+      exCate.splice(exCate.indexOf(undefined), 1);
+    }
+
+    while (exDesc.indexOf(undefined) !== -1) {
+      exDesc.splice(exDesc.indexOf(undefined), 1);
+    }
+
+    while (exDesc.indexOf('') !== -1) {
+      exDesc.splice(exDesc.indexOf(undefined), 1);
+    }
+
+    if (extraInfoBox.length > 2 || (exCate.length && exDesc.length === 3)) {
+      alert('추가 정보는 3개까지 가능합니다');
+      return false;
+    }
+
+    if (exCate.length !== exDesc.length) {
       alert('추가 정보를 입력해 주세요');
       return false;
     }
 
-    if (extraInfoBox.length > 2) {
-      alert('추가 정보는 3개까지 가능합니다');
-      return false;
-    }
+    // console.log(hasId);
+    // console.log(hasValue);
+
+    // if (hasId !== hasValue) {
+    //   alert('추가 정보를 입력해 주세요2');
+    //   return false;
+    // }
 
     inputArr.push({
       id: inputArr[inputArr.length - 1].id + 1,

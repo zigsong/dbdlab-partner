@@ -439,8 +439,6 @@ const RightSidebar = (props) => {
     }
   };
 
-  console.log(step);
-
   const setPayTitle = () => {
     switch (isPayRendered) {
       case submitFailed:

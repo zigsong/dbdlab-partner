@@ -732,7 +732,10 @@ class NewTestForm extends Component {
               });
             }
 
-            if (!!tgEx1Id && !hasTargetError && exCate1Id !== undefined && exValue1Id !== undefined) {
+            if (!!tgEx1Id
+              && !hasTargetError
+              && exCate1Id !== undefined
+              && exValue1Id !== undefined) {
               patchTargetExtra(tgEx1Id, tgId, exCate1Id, extraInfoDesc1)
                 .then(() => {
                   getTarget(tgId);
@@ -764,7 +767,10 @@ class NewTestForm extends Component {
                 });
             }
 
-            if (!!tgEx2Id && !hasTargetError && exCate2Id !== undefined && exValue2Id !== undefined) {
+            if (!!tgEx2Id
+              && !hasTargetError
+              && exCate2Id !== undefined
+              && exValue2Id !== undefined) {
               patchTargetExtra(tgEx2Id, tgId, exCate2Id, extraInfoDesc2)
                 .then(() => {
                   getTarget(tgId);
@@ -796,7 +802,10 @@ class NewTestForm extends Component {
                 });
             }
 
-            if (!!tgEx3Id && !hasTargetError && exCate3Id !== undefined && exValue3Id !== undefined) {
+            if (!!tgEx3Id
+              && !hasTargetError
+              && exCate3Id !== undefined
+              && exValue3Id !== undefined) {
               patchTargetExtra(tgEx3Id, tgId, exCate3Id, extraInfoDesc3)
                 .then(() => {
                   getTarget(tgId);
@@ -1737,7 +1746,7 @@ class NewTestForm extends Component {
                         && isPayPassed)
                         || justRegistered
                         || isAllPassed
-                        || (isQuestPassed && (step !== 'payment' && step !== 'apply'))
+                        || (isQuestPassed && step === 'register')
                         || step === 'payment'
                         || step === 'testing'
                         || step === 'completed'
@@ -1790,7 +1799,7 @@ class NewTestForm extends Component {
                           && isPayPassed)
                           || justRegistered
                           || isAllPassed
-                          || (isQuestPassed && (step !== 'payment' && step !== 'apply'))
+                          || (isQuestPassed && step === 'register')
                           || step === 'payment'
                           || step === 'testing'
                           || step === 'completed'
@@ -1850,7 +1859,7 @@ class NewTestForm extends Component {
                         && isPayPassed)
                         || justRegistered
                         || isAllPassed
-                        || (isQuestPassed && (step !== 'payment' && step !== 'apply'))
+                        || (isQuestPassed && step === 'register')
                         || step === 'payment'
                         || step === 'testing'
                         || step === 'completed'
@@ -1945,7 +1954,7 @@ class NewTestForm extends Component {
                               || justRegistered
                               || isAllPassed
                               || step === undefined
-                              || (isQuestPassed && (step !== 'payment' && step !== 'apply'))
+                              || (isQuestPassed && step === 'register')
                               || step === 'apply'
                               || step === 'testing'
                               || step === 'completed'

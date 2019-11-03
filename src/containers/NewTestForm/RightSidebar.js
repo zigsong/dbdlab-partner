@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React from 'react';
 
 const RightSidebar = (props) => {
@@ -741,7 +742,14 @@ const RightSidebar = (props) => {
               </p>
             </div>
             <div className="box-btn">
-              {justRegistered || isAllPassed || (isQuestPassed && (step !== 'payment' && step !== 'apply')) || (isPayRendered && step !== 'payment') || isPayPassed
+              {justRegistered
+              || isAllPassed
+              || (isQuestPassed && step === 'register')
+              || (isPayRendered && step !== 'payment')
+              || (!isPayRendered && step === 'payment')
+              || step === 'testing'
+              || step === 'completed'
+              || isPayPassed
                 ? null
                 : (
                   <button

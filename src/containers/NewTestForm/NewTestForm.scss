@@ -311,22 +311,42 @@ $imgUrl: '/static/images/';
 
               input[value="PLANNING"] {
                 background: transparent url('#{$imgUrl}common/icons/icon_question_plan--off.svg') no-repeat center 14px;
+
+                &::-ms-check {
+                  background: transparent url('#{$imgUrl}common/icons/icon_question_plan--off.svg') no-repeat center 14px;
+                }
               }
 
               input[value="DESIGN"] {
                 background: transparent url('#{$imgUrl}common/icons/icon_question_design--off.svg') no-repeat center 14px;
+
+                &::-ms-check {
+                  background: transparent url('#{$imgUrl}common/icons/icon_question_design--off.svg') no-repeat center 14px;
+                }
               }
 
               input[value="DEVELOPING"] {
                 background: transparent url('#{$imgUrl}common/icons/icon_question_dev_ing--off.svg') no-repeat center 14px;
+
+                &::-ms-check {
+                  background: transparent url('#{$imgUrl}common/icons/icon_question_dev_ing--off.svg') no-repeat center 14px;
+                }
               }
 
               input[value="OPERATING"] {
                 background: transparent url('#{$imgUrl}common/icons/icon_question_dev_end--off.svg') no-repeat center 14px;
+
+                &::-ms-check {
+                  background: transparent url('#{$imgUrl}common/icons/icon_question_dev_end--off.svg') no-repeat center 14px;
+                }
               }
 
               input[value="RENEWAL"] {
                 background: transparent url('#{$imgUrl}common/icons/icon_question_renewal--off.svg') no-repeat center 14px;
+
+                &::-ms-check {
+                  background: transparent url('#{$imgUrl}common/icons/icon_question_renewal--off.svg') no-repeat center 14px;
+                }
               }
 
               &--error {
@@ -334,6 +354,10 @@ $imgUrl: '/static/images/';
 
                 input[type="radio"] {
                   border-color: $red;
+
+                  &::-ms-check {
+                    border-color: $red;
+                  }
                 }
               }
             }
@@ -358,22 +382,46 @@ $imgUrl: '/static/images/';
 
                 &[value="PLANNING"] {
                   background: transparent url('#{$imgUrl}common/icons/icon_question_plan--on.svg') no-repeat center 14px;
+
+                  &::-ms-check {
+                    background: transparent url('#{$imgUrl}common/icons/icon_question_renewal--on.svg') no-repeat center 14px;
+                  }
                 }
 
                 &[value="DESIGN"] {
                   background: transparent url('#{$imgUrl}common/icons/icon_question_design--on.svg') no-repeat center 14px;
+
+                  &::-ms-check {
+                    background: transparent url('#{$imgUrl}common/icons/icon_question_renewal--on.svg') no-repeat center 14px;
+                  }
                 }
 
                 &[value="DEVELOPING"] {
                   background: transparent url('#{$imgUrl}common/icons/icon_question_dev_ing--on.svg') no-repeat center 14px;
+
+                  &::-ms-check {
+                    background: transparent url('#{$imgUrl}common/icons/icon_question_renewal--on.svg') no-repeat center 14px;
+                  }
                 }
 
                 &[value="OPERATING"] {
                   background: transparent url('#{$imgUrl}common/icons/icon_question_dev_end--on.svg') no-repeat center 14px;
+
+                  &::-ms-check {
+                    background: transparent url('#{$imgUrl}common/icons/icon_question_renewal--on.svg') no-repeat center 14px;
+                  }
                 }
 
                 &[value="RENEWAL"] {
                   background: transparent url('#{$imgUrl}common/icons/icon_question_renewal--on.svg') no-repeat center 14px;
+
+                  &::-ms-check {
+                    background: transparent url('#{$imgUrl}common/icons/icon_question_renewal--on.svg') no-repeat center 14px;
+                  }
+                }
+
+                &::-ms-check {
+                  border-color: $blue;
                 }
 
                 & + .text {
@@ -383,6 +431,10 @@ $imgUrl: '/static/images/';
                 &:disabled {
                   border-color: $gray;
                 }
+              }
+
+              &::-ms-check {
+                @extend input[type="radio"];
               }
             }
 

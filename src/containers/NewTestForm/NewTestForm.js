@@ -522,7 +522,6 @@ class NewTestForm extends Component {
     } = this.props;
     const { match, history } = route;
     const { pId, tId } = match.params;
-    const { protocol } = window.location;
     const { test } = this.state;
     const { target } = test;
     const tgId = target !== undefined ? target.id : null;
@@ -861,8 +860,6 @@ class NewTestForm extends Component {
           || maxAgeValue === undefined || maxAgeValue === null
         ) {
           console.log('error');
-          alert('Oops! :(\n오류가 발생했습니다. 새로고침하여 테스트를 다시 불러와야 합니다.');
-          window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project/${pId}/test/${tId}`);
         } else {
           if (!hasTargetError) {
             this.setState({
@@ -2066,6 +2063,7 @@ class NewTestForm extends Component {
                       }
                       qId={qId}
                       issueCategory={issueCategory}
+                      fieldsValues={fieldsValues}
                       handleBlurSave={handleBlurSave}
                     />
                   </FormSection>

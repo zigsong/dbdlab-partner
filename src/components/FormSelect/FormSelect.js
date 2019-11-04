@@ -19,6 +19,9 @@ const FormSelect = ({
       setValues(input.values);
       if (!disabled) setSelected(true);
       onChange(input.value);
+    } else if (slct.current.value !== defaultValue && (input.value === '' || input.value === undefined)) {
+      setValues(slct.current.value);
+      onChange(slct.current.value);
     }
   }, [defaultValue, disabled, input, input.value]);
 

@@ -57,6 +57,17 @@ const TestFormDefault = (props) => {
               checked={step.value === input.value}
               disabled={disabled}
             />
+            <button
+              type="button"
+              className={`btn__radio${step.value === input.value ? '--checked' : ''}`}
+              onFocus={e => input.onFocus(e, input.onChange(step.value))}
+              onChange={(e) => {
+                input.onChange(e, step.value);
+                handleBlurSave();
+              }}
+              onBlur={e => input.onBlur(e, input.onChange(step.value))}
+              disabled={disabled}
+            />
             <span className="text">{step.text}</span>
           </span>
         ))}

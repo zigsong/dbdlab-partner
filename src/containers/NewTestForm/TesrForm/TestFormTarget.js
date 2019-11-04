@@ -21,39 +21,109 @@ class TestFormTarget extends Component {
   }
 
   componentWillUnmount() {
-    const { extraInfoBox } = this.state;
-    const { extraValue, onChange } = this.props;
-    const tempArr = [];
-    const inputArr = extraValue.length === extraInfoBox.length
-    || extraValue.length > extraInfoBox.length
-    || extraInfoBox.length === undefined
-      ? tempArr.concat(extraValue) : tempArr.concat(extraInfoBox);
-    const hasId = inputArr.filter(x => x.id).length;
-    const hasValue = inputArr.filter(x => x.value).length;
+    const { fieldsValues, onChange } = this.props;
+    const { target } = fieldsValues;
+    const {
+      extraInfoCategory1,
+      extraInfoCategory2,
+      extraInfoCategory3,
+      extraInfoDesc1,
+      extraInfoDesc2,
+      extraInfoDesc3,
+    } = target;
 
-    if (hasId !== hasValue) {
-      // eslint-disable-next-line array-callback-return
-      inputArr.filter((x, idx) => {
-        if (!x.value) {
-          onChange(`target.extraInfoDesc${idx + 1}`, '');
-          onChange(`target.extraInfoCategory${idx + 1}`, '');
-        }
-      });
+    if (extraInfoCategory1 !== undefined
+      && (extraInfoDesc1 === undefined || extraInfoDesc1.length < 1)) {
+      onChange('target.extraInfoDesc1', '');
     }
 
-    this.setState({
-      extraInfoBox: [],
-    });
+    if (extraInfoCategory2 !== undefined
+      && (extraInfoDesc2 === undefined || extraInfoDesc2.length < 1)) {
+      onChange('target.extraInfoDesc2', '');
+    }
+
+    if (extraInfoCategory3 !== undefined
+      && (extraInfoDesc3 === undefined || extraInfoDesc3.length < 1)) {
+      onChange('target.extraInfoDesc3', '');
+    }
+
+    if (extraInfoDesc1 !== undefined
+      && (extraInfoCategory1 === undefined || extraInfoCategory1.length < 1)) {
+      onChange('target.extraInfoCategory1', '');
+    }
+
+    if (extraInfoDesc2 !== undefined
+      && (extraInfoCategory2 === undefined || extraInfoCategory2.length < 1)) {
+      onChange('target.extraInfoCategory2', '');
+    }
+
+    if (extraInfoDesc3 !== undefined
+      && (extraInfoCategory3 === undefined || extraInfoCategory3.length < 1)) {
+      onChange('target.extraInfoCategory3', '');
+    }
   }
 
   setExtraValueArr = () => {
-    const { extraValue } = this.props;
+    const { extraValue, fieldsValues } = this.props;
+    const { target } = fieldsValues;
+    const {
+      extraInfoCategory1,
+      extraInfoCategory2,
+      extraInfoCategory3,
+      extraInfoDesc1,
+      extraInfoDesc2,
+      extraInfoDesc3,
+    } = target;
+    const tempId = extraValue.length > 0 ? extraValue[0].id : 1;
+    const exValueArr = [];
+    console.log(extraValue);
 
-    if (extraValue.length > 0) {
+    if (extraInfoCategory1 !== undefined || extraInfoDesc1 !== undefined) {
+      exValueArr.push({ id: tempId, value: extraInfoDesc1, name: extraInfoCategory1 });
+    }
+
+    if (extraInfoCategory2 !== undefined || extraInfoDesc2 !== undefined) {
+      exValueArr.push({ id: tempId + 1, value: extraInfoDesc2, name: extraInfoCategory2 });
+    }
+
+    if (extraInfoCategory3 !== undefined || extraInfoDesc3 !== undefined) {
+      exValueArr.push({ id: tempId + 2, value: extraInfoDesc3, name: extraInfoCategory3 });
+    }
+
+    const exInfoValues = exValueArr.filter(x => x.value).length;
+    const exCateValues = exValueArr.filter(x => x.name).length;
+
+    if (target === undefined && extraValue.length > 0) {
+      console.log(1);
+      this.setState({
+        extraInfoBox: extraValue,
+      });
+    } else if (target !== undefined && exInfoValues > extraValue.length) {
+      console.log(2);
+      this.setState({
+        extraInfoBox: exValueArr,
+      });
+    } else if (target !== undefined && exCateValues > extraValue.length) {
+      console.log(3);
+      this.setState({
+        extraInfoBox: exValueArr,
+      });
+    } else if (target !== undefined
+      && extraValue.length > 0
+      && (extraValue.length === exInfoValues || extraValue.length > exInfoValues)) {
+      console.log(4);
+      this.setState({
+        extraInfoBox: extraValue,
+      });
+    } else if (target !== undefined
+      && extraValue.length > 0
+      && (extraValue.length === exCateValues || extraValue.length > exCateValues)) {
+      console.log(5);
       this.setState({
         extraInfoBox: extraValue,
       });
     } else {
+      console.log(6);
       this.setState({
         extraInfoBox: { id: 1 },
       });
@@ -79,8 +149,6 @@ class TestFormTarget extends Component {
     || extraValue.length > extraInfoBox.length
     || extraInfoBox.length === undefined)
       ? tempArr.concat(extraValue) : tempArr.concat(extraInfoBox);
-    // const hasId = inputArr.filter(x => x.id).length;
-    // const hasValue = inputArr.filter(x => x.value).length;
     const exCate = [extraInfoCategory1, extraInfoCategory2, extraInfoCategory3];
     const exDesc = [extraInfoDesc1, extraInfoDesc2, extraInfoDesc3];
 
@@ -110,14 +178,6 @@ class TestFormTarget extends Component {
       return false;
     }
 
-    // console.log(hasId);
-    // console.log(hasValue);
-
-    // if (hasId !== hasValue) {
-    //   alert('추가 정보를 입력해 주세요2');
-    //   return false;
-    // }
-
     inputArr.push({
       id: inputArr[inputArr.length - 1].id + 1,
     });
@@ -142,12 +202,13 @@ class TestFormTarget extends Component {
       ? extraValue.slice() : extraInfoBox.slice();
     const resultArr = tempArr.slice(0, -1);
     const hasValue = tempArr[idx].value !== undefined ? tempArr[idx].value.length > 0 : undefined;
+    const hasName = tempArr[idx].name !== undefined ? tempArr[idx].name.length > 0 : undefined;
 
     if (extraInfoBox.length < 2) {
       return false;
     }
 
-    if (hasValue !== undefined && !!hasValue) {
+    if ((hasValue !== undefined && !!hasValue) && hasName !== undefined && !!hasName) {
       const exTgId = tempArr[idx].id;
 
       deleteTargetExtra(exTgId, tgId)
@@ -172,8 +233,8 @@ class TestFormTarget extends Component {
           console.log(err.message);
         });
     } else {
-      onChange(`target.extraInfoDesc${idx + 1}`, undefined);
-      onChange(`target.extraInfoCategory${idx + 1}`, undefined);
+      onChange(`target.extraInfoDesc${idx + 1}`, '');
+      onChange(`target.extraInfoCategory${idx + 1}`, '');
     }
 
     return this.setState({

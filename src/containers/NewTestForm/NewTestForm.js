@@ -1128,7 +1128,6 @@ class NewTestForm extends Component {
       postTest,
       patchTest,
       patchTarget,
-      postTargetExtra,
       patchTargetExtra,
       patchQuest,
       getTest,
@@ -1305,21 +1304,6 @@ class NewTestForm extends Component {
                   console.log(err);
                   console.log(err.response);
                 });
-            } else if (!hasExTargetError && exCate1Id !== undefined && exValue1Id !== undefined) {
-              console.log('postTarget ex1 success');
-              getTest(tId);
-              postTargetExtra(tgId, exCate1Id, extraInfoDesc1)
-                .then(() => {
-                  getTarget(tgId);
-                  this.setState({
-                    hasExTargetError: false,
-                  });
-                  console.log('postTarget ex1 success');
-                })
-                .catch((err) => {
-                  console.log(err);
-                  console.log(err.response);
-                });
             }
 
             if (!!tgEx2Id
@@ -1338,21 +1322,6 @@ class NewTestForm extends Component {
                   console.log(err);
                   console.log(err.response);
                 });
-            } else if (!hasExTargetError && exCate2Id !== undefined && exValue2Id !== undefined) {
-              console.log('postTarget ex2 success');
-              getTest(tId);
-              postTargetExtra(tgId, exCate2Id, extraInfoDesc2)
-                .then(() => {
-                  getTarget(tgId);
-                  this.setState({
-                    hasExTargetError: false,
-                  });
-                  console.log('postTarget ex2 success');
-                })
-                .catch((err) => {
-                  console.log(err);
-                  console.log(err.response);
-                });
             }
 
             if (!!tgEx3Id
@@ -1366,21 +1335,6 @@ class NewTestForm extends Component {
                     hasExTargetError: false,
                   });
                   console.log('patchTarget ex3 success');
-                })
-                .catch((err) => {
-                  console.log(err);
-                  console.log(err.response);
-                });
-            } else if (!hasExTargetError && exCate3Id !== undefined && exValue3Id !== undefined) {
-              console.log('postTarget ex3 success');
-              getTest(tId);
-              postTargetExtra(tgId, exCate3Id, extraInfoDesc3)
-                .then(() => {
-                  getTarget(tgId);
-                  this.setState({
-                    hasExTargetError: false,
-                  });
-                  console.log('postTarget ex3 success');
                 })
                 .catch((err) => {
                   console.log(err);

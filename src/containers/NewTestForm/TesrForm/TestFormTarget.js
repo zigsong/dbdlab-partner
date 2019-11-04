@@ -135,8 +135,11 @@ class TestFormTarget extends Component {
       onChange,
       deleteTargetExtra,
     } = this.props;
-    const tempArr = extraValue.length > extraInfoBox.length
-    || extraValue.length === extraInfoBox.length ? extraValue.slice() : extraInfoBox.slice();
+    const tempArr = extraValue.length !== 0
+    && (extraValue.length === extraInfoBox.length
+    || extraValue.length > extraInfoBox.length
+    || extraInfoBox.length === undefined)
+      ? extraValue.slice() : extraInfoBox.slice();
     const resultArr = tempArr.slice(0, -1);
     const hasValue = tempArr[idx].value !== undefined ? tempArr[idx].value.length > 0 : undefined;
 
@@ -169,8 +172,8 @@ class TestFormTarget extends Component {
           console.log(err.message);
         });
     } else {
-      onChange(`target.extraInfoDesc${idx + 1}`, '');
-      onChange(`target.extraInfoCategory${idx + 1}`, '');
+      onChange(`target.extraInfoDesc${idx + 1}`, undefined);
+      onChange(`target.extraInfoCategory${idx + 1}`, undefined);
     }
 
     return this.setState({

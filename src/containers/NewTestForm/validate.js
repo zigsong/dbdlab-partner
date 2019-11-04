@@ -1,9 +1,7 @@
 const validate = (values) => {
   const errors = {
     default: {},
-    target: {
-      extra: {},
-    },
+    target: {},
     quest: {
       issue: {},
       issueDetail: {},
@@ -30,19 +28,37 @@ const validate = (values) => {
     if (values.target.extraInfoCategory1 !== undefined
         && (values.target.extraInfoDesc1 === undefined
           || values.target.extraInfoDesc1.length < 1)) {
-      errors.target.extra.extraInfoDesc1 = '해당하는 정보를 적어 주세요';
+      errors.target.extraInfoDesc1 = '해당하는 정보를 적어 주세요';
+    }
+
+    if (values.target.extraInfoCategory1 === undefined
+      && (values.target.extraInfoDesc1 !== undefined
+        && values.target.extraInfoDesc1.length > 1)) {
+      errors.target.extraInfoCategory1 = '해당하는 정보를 선택하세요';
     }
 
     if (values.target.extraInfoCategory2 !== undefined
         && (values.target.extraInfoDesc2 === undefined
           || values.target.extraInfoDesc2.length < 1)) {
-      errors.target.extra.extraInfoDesc2 = '해당하는 정보를 적어 주세요';
+      errors.target.extraInfoDesc2 = '해당하는 정보를 적어 주세요';
+    }
+
+    if (values.target.extraInfoCategory2 === undefined
+      && (values.target.extraInfoDesc2 !== undefined
+        && values.target.extraInfoDesc2.length > 1)) {
+      errors.target.extraInfoCategory2 = '해당하는 정보를 선택하세요';
     }
 
     if (values.target.extraInfoCategory3 !== undefined
         && (values.target.extraInfoDesc3 === undefined
           || values.target.extraInfoDesc3.length < 1)) {
-      errors.target.extra.extraInfoDesc3 = '해당하는 정보를 적어 주세요';
+      errors.target.extraInfoDesc3 = '해당하는 정보를 적어 주세요';
+    }
+
+    if (values.target.extraInfoCategory3 === undefined
+      && (values.target.extraInfoDesc3 !== undefined
+        && values.target.extraInfoDesc3.length > 1)) {
+      errors.target.extraInfoCategory3 = '해당하는 정보를 선택하세요';
     }
 
     // quest

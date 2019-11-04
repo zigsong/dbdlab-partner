@@ -432,8 +432,12 @@ class NewTestForm extends Component {
     // eslint-disable-next-line max-len
     const hasTargetError = fieldError.target !== undefined ? Object.values(fieldError.target).filter(x => Object.values(x).length > 0).length > 0 : false;
     const hasExTargetError = fieldError.target !== undefined
-    && fieldError.target.extra !== undefined
-      ? Object.values(fieldError.target.extra).filter(x => Object.values(x).length > 0).length > 0
+      ? (fieldError.target.extraInfoCategory1 !== undefined
+        || fieldError.target.extraInfoDesc1 !== undefined
+        || fieldError.target.extraInfoCategory2 !== undefined
+        || fieldError.target.extraInfoDesc2 !== undefined
+        || fieldError.target.extraInfoCategory3 !== undefined
+        || fieldError.target.extraInfoDesc3 !== undefined)
       : false;
     // eslint-disable-next-line max-len
     const hasQuestError = fieldError.quest !== undefined ? Object.values(fieldError.quest).filter(y => Object.values(y).length > 0).length > 0 : false;
@@ -486,6 +490,7 @@ class NewTestForm extends Component {
     const extraInfoCategory3 = fieldsValues !== undefined
       ? fieldsValues.target.extraInfoCategory3 : undefined;
     const interestValue = fieldsValues !== undefined ? fieldsValues.target.interest : undefined;
+    console.log(hasExTargetError);
 
     // quest
     const registerRequire = fieldsValues !== undefined
@@ -517,6 +522,7 @@ class NewTestForm extends Component {
     } = this.props;
     const { match, history } = route;
     const { pId, tId } = match.params;
+    const { protocol } = window.location;
     const { test } = this.state;
     const { target } = test;
     const tgId = target !== undefined ? target.id : null;
@@ -855,6 +861,8 @@ class NewTestForm extends Component {
           || maxAgeValue === undefined || maxAgeValue === null
         ) {
           console.log('error');
+          alert('Oops! :(\n오류가 발생했습니다. 새로고침하여 테스트를 다시 불러와야 합니다.');
+          window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project/${pId}/test/${tId}`);
         } else {
           if (!hasTargetError) {
             this.setState({
@@ -1127,6 +1135,7 @@ class NewTestForm extends Component {
       patchTargetExtra,
       patchQuest,
       getTest,
+      getTarget,
       categoryList,
       extras,
       orderTest,
@@ -1135,6 +1144,7 @@ class NewTestForm extends Component {
     } = this.props;
     const { match, history } = route;
     const { pId, tId } = match.params;
+    const { protocol } = window.location;
     const {
       test,
       isDefaultRendered,
@@ -1143,6 +1153,7 @@ class NewTestForm extends Component {
       isPayRendered,
       hasDefaultError,
       hasTargetError,
+      hasExTargetError,
       hasQuestError,
     } = this.state;
     const { target } = test;
@@ -1237,61 +1248,184 @@ class NewTestForm extends Component {
         const exCate3Id = extraInfoCategory3 !== undefined
           ? categoryListArr[6].find(e => e.name === extraInfoCategory3).id : undefined;
 
-        // init values 값 확인
-        const tgEx1Id = extras !== undefined
-          && extras !== [] && extras[0] !== undefined
-          && Object.keys(extras[0]).length > 1
-          ? extras[0].id : undefined;
-        const tgEx2Id = extras !== undefined
-          && extras !== [] && extras[1] !== undefined
-          && Object.keys(extras[1]).length > 1
-          ? extras[1].id : undefined;
-        const tgEx3Id = extras !== undefined
-          && extras !== [] && extras[2] !== undefined
-          && Object.keys(extras[2]).length > 1
-          ? extras[2].id : undefined;
+        const exValue1Id = extraInfoDesc1 !== undefined && extraInfoDesc1 !== '' ? extraInfoDesc1 : undefined;
+        const exValue2Id = extraInfoDesc2 !== undefined && extraInfoDesc2 !== '' ? extraInfoDesc2 : undefined;
+        const exValue3Id = extraInfoDesc3 !== undefined && extraInfoDesc3 !== '' ? extraInfoDesc3 : undefined;
 
-        if (tgEx1Id) {
-          await patchTargetExtra(tgEx1Id, tgId, exCate1Id, extraInfoDesc1);
-        } else if (exCate1Id) {
-          await getTest(tId);
-          await postTargetExtra(tgId, exCate1Id, extraInfoDesc1);
-        }
+        getTarget(tgId)
+          .then((res) => {
+            console.log(res);
+            const tgEx1Id = extras.length > 0 ? res.data.extras[0].id : undefined;
+            const tgEx2Id = extras.length > 1 ? res.data.extras[1].id : undefined;
+            const tgEx3Id = extras.length > 2 ? res.data.extras[2].id : undefined;
 
-        if (tgEx2Id) {
-          await patchTargetExtra(tgEx2Id, tgId, exCate2Id, extraInfoDesc2);
-        } else if (exCate2Id) {
-          await getTest(tId);
-          await postTargetExtra(tgId, exCate2Id, extraInfoDesc2);
-        }
+            if ((exCate1Id !== undefined && exValue1Id === undefined)
+              || (exCate1Id === undefined && exValue1Id !== undefined)) {
+              this.setState({
+                hasExTargetError: true,
+              });
+            }
 
-        if (tgEx3Id) {
-          await patchTargetExtra(tgEx3Id, tgId, exCate3Id, extraInfoDesc3);
-        } else if (exCate3Id) {
-          await getTest(tId);
-          await postTargetExtra(tgId, exCate3Id, extraInfoDesc3);
-        }
+            if ((exCate2Id !== undefined && exValue2Id === undefined)
+            || (exCate2Id === undefined && exValue2Id !== undefined)) {
+              this.setState({
+                hasExTargetError: true,
+              });
+            }
 
-        await patchTarget(
-          tgId,
-          tId,
-          genderValue,
-          minAge,
-          maxAge,
-          interest,
-        )
-          .then(() => {
-            console.log('submit patchTarget success');
-            getTest(tId);
+            if ((exCate3Id !== undefined && exValue3Id === undefined)
+            || (exCate3Id === undefined && exValue3Id !== undefined)) {
+              this.setState({
+                hasExTargetError: true,
+              });
+            }
+
+            // if (!hasTargetError && !hasExTargetError) {
+            //   this.setState({
+            //     hasTargetError: false,
+            //   });
+            // }
+
+            // if (!hasExTargetError) {
+            //   this.setState({
+            //     hasExTargetError: false,
+            //   });
+            // }
+
+            if (!!tgEx1Id
+              && !hasExTargetError
+              && exCate1Id !== undefined
+              && exValue1Id !== undefined) {
+              patchTargetExtra(tgEx1Id, tgId, exCate1Id, extraInfoDesc1)
+                .then(() => {
+                  getTarget(tgId);
+                  this.setState({
+                    hasExTargetError: false,
+                  });
+                  console.log('patchTarget ex1 success');
+                })
+                .catch((err) => {
+                  console.log(err);
+                  console.log(err.response);
+                });
+            } else if (!hasExTargetError && exCate1Id !== undefined && exValue1Id !== undefined) {
+              console.log('postTarget ex1 success');
+              getTest(tId);
+              postTargetExtra(tgId, exCate1Id, extraInfoDesc1)
+                .then(() => {
+                  getTarget(tgId);
+                  this.setState({
+                    hasExTargetError: false,
+                  });
+                  console.log('postTarget ex1 success');
+                })
+                .catch((err) => {
+                  console.log(err);
+                  console.log(err.response);
+                });
+            }
+
+            if (!!tgEx2Id
+              && !hasExTargetError
+              && exCate2Id !== undefined
+              && exValue2Id !== undefined) {
+              patchTargetExtra(tgEx2Id, tgId, exCate2Id, extraInfoDesc2)
+                .then(() => {
+                  getTarget(tgId);
+                  this.setState({
+                    hasExTargetError: false,
+                  });
+                  console.log('patchTarget ex2 success');
+                })
+                .catch((err) => {
+                  console.log(err);
+                  console.log(err.response);
+                });
+            } else if (!hasExTargetError && exCate2Id !== undefined && exValue2Id !== undefined) {
+              console.log('postTarget ex2 success');
+              getTest(tId);
+              postTargetExtra(tgId, exCate2Id, extraInfoDesc2)
+                .then(() => {
+                  getTarget(tgId);
+                  this.setState({
+                    hasExTargetError: false,
+                  });
+                  console.log('postTarget ex2 success');
+                })
+                .catch((err) => {
+                  console.log(err);
+                  console.log(err.response);
+                });
+            }
+
+            if (!!tgEx3Id
+              && !hasExTargetError
+              && exCate3Id !== undefined
+              && exValue3Id !== undefined) {
+              patchTargetExtra(tgEx3Id, tgId, exCate3Id, extraInfoDesc3)
+                .then(() => {
+                  getTarget(tgId);
+                  this.setState({
+                    hasExTargetError: false,
+                  });
+                  console.log('patchTarget ex3 success');
+                })
+                .catch((err) => {
+                  console.log(err);
+                  console.log(err.response);
+                });
+            } else if (!hasExTargetError && exCate3Id !== undefined && exValue3Id !== undefined) {
+              console.log('postTarget ex3 success');
+              getTest(tId);
+              postTargetExtra(tgId, exCate3Id, extraInfoDesc3)
+                .then(() => {
+                  getTarget(tgId);
+                  this.setState({
+                    hasExTargetError: false,
+                  });
+                  console.log('postTarget ex3 success');
+                })
+                .catch((err) => {
+                  console.log(err);
+                  console.log(err.response);
+                });
+            }
           })
-          .then(() => {
-            this.setState({
-              hasTargetError: false,
-              isTargetRendered: false,
-              isTargetPassed: true,
-              isQuestRendered: true,
-            });
+          .catch((err) => {
+            console.log(err);
+            console.log(err.response);
+            console.log(err.message);
           });
+
+        if (genderValue !== undefined && genderValue !== null
+          && minAge !== undefined && minAge !== null
+          && maxAge !== undefined && maxAge !== null) {
+          await patchTarget(
+            tgId,
+            tId,
+            genderValue,
+            minAge,
+            maxAge,
+            interest,
+          )
+            .then(() => {
+              console.log('submit patchTarget success');
+              getTest(tId);
+            })
+            .then(() => {
+              this.setState({
+                hasTargetError: false,
+                hasExTargetError: false,
+                isTargetRendered: false,
+                isTargetPassed: true,
+                isQuestRendered: true,
+              });
+            });
+        } else {
+          console.log('error');
+          alert('Oops! :(\n오류가 발생했습니다. 새로고침하여 테스트를 다시 불러와야 합니다.');
+          window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project/${pId}/test/${tId}`);
+        }
       } else if (isQuestRendered && hasQuestPassed) {
         const submitCheck = window.confirm('테스트를 등록하시겠어요?\n등록 후엔 수정이 되지 않으니, 꼼꼼히 확인해 주세요:)');
 

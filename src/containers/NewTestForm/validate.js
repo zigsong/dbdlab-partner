@@ -15,14 +15,20 @@ const validate = (values) => {
 
   if (hasValue) {
     // target
-    if (values.target.minAge > values.target.maxAge) {
-      errors.target.minAge = '나이를 다시 확인해 주세요';
-      errors.target.maxAge = '범위를 다시 확인해 주세요';
+    if (values.target.minAge !== undefined
+      && (values.target.maxAge === undefined || values.target.maxAge === null)) {
+      errors.target.maxAge = '나이를 입력해 주세요';
     }
 
-    if (values.target.minAge > values.target.maxAge) {
+    if ((values.target.minAge === undefined || values.target.minAge === null)
+    && values.target.maxAge !== undefined) {
+      errors.target.minAge = '나이를 입력해 주세요';
+    }
+
+    if ((values.target.maxAge !== undefined && values.target.maxAge !== '' && values.target.maxAge !== null)
+    && values.target.minAge > values.target.maxAge) {
+      errors.target.maxAge = '나이를 다시 확인해 주세요';
       errors.target.minAge = '나이를 다시 확인해 주세요';
-      errors.target.maxAge = '범위를 다시 확인해 주세요';
     }
 
     if (values.target.extraInfoCategory1 !== undefined

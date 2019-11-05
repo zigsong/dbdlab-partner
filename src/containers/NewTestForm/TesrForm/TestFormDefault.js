@@ -19,7 +19,7 @@ const emailRegexp = value => (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}
   ? '이메일 형식을 다시 확인해주세요' : undefined);
 const valueRegExp = value => (value && value.replace(/(^\s*)|(\s*$)/g, '').length < 2 ? '형식에 맞게 입력해 주세요' : undefined);
 const valueNumberRegExp = value => (value && value.replace(/^[0-9]/, '').length < 1 ? '정확하게 입력해주세요' : undefined);
-const valueEtcRegExp = value => (value && value.replace(/^[^0-9a-zA-Z]/, '').length < 2 ? '명확하게 입력해주세요' : undefined);
+// const valueEtcRegExp = value => (value && value.replace(/^[^0-9a-zA-Z]/, '').length < 2 ? '명확하게 입력해주세요' : undefined);
 
 const TestFormDefault = (props) => {
   const serviceStatus = [
@@ -55,6 +55,17 @@ const TestFormDefault = (props) => {
               onBlur={e => input.onBlur(e, input.onChange(step.value))}
               value={step.value}
               checked={step.value === input.value}
+              disabled={disabled}
+            />
+            <button
+              type="button"
+              className={`btn__radio${step.value === input.value ? '--checked' : ''}`}
+              onFocus={e => input.onFocus(e, input.onChange(step.value))}
+              onChange={(e) => {
+                input.onChange(e, step.value);
+                handleBlurSave();
+              }}
+              onBlur={e => input.onBlur(e, input.onChange(step.value))}
               disabled={disabled}
             />
             <span className="text">{step.text}</span>
@@ -134,9 +145,7 @@ const TestFormDefault = (props) => {
             disabled={isDisabled}
             validate={[
               seriveInfoRequired,
-              valueRegExp,
               valueNumberRegExp,
-              valueEtcRegExp,
             ]}
           />
         </div>

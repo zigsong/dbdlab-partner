@@ -178,11 +178,9 @@ class NewPlanForm extends Component {
   };
 
   getRadioValue = (e, idx) => {
-    const { fieldMeta } = this.props;
-    const { active } = fieldMeta.plan;
     const planName = e.target.value;
     const inputElem = idx === 0 ? this.inputEl01 : this.inputEl02;
-    const handleInputFocus = () => { if (active && planName.includes('PLAN')) inputElem.focus(); };
+    const handleInputFocus = () => { if (planName.includes('PLAN')) inputElem.focus(); };
 
     handleInputFocus();
   };
@@ -442,6 +440,14 @@ class NewPlanForm extends Component {
                                   value={p.name}
                                   onChange={e => getRadioValue(e, idx)}
                                   disabled={postVoucherSuccess}
+                                />
+                                <button
+                                  type="button"
+                                  name="plan"
+                                  className="btn__radio"
+                                  onClick={e => getRadioValue(e, idx)}
+                                  disabled={postVoucherSuccess}
+                                  value={p.name}
                                 />
                                 <strong className="plan__name">{p.name}</strong>
                                 <span className="plan__desc">{p.description}</span>

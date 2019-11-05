@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React from 'react';
 
 const RightSidebar = (props) => {
@@ -438,8 +439,6 @@ const RightSidebar = (props) => {
     }
   };
 
-  console.log(step);
-
   const setPayTitle = () => {
     switch (isPayRendered) {
       case submitFailed:
@@ -451,8 +450,10 @@ const RightSidebar = (props) => {
       case isPayPassed && step === 'payment':
         return '입금확인 중 입니다.';
       case isAllPassed:
-      case isDefaultPassed && isTargetPassed && isQuestPassed && step === 'apply':
+      case justRegistered:
+      case isDefaultPassed && isTargetPassed && isQuestPassed:
       case isQuestPassed && step === 'register':
+      case step === 'apply':
         return '아직은\n결제할 수 없습니다.';
       case isPlanActive:
         return '원하는 Plan을\n선택해주세요.\n시리얼넘버가 있다면,\n입력해주세요';
@@ -476,8 +477,10 @@ const RightSidebar = (props) => {
       case isPayPassed && step === 'payment':
         return '입금 확인 후,\n테스트를 시작합니다.\n테스트 진행은\n입금 다음 날부터\n업무일 기준\n5일이 소요됩니다!';
       case isAllPassed:
-      case isDefaultPassed && isTargetPassed && isQuestPassed && step === 'apply':
+      case justRegistered:
+      case isDefaultPassed && isTargetPassed && isQuestPassed:
       case isQuestPassed && step === 'register':
+      case step === 'apply':
         return '매니저가\n신청내용 검토 후\n결제가 진행됩니다.';
       case isPlanActive:
         return 'Plan 01 :테스트\nPlan 02 :테스트 + 컨설팅\n엑셀러레이터,\n인큐베이팅 프로그램에서\n시리얼 넘버를 받았다면,\n입력해주세요.\n테스트 비용이 면제됩니다.';
@@ -741,7 +744,14 @@ const RightSidebar = (props) => {
               </p>
             </div>
             <div className="box-btn">
-              {justRegistered || isAllPassed || (isQuestPassed && (step !== 'payment' && step !== 'apply')) || (isPayRendered && step !== 'payment') || isPayPassed
+              {justRegistered
+              || isAllPassed
+              || (isQuestPassed && step === 'register')
+              || (isPayRendered && step !== 'payment')
+              || (!isPayRendered && step === 'payment')
+              || step === 'testing'
+              || step === 'completed'
+              || isPayPassed
                 ? null
                 : (
                   <button

@@ -129,6 +129,16 @@ class TestFormPay extends Component {
               value={p.name}
               disabled={isDisabled}
             />
+            <button
+              type="button"
+              className={`btn__radio${p.name === input.value ? '--checked' : ''}`}
+              onFocus={(e) => {
+                input.onFocus(e, input.onChange(p.name));
+                this.setState({ planPrice: p.price_amount });
+              }}
+              onChange={e => input.onChange(e, p.name)}
+              disabled={isDisabled}
+            />
             <strong className="plan__name">{p.name}</strong>
             <span className="plan__desc--eng">{p.description}</span>
             { idx === 0 ? <span className="plan__desc--kor">테스트만 진행합니다.</span> : <span className="plan__desc--kor">테스트 + 후속 컨설팅을 진행합니다 </span> }

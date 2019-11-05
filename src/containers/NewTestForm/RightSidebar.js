@@ -451,8 +451,9 @@ const RightSidebar = (props) => {
         return '입금확인 중 입니다.';
       case isAllPassed:
       case justRegistered:
-      case isDefaultPassed && isTargetPassed && isQuestPassed && step === 'apply':
+      case isDefaultPassed && isTargetPassed && isQuestPassed:
       case isQuestPassed && step === 'register':
+      case step === 'apply':
         return '아직은\n결제할 수 없습니다.';
       case isPlanActive:
         return '원하는 Plan을\n선택해주세요.\n시리얼넘버가 있다면,\n입력해주세요';

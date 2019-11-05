@@ -11,8 +11,6 @@ const validate = (values) => {
   };
   const hasValue = Object.keys(values).length > 0;
 
-  console.log(values);
-
   if (hasValue) {
     // target
     if (values.target.minAge !== undefined

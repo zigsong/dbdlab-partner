@@ -37,7 +37,6 @@ class TestFormPay extends Component {
 
     getPlanList();
     getTestPrice(testId, planValue, couponValue).then((res) => {
-      console.log(res);
       this.setState({
         planPrice: res.data.plan_price,
         targetPrice: res.data.target_extra_price,

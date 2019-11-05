@@ -478,8 +478,9 @@ const RightSidebar = (props) => {
         return '입금 확인 후,\n테스트를 시작합니다.\n테스트 진행은\n입금 다음 날부터\n업무일 기준\n5일이 소요됩니다!';
       case isAllPassed:
       case justRegistered:
-      case isDefaultPassed && isTargetPassed && isQuestPassed && step === 'apply':
+      case isDefaultPassed && isTargetPassed && isQuestPassed:
       case isQuestPassed && step === 'register':
+      case step === 'apply':
         return '매니저가\n신청내용 검토 후\n결제가 진행됩니다.';
       case isPlanActive:
         return 'Plan 01 :테스트\nPlan 02 :테스트 + 컨설팅\n엑셀러레이터,\n인큐베이팅 프로그램에서\n시리얼 넘버를 받았다면,\n입력해주세요.\n테스트 비용이 면제됩니다.';

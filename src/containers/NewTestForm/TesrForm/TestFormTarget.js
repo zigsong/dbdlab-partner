@@ -17,61 +17,164 @@ class TestFormTarget extends Component {
   }
 
   componentDidMount() {
-    const { extraValue } = this.props;
+    this.setExtraValueArr();
+  }
 
-    if (extraValue.length > 0) {
+  componentWillUnmount() {
+    const { fieldsValues, onChange } = this.props;
+    const { target } = fieldsValues;
+    const {
+      extraInfoCategory1,
+      extraInfoCategory2,
+      extraInfoCategory3,
+      extraInfoDesc1,
+      extraInfoDesc2,
+      extraInfoDesc3,
+    } = target;
+
+    if (extraInfoCategory1 !== undefined
+      && (extraInfoDesc1 === undefined || extraInfoDesc1.length < 1)) {
+      onChange('target.extraInfoDesc1', '');
+    }
+
+    if (extraInfoCategory2 !== undefined
+      && (extraInfoDesc2 === undefined || extraInfoDesc2.length < 1)) {
+      onChange('target.extraInfoDesc2', '');
+    }
+
+    if (extraInfoCategory3 !== undefined
+      && (extraInfoDesc3 === undefined || extraInfoDesc3.length < 1)) {
+      onChange('target.extraInfoDesc3', '');
+    }
+
+    if (extraInfoDesc1 !== undefined
+      && (extraInfoCategory1 === undefined || extraInfoCategory1.length < 1)) {
+      onChange('target.extraInfoCategory1', '');
+    }
+
+    if (extraInfoDesc2 !== undefined
+      && (extraInfoCategory2 === undefined || extraInfoCategory2.length < 1)) {
+      onChange('target.extraInfoCategory2', '');
+    }
+
+    if (extraInfoDesc3 !== undefined
+      && (extraInfoCategory3 === undefined || extraInfoCategory3.length < 1)) {
+      onChange('target.extraInfoCategory3', '');
+    }
+  }
+
+  setExtraValueArr = () => {
+    const { extraValue, fieldsValues } = this.props;
+    const { target } = fieldsValues;
+    const {
+      extraInfoCategory1,
+      extraInfoCategory2,
+      extraInfoCategory3,
+      extraInfoDesc1,
+      extraInfoDesc2,
+      extraInfoDesc3,
+    } = target;
+    const tempId = extraValue.length > 0 ? extraValue[0].id : 1;
+    const exValueArr = [];
+    console.log(extraValue);
+
+    if (extraInfoCategory1 !== undefined || extraInfoDesc1 !== undefined) {
+      exValueArr.push({ id: tempId, value: extraInfoDesc1, name: extraInfoCategory1 });
+    }
+
+    if (extraInfoCategory2 !== undefined || extraInfoDesc2 !== undefined) {
+      exValueArr.push({ id: tempId + 1, value: extraInfoDesc2, name: extraInfoCategory2 });
+    }
+
+    if (extraInfoCategory3 !== undefined || extraInfoDesc3 !== undefined) {
+      exValueArr.push({ id: tempId + 2, value: extraInfoDesc3, name: extraInfoCategory3 });
+    }
+
+    const exInfoValues = exValueArr.filter(x => x.value).length;
+    const exCateValues = exValueArr.filter(x => x.name).length;
+
+    if (target === undefined && extraValue.length > 0) {
+      console.log(1);
+      this.setState({
+        extraInfoBox: extraValue,
+      });
+    } else if (target !== undefined && exInfoValues > extraValue.length) {
+      console.log(2);
+      this.setState({
+        extraInfoBox: exValueArr,
+      });
+    } else if (target !== undefined && exCateValues > extraValue.length) {
+      console.log(3);
+      this.setState({
+        extraInfoBox: exValueArr,
+      });
+    } else if (target !== undefined
+      && extraValue.length > 0
+      && (extraValue.length === exInfoValues || extraValue.length > exInfoValues)) {
+      console.log(4);
+      this.setState({
+        extraInfoBox: extraValue,
+      });
+    } else if (target !== undefined
+      && extraValue.length > 0
+      && (extraValue.length === exCateValues || extraValue.length > exCateValues)) {
+      console.log(5);
       this.setState({
         extraInfoBox: extraValue,
       });
     } else {
+      console.log(6);
       this.setState({
         extraInfoBox: { id: 1 },
       });
     }
   }
 
-  componentWillUnmount() {
-    const { extraInfoBox } = this.state;
-    const { extraValue, onChange } = this.props;
-    const tempArr = [];
-    const inputArr = extraValue.length > extraInfoBox.length
-    || extraValue.length === extraInfoBox.length
-      ? tempArr.concat(extraValue) : tempArr.concat(extraInfoBox);
-    const hasId = inputArr.filter(x => x.id).length;
-    const hasValue = inputArr.filter(x => x.value).length;
-
-    if (hasId !== hasValue) {
-      // eslint-disable-next-line array-callback-return
-      inputArr.filter((x, idx) => {
-        if (!x.value) {
-          onChange(`target.extraInfoDesc${idx + 1}`, '');
-          onChange(`target.extraInfoCategory${idx + 1}`, '');
-        }
-      });
-    }
-
-    this.setState({
-      extraInfoBox: [],
-    });
-  }
-
   addInfoBox = () => {
     const { extraValue } = this.props;
     const { extraInfoBox } = this.state;
+    const { fieldsValues } = this.props;
+    const { target } = fieldsValues;
+    const {
+      extraInfoCategory1,
+      extraInfoCategory2,
+      extraInfoCategory3,
+      extraInfoDesc1,
+      extraInfoDesc2,
+      extraInfoDesc3,
+    } = target;
     const tempArr = [];
-    const inputArr = extraValue.length > extraInfoBox.length
-    || extraValue.length === extraInfoBox.length
+    const inputArr = extraValue.length !== 0
+    && (extraValue.length === extraInfoBox.length
+    || extraValue.length > extraInfoBox.length
+    || extraInfoBox.length === undefined)
       ? tempArr.concat(extraValue) : tempArr.concat(extraInfoBox);
-    const hasId = inputArr.filter(x => x.id).length;
-    const hasValue = inputArr.filter(x => x.value).length;
+    const exCate = [extraInfoCategory1, extraInfoCategory2, extraInfoCategory3];
+    const exDesc = [extraInfoDesc1, extraInfoDesc2, extraInfoDesc3];
 
-    if (hasId !== hasValue) {
-      alert('추가 정보를 입력해 주세요');
+    while (exCate.indexOf(undefined) !== -1) {
+      exCate.splice(exCate.indexOf(undefined), 1);
+    }
+
+    while (exCate.indexOf('') !== -1) {
+      exCate.splice(exCate.indexOf(undefined), 1);
+    }
+
+    while (exDesc.indexOf(undefined) !== -1) {
+      exDesc.splice(exDesc.indexOf(undefined), 1);
+    }
+
+    while (exDesc.indexOf('') !== -1) {
+      exDesc.splice(exDesc.indexOf(undefined), 1);
+    }
+
+    if (extraInfoBox.length > 2 || (exCate.length && exDesc.length === 3)) {
+      alert('추가 정보는 3개까지 가능합니다');
       return false;
     }
 
-    if (extraInfoBox.length > 2) {
-      alert('추가 정보는 3개까지 가능합니다');
+    if (exCate.length !== exDesc.length) {
+      alert('추가 정보를 입력해 주세요');
       return false;
     }
 
@@ -92,16 +195,20 @@ class TestFormTarget extends Component {
       onChange,
       deleteTargetExtra,
     } = this.props;
-    const tempArr = extraValue.length > extraInfoBox.length
-    || extraValue.length === extraInfoBox.length ? extraValue.slice() : extraInfoBox.slice();
+    const tempArr = extraValue.length !== 0
+    && (extraValue.length === extraInfoBox.length
+    || extraValue.length > extraInfoBox.length
+    || extraInfoBox.length === undefined)
+      ? extraValue.slice() : extraInfoBox.slice();
     const resultArr = tempArr.slice(0, -1);
     const hasValue = tempArr[idx].value !== undefined ? tempArr[idx].value.length > 0 : undefined;
+    const hasName = tempArr[idx].name !== undefined ? tempArr[idx].name.length > 0 : undefined;
 
     if (extraInfoBox.length < 2) {
       return false;
     }
 
-    if (hasValue !== undefined && !!hasValue) {
+    if ((hasValue !== undefined && !!hasValue) && hasName !== undefined && !!hasName) {
       const exTgId = tempArr[idx].id;
 
       deleteTargetExtra(exTgId, tgId)

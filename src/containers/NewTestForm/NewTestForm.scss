@@ -309,26 +309,6 @@ $imgUrl: '/static/images/';
                 margin-left: 0;
               }
 
-              input[value="PLANNING"] {
-                background: transparent url('#{$imgUrl}common/icons/icon_question_plan--off.svg') no-repeat center 14px;
-              }
-
-              input[value="DESIGN"] {
-                background: transparent url('#{$imgUrl}common/icons/icon_question_design--off.svg') no-repeat center 14px;
-              }
-
-              input[value="DEVELOPING"] {
-                background: transparent url('#{$imgUrl}common/icons/icon_question_dev_ing--off.svg') no-repeat center 14px;
-              }
-
-              input[value="OPERATING"] {
-                background: transparent url('#{$imgUrl}common/icons/icon_question_dev_end--off.svg') no-repeat center 14px;
-              }
-
-              input[value="RENEWAL"] {
-                background: transparent url('#{$imgUrl}common/icons/icon_question_renewal--off.svg') no-repeat center 14px;
-              }
-
               &--error {
                 @extend .box-input__radio;
 
@@ -339,48 +319,117 @@ $imgUrl: '/static/images/';
             }
 
             input[type="radio"] {
+              // position: absolute;
+              // top: 0;
+              // left: 0;
+              // right: 0;
+              // bottom: 0;
+              // display: inline-block;
+              // width: 100%;
+              // height: 100%;
+              // margin: 0;
+              // border-radius: 3.7px;
+              // border: 1px solid $veryLightGray;
+              // box-sizing: border-box;
+              // cursor: pointer;
+
               position: absolute;
-              top: 0;
-              left: 0;
+              top: -9999px;
+              left: -9999px;
               right: 0;
               bottom: 0;
               display: inline-block;
-              width: 100%;
-              height: 100%;
+              width: 0;
+              height: 0;
               margin: 0;
-              border-radius: 3.7px;
-              border: 1px solid $veryLightGray;
-              box-sizing: border-box;
-              cursor: pointer;
+              overflow: hidden;
+
+              & + .btn__radio {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: inline-block;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                border-radius: 3.7px;
+                border: 1px solid $veryLightGray;
+                box-sizing: border-box;
+                cursor: pointer;
+              }
+
+              &[value="PLANNING"] + .btn__radio {
+                background: transparent url('#{$imgUrl}common/icons/icon_question_plan--off.svg') no-repeat center 14px;
+              }
+
+              &[value="DESIGN"] + .btn__radio {
+                background: transparent url('#{$imgUrl}common/icons/icon_question_design--off.svg') no-repeat center 14px;
+              }
+
+              &[value="DEVELOPING"] + .btn__radio {
+                background: transparent url('#{$imgUrl}common/icons/icon_question_dev_ing--off.svg') no-repeat center 14px;
+              }
+
+              &[value="OPERATING"] + .btn__radio {
+                background: transparent url('#{$imgUrl}common/icons/icon_question_dev_end--off.svg') no-repeat center 14px;
+              }
+
+              &[value="RENEWAL"] + .btn__radio {
+                background: transparent url('#{$imgUrl}common/icons/icon_question_renewal--off.svg') no-repeat center 14px;
+              }
 
               &:checked {
-                border-color: $blue;
-
-                &[value="PLANNING"] {
-                  background: transparent url('#{$imgUrl}common/icons/icon_question_plan--on.svg') no-repeat center 14px;
+                &[value="PLANNING"] + .btn__radio {
+                  &--checked {
+                    @extend .btn__radio;
+                    background: transparent url('#{$imgUrl}common/icons/icon_question_plan--on.svg') no-repeat center 14px;
+                    border-color: $blue;
+                  }
                 }
 
-                &[value="DESIGN"] {
-                  background: transparent url('#{$imgUrl}common/icons/icon_question_design--on.svg') no-repeat center 14px;
+                &[value="DESIGN"] + .btn__radio {
+                  &--checked {
+                    @extend .btn__radio;
+                    background: transparent url('#{$imgUrl}common/icons/icon_question_design--on.svg') no-repeat center 14px;
+                    border-color: $blue;
+                  }
                 }
 
-                &[value="DEVELOPING"] {
-                  background: transparent url('#{$imgUrl}common/icons/icon_question_dev_ing--on.svg') no-repeat center 14px;
+                &[value="DEVELOPING"] + .btn__radio {
+                  &--checked {
+                    @extend .btn__radio;
+                    background: transparent url('#{$imgUrl}common/icons/icon_question_dev_ing--on.svg') no-repeat center 14px;
+                    border-color: $blue;
+                  }
                 }
 
-                &[value="OPERATING"] {
-                  background: transparent url('#{$imgUrl}common/icons/icon_question_dev_end--on.svg') no-repeat center 14px;
+                &[value="OPERATING"] + .btn__radio {
+                  &--checked {
+                    @extend .btn__radio;
+                    background: transparent url('#{$imgUrl}common/icons/icon_question_dev_end--on.svg') no-repeat center 14px;
+                    border-color: $blue;
+                  }
                 }
 
-                &[value="RENEWAL"] {
-                  background: transparent url('#{$imgUrl}common/icons/icon_question_renewal--on.svg') no-repeat center 14px;
+                &[value="RENEWAL"] + .btn__radio {
+                  &--checked {
+                    @extend .btn__radio;
+                    background: transparent url('#{$imgUrl}common/icons/icon_question_renewal--on.svg') no-repeat center 14px;
+                    border-color: $blue;
+                  }
                 }
 
-                & + .text {
-                  color: $blue;
+                & + .btn__radio {
+                  &--checked {
+                    & + .text {
+                      color: $blue;
+                    }
+                  }
                 }
 
-                &:disabled {
+                &:disabled + .btn__radio {
                   border-color: $gray;
                 }
               }
@@ -558,28 +607,62 @@ $imgUrl: '/static/images/';
               box-sizing: border-box;
 
               input[type="radio"] {
+                // position: absolute;
+                // top: 0;
+                // left: 0;
+                // right: 0;
+                // bottom: 0;
+                // z-index: 5;
+                // display: block;
+                // width: 100%;
+                // height: 100%;
+                // margin: 0;
+                // box-sizing: border-box;
+                // border: 1px solid #4a4a4a;
+                // border-radius: 3px;
                 position: absolute;
-                top: 0;
-                left: 0;
+                top: -9999px;
+                left: -9999px;
                 right: 0;
                 bottom: 0;
-                z-index: 5;
-                display: block;
-                width: 100%;
-                height: 100%;
+                display: inline-block;
+                width: 0;
+                height: 0;
                 margin: 0;
-                box-sizing: border-box;
-                border: 1px solid #4a4a4a;
-                border-radius: 3px;
+                overflow: hidden;
+
+                & + .btn__radio {
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  right: 0;
+                  bottom: 0;
+                  z-index: 5;
+                  display: block;
+                  width: 100%;
+                  height: 100%;
+                  margin: 0;
+                  box-sizing: border-box;
+                  border: 1px solid #4a4a4a;
+                  border-radius: 3px;
+                }
 
                 &:checked {
-                  border-width: 2px;
-                  border-color: $blue;
+                  & + .btn__radio {
+                    &--checked {
+                      @extend .btn__radio;
+                      border-width: 2px;
+                      border-color: $blue;
+                    }
+                  }
 
                   &:disabled {
-                    background: $veryLightGray + 30%;
-                    border-color: #4a4a4a;
-                    z-index: -1;
+                    & + .btn__radio {
+                      @extend .btn__radio;
+                      background: $veryLightGray + 30%;
+                      border-color: #4a4a4a;
+                      z-index: -1;
+                    }
                   }
                 }
               }

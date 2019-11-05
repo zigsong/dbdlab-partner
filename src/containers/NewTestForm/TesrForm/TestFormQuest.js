@@ -93,6 +93,7 @@ const TestFormQuest = (props) => {
             type="select"
             defaultValue="사용성 이슈 선택"
             component={FormSelect}
+            onBlur={handleBlurSave}
             disabled={isDisabled}
             up
           >
@@ -120,6 +121,7 @@ const TestFormQuest = (props) => {
             type="select"
             defaultValue="사용성 이슈 선택"
             component={FormSelect}
+            onBlur={handleBlurSave}
             disabled={isDisabled}
             up
           >

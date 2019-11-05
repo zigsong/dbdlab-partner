@@ -39,7 +39,9 @@ input::-webkit-autofill,
 input::-webkit-autofill:hover,
 input::-webkit-autofill:focus,
 input::-webkit-autofill:active,
-input::-webkit-autofill-selected {
+input::-webkit-autofill-selected,
+input[type="checkbox"]::-ms-check,
+input[type="radio"]::-ms-check {
     border: none;
     background-image: none;
     background-color: transparent !important;

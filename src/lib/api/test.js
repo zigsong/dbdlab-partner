@@ -79,9 +79,7 @@ export const patchTest = (
   is_register_required: registerValue,
 }, headers);
 export const getTestPrice = (tId, pName, couponValue) => {
-  console.log(couponValue);
   const coupon = couponValue === undefined ? '' : couponValue;
-  console.log(coupon);
 
   return axios.get(`${baseURL}/tests/${tId}/calculate/?plan_name=${pName}&coupon_type=${coupon}`, headers);
 };

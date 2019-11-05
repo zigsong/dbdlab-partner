@@ -21,10 +21,6 @@ const UnauthorizedPopup = (props) => {
       }
     });
 
-    console.log(inviteToken);
-    console.log(pId);
-    console.log(tId);
-
     if (inviteToken !== undefined && inviteToken !== '') {
       if (inviteToken.includes('user_email') && pId === undefined) {
         // voucher mypage
@@ -45,7 +41,6 @@ const UnauthorizedPopup = (props) => {
         window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/?test_id=${tId}&project_id=${pId}`),
       );
     } else {
-      console.log('no');
       deleteTokenCookie().then(
         window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login`),
       );

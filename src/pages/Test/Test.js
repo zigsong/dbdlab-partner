@@ -30,26 +30,17 @@ class Test extends Component {
   componentDidMount() {
     const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
     const AUTH_TOKEN = hasTokenCookie !== undefined ? hasTokenCookie.replace(/\s/gi, '').substring(6) : null;
-    console.log(hasTokenCookie);
-    console.log(AUTH_TOKEN);
     const { protocol } = window.location;
     const { props } = this;
     const { match, location } = props;
     const { pId } = match.params;
     const { search } = location;
-    const isInvited = search.includes('invite_token');
-    console.log(pId);
-    console.log(location);
-    console.log(isInvited);
+    // const isInvited = search.includes('invite_token');
     const projectId = parseInt(pId, 10);
     const inviteToken = search.includes('invite_token') ? search.split('&')[0] : '';
     const inviteEmail = search.includes('user_email') ? search.split('&')[1] : '';
-    console.log(search);
-    console.log(inviteToken);
-    console.log(inviteEmail);
     const deleteTokenCookie = () => new Promise(() => {
       if (hasTokenCookie !== undefined) {
-        console.log('logged in');
         const setTokenCookie = (expireDate) => {
           const date = new Date();
           date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
@@ -65,7 +56,6 @@ class Test extends Component {
     });
 
     this.setState({ isLoading: true });
-    console.log(AUTH_TOKEN);
 
     if (AUTH_TOKEN === null) {
       this.setState({
@@ -73,22 +63,14 @@ class Test extends Component {
         isLoading: false,
       });
     } else {
-      console.log(inviteToken);
       props.getAuthSelf()
         .then((res) => {
           // 로그인 완료
-          console.log(res);
-          console.log(res.data.email);
           const { id, email } = res.data;
           const isCorrectMail = inviteEmail !== undefined && inviteEmail !== '' ? inviteEmail.substring(11) : undefined;
-          console.log(inviteEmail);
-          console.log(isCorrectMail);
-          console.log(isCorrectMail === email);
-          console.log(email);
 
           // 접속 계정이 초대받은 자인가 확인
           if (inviteToken.length > 1) {
-            console.log('초대');
             // 초대장 잇서요
             if (isCorrectMail !== undefined && isCorrectMail !== email) {
               // 남의 건 안됩니다
@@ -100,8 +82,7 @@ class Test extends Component {
               // 초대장 제꼬에오
               // 웰컴
               props.getProject(projectId, inviteToken)
-                .then((res) => {
-                  console.log(res);
+                .then(() => {
                   window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project`);
                 })
                 .catch((err) => {
@@ -115,10 +96,8 @@ class Test extends Component {
             }
           } else {
             // 초대가 아니예요 걍 드러왓소요
-            console.log('not 초대');
             props.getProject(projectId)
               .then((res) => {
-                console.log(res);
                 const isLeader = res.data.members.find(x => x.is_manager).id === id;
 
                 this.setState({ isLeader });
@@ -126,9 +105,7 @@ class Test extends Component {
                 props.getTestList(pId);
                 props.getProjectInviteLink(projectId)
                   .then((res) => {
-                    console.log(res);
                     const inviteLink = res.data.invite_link;
-                    console.log(inviteLink);
 
                     this.setState({ inviteLink });
                   }).catch((err) => {
@@ -254,7 +231,6 @@ class Test extends Component {
     const serviceCategory = (service_category !== undefined && service_category !== '') ? service_category : undefined;
     const serviceFormat = (service_format !== undefined && service_format !== '') ? service_format : undefined;
     const serviceDesc = (service_description !== undefined && service_description !== '') ? service_description : undefined;
-    console.log(tId);
 
     return (
       <>

@@ -76,7 +76,6 @@ class TestFormTarget extends Component {
     } = target;
     const tempId = extraValue.length > 0 ? extraValue[0].id : 1;
     const exValueArr = [];
-    console.log(extraValue);
 
     if (extraInfoCategory1 !== undefined || extraInfoDesc1 !== undefined) {
       exValueArr.push({ id: tempId, value: extraInfoDesc1, name: extraInfoCategory1 });
@@ -94,36 +93,30 @@ class TestFormTarget extends Component {
     const exCateValues = exValueArr.filter(x => x.name).length;
 
     if (target === undefined && extraValue.length > 0) {
-      console.log(1);
       this.setState({
         extraInfoBox: extraValue,
       });
     } else if (target !== undefined && exInfoValues > extraValue.length) {
-      console.log(2);
       this.setState({
         extraInfoBox: exValueArr,
       });
     } else if (target !== undefined && exCateValues > extraValue.length) {
-      console.log(3);
       this.setState({
         extraInfoBox: exValueArr,
       });
     } else if (target !== undefined
       && extraValue.length > 0
       && (extraValue.length === exInfoValues || extraValue.length > exInfoValues)) {
-      console.log(4);
       this.setState({
         extraInfoBox: extraValue,
       });
     } else if (target !== undefined
       && extraValue.length > 0
       && (extraValue.length === exCateValues || extraValue.length > exCateValues)) {
-      console.log(5);
       this.setState({
         extraInfoBox: extraValue,
       });
     } else {
-      console.log(6);
       this.setState({
         extraInfoBox: { id: 1 },
       });

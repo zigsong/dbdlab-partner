@@ -57,7 +57,6 @@ class MyPage extends Component {
 
     const deleteTokenCookie = () => new Promise(() => {
       if (hasTokenCookie !== undefined) {
-        console.log('logged in');
         const setTokenCookie = (expireDate) => {
           const date = new Date();
           date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
@@ -71,7 +70,6 @@ class MyPage extends Component {
         alert('바우처를 구매하신 계정으로 로그인 해주세요 :)');
       }
     });
-    console.log(search);
     const authenticate = async () => {
       await props.getAuthSelf()
         .then((res) => {
@@ -105,9 +103,6 @@ class MyPage extends Component {
         if (path === '/my/payment') {
           const { email } = this.props;
           const inviteEmail = search.includes('user_email') ? search.split('=')[1] : '';
-          console.log(inviteEmail);
-          console.log(email);
-          console.log(inviteEmail === email);
 
           if (search.includes('user_email') && inviteEmail !== email) {
             deleteTokenCookie().then(
@@ -321,9 +316,6 @@ class MyPage extends Component {
       onSubmit,
     } = this;
     const { search } = location;
-    const emailToken = search.substring(12);
-    console.log(search);
-    console.log(emailToken);
 
     return (
       <>

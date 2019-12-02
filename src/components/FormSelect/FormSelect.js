@@ -32,9 +32,9 @@ const FormSelect = ({
     }, 200);
   };
 
-  const handleValue = (e) => {
+  const handleValue = (e, reset) => {
     const { onChange } = input;
-    const selectedValue = e.target.innerText;
+    const selectedValue = reset ? '' : e.target.innerText;
 
     slct.current.value = selectedValue;
     setValues(selectedValue);
@@ -60,7 +60,7 @@ const FormSelect = ({
     <div className={`box-select${touched && error ? '--error' : ''} select--${input.name}`}>
       <select
         name={input.name}
-        defaultValue={input.value ? input.value : defaultValue}
+        defaultValue={input.value && input.value !== '' ? input.value : defaultValue}
         className="select--hidden"
         ref={slct}
       >
@@ -69,13 +69,13 @@ const FormSelect = ({
       <div className="select">
         <span className="box-btn">
           <button
-            className={`select__title${isSelected ? '--active' : ''}`}
+            className={`select__title${isSelected ? '--active' : ''}${isSelected && values === '' ? ' disabled' : ''}`}
             type="button"
             onFocus={() => input.onFocus()}
             onClick={e => handleOpenList(e)}
             onBlur={e => input.onBlur(handleBlur(e))}
           >
-            {input.value ? input.value : values}
+            {input.value ? input.value : (values || defaultValue) }
           </button>
         </span>
         { isActive
@@ -88,10 +88,9 @@ const FormSelect = ({
                       {newArr.concat(children[1]).map((c, i) => (
                         <li key={c.props.value} className="select__item">
                           <button
-                            onClick={e => handleValue(e)}
+                            onClick={e => handleValue(e, i === 0)}
                             type="button"
-                            className="btn"
-                            disabled={!i}
+                            className={i === 0 ? 'btn disabled' : 'btn'}
                             name={input.name}
                           >
                             {c.props.children}
@@ -105,10 +104,9 @@ const FormSelect = ({
                       {newArr.concat(children[1]).map((c, i) => (
                         <li key={c.props.value} className="select__item">
                           <button
-                            onClick={e => handleValue(e)}
+                            onClick={e => handleValue(e, i === 0)}
                             type="button"
-                            className="btn"
-                            disabled={!i}
+                            className={i === 0 ? 'btn disabled' : 'btn'}
                             name={input.name}
                           >
                             {c.props.children}

@@ -88,6 +88,11 @@ $imgUrl: '/static/images';
         @extend .select__title;
         color: $black;
       }
+
+      &.disabled {
+        @extend .select__title;
+        color: $lightGray;
+      }
     }
 
     .select__list {
@@ -130,7 +135,9 @@ $imgUrl: '/static/images';
             cursor: pointer;
           }
 
-          &:disabled {
+
+
+          &.disabled, &:disabled {
             position: relative;
             color: $veryLightGray;
             background: $white;

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "Deploy To S3 Bucket dbd-admin-web"
+npm run build-qa
+aws s3 sync ./build/ s3://dbd-realdopt-partner-web --profile=jinyoung
+aws cloudfront create-invalidation --distribution-id E3ES8GJYEC1VCX --paths "/*" --profile=jinyoung

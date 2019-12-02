@@ -6,6 +6,7 @@ import FormSelect from 'components/FormSelect';
 import { reduxForm, Field, getFormValues } from 'redux-form';
 import LoadingIndicator from 'components/LoadingIndicator';
 import ToastAlert from 'components/ToastAlert';
+import config from 'modules/config';
 import { getAuthSelf } from 'modules/auth';
 import {
   getProject,
@@ -255,7 +256,7 @@ class TeamMemberList extends Component {
                   this.setState({ isToastShow: false });
                   getProject(project.id);
                   if (!isManager) {
-                    window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project`);
+                    window.location.assign(`${protocol}//${config.REACT_APP_PARTNER_URL}/project`);
                   }
                 }, 2200);
               });

@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PopupTemplate from 'components/PopupTemplate';
 import { togglePopup } from 'modules/popup';
+import config from 'modules/config';
 import './UnauthorizedPopup.scss';
 
 const UnauthorizedPopup = (props) => {
@@ -27,22 +28,22 @@ const UnauthorizedPopup = (props) => {
         const inviteEmail = inviteToken.substring(12);
 
         deleteTokenCookie().then(
-          window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/?&user_email=${inviteEmail}&project_id=`),
+          window.location.assign(`${protocol}//${config.REACT_APP_COMPANY_URL}/login/?&user_email=${inviteEmail}&project_id=`),
         );
       } else if (pId > 0 && pId !== '' && pId !== undefined && tId === undefined) {
         // invite team
         deleteTokenCookie().then(
-          window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/${inviteToken}&project_id=${pId}`),
+          window.location.assign(`${protocol}//${config.REACT_APP_COMPANY_URL}/login/${inviteToken}&project_id=${pId}`),
         );
       }
     } else if ((pId && tId) > 0 && tId !== undefined) {
       // test
       deleteTokenCookie().then(
-        window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/?test_id=${tId}&project_id=${pId}`),
+        window.location.assign(`${protocol}//${config.REACT_APP_COMPANY_URL}/login/?test_id=${tId}&project_id=${pId}`),
       );
     } else {
       deleteTokenCookie().then(
-        window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login`),
+        window.location.assign(`${protocol}//${config.REACT_APP_COMPANY_URL}/login`),
       );
     }
   };

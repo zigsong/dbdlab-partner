@@ -10,6 +10,7 @@ import {
   postAvatarUpdate,
   patchAccountUpdate,
 } from 'modules/auth';
+import config from 'modules/config';
 import { togglePopup } from 'modules/popup';
 import { getProjectList } from 'modules/project';
 import { getVoucherOrderList, getTestOrderList } from 'modules/order';
@@ -106,7 +107,7 @@ class MyPage extends Component {
 
           if (search.includes('user_email') && inviteEmail !== email) {
             deleteTokenCookie().then(
-              window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/?&user_email=${inviteEmail}&project_id=`),
+              window.location.assign(`${protocol}//${config.REACT_APP_COMPANY_URL}/login/?&user_email=${inviteEmail}&project_id=`),
             );
           }
 

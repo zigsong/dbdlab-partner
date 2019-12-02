@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { SubmissionError, reset } from 'redux-form';
 import { toggleToastPopup } from 'modules/popup';
 import { putProject, getProjectList } from 'modules/project';
+import config from 'modules/config';
 import PopupTemplate from 'components/PopupTemplate';
 import ToastAlert from 'components/ToastAlert';
 import ProjectForm from './ProjectForm';
@@ -48,7 +49,7 @@ class NewProjectPopup extends Component {
           getProjectList();
           handleReset();
           setTimeout(() => toggleToastPopup(false), 2000);
-          setTimeout(() => window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project/${res.data.id}`), 2200);
+          setTimeout(() => window.location.assign(`${protocol}//${config.REACT_APP_PARTNER_URL}/project/${res.data.id}`), 2200);
         })
         .catch((err) => {
           console.log(err);

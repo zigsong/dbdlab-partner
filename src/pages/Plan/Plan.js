@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import config from 'modules/config';
 import PageTemplate from 'containers/PageTemplate';
 import PlanList from 'containers/PlanList';
 import NewPlanForm from 'containers/NewPlanForm';
@@ -17,7 +18,7 @@ const Plan = (props) => {
     setLoading(true);
 
     if (AUTH_TOKEN === null) {
-      window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/plan`);
+      window.location.assign(`${protocol}//${config.REACT_APP_COMPANY_URL}/plan`);
     } else {
       setLoading(false);
     }

@@ -10,6 +10,7 @@ import UnauthorizedPopup from 'components/UnauthorizedPopup';
 import NewTestForm from 'containers/NewTestForm';
 import TeamMemberList from 'containers/TeamMemberList';
 import { getAuthSelf } from 'modules/auth';
+import config from 'modules/config';
 import { getProject, getProjectInviteLink } from 'modules/project';
 import { getTestList, getTest, setTestListInit } from 'modules/test';
 import './Test.scss';
@@ -75,7 +76,7 @@ class Test extends Component {
             if (isCorrectMail !== undefined && isCorrectMail !== email) {
               // 남의 건 안됩니다
               deleteTokenCookie().then(
-                window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/${inviteToken}&${inviteEmail}&project_id=${pId}`),
+                window.location.assign(`${protocol}//${config.REACT_APP_COMPANY_URL}/login/${inviteToken}&${inviteEmail}&project_id=${pId}`),
               );
             } else {
               // 링크 타고 왓서요
@@ -83,7 +84,7 @@ class Test extends Component {
               // 웰컴
               props.getProject(projectId, inviteToken)
                 .then(() => {
-                  window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project`);
+                  window.location.assign(`${protocol}//${config.REACT_APP_PARTNER_URL}/project`);
                 })
                 .catch((err) => {
                   console.log(err);
@@ -91,7 +92,7 @@ class Test extends Component {
                   console.log(err.message);
 
                   alert('Oops! :(\n오류가 발생했어요. 메인으로 이동합니다.');
-                  window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project`);
+                  window.location.assign(`${protocol}//${config.REACT_APP_PARTNER_URL}/project`);
                 });
             }
           } else {
@@ -133,7 +134,7 @@ class Test extends Component {
                   });
                 } else {
                   alert('Oops! :(\n오류가 발생했어요. 메인으로 이동합니다.');
-                  window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project`);
+                  window.location.assign(`${protocol}//${config.REACT_APP_PARTNER_URL}/project`);
                 }
               });
           }

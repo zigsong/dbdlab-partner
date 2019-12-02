@@ -15,6 +15,7 @@ import PopupTemplate from 'components/PopupTemplate';
 import PayAccountInfo from 'components/PayAccountInfo';
 import LoadingIndicator from 'components/LoadingIndicator';
 import ToastAlert from 'components/ToastAlert';
+import config from 'modules/config';
 import { togglePopup } from 'modules/popup';
 import { getAuthSelf } from 'modules/auth';
 import { getProject } from 'modules/project';
@@ -1331,7 +1332,7 @@ class NewTestForm extends Component {
         } else {
           console.log('error');
           alert('Oops! :(\n오류가 발생했습니다. 새로고침하여 테스트를 다시 불러와야 합니다.');
-          window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project/${pId}/test/${tId}`);
+          window.location.assign(`${protocol}//${config.REACT_APP_PARTNER_URL}/project/${pId}/test/${tId}`);
         }
       } else if (isQuestRendered && hasQuestPassed) {
         const submitCheck = window.confirm('테스트를 등록하시겠어요?\n등록 후엔 수정이 되지 않으니, 꼼꼼히 확인해 주세요:)');

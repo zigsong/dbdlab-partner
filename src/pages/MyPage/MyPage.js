@@ -478,7 +478,9 @@ class MyPage extends Component {
                                       </button>
                                       <div className="box-paid">
                                         <strong className="paid__total">
-                                          {p.ordered_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                          {p.test !== undefined
+                                            ? p.charged_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                                            : p.ordered_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                           <i>원</i>
                                         </strong>
                                         <span className="paid__date">
@@ -501,7 +503,7 @@ class MyPage extends Component {
                                             planAmount={p.voucher_amount}
                                             paidDate={getDate(p.created_at)}
                                             step={p.test !== undefined ? p.test.step : p.is_paid}
-                                            price={p.ordered_price}
+                                            price={p.test !== undefined ? p.charged_price : p.ordered_price}
                                           />
                                         )
                                         : null

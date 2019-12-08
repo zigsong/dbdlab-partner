@@ -123,7 +123,10 @@ export const logout = () => (dispatch) => {
   const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') >= 0);
   const deleteTokenCookie = () => new Promise(() => {
     if (hasTokenCookie !== undefined) {
-      Cookies.remove('token');
+      Cookies.remove('token', {
+        domain: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : 'realdopt.com',
+        path: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : '/'
+      });
       alert('로그아웃 되었습니다 :)');
     } else {
       alert('다시 로그인 해주세요 :)');

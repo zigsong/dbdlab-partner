@@ -63,7 +63,10 @@ class MyPage extends Component {
         const setTokenCookie = (expireDate) => {
           const date = new Date();
           date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
-          Cookies.remove('token');
+          Cookies.remove('token', {
+            domain: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : 'realdopt.com',
+            path: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : '/'
+          });
         };
         setTokenCookie(-1);
 

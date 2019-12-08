@@ -13,7 +13,10 @@ const UnauthorizedPopup = (props) => {
     const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') >= 0);
     const deleteTokenCookie = () => new Promise(() => {
       if (hasTokenCookie !== undefined) {
-        Cookies.remove('token');
+        Cookies.remove('token', {
+          domain: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : 'realdopt.com',
+          path: '/'
+        });
       }
     });
 

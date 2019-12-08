@@ -56,7 +56,7 @@ class MyPage extends Component {
     const { path } = match;
     const { protocol } = window.location;
     const { search } = location;
-    const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
+    const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') >= 0);
 
     const deleteTokenCookie = () => new Promise(() => {
       if (hasTokenCookie !== undefined) {

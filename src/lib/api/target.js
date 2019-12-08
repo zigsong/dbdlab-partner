@@ -1,7 +1,7 @@
 import axios from 'axios';
 import config from 'modules/config';
 
-const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
+const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') >= 0);
 const AUTH_TOKEN = hasTokenCookie !== undefined ? hasTokenCookie.replace(/\s/gi, '').substring(6) : null;
 const baseURL = config.REACT_APP_API_URL;
 // const baseURL = '';

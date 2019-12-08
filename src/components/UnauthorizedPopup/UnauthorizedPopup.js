@@ -10,7 +10,7 @@ const UnauthorizedPopup = (props) => {
   const redirect = () => {
     const { inviteToken, pId, tId } = props;
     const { protocol } = window.location;
-    const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
+    const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') >= 0);
     const deleteTokenCookie = () => new Promise(() => {
       if (hasTokenCookie !== undefined) {
         Cookies.remove('token');

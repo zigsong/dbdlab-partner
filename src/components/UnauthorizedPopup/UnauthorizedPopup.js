@@ -1,4 +1,5 @@
 import React from 'react';
+import Cookies from 'js-cookie';
 import { connect } from 'react-redux';
 import PopupTemplate from 'components/PopupTemplate';
 import { togglePopup } from 'modules/popup';
@@ -12,13 +13,7 @@ const UnauthorizedPopup = (props) => {
     const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
     const deleteTokenCookie = () => new Promise(() => {
       if (hasTokenCookie !== undefined) {
-        const setTokenCookie = (expireDate) => {
-          const date = new Date();
-          date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
-          document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=realdopt.com`;
-          // document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=localhost`;
-        };
-        setTokenCookie(-1);
+        Cookies.remove('token');
       }
     });
 

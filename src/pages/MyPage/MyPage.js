@@ -2,6 +2,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable camelcase */
 import React, { Component } from 'react';
+import Cookies from 'js-cookie';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { reduxForm, Field, getFormValues } from 'redux-form';
@@ -62,10 +63,10 @@ class MyPage extends Component {
         const setTokenCookie = (expireDate) => {
           const date = new Date();
           date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
-          document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=realdopt.com`;
-          document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=localhost`;
+          Cookies.remove('token');
         };
         setTokenCookie(-1);
+
         alert('바우처를 구매하신 계정으로 로그인 해주세요 :)');
       } else {
         console.log('not logged in');

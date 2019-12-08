@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import * as AuthAPI from 'lib/api/auth';
+import Cookies from 'js-cookie';
 import config from 'modules/config';
 import { handleActions } from 'redux-actions';
 
@@ -122,13 +123,7 @@ export const logout = () => (dispatch) => {
   const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
   const deleteTokenCookie = () => new Promise(() => {
     if (hasTokenCookie !== undefined) {
-      const setTokenCookie = (expireDate) => {
-        const date = new Date();
-        date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
-        document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=realdopt.com`;
-        // document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=localhost`;
-      };
-      setTokenCookie(-1);
+      Cookies.remove('token');
       alert('로그아웃 되었습니다 :)');
     } else {
       alert('다시 로그인 해주세요 :)');

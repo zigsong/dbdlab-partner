@@ -1,6 +1,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable camelcase */
 import React, { Component } from 'react';
+import Cookies from 'js-cookie';
 import { connect } from 'react-redux';
 import ScrollContainer from 'react-indiana-drag-scroll';
 import Header from 'components/Header';
@@ -45,8 +46,7 @@ class Test extends Component {
         const setTokenCookie = (expireDate) => {
           const date = new Date();
           date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
-          document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=realdopt.com`;
-          document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=localhost`;
+          Cookies.remove('token');
         };
         setTokenCookie(-1);
         alert('초대받은 계정으로 로그인 해주세요 :)');

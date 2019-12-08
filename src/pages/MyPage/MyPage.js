@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-shadow */
 /* eslint-disable camelcase */
 import React, { Component } from 'react';
@@ -493,6 +494,12 @@ class MyPage extends Component {
                                           <OrderConfirmPopup
                                             isOpen={isOpen}
                                             isVoucher={p.voucher_amount > 0}
+                                            onSubmit={(email, company, companyRegistNum) => {
+                                              p.is_tax_bill_requested = true;
+                                              p.tax_bill_company_name = company;
+                                              p.tax_bill_receive_email = email;
+                                              p.company_registration_number = companyRegistNum;
+                                            }}
                                             isTaxBillReq={p.is_tax_bill_requested}
                                             voucherId={p.id !== undefined ? p.id : undefined}
                                             testId={p.test !== undefined ? p.test.id : undefined}

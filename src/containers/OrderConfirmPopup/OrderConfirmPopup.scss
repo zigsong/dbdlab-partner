@@ -33,27 +33,19 @@ $imgUrl: '/static/images';
   }
 
   .contents__section {
-    display: inline-block;
-    width: 55%;
-    padding: 0 42.4px 0 0;
+    display: block;
+    padding: 0;
     vertical-align: top;
-    border-right: 1px dashed $lightGray;
     box-sizing: border-box;
-
-    + .contents__section {
-      width: 45%;
-      padding: 0 0 0 42.4px;
-      border-right: 0;
-
-      .section__info {
-        border-bottom: 0;
-      }
-    }
   }
 
   .section__info {
     padding: 8px 0 6px;
     border-bottom: solid 1px $lightGray;
+  
+    &.no-border {
+      border-bottom: none;
+    }
 
     .info__title {
       display: inline-block;
@@ -100,6 +92,11 @@ $imgUrl: '/static/images';
         color: $blue;
       }
     }
+
+    .info__button {
+      padding: 0;
+      text-decoration: underline;
+    }
   }
 
   .box-btn {
@@ -107,8 +104,8 @@ $imgUrl: '/static/images';
     margin-top: 49px;
     text-align: center;
 
-    .btn-cancle {
-      min-width: 66px;
+    .btn-cancel {
+      width: 136px;
       height: 34px;
       border: 1px solid $veryLightGray;
       border-radius: 3.4px;
@@ -137,15 +134,27 @@ $imgUrl: '/static/images';
 
   .form-tax {
     width: 100%;
-    padding-top: 20px;
+    padding: 10px 0;
+    border-bottom: solid 1px #dcdcdc;
 
     .form__data-wrapper {
       display: block;
-      padding-bottom: 5px;
+      padding-bottom: 10px;
       overflow: hidden;
 
       .box-input__text {
-        width: 100%;
+        width: 70%;
+        padding-bottom: 0px;
+        display: inline-block;
+        vertical-align: middle;  
+
+        input {
+          height: 32px;
+          text-align: right;
+          border: 1px solid #dcdcdc;
+          border-radius: 3px;
+        }
+
 
         &--active {
           @extend .box-input__text;
@@ -153,17 +162,25 @@ $imgUrl: '/static/images';
 
         &--error {
           @extend .box-input__text;
+          .msg--error {
+            left: 3px;
+          }
 
           &--active {
             @extend .box-input__text;
+            .msg--error {
+              left: 3px;
+            }
           }
         }
       }
 
       .wrapper__title {
-        display: block;
+        display: inline-block;
+        vertical-align: middle;
         line-height: 15px;
-        margin-bottom: 4px;
+        width: 30%;
+        margin-bottom: 0px;
 
         .title {
           color: $black;
@@ -212,7 +229,15 @@ $imgUrl: '/static/images';
 
     .form__btn-wrapper {
       margin-top: 14px;
-      text-align: center;
+      text-align: right;
+
+      button {
+        color: white;
+        background: $blue;
+        border-radius: 14px;
+        width: 100px;
+        height: 28px;
+      }
     }
   }
 }

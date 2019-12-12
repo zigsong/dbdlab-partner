@@ -26,14 +26,14 @@ const PayAccountInfo = (props) => {
             <br />
             아래 계좌정보로 입금해주시면 확인 후,
             <br />
-            매니저 배정 후 테스트 진행을 도와드리겠습니다.
+            입력하신 메일로 바우처 시리얼 넘버를 보내드리겠습니다.
           </p>
           <p className="pay-info__account">
             <span className="account__title">입금계좌</span>
             <strong className="account_info">
               디비디랩주식회사
               <br />
-              기업은행 036-107482-04-016
+              국민은행 098901-04-101303
             </strong>
             <span className="account__title">입금액</span>
             <strong className="account_info">

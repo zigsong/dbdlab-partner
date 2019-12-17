@@ -14,12 +14,14 @@ const FormSelect = ({
   useEffect(() => {
     const { onChange } = input;
 
-    if (slct.current.value !== defaultValue && input.value !== '') {
+    if (slct.current.value === defaultValue) {
+      console.log('test');
+    } else if (input.value !== '') {
       slct.current.value = input.value;
-      setValues(input.values);
+      setValues(input.value);
       if (!disabled) setSelected(true);
       onChange(input.value);
-    } else if (slct.current.value !== defaultValue && (input.value === '' || input.value === undefined)) {
+    } else if (input.value === '' || input.value === undefined) {
       setValues(slct.current.value);
       onChange(slct.current.value);
     }

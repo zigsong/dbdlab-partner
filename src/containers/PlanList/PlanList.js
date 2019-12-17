@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   Slider, Rail, Handles, Ticks,
 } from 'react-compound-slider';
 import { togglePopup } from 'modules/popup';
+import { resetVoucherOrder } from 'modules/order';
 import MailPopup from 'containers/MailPopup';
 import './PlanList.scss';
 
 const PlanList = (props) => {
   const dispatch = useDispatch();
   const [isMore, setMore] = useState(false);
+
+  useEffect(() => { dispatch(resetVoucherOrder()); }, [dispatch]);
+
   const priceList = [
     {
       title: 'plan 01',

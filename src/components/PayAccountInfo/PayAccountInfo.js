@@ -33,7 +33,7 @@ const PayAccountInfo = (props) => {
             <strong className="account_info">
               디비디랩주식회사
               <br />
-              국민은행 098901-04-101303
+              기업은행 036-107482-04-016
             </strong>
             <span className="account__title">입금액</span>
             <strong className="account_info">

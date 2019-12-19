@@ -34,11 +34,7 @@
     "start-qa": "PORT=4000 REACT_APP_DEPLOY_ENV=LOCAL react-scripts start",
     "build-qa": "REACT_APP_DEPLOY_ENV=QA react-scripts build",
     "start-real": "PORT=4000 REACT_APP_DEPLOY_ENV=REAL react-scripts start",
-    "build-real": "REACT_APP_DEPLOY_ENV=REAL react-scripts build",
-    "deploy": "aws s3 sync ./build/ s3://dbd-realdopt-partner",
-    "cleanup": "aws cloudfront create-invalidation --distribution-id E2MZ7920GG1TUI --paths '/*'",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "build-real": "REACT_APP_DEPLOY_ENV=REAL react-scripts build"
   },
   "eslintConfig": {
     "extends": [

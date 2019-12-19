@@ -21,6 +21,14 @@ const PATCH_TEST_TAX_BILL_SUCCESS = 'order/PATCH_TEST_TAX_BILL_SUCCESS';
 const PATCH_TEST_TAX_BILL_FAILURE = 'order/PATCH_TEST_TAX_BILL_FAILURE';
 const PATCH_VOUCHER_TAX_BILL_SUCCESS = 'order/PATCH_VOUCHER_TAX_BILL_SUCCESS';
 const PATCH_VOUCHER_TAX_BILL_FAILURE = 'order/PATCH_VOUCHER_TAX_BILL_FAILURE';
+const RESET_POST_ORDER_VOUCHER_SUCCESS = 'order/RESET_POST_ORDER_VOUCHER_SUCCESS';
+
+export const resetVoucherOrder = () => dispatch => (
+  dispatch({
+    type: RESET_POST_ORDER_VOUCHER_SUCCESS,
+    payload: null,
+  })
+);
 
 export const getVoucherOrder = oId => dispatch => (
   OrderAPI.getVoucherOrder(oId).then((res) => {
@@ -385,5 +393,9 @@ export default handleActions({
   [PATCH_VOUCHER_TAX_BILL_FAILURE]: state => ({
     ...state,
     postTestFailure: true,
+  }),
+  [RESET_POST_ORDER_VOUCHER_SUCCESS]: state => ({
+    ...state,
+    postVoucherSuccess: false,
   }),
 }, initialState);

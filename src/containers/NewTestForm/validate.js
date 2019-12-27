@@ -90,17 +90,17 @@ const validate = (values) => {
 
     if (issue1qValue === undefined) {
       if (issue2qValue !== undefined) {
-        errors.quest.issue[issue2qId] = '도전과제 1을 먼저 선택해 주세요';
+        errors.quest.issue[issue2qId] = '문제점 1을 먼저 선택해 주세요';
       }
 
       if (issue3qValue !== undefined) {
-        errors.quest.issue[issue3qId] = '도전과제 1을 먼저 선택해 주세요';
+        errors.quest.issue[issue3qId] = '문제점 1을 먼저 선택해 주세요';
       }
     }
 
     if (issue1qValue !== undefined && issue2qValue === undefined) {
       if (issue3qValue !== undefined) {
-        errors.quest.issue[issue3qId] = '도전과제 2를 먼저 선택해 주세요';
+        errors.quest.issue[issue3qId] = '문제점 2를 먼저 선택해 주세요';
       }
     }
 
@@ -109,39 +109,39 @@ const validate = (values) => {
     }
 
     if (issue2qValue === undefined && issuePurpose2qValue !== undefined) {
-      errors.quest.issue[issue2qId] = '도전과제 2를 먼저 선택해 주세요';
+      errors.quest.issue[issue2qId] = '문제점 2를 먼저 선택해 주세요';
     }
 
     if (issue2qValue !== undefined && issuePurpose2qValue === undefined) {
-      errors.quest.issuePurpose[issue2qId] = '도전과제 2를 통해 알고 싶으신 것을 작성해 주세요';
+      errors.quest.issuePurpose[issue2qId] = '리얼답이 제안해드린 가설 중, 검증하길 원하시는 가설을 입력해주세요.';
     }
 
     if (issue3qValue === undefined && issuePurpose3qValue !== undefined) {
-      errors.quest.issue[issue3qId] = '도전과제 3을 먼저 선택해 주세요';
+      errors.quest.issue[issue3qId] = '믄제점 3을 먼저 선택해 주세요';
     }
 
     if (issue3qValue !== undefined && issuePurpose3qValue === undefined) {
-      errors.quest.issuePurpose[issue3qId] = '도전과제 3을 통해 알고 싶으신 것을 작성해 주세요';
+      errors.quest.issuePurpose[issue3qId] = '리얼답이 제안해드린 가설 중, 검증하길 원하시는 가설을 입력해주세요.';
     }
 
     if (issue1qValue !== undefined && issueDetail1qValue === undefined) {
-      errors.quest.issueDetail[issue1qId] = '도전과제 1에 대해 자세히 적어주세요';
+      errors.quest.issueDetail[issue1qId] = '문제점 1에 대해 자세히 적어주세요';
     }
 
     if (issue2qValue !== undefined && issueDetail2qValue === undefined) {
-      errors.quest.issueDetail[issue2qId] = '도전과제 2에 대해 자세히 적어주세요';
+      errors.quest.issueDetail[issue2qId] = '가설검증을 통해 알고 싶은 내용을 입력해주세요.';
     }
 
     if (issue2qValue === undefined && issueDetail2qValue !== undefined) {
-      errors.quest.issue[issue2qId] = '도전과제 2를 먼저 선택해 주세요';
+      errors.quest.issue[issue2qId] = '문제점 2를 먼저 선택해 주세요';
     }
 
     if (issue3qValue !== undefined && issueDetail3qValue === undefined) {
-      errors.quest.issueDetail[issue3qId] = '도전과제 3에 대해 자세히 적어주세요';
+      errors.quest.issueDetail[issue3qId] = '가설검증을 통해 알고 싶은 내용을 입력해주세요.';
     }
 
     if (issue3qValue === undefined && issueDetail3qValue !== undefined) {
-      errors.quest.issue[issue3qId] = '도전과제 3을 먼저 선택해 주세요';
+      errors.quest.issue[issue3qId] = '문제점 3을 먼저 선택해 주세요';
     }
 
     if (values.pay.coupon !== 'WELCOME_BACK' && values.pay.coupon !== undefined) {

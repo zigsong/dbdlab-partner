@@ -1725,9 +1725,9 @@ class NewTestForm extends Component {
         class: `target${isTargetRendered ? '--active' : ''}`,
       },
       {
-        title: '도전과제 설정',
+        title: '문제점&가설입력',
         class: `quest${isQuestRendered ? '--active' : ''}`,
-        subnav: ['도전과제 1', '도전과제 2', '도전과제 3'],
+        subnav: ['문제점 1', '문제점 2', '문제점 3'],
       },
       {
         title: '테스트 결제',
@@ -1790,9 +1790,9 @@ class NewTestForm extends Component {
                                 )
                                 : (
                                   <div className="item-info">
-                                    무엇을
+                                    어떤 가설을
                                     <br />
-                                    테스트할까요?
+                                    검증할까요?
                                   </div>
                                 )
                               }
@@ -1800,9 +1800,9 @@ class NewTestForm extends Component {
                           )
                           : (
                             <div className="item-info">
-                              무엇을
+                              어떤 가설을
                               <br />
-                              테스트할까요?
+                              검증할까요?
                             </div>
                           )
                         }

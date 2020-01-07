@@ -19,7 +19,7 @@ const configMap = {
     REACT_APP_API_URL: 'https://qa-server.realdopt.com/api',
     REACT_APP_KAKAO_INIT: '93604043ee75af74fae0259100aa917b',
     REACT_APP_GA_ID: 'UA-150920783-1',
-  }
+  },
 };
 
 const config = configMap[process.env.REACT_APP_DEPLOY_ENV] || configMap.QA;

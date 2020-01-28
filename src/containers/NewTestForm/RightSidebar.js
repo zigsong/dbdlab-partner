@@ -334,7 +334,7 @@ const RightSidebar = (props) => {
       case submitFailed:
         return '입력되지 않은\n정보가 있어요!';
       default:
-        return '누구에게\n테스트할까요?';
+        return '누구에게\n검증할까요?';
     }
   };
 
@@ -367,7 +367,7 @@ const RightSidebar = (props) => {
       case submitFailed:
         return '필수 정보를\n모두 입력해주셔야\n다음 단계로 넘어가실 수\n있어요.\n누락된 정보를 모두\n입력해주세요!';
       default:
-        return '테스트 대상을\n정하실 수 있습니다.\n우리 서비스를 이용할\n첫번째 사용자를\n테스터로 설정하세요.';
+        return '검증 대상을\n정하실 수 있습니다.\n우리 서비스를 이용할\n첫번째 사용자를\n테스터로 설정하세요.';
     }
   };
 
@@ -402,7 +402,7 @@ const RightSidebar = (props) => {
       case submitFailed:
         return '입력되지 않은\n정보가 있어요!';
       default:
-        return '무엇을\n테스트할까요?';
+        return '무엇을\n검증해볼까요?';
     }
   };
 
@@ -435,7 +435,7 @@ const RightSidebar = (props) => {
       case submitFailed:
         return '필수 정보를\n모두 입력해주셔야\n다음 단계로 넘어가실 수\n있어요.\n누락된 정보를 모두\n입력해주세요!';
       default:
-        return '가장 핵심적인 기능부터,\n차근차근 검증해보세요.\n빠르게 피드백을 받고,\n수정사항을 반영할 수 있습니다.';
+        return '테스트 설계안에서\n 리얼답이 제안한 문제점과 가설을 입력해주세요. \n검증하고 싶은  \n가설 세가지를 골라 입력해주시면 됩니다.';
     }
   };
 

@@ -20,7 +20,6 @@ class NewPasswordPopup extends Component {
     const authenticate = async () => {
       await props.getAuthSelf()
         .then((res) => {
-          console.log(res);
           props.getAccount(res.data.id);
         });
     };

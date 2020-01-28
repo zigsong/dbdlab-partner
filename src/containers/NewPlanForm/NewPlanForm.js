@@ -216,7 +216,6 @@ class NewPlanForm extends Component {
           this.setState({
             totalPrice: calculated_price_total,
           });
-          console.log(res);
         }).catch((err) => {
           console.log(err);
           console.log(err.response);
@@ -249,7 +248,6 @@ class NewPlanForm extends Component {
         this.setState({
           totalPrice: calculated_price_total,
         });
-        console.log(res);
       }).catch((err) => {
         console.log(err);
         console.log(err.response);

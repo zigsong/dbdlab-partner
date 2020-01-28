@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   Slider, Rail, Handles, Ticks,
 } from 'react-compound-slider';
 import { togglePopup } from 'modules/popup';
+import { resetVoucherOrder } from 'modules/order';
 import MailPopup from 'containers/MailPopup';
 import './PlanList.scss';
 
 const PlanList = (props) => {
   const dispatch = useDispatch();
   const [isMore, setMore] = useState(false);
+
+  useEffect(() => { dispatch(resetVoucherOrder()); }, [dispatch]);
+
   const priceList = [
     {
       title: 'plan 01',
@@ -25,7 +29,7 @@ const PlanList = (props) => {
         { 8: 500000 - (500000 * 0.07) },
         { 9: 500000 - (500000 * 0.08) },
         { 10: 500000 - (500000 * 0.09) },
-        { 11: 500000 - (500000 * 0.1) },
+        { 11: 500000 - (500000 * 0.15) },
       ],
       expired: [
         { 1: 30 },
@@ -54,7 +58,7 @@ const PlanList = (props) => {
         { 8: 800000 - (800000 * 0.07) },
         { 9: 800000 - (800000 * 0.08) },
         { 10: 800000 - (800000 * 0.09) },
-        { 11: 800000 - (800000 * 0.1) },
+        { 11: 800000 - (800000 * 0.15) },
       ],
       expired: [
         { 1: 30 },

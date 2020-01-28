@@ -3,14 +3,29 @@
   <head>
     <meta charset="utf-8" />
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.png" />
-    <link rel="canonical" href="http://realdopt.com">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <link rel="canonical" href="http://realdopt.com" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
     <meta name="theme-color" content="#e8454a" />
-    <meta name="keywords" content="리얼답, 디비디랩, UX, UI, 사용성테스트, 온라인서비스, 서비스테스트, 서비스 검증, 검증, UX 테스트, 사용자 경험, 사용성 테스트, 사용자 중심, 유엑스, 서비스 기획, 리얼답 파트너, 더테스터, 플루토, 강지수, 유저해빗, userhabit, GA, 뷰저블, Beusable, beausable, UserHabit, realdopt, Realdopt, 사용성, Usability, usability, UXer, uxer, test, UX test, Usability test, ux test, 그로스해킹, Growthhack, Growthhacking, growth, startup, 스타트업, lean startup, 린스타트업, 린 스타트업, 애자일, Agile software development, Agile, 베타테스트, AB테스트, beta test, A/B test, A/B테스트, ABtest, 설문조사, survey, 앱테스트, app test, 어플리케이션 테스트, 애플리케이션 테스트, UX/UI, 시장조사, 시장검증, UX멘토링, UX컨설팅, ux컨설팅, ux 전문, UX전문, 엑셀러레이터, 인큐베이터, 지원사업, Accelerator, accelerator, 엑셀러레이팅, accelerating, chattermill, 오픈서베이, opensurvey, Opensurvey, 신비한스타트업사전, 신스사">
-    <meta name="description" content="진짜 사용자에게 물어보세요. UX 테스트 플랫폼 리얼답">
-    <meta name="author" content="dbdLab">
-    <meta name="google-site-verification" content="LlNcxtz2qR_sOySpTBvWVTqkdZOWmDPx8osiVSMlgiA" />
-    <meta name="naver-site-verification" content="33423917b3bae3b1cde0e90a57f63db4d043b03d"/>
+    <meta
+      name="keywords"
+      content="리얼답, 디비디랩, UX, UI, 사용성테스트, 온라인서비스, 서비스테스트, 서비스 검증, 검증, UX 테스트, 사용자 경험, 사용성 테스트, 사용자 중심, 유엑스, 서비스 기획, 리얼답 파트너, 더테스터, 플루토, 강지수, 유저해빗, userhabit, GA, 뷰저블, Beusable, beausable, UserHabit, realdopt, Realdopt, 사용성, Usability, usability, UXer, uxer, test, UX test, Usability test, ux test, 그로스해킹, Growthhack, Growthhacking, growth, startup, 스타트업, lean startup, 린스타트업, 린 스타트업, 애자일, Agile software development, Agile, 베타테스트, AB테스트, beta test, A/B test, A/B테스트, ABtest, 설문조사, survey, 앱테스트, app test, 어플리케이션 테스트, 애플리케이션 테스트, UX/UI, 시장조사, 시장검증, UX멘토링, UX컨설팅, ux컨설팅, ux 전문, UX전문, 엑셀러레이터, 인큐베이터, 지원사업, Accelerator, accelerator, 엑셀러레이팅, accelerating, chattermill, 오픈서베이, opensurvey, Opensurvey, 신비한스타트업사전, 신스사"
+    />
+    <meta
+      name="description"
+      content="진짜 사용자에게 물어보세요. UX 테스트 플랫폼 리얼답"
+    />
+    <meta name="author" content="dbdLab" />
+    <meta
+      name="google-site-verification"
+      content="LlNcxtz2qR_sOySpTBvWVTqkdZOWmDPx8osiVSMlgiA"
+    />
+    <meta
+      name="naver-site-verification"
+      content="33423917b3bae3b1cde0e90a57f63db4d043b03d"
+    />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Realdopt</title>
     <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
@@ -22,7 +37,9 @@
         z-index: 150;
         width: 48px;
         height: 48px;
-        background: transparent url("https://trello-attachments.s3.amazonaws.com/5db80d6726ae057c874c266d/187x185/f6e46190aa5882e9262329a94d68e954/btn_kakao-02.png") no-repeat center center;
+        background: transparent
+          url("https://trello-attachments.s3.amazonaws.com/5db80d6726ae057c874c266d/187x185/f6e46190aa5882e9262329a94d68e954/btn_kakao-02.png")
+          no-repeat center center;
         background-size: 100% auto;
         text-indent: -9999px;
         font-size: 0;
@@ -33,19 +50,50 @@
   </head>
   <body>
     <div class="wrap"></div>
-    <button class="kakao-talk-channel-chat-button" onclick="chatChannel();">
-      카카오톡 채널 채팅
-    </button>
-    <script type='text/javascript'>
-      //<![CDATA[
-        Kakao.init('%REACT_APP_KAKAO_INIT%');
-        function chatChannel() {
-          Kakao.Channel.chat({
-            // container: '.kakao-talk-channel-chat-button',
-            channelPublicId: '_RxmxoWT',
-          });
-        }
-      //]]>
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+      var Tawk_API = Tawk_API || {},
+        Tawk_LoadStart = new Date();
+      (function() {
+        var s1 = document.createElement("script"),
+          s0 = document.getElementsByTagName("script")[0];
+        s1.async = true;
+        s1.src = "https://embed.tawk.to/5e171e6f7e39ea1242a3ccfa/default";
+        s1.charset = "UTF-8";
+        s1.setAttribute("crossorigin", "*");
+        s0.parentNode.insertBefore(s1, s0);
+      })();
     </script>
+    <!--End of Tawk.to Script-->
+    <a
+      class="typeform-share button"
+      href="https://dbdlab.typeform.com/to/NrE7oE"
+      data-mode="popup"
+      data-auto-open="true"
+      target="_blank"
+    >
+    </a>
+    <script>
+      (function() {
+        var qs,
+          js,
+          q,
+          s,
+          d = document,
+          gi = d.getElementById,
+          ce = d.createElement,
+          gt = d.getElementsByTagName,
+          id = "typef_orm_share",
+          b = "https://embed.typeform.com/";
+        if (!gi.call(d, id)) {
+          js = ce.call(d, "script");
+          js.id = id;
+          js.src = b + "embed.js";
+          q = gt.call(d, "script")[0];
+          q.parentNode.insertBefore(js, q);
+        }
+      })();
+    </script>
+    -->
   </body>
 </html>

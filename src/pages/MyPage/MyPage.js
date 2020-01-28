@@ -1,6 +1,8 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-shadow */
 /* eslint-disable camelcase */
 import React, { Component } from 'react';
+import Cookies from 'js-cookie';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { reduxForm, Field, getFormValues } from 'redux-form';
@@ -10,6 +12,7 @@ import {
   postAvatarUpdate,
   patchAccountUpdate,
 } from 'modules/auth';
+import config from 'modules/config';
 import { togglePopup } from 'modules/popup';
 import { getProjectList } from 'modules/project';
 import { getVoucherOrderList, getTestOrderList } from 'modules/order';
@@ -53,25 +56,26 @@ class MyPage extends Component {
     const { path } = match;
     const { protocol } = window.location;
     const { search } = location;
-    const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
+    const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') >= 0);
 
     const deleteTokenCookie = () => new Promise(() => {
       if (hasTokenCookie !== undefined) {
-        console.log('logged in');
         const setTokenCookie = (expireDate) => {
           const date = new Date();
           date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
-          document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=realdopt.com`;
-          document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=localhost`;
+          Cookies.remove('token', {
+            domain: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : 'realdopt.com',
+            path: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : '/'
+          });
         };
         setTokenCookie(-1);
+
         alert('바우처를 구매하신 계정으로 로그인 해주세요 :)');
       } else {
         console.log('not logged in');
         alert('바우처를 구매하신 계정으로 로그인 해주세요 :)');
       }
     });
-    console.log(search);
     const authenticate = async () => {
       await props.getAuthSelf()
         .then((res) => {
@@ -105,13 +109,10 @@ class MyPage extends Component {
         if (path === '/my/payment') {
           const { email } = this.props;
           const inviteEmail = search.includes('user_email') ? search.split('=')[1] : '';
-          console.log(inviteEmail);
-          console.log(email);
-          console.log(inviteEmail === email);
 
           if (search.includes('user_email') && inviteEmail !== email) {
             deleteTokenCookie().then(
-              window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/?&user_email=${inviteEmail}&project_id=`),
+              window.location.assign(`${protocol}//${config.REACT_APP_COMPANY_URL}/login/?&user_email=${inviteEmail}&project_id=`),
             );
           }
 
@@ -321,9 +322,6 @@ class MyPage extends Component {
       onSubmit,
     } = this;
     const { search } = location;
-    const emailToken = search.substring(12);
-    console.log(search);
-    console.log(emailToken);
 
     return (
       <>
@@ -485,7 +483,9 @@ class MyPage extends Component {
                                       </button>
                                       <div className="box-paid">
                                         <strong className="paid__total">
-                                          {p.ordered_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                          {p.test !== undefined
+                                            ? p.charged_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                                            : p.ordered_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                           <i>원</i>
                                         </strong>
                                         <span className="paid__date">
@@ -498,6 +498,12 @@ class MyPage extends Component {
                                           <OrderConfirmPopup
                                             isOpen={isOpen}
                                             isVoucher={p.voucher_amount > 0}
+                                            onSubmit={(email, company, companyRegistNum) => {
+                                              p.is_tax_bill_requested = true;
+                                              p.tax_bill_company_name = company;
+                                              p.tax_bill_receive_email = email;
+                                              p.company_registration_number = companyRegistNum;
+                                            }}
                                             isTaxBillReq={p.is_tax_bill_requested}
                                             voucherId={p.id !== undefined ? p.id : undefined}
                                             testId={p.test !== undefined ? p.test.id : undefined}
@@ -508,7 +514,7 @@ class MyPage extends Component {
                                             planAmount={p.voucher_amount}
                                             paidDate={getDate(p.created_at)}
                                             step={p.test !== undefined ? p.test.step : p.is_paid}
-                                            price={p.ordered_price}
+                                            price={p.test !== undefined ? p.charged_price : p.ordered_price}
                                           />
                                         )
                                         : null

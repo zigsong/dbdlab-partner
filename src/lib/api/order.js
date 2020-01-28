@@ -1,8 +1,9 @@
 import axios from 'axios';
+import config from 'modules/config';
 
-const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
+const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') >= 0);
 const AUTH_TOKEN = hasTokenCookie !== undefined ? hasTokenCookie.replace(/\s/gi, '').substring(6) : null;
-const baseURL = process.env.REACT_APP_API_URL;
+const baseURL = config.REACT_APP_API_URL;
 // const baseURL = '';
 const headers = {
   headers: {
@@ -63,42 +64,26 @@ export const patchTestOrder = (
   taxEmail,
   taxCompany,
   taxCompanyRegistNum,
-) => {
-  console.log(oId,
-    cCode,
-    cType,
-    planName,
-    planDesc,
-    originPrice,
-    discountedPrice,
-    totalPrice,
-    isPaid,
-    paidDate,
-    hasTaxBillReq,
-    taxEmail,
-    taxCompany,
-    taxCompanyRegistNum);
-  return axios.patch(`${baseURL}/orders/test/${oId}/`, {
-    plan: {
-      name: planName,
-      description: planDesc,
-    },
-    coupon: {
-      code: cCode,
-      coupon_type: cType,
-    },
+) => axios.patch(`${baseURL}/orders/test/${oId}/`, {
+  plan: {
+    name: planName,
+    description: planDesc,
+  },
+  coupon: {
+    code: cCode,
     coupon_type: cType,
-    ordered_price: originPrice,
-    discounted_price: discountedPrice,
-    charged_price: totalPrice,
-    is_paid: isPaid,
-    paid_at: paidDate,
-    is_tax_bill_requested: hasTaxBillReq,
-    tax_bill_receive_email: taxEmail,
-    tax_bill_company_name: taxCompany,
-    company_registration_number: taxCompanyRegistNum,
-  }, headers);
-};
+  },
+  coupon_type: cType,
+  ordered_price: originPrice,
+  discounted_price: discountedPrice,
+  charged_price: totalPrice,
+  is_paid: isPaid,
+  paid_at: paidDate,
+  is_tax_bill_requested: hasTaxBillReq,
+  tax_bill_receive_email: taxEmail,
+  tax_bill_company_name: taxCompany,
+  company_registration_number: taxCompanyRegistNum,
+}, headers);
 export const getTestOrderList = () => axios.get(`${baseURL}/orders/test/`, headers);
 export const getTestOrder = oId => axios.get(`${baseURL}/orders/test/${oId}/`, headers);
 export const patchTestTaxBill = (

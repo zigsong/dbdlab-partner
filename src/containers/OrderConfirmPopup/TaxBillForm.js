@@ -24,6 +24,8 @@ class TaxBillForm extends Component {
   }
 
   render() {
+    const { isTaxBillReq, onSubmit } = this.props;
+
     return (
       <FormSection name="order" className="form-tax">
         <p className="form__data-wrapper">
@@ -37,11 +39,12 @@ class TaxBillForm extends Component {
             placeholder="텍스트 입력"
             component={FormInput}
             validate={companyRequired}
+            disabled={isTaxBillReq}
           />
         </p>
         <p className="form__data-wrapper">
           <span className="wrapper__title">
-            <strong className="title">사업자 등록 번호*</strong>
+            <strong className="title">사업자 번호*</strong>
           </span>
           <Field
             name="companyRegistNum"
@@ -50,6 +53,7 @@ class TaxBillForm extends Component {
             placeholder="숫자만 입력"
             component={FormInput}
             validate={[registNumRequired, registNumRegexp, registNumLength]}
+            disabled={isTaxBillReq}
           />
         </p>
         <p className="form__data-wrapper">
@@ -63,8 +67,14 @@ class TaxBillForm extends Component {
             placeholder="텍스트 입력"
             component={FormInput}
             validate={[emailRequired, emailRegexp]}
+            disabled={isTaxBillReq}
           />
         </p>
+        {!isTaxBillReq && (
+        <div className="form__btn-wrapper">
+          <button type="button" onClick={onSubmit}>신청하기</button>
+        </div>
+        )}
       </FormSection>
     );
   }

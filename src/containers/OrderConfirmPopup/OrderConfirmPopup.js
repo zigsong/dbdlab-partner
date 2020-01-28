@@ -16,6 +16,7 @@ import './OrderConfirmPopup.scss';
 
 class OrderConfirmPopup extends Component {
   state = {
+    taxOpen: false,
     hasComplete: false,
   }
 
@@ -65,6 +66,13 @@ class OrderConfirmPopup extends Component {
     togglePopup(false);
   }
 
+
+  onToggleTax =() => {
+    this.setState(prevState => ({
+      taxOpen: !prevState.taxOpen,
+    }));
+  }
+
   onSubmit = (values) => {
     const {
       isVoucher,
@@ -73,6 +81,7 @@ class OrderConfirmPopup extends Component {
       patchTestTaxBill,
       togglePopup,
       reset,
+      onSubmit,
     } = this.props;
     const { company, companyRegistNum, email } = values.order;
     const hasAllValues = !!company && !!companyRegistNum && !!email;
@@ -93,6 +102,7 @@ class OrderConfirmPopup extends Component {
             }, () => {
               setTimeout(() => {
                 this.setState({ hasComplete: false });
+                onSubmit(email, company, companyRegistNum);
                 reset();
                 togglePopup(false);
               }, 2000);
@@ -118,6 +128,7 @@ class OrderConfirmPopup extends Component {
             }, () => {
               setTimeout(() => {
                 this.setState({ hasComplete: false });
+                onSubmit(email, company, companyRegistNum);
                 reset();
                 togglePopup(false);
               }, 2000);
@@ -146,7 +157,7 @@ class OrderConfirmPopup extends Component {
       isVoucherTaxReq,
       isTestTaxReq,
     } = this.props;
-    const { hasComplete } = this.state;
+    const { taxOpen, hasComplete } = this.state;
     const amount = planAmount === undefined ? '1개' : `${planAmount}개`;
     const hasFieldValue = fieldValue !== undefined
       ? Object.keys(fieldValue.order).length : undefined;
@@ -194,28 +205,37 @@ class OrderConfirmPopup extends Component {
               <strong className="info__title">상태</strong>
               <span className="info__desc--step">{handleStep(step)}</span>
             </article>
-          </section>
-          <section className="contents__section">
-            <article className="section__info">
+            <article className={`section__info${taxOpen ? ' no-border' : ''}`}>
               <strong className="info__title">세금계산서</strong>
-              <span className={`info__desc${isTaxBillReq ? '--bill' : ''}`}>{isTaxBillReq ? '신청' : '미신청'}</span>
+              <button
+                className={`info__button info__desc${isTaxBillReq ? '--bill' : ''}`}
+                type="button"
+                onClick={this.onToggleTax}
+              >
+                {isTaxBillReq ? '신청완료' : '신청하기'}
+              </button>
             </article>
-            {isVoucher
-              ? <TaxBillForm initialValues={initVoucherData} />
-              : <TaxBillForm initialValues={initTestData} />
+            {taxOpen && (isVoucher
+              ? (
+                <TaxBillForm
+                  initialValues={initVoucherData}
+                  isTaxBillReq={isTaxBillReq}
+                  onSubmit={handleSubmit(values => this.onSubmit(values))}
+                />
+              )
+              : (
+                <TaxBillForm
+                  initialValues={initTestData}
+                  isTaxBillReq={isTaxBillReq}
+                  onSubmit={handleSubmit(values => this.onSubmit(values))}
+                />
+              ))
             }
           </section>
         </div>
         <div className="box-btn">
-          {isVoucherTaxReq || isTestTaxReq
-            ? <button type="button" className="btn-submit--active" onClick={e => onReset(e)}>확인</button>
-            : (
-              <>
-                <button type="button" className="btn-cancle" onClick={e => onReset(e)}>취소</button>
-                <button type="button" className={`btn-submit${hasFieldValue > 2 ? '--active' : ''}`} onClick={handleSubmit(values => this.onSubmit(values))}>확인</button>
-              </>
-            )
-          }
+          <button type="button" className="btn-cancel" onClick={e => onReset(e)}>닫기</button>
+
         </div>
         {hasComplete
           ? (

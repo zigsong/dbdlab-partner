@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import config from 'modules/config';
 import { togglePopup } from 'modules/popup';
 import './MailPopup.scss';
 
@@ -188,7 +189,7 @@ class MailPopup extends Component {
   onSubmitMail = (formValues, allFieldsValid) => {
     if (allFieldsValid) {
       // send data to mail
-      const baseURL = process.env.REACT_APP_API_URL;
+      const baseURL = config.REACT_APP_API_URL;
       const company = formValues.company.value;
       const category = formValues.category.value;
       const contact = formValues.contact.value;

@@ -88,6 +88,11 @@ $imgUrl: '/static/images';
         @extend .select__title;
         color: $black;
       }
+
+      &.disabled {
+        @extend .select__title;
+        color: $lightGray;
+      }
     }
 
     .select__list {
@@ -130,11 +135,13 @@ $imgUrl: '/static/images';
             cursor: pointer;
           }
 
-          &:disabled {
+
+
+          &.disabled, &:disabled {
             position: relative;
             color: $veryLightGray;
             background: $white;
-            cursor: auto;
+            cursor: pointer;
 
             &:after {
               content: '';
@@ -147,6 +154,10 @@ $imgUrl: '/static/images';
               margin-top: -3px;
               background: transparent url('#{$imgUrl}/common/icons/icon_dropdown_arrow--gray.svg') no-repeat center;
               transform: rotate(180deg);
+            }
+
+            &:hover {
+              background: $blue;
             }
           }
         }

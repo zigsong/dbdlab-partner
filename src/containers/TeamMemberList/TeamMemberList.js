@@ -6,6 +6,7 @@ import FormSelect from 'components/FormSelect';
 import { reduxForm, Field, getFormValues } from 'redux-form';
 import LoadingIndicator from 'components/LoadingIndicator';
 import ToastAlert from 'components/ToastAlert';
+import config from 'modules/config';
 import { getAuthSelf } from 'modules/auth';
 import {
   getProject,
@@ -198,7 +199,6 @@ class TeamMemberList extends Component {
         } else {
           inviteProject(project.id, emailList)
             .then((res) => {
-              console.log(res);
               if (res.status === 201 && res.data.result === 'success') {
                 inputArr.map(a => change([`inviteEmail${a}`], ''));
                 this.setState({
@@ -241,14 +241,11 @@ class TeamMemberList extends Component {
     const submit = window.confirm('해당 멤버를 팀에서 제외 시키시겠어요?\n제외된 멤버는 프로젝트 확인이 되지 않으며,\n프로젝트 공유를 위해서는 다시 초대해 주셔야 합니다.');
 
     if (submit) {
-      console.log('submit');
       getAuthSelf().then(() => {
         const isManager = project.members.find(arr => arr.id === id).is_manager;
-        console.log(isManager);
 
         banProject(project.id, [email])
           .then((res) => {
-            console.log(res);
             if (res.status === 204) {
               this.setState({
                 toastTitle: '작업이 완료되었어요',
@@ -259,7 +256,7 @@ class TeamMemberList extends Component {
                   this.setState({ isToastShow: false });
                   getProject(project.id);
                   if (!isManager) {
-                    window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project`);
+                    window.location.assign(`${protocol}//${config.REACT_APP_PARTNER_URL}/project`);
                   }
                 }, 2200);
               });
@@ -352,7 +349,6 @@ class TeamMemberList extends Component {
       ? fieldValues.serviceCategory
       : undefined;
     const serviceFormatValue = fieldValues !== undefined ? fieldValues.serviceFormat : undefined;
-    console.log(memberArr);
 
     return (
       isLoading

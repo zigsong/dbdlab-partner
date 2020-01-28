@@ -1,8 +1,9 @@
 import axios from 'axios';
+import config from 'modules/config';
 
-const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
+const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') >= 0);
 const AUTH_TOKEN = hasTokenCookie !== undefined ? hasTokenCookie.replace(/\s/gi, '').substring(6) : null;
-const baseURL = process.env.REACT_APP_API_URL;
+const baseURL = config.REACT_APP_API_URL;
 // const baseURL = '';
 const headers = {
   headers: {
@@ -79,9 +80,7 @@ export const patchTest = (
   is_register_required: registerValue,
 }, headers);
 export const getTestPrice = (tId, pName, couponValue) => {
-  console.log(couponValue);
   const coupon = couponValue === undefined ? '' : couponValue;
-  console.log(coupon);
 
   return axios.get(`${baseURL}/tests/${tId}/calculate/?plan_name=${pName}&coupon_type=${coupon}`, headers);
 };

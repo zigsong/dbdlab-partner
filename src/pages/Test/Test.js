@@ -1,6 +1,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable camelcase */
 import React, { Component } from 'react';
+import Cookies from 'js-cookie';
 import { connect } from 'react-redux';
 import ScrollContainer from 'react-indiana-drag-scroll';
 import Header from 'components/Header';
@@ -10,6 +11,7 @@ import UnauthorizedPopup from 'components/UnauthorizedPopup';
 import NewTestForm from 'containers/NewTestForm';
 import TeamMemberList from 'containers/TeamMemberList';
 import { getAuthSelf } from 'modules/auth';
+import config from 'modules/config';
 import { getProject, getProjectInviteLink } from 'modules/project';
 import { getTestList, getTest, setTestListInit } from 'modules/test';
 import './Test.scss';
@@ -28,33 +30,26 @@ class Test extends Component {
   }
 
   componentDidMount() {
-    const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') > 0);
+    const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') >= 0);
     const AUTH_TOKEN = hasTokenCookie !== undefined ? hasTokenCookie.replace(/\s/gi, '').substring(6) : null;
-    console.log(hasTokenCookie);
-    console.log(AUTH_TOKEN);
     const { protocol } = window.location;
     const { props } = this;
     const { match, location } = props;
     const { pId } = match.params;
     const { search } = location;
-    const isInvited = search.includes('invite_token');
-    console.log(pId);
-    console.log(location);
-    console.log(isInvited);
+    // const isInvited = search.includes('invite_token');
     const projectId = parseInt(pId, 10);
     const inviteToken = search.includes('invite_token') ? search.split('&')[0] : '';
     const inviteEmail = search.includes('user_email') ? search.split('&')[1] : '';
-    console.log(search);
-    console.log(inviteToken);
-    console.log(inviteEmail);
     const deleteTokenCookie = () => new Promise(() => {
       if (hasTokenCookie !== undefined) {
-        console.log('logged in');
         const setTokenCookie = (expireDate) => {
           const date = new Date();
           date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
-          document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=realdopt.com`;
-          document.cookie = `token=;expires=${date.toUTCString()};path=/;domain=localhost`;
+          Cookies.remove('token', {
+            domain: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : 'realdopt.com',
+            path: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : '/'
+          });
         };
         setTokenCookie(-1);
         alert('초대받은 계정으로 로그인 해주세요 :)');
@@ -65,7 +60,6 @@ class Test extends Component {
     });
 
     this.setState({ isLoading: true });
-    console.log(AUTH_TOKEN);
 
     if (AUTH_TOKEN === null) {
       this.setState({
@@ -73,36 +67,27 @@ class Test extends Component {
         isLoading: false,
       });
     } else {
-      console.log(inviteToken);
       props.getAuthSelf()
         .then((res) => {
           // 로그인 완료
-          console.log(res);
-          console.log(res.data.email);
           const { id, email } = res.data;
           const isCorrectMail = inviteEmail !== undefined && inviteEmail !== '' ? inviteEmail.substring(11) : undefined;
-          console.log(inviteEmail);
-          console.log(isCorrectMail);
-          console.log(isCorrectMail === email);
-          console.log(email);
 
           // 접속 계정이 초대받은 자인가 확인
           if (inviteToken.length > 1) {
-            console.log('초대');
             // 초대장 잇서요
             if (isCorrectMail !== undefined && isCorrectMail !== email) {
               // 남의 건 안됩니다
               deleteTokenCookie().then(
-                window.location.assign(`${protocol}//${process.env.REACT_APP_COMPANY_URL}/login/${inviteToken}&${inviteEmail}&project_id=${pId}`),
+                window.location.assign(`${protocol}//${config.REACT_APP_COMPANY_URL}/login/${inviteToken}&${inviteEmail}&project_id=${pId}`),
               );
             } else {
               // 링크 타고 왓서요
               // 초대장 제꼬에오
               // 웰컴
               props.getProject(projectId, inviteToken)
-                .then((res) => {
-                  console.log(res);
-                  window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project`);
+                .then(() => {
+                  window.location.assign(`${protocol}//${config.REACT_APP_PARTNER_URL}/project`);
                 })
                 .catch((err) => {
                   console.log(err);
@@ -110,15 +95,13 @@ class Test extends Component {
                   console.log(err.message);
 
                   alert('Oops! :(\n오류가 발생했어요. 메인으로 이동합니다.');
-                  window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project`);
+                  window.location.assign(`${protocol}//${config.REACT_APP_PARTNER_URL}/project`);
                 });
             }
           } else {
             // 초대가 아니예요 걍 드러왓소요
-            console.log('not 초대');
             props.getProject(projectId)
               .then((res) => {
-                console.log(res);
                 const isLeader = res.data.members.find(x => x.is_manager).id === id;
 
                 this.setState({ isLeader });
@@ -126,9 +109,7 @@ class Test extends Component {
                 props.getTestList(pId);
                 props.getProjectInviteLink(projectId)
                   .then((res) => {
-                    console.log(res);
                     const inviteLink = res.data.invite_link;
-                    console.log(inviteLink);
 
                     this.setState({ inviteLink });
                   }).catch((err) => {
@@ -156,7 +137,7 @@ class Test extends Component {
                   });
                 } else {
                   alert('Oops! :(\n오류가 발생했어요. 메인으로 이동합니다.');
-                  window.location.assign(`${protocol}//${process.env.REACT_APP_PARTNER_URL}/project`);
+                  window.location.assign(`${protocol}//${config.REACT_APP_PARTNER_URL}/project`);
                 }
               });
           }
@@ -254,7 +235,6 @@ class Test extends Component {
     const serviceCategory = (service_category !== undefined && service_category !== '') ? service_category : undefined;
     const serviceFormat = (service_format !== undefined && service_format !== '') ? service_format : undefined;
     const serviceDesc = (service_description !== undefined && service_description !== '') ? service_description : undefined;
-    console.log(tId);
 
     return (
       <>

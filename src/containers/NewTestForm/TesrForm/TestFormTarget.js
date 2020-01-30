@@ -323,31 +323,37 @@ class TestFormTarget extends Component {
               <strong className="title">누가 이 서비스를 주로 이용하나요? (타겟 정보)*</strong>
               <span className="subtitle">타겟 인원수는 15명 입니다</span>
             </span>
-            <p className="box-field" style={{ display: 'none' }}>
+            <p className="box-field">
               <Field
                 name="minAge"
                 type="number"
                 label="target.minAge"
                 placeholder="숫자"
-                component={FormInput}
+                component={({meta: { active, touched, error, warning }}) => (
+                  <span className="msg--error" style={{
+                    position: "absolute", left: "0", zIndex: "10", fontSize: "8px", color: "red"
+                  }}>
+                    {touched && ((error ) || (warning))}
+                  </span>
+                )}
                 onBlur={handleBlurSave}
                 validate={[ageRequired, minAgeVerify, maxAgeVerify]}
                 disabled={isDisabled}
               />
-              <span className="input__placeholder">세 부터</span>
             </p>
-            <p className="box-field" style={{ display: 'none' }}>
+            <p className="box-field">
               <Field
                 name="maxAge"
                 type="number"
                 label="target.maxAge"
                 placeholder="숫자"
-                component={FormInput}
+                component={({meta: { active, touched, error, warning }}) => (
+                  <span className="msg--error"></span>
+                )}
                 onBlur={handleBlurSave}
                 validate={[ageRequired, minAgeVerify, maxAgeVerify]}
                 disabled={isDisabled}
               />
-              <span className="input__placeholder">세 까지</span>
             </p>
             <span className="field__title">
               <p className="title">모든 연령 혹은 연속된 연령대를 최대 3개까지 선택해주세요.</p>

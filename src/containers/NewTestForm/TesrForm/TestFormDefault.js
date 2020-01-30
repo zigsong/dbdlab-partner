@@ -42,7 +42,7 @@ const TestFormDefault = (props) => {
     return (
       <>
         {steps.map(step => (
-          <span className={`box-input__radio${hasError ? '--error' : ''}`} key={step.value}>
+          <span className={`box-input__radio${!disabled && hasError ? '--error' : ''}`} key={step.value}>
             <input
               type="radio"
               name={input.name}
@@ -70,7 +70,7 @@ const TestFormDefault = (props) => {
             <span className="text">{step.text}</span>
           </span>
         ))}
-        {hasError && <span className="msg--error">{meta.error}</span>}
+        {!disabled && hasError && <span className="msg--error">{meta.error}</span>}
       </>
     );
   };

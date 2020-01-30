@@ -15,7 +15,7 @@ const FormInput = ({
   readOnly,
 }) => (
   <span className={
-    `box-input__text${touched && error ? '--error' : ''}${active ? '--active' : ''}`
+    `box-input__text${!disabled && touched && error ? '--error' : ''}${active ? '--active' : ''}`
   }
   >
     <label htmlFor={label}>
@@ -29,7 +29,7 @@ const FormInput = ({
         readOnly={readOnly !== undefined ? readOnly : false}
       />
     </label>
-    {touched && ((error && <span className="msg--error">{error}</span>) || (warning && <span className="msg--warning">{warning}</span>))}
+    {!disabled && touched && ((error && <span className="msg--error">{error}</span>) || (warning && <span className="msg--warning">{warning}</span>))}
   </span>
 );
 

@@ -115,7 +115,7 @@ class TestFormPay extends Component {
     return (
       <>
         {planList.map((p, idx) => (
-          <span className={`box-input__radio${hasError ? '--error' : ''}`} key={p.name}>
+          <span className={`box-input__radio${!isDisabled && hasError ? '--error' : ''}`} key={p.name}>
             <input
               type="radio"
               name={input.name}
@@ -143,7 +143,7 @@ class TestFormPay extends Component {
             { idx === 0 ? <span className="plan__desc--kor">테스트만 진행합니다.</span> : <span className="plan__desc--kor">테스트 + 후속 컨설팅을 진행합니다 </span> }
           </span>
         ))}
-        {hasError && <span className="msg--error">{meta.error}</span>}
+        {!isDisabled && hasError && <span className="msg--error">{meta.error}</span>}
       </>
     );
   };
@@ -287,7 +287,7 @@ class TestFormPay extends Component {
                               disabled={isDisabled}
                               submitError={!!submitErrorMsg}
                             />
-                            {submitErrorMsg && couponTypeMeta.touched && <span className="msg--error">{submitErrorMsg}</span>}
+                            {!isDisabled && submitErrorMsg && couponTypeMeta.touched && <span className="msg--error">{submitErrorMsg}</span>}
                           </p>
                         )
                         : (
@@ -303,7 +303,7 @@ class TestFormPay extends Component {
                               disabled={isDisabled}
                               submitError={!!submitErrorMsg}
                             />
-                            {submitErrorMsg && couponTypeMeta.touched && <span className="msg--error">{submitErrorMsg}</span>}
+                            {!isDisabled && submitErrorMsg && couponTypeMeta.touched && <span className="msg--error">{submitErrorMsg}</span>}
                           </p>
                         )
                       }

@@ -333,7 +333,7 @@ class TestFormTarget extends Component {
                   <span className="msg--error" style={{
                     position: "absolute", left: "0", zIndex: "10", fontSize: "8px", color: "red"
                   }}>
-                    {touched && ((error ) || (warning))}
+                    {!isDisabled && touched && ((error) || (warning))}
                   </span>
                 )}
                 onBlur={handleBlurSave}
@@ -348,7 +348,7 @@ class TestFormTarget extends Component {
                 label="target.maxAge"
                 placeholder="숫자"
                 component={({meta: { active, touched, error, warning }}) => (
-                  <span className="msg--error"></span>
+                  <span></span>
                 )}
                 onBlur={handleBlurSave}
                 validate={[ageRequired, minAgeVerify, maxAgeVerify]}

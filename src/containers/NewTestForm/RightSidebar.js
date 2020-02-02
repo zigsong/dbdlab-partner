@@ -1,5 +1,9 @@
 /* eslint-disable max-len */
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { togglePopup } from 'modules/popup';
+
+import OrderConfirmPopup from 'containers/OrderConfirmPopup';
 
 const RightSidebar = (props) => {
   const {
@@ -26,7 +30,25 @@ const RightSidebar = (props) => {
     handleSubmit,
     onSubmit,
     invalid,
+    isOpen,
+    togglePopup,
+    test,
   } = props;
+
+  const p = test.order;
+  if (p) {
+    p.test = test.default;
+  }
+
+  const getDate = (value) => {
+    const getValue = new Date(value);
+    const day = getValue.getDate();
+    const month = getValue.getMonth() + 1;
+    const year = getValue.getFullYear();
+    const date = `${year}. ${month} .${day}`;
+
+    return date;
+  };
 
   // value check
   const hasFieldValues = fieldsValues !== undefined;
@@ -743,6 +765,26 @@ const RightSidebar = (props) => {
                 }
               </p>
             </div>
+
+            {isPayPassed && step === 'payment' && (
+            <button
+              type="button"
+              style={{
+                width: '100%',
+                height: '20px',
+                border: '1px solid white',
+                color: 'white',
+                height: '35px',
+                margin: '20px 0',
+              }}
+              className="btn__default$"
+              onClick={() => togglePopup(!isOpen)}
+              onKeyPress={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
+            >
+              결제 정보 확인
+            </button>
+            )}
+
             <div className="box-btn">
               {justRegistered
               || isAllPassed
@@ -768,8 +810,42 @@ const RightSidebar = (props) => {
           </>
         )
       }
+      {p && (
+      <OrderConfirmPopup
+        isOpen={isOpen}
+        isVoucher={p.voucher_amount > 0}
+        onSubmit={(email, company, companyRegistNum) => {
+          p.is_tax_bill_requested = true;
+          p.tax_bill_company_name = company;
+          p.tax_bill_receive_email = email;
+          p.company_registration_number = companyRegistNum;
+        }}
+        isTaxBillReq={p.is_tax_bill_requested}
+        voucherId={p.id !== undefined ? p.id : undefined}
+        testId={p.test !== undefined ? p.test.id : undefined}
+        testName={
+                                              p.test !== undefined ? p.test.title : undefined
+                                            }
+        planName={p.plan.name}
+        planAmount={p.voucher_amount}
+        paidDate="-"
+        step={p.test !== undefined ? p.test.step : p.is_paid}
+        price={p.test !== undefined ? p.charged_price : p.ordered_price}
+      />
+      )}
     </aside>
   );
 };
 
-export default RightSidebar;
+const mapStatesToProps = state => ({
+  isOpen: state.popup.isOpen,
+});
+
+const mapDispatchToProps = dispatch => ({
+  togglePopup: isOpen => dispatch(togglePopup(isOpen)),
+});
+
+export default connect(
+  mapStatesToProps,
+  mapDispatchToProps,
+)(RightSidebar);

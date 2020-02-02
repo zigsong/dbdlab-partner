@@ -171,7 +171,7 @@ class NewTestForm extends Component {
                 const { report_url } = res.data;
                 const tgId = targets[0].id !== null && targets[0].id !== undefined
                   ? targets[0].id : null;
-
+              
                 getTarget(tgId)
                   .then((res) => {
                     this.setState({
@@ -2126,6 +2126,7 @@ class NewTestForm extends Component {
             </span>
           </div>
           <RightSidebar
+            test={test}
             step={step}
             submitErrorMsg={asyncErrorMsg}
             isDisabled={isNoNamed || isSpacedTitle || !isLeader}

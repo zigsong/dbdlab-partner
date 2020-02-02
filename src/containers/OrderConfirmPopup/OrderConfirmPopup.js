@@ -233,7 +233,7 @@ class OrderConfirmPopup extends Component {
             }
           </section>
         </div>
-        <div className="box-btn">
+        <div className="box-btn-order">
           <button type="button" className="btn-cancel" onClick={e => onReset(e)}>닫기</button>
 
         </div>

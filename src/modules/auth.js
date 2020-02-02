@@ -125,7 +125,7 @@ export const logout = () => (dispatch) => {
     if (hasTokenCookie !== undefined) {
       Cookies.remove('token', {
         domain: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : 'realdopt.com',
-        path: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : '/'
+        path: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : '/',
       });
       alert('로그아웃 되었습니다 :)');
     } else {
@@ -141,6 +141,33 @@ export const logout = () => (dispatch) => {
     type: LOGOUT,
   });
 };
+
+export const deleteAccount = () => (dispatch) => {
+  const { protocol } = window.location;
+  const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') >= 0);
+
+  console.log('deleteAccount');
+  const deleteTokenCookie = () => new Promise(() => {
+    if (hasTokenCookie !== undefined) {
+      Cookies.remove('token', {
+        domain: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : 'realdopt.com',
+        path: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : '/',
+      });
+      alert('로그아웃 되었습니다 :)');
+    } else {
+      alert('다시 로그인 해주세요 :)');
+    }
+  });
+
+  deleteTokenCookie().then(
+    window.location.assign(`${protocol}//${config.REACT_APP_COMPANY_URL}/login`),
+  );
+
+  dispatch({
+    type: LOGOUT,
+  });
+};
+
 
 const initialState = {
   error: false,

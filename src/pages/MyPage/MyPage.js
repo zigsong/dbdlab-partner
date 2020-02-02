@@ -17,9 +17,11 @@ import { togglePopup } from 'modules/popup';
 import { getProjectList } from 'modules/project';
 import { getVoucherOrderList, getTestOrderList } from 'modules/order';
 import { getNotifications } from 'modules/notification';
+import { deleteAccount } from 'modules/auth';
 import PageTemplate from 'containers/PageTemplate';
 import NewPasswordPopup from 'containers/NewPasswordPopup';
 import OrderConfirmPopup from 'containers/OrderConfirmPopup';
+import DeletePopup from 'containers/DeletePopup';
 import UnauthorizedPopup from 'components/UnauthorizedPopup';
 import LoadingIndicator from 'components/LoadingIndicator';
 import ToastAlert from 'components/ToastAlert';
@@ -46,6 +48,7 @@ class MyPage extends Component {
     toastSubtitle: '',
     isToastShow: false,
     isPwShow: false,
+    isDelShow: false,
     isBillShow: false,
     billIdx: 0,
   }
@@ -65,7 +68,7 @@ class MyPage extends Component {
           date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
           Cookies.remove('token', {
             domain: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : 'realdopt.com',
-            path: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : '/'
+            path: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : '/',
           });
         };
         setTokenCookie(-1);
@@ -223,6 +226,17 @@ class MyPage extends Component {
     props.togglePopup(true);
   }
 
+
+  handleDelPopup = (e) => {
+    const { props } = this;
+
+    e.preventDefault();
+
+    this.setState({ isDelShow: true });
+    props.togglePopup(true);
+  }
+
+
   handleTaxBillPopup = (e, idx) => {
     const { props } = this;
 
@@ -291,6 +305,7 @@ class MyPage extends Component {
       handleSubmit,
       fieldValues,
       location,
+      deleteAccount,
     } = this.props;
     const name = fieldValues !== undefined ? fieldValues.name : undefined;
     const phone = fieldValues !== undefined ? fieldValues.phone : undefined;
@@ -308,6 +323,7 @@ class MyPage extends Component {
       isToastShow,
       isBillShow,
       isPwShow,
+      isDelShow,
       billIdx,
     } = this.state;
     const {
@@ -317,6 +333,7 @@ class MyPage extends Component {
       handleTabToggle,
       handleEdit,
       handlePwPopup,
+      handleDelPopup,
       handleTaxBillPopup,
       handleActivityLog,
       onSubmit,
@@ -363,7 +380,11 @@ class MyPage extends Component {
                                     : email.substring(0, email.indexOf('@'))
                                   }
                                 </strong>
-                                <button type="button" className="btn-edit" onClick={() => handleEdit()}>Edit profile</button>
+                                {
+                                  !onEdit
+                                    ? <button type="button" className="btn-edit" onClick={() => handleEdit()}>Edit profile</button>
+                                    : <button type="button" className="btn-delete" onClick={e => handleDelPopup(e)}>계정 삭제</button>
+                                }
                                 <span className="desc__mail">{email}</span>
                               </span>
                             </section>
@@ -537,6 +558,16 @@ class MyPage extends Component {
                       />
                     )
                     : null}
+                  {isDelShow
+                    ? (
+                      <DeletePopup
+                        show={isOpen}
+                        onPopup={togglePopup}
+                        handleDelete={deleteAccount}
+                      />
+                    )
+                    : null}
+
                   {isToastShow
                     ? (
                       <ToastAlert
@@ -589,6 +620,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
+  deleteAccount: () => dispatch(deleteAccount()),
   getAuthSelf: () => dispatch(getAuthSelf()),
   getAccount: id => dispatch(getAccount(id)),
   postAvatarUpdate: file => dispatch(postAvatarUpdate(file)),

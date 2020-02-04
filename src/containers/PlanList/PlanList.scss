@@ -27,7 +27,7 @@ $blueGray: #f6f7fa;
 
 %btnBlue {
   border: 1px solid $blue;
-  padding:8px 10px 8.5px;
+  padding: 8px 10px 8.5px;
   border-radius: 5px;
   box-sizing: border-box;
   background-color: transparent;
@@ -118,6 +118,10 @@ $blueGray: #f6f7fa;
           line-height: 40px;
           font-weight: bold;
         }
+        .mount {
+          font-size: 16px;
+          font-weight: bold;
+        }
       }
 
       .desc__expired {
@@ -193,7 +197,9 @@ $blueGray: #f6f7fa;
         height: 30px;
         margin-top: -10px;
         margin-left: -15px;
-        background: $blue url('/static/images/common/icons/icon_slider_handle.png') no-repeat center;
+        background: $blue
+          url("/static/images/common/icons/icon_slider_handle.png") no-repeat
+          center;
         background-size: percentage(18 / 30) auto;
         border-radius: 50%;
         cursor: pointer;

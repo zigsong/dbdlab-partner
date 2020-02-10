@@ -20,61 +20,59 @@ const emailRegexp = value => (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}
 const valueRegExp = value => (value && value.replace(/(^\s*)|(\s*$)/g, '').length < 2 ? '형식에 맞게 입력해 주세요' : undefined);
 const valueNumberRegExp = value => (value && value.replace(/^[0-9]/, '').length < 1 ? '정확하게 입력해주세요' : undefined);
 
+const serviceStatus = [
+  { value: 'PLANNING', text: '기획' },
+  { value: 'DESIGN', text: '디자인' },
+  { value: 'DEVELOPING', text: '개발 중' },
+  { value: 'OPERATING', text: '운영 중' },
+  { value: 'RENEWAL', text: '리뉴얼' },
+];
+
+const FormRadio = (valueProps) => {
+  const {
+    input,
+    meta,
+    steps,
+    disabled,
+    handleBlurSave,
+  } = valueProps;
+  const hasError = meta.touched && meta.error;
+
+  return (
+    <>
+      {steps.map(step => (
+        <span className={`box-input__radio${!disabled && hasError ? '--error' : ''}`} key={step.value}>
+          <input
+            type="radio"
+            name={input.name}
+            onFocus={(e) => { input.onFocus(e, input.onChange(step.value)); }}
+            onChange={(e) => {
+              input.onChange(e, step.value);
+              handleBlurSave();
+            }}
+            value={step.value}
+            checked={step.value === input.value}
+            disabled={disabled}
+          />
+          <button
+            type="button"
+            className={`btn__radio${step.value === input.value ? '--checked' : ''}`}
+            onFocus={(e) => { input.onFocus(e, input.onChange(step.value)); }}
+            onChange={(e) => {
+              input.onChange(e, step.value);
+              handleBlurSave();
+            }}
+            disabled={disabled}
+          />
+          <span className="text">{step.text}</span>
+        </span>
+      ))}
+      {!disabled && hasError && <span className="msg--error">{meta.error}</span>}
+    </>
+  );
+};
+
 const TestFormDefault = (props) => {
-  const serviceStatus = [
-    { value: 'PLANNING', text: '기획' },
-    { value: 'DESIGN', text: '디자인' },
-    { value: 'DEVELOPING', text: '개발 중' },
-    { value: 'OPERATING', text: '운영 중' },
-    { value: 'RENEWAL', text: '리뉴얼' },
-  ];
-
-  const FormRadio = (valueProps) => {
-    const {
-      input,
-      meta,
-      steps,
-      disabled,
-      handleBlurSave,
-    } = valueProps;
-    const hasError = meta.touched && meta.error;
-
-    return (
-      <>
-        {steps.map(step => (
-          <span className={`box-input__radio${!disabled && hasError ? '--error' : ''}`} key={step.value}>
-            <input
-              type="radio"
-              name={input.name}
-              onFocus={e => input.onFocus(e, input.onChange(step.value))}
-              onChange={(e) => {
-                input.onChange(e, step.value);
-                handleBlurSave();
-              }}
-              onBlur={e => input.onBlur(e, input.onChange(step.value))}
-              value={step.value}
-              checked={step.value === input.value}
-              disabled={disabled}
-            />
-            <button
-              type="button"
-              className={`btn__radio${step.value === input.value ? '--checked' : ''}`}
-              onFocus={e => input.onFocus(e, input.onChange(step.value))}
-              onChange={(e) => {
-                input.onChange(e, step.value);
-                handleBlurSave();
-              }}
-              onBlur={e => input.onBlur(e, input.onChange(step.value))}
-              disabled={disabled}
-            />
-            <span className="text">{step.text}</span>
-          </span>
-        ))}
-        {!disabled && hasError && <span className="msg--error">{meta.error}</span>}
-      </>
-    );
-  };
-
   const handleContactValue = (e, newValue, preValue, name) => {
     const { dispatch } = props;
     e.preventDefault();

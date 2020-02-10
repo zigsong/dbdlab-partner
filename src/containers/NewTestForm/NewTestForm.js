@@ -102,7 +102,7 @@ class NewTestForm extends Component {
     const { pId, tId } = match.params;
 
     this.setState({ isLoading: true });
-    setTimeout(() => this.setState({ initSaving: false }), 30000);
+    setTimeout(() => this.setState({ initSaving: false }), 5000);
 
     getAuthSelf()
       .then((res) => {

@@ -84,19 +84,8 @@ class NewTestForm extends Component {
     test: {},
     asyncErrorMsg: '',
     shouldBlockNavigation: true,
-  }
-
-  componentDidUpdate = () => {
-    const { shouldBlockNavigation } = this.state;
-    if (shouldBlockNavigation) {
-      window.onbeforeunload = () => true;
-    } else {
-      window.onbeforeunload = undefined;
-    }
-  }
-
-  componentWillUnmount = () => {
-    window.onbeforeunload = undefined;
+    initSaving: true,
+    inSaving: false
   }
 
   componentDidMount() {
@@ -113,6 +102,7 @@ class NewTestForm extends Component {
     const { pId, tId } = match.params;
 
     this.setState({ isLoading: true });
+    setTimeout(() => this.setState({ initSaving: false }), 30000);
 
     getAuthSelf()
       .then((res) => {
@@ -376,11 +366,28 @@ class NewTestForm extends Component {
       });
   }
 
+  componentDidUpdate = () => {
+    const { route } = this.props;
+    const { match } = route;
+    const { tId } = match.params;
+    const { shouldBlockNavigation } = this.state;
+
+    if (shouldBlockNavigation && tId) {
+      window.onbeforeunload = () => true;
+    } else {
+      window.onbeforeunload = undefined;
+    }
+  }
+
+
   componentWillUnmount() {
     // eslint-disable-next-line no-shadow
     const { setTestInit } = this.props;
+    window.onbeforeunload = undefined;
     setTestInit();
   }
+
+  
 
   goBack = (e) => {
     e.preventDefault();
@@ -392,7 +399,14 @@ class NewTestForm extends Component {
   };
 
   handleBackBtn = () => {
-    window.history.back();
+    const { route } = this.props;
+    const { match } = route;
+
+    if (match.params.tId) {
+      window.location.assign(`/project/${match.params.pId}`);
+    } else {
+      window.location.assign(`/project/`);
+  }
   }
 
   handleCancleBtn = (e) => {
@@ -593,6 +607,11 @@ class NewTestForm extends Component {
     if (hasQuestError) this.setState({ hasQuestError: true });
 
     const defaultBlurSave = async () => {
+      if (this.state.initSaving || this.state.inSaving || this.state.isBlurSaved) {
+        return;
+      }
+      this.setState({ inSaving: true })
+
       if (isDefaultRendered && hasDefaultPassed) {
         const step = 'APPLY';
 
@@ -623,7 +642,7 @@ class NewTestForm extends Component {
           ).then(() => {
             this.setState({
               isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
           })
             .catch((err) => {
               console.log(err);
@@ -658,7 +677,7 @@ class NewTestForm extends Component {
                     { id: res.data.quests[2].id },
                   ],
                 },
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             })
             .catch((err) => {
               console.log(err);
@@ -705,8 +724,7 @@ class NewTestForm extends Component {
         const exValue2Id = extraInfoDesc2 !== undefined && extraInfoDesc2 !== '' ? extraInfoDesc2 : undefined;
         const exValue3Id = extraInfoDesc3 !== undefined && extraInfoDesc3 !== '' ? extraInfoDesc3 : undefined;
 
-        getTarget(tgId)
-          .then((res) => {
+        const res = await getTarget(tgId)
             const tgEx1Id = extras.length > 0 ? res.data.extras[0].id : undefined;
             const tgEx2Id = extras.length > 1 ? res.data.extras[1].id : undefined;
             const tgEx3Id = extras.length > 2 ? res.data.extras[2].id : undefined;
@@ -748,103 +766,61 @@ class NewTestForm extends Component {
               && !hasExTargetError
               && exCate1Id !== undefined
               && exValue1Id !== undefined) {
-              patchTargetExtra(tgEx1Id, tgId, exCate1Id, extraInfoDesc1)
-                .then(() => {
-                  getTarget(tgId);
+              await patchTargetExtra(tgEx1Id, tgId, exCate1Id, extraInfoDesc1)
+              await getTarget(tgId);
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-                })
-                .catch((err) => {
-                  console.log(err);
-                  console.log(err.response);
-                });
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             } else if (!hasExTargetError && exCate1Id !== undefined && exValue1Id !== undefined) {
-              getTest(tId);
-              postTargetExtra(tgId, exCate1Id, extraInfoDesc1)
-                .then(() => {
-                  getTarget(tgId);
+              await getTest(tId);
+              await postTargetExtra(tgId, exCate1Id, extraInfoDesc1)
+              await getTarget(tgId);
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-                })
-                .catch((err) => {
-                  console.log(err);
-                  console.log(err.response);
-                });
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             }
 
             if (!!tgEx2Id
               && !hasExTargetError
               && exCate2Id !== undefined
               && exValue2Id !== undefined) {
-              patchTargetExtra(tgEx2Id, tgId, exCate2Id, extraInfoDesc2)
-                .then(() => {
-                  getTarget(tgId);
+              await patchTargetExtra(tgEx2Id, tgId, exCate2Id, extraInfoDesc2)
+              await getTarget(tgId);
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-                })
-                .catch((err) => {
-                  console.log(err);
-                  console.log(err.response);
-                });
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             } else if (!hasExTargetError && exCate2Id !== undefined && exValue2Id !== undefined) {
-              getTest(tId);
-              postTargetExtra(tgId, exCate2Id, extraInfoDesc2)
-                .then(() => {
-                  getTarget(tgId);
+              await getTest(tId);
+              await postTargetExtra(tgId, exCate2Id, extraInfoDesc2)
+              await getTarget(tgId);
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-                })
-                .catch((err) => {
-                  console.log(err);
-                  console.log(err.response);
-                });
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             }
 
             if (!!tgEx3Id
               && !hasExTargetError
               && exCate3Id !== undefined
               && exValue3Id !== undefined) {
-              patchTargetExtra(tgEx3Id, tgId, exCate3Id, extraInfoDesc3)
-                .then(() => {
-                  getTarget(tgId);
+                await patchTargetExtra(tgEx3Id, tgId, exCate3Id, extraInfoDesc3)
+                await getTarget(tgId);
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-                })
-                .catch((err) => {
-                  console.log(err);
-                  console.log(err.response);
-                });
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             } else if (!hasExTargetError && exCate3Id !== undefined && exValue3Id !== undefined) {
-              getTest(tId);
-              postTargetExtra(tgId, exCate3Id, extraInfoDesc3)
-                .then(() => {
-                  getTarget(tgId);
+              await getTest(tId);
+              await postTargetExtra(tgId, exCate3Id, extraInfoDesc3)
+              await getTarget(tgId);
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-                })
-                .catch((err) => {
-                  console.log(err);
-                  console.log(err.response);
-                });
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             }
-          })
-          .catch((err) => {
-            console.log(err);
-            console.log(err.response);
-            console.log(err.message);
-          });
 
         if (hasTargetError
           || genderValue === undefined || genderValue === null
@@ -867,17 +843,11 @@ class NewTestForm extends Component {
             maxAgeValue,
             interestValue,
           )
-            .then(() => {
-              getTest(tId);
+          await getTest(tId);
               this.setState({
                 isBlurSaved: true,
                 hasTargetError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
-            })
-            .catch((err) => {
-              console.log(err);
-              console.log(err.response);
-            });
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
         }
       } else if (isQuestRendered && hasQuestPassed) {
         const qId = test.quests.map(q => q.id);
@@ -952,7 +922,7 @@ class NewTestForm extends Component {
           ).then(() => {
             this.setState({
               isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
           }).catch((err) => {
             console.log(err);
             console.log(err.response);
@@ -981,7 +951,7 @@ class NewTestForm extends Component {
           ).then(() => {
             this.setState({
               isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
           });
 
           await patchQuest(
@@ -996,7 +966,7 @@ class NewTestForm extends Component {
               this.setState({
                 isBlurSaved: true,
                 hasQuestError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
               console.log(this.state);
             })
             .catch((err) => {
@@ -1027,7 +997,7 @@ class NewTestForm extends Component {
           ).then(() => {
             this.setState({
               isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
           });
           await patchQuest(
             qId[1],
@@ -1041,7 +1011,7 @@ class NewTestForm extends Component {
               this.setState({
                 isBlurSaved: true,
                 hasQuestError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             })
             .catch((err) => {
               console.log(err);
@@ -1071,7 +1041,7 @@ class NewTestForm extends Component {
           ).then(() => {
             this.setState({
               isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
           });
           await patchQuest(
             qId[2],
@@ -1085,7 +1055,7 @@ class NewTestForm extends Component {
               this.setState({
                 isBlurSaved: true,
                 hasQuestError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             })
             .catch((err) => {
               console.log(err);
@@ -1093,6 +1063,7 @@ class NewTestForm extends Component {
             });
         }
       }
+      this.setState({ inSaving: false })
     };
 
     defaultBlurSave();
@@ -1758,7 +1729,7 @@ class NewTestForm extends Component {
       isLoading ? <LoadingIndicator /> : (
         <form className="contents__form">
           <Prompt
-            when={shouldBlockNavigation}
+            when={shouldBlockNavigation && !!tId}
             message="떠나시겠습니까? 변경사항이 저장되지 않을 수 있습니다."
           />
           <div className="form__nav">
@@ -2119,10 +2090,8 @@ class NewTestForm extends Component {
               )
               : null
             }
-            <span className={`box-alert--autosave${isBlurSaved ? '--active' : ''}`}>
-              Last Checkpoint:
-              {getTime()}
-              (autosaved)
+            <span className={`box-alert--autosave${!this.state.initSaving && isBlurSaved ? '--active' : ''}`}>
+              { `Last Checkpoint: ${getTime()} (autosaved)` }
             </span>
           </div>
           <RightSidebar
@@ -2168,7 +2137,7 @@ class NewTestForm extends Component {
                 <p className="contents__back">
                   [확인]을 누르시면 테스트 목록으로 이동합니다.
                 </p>
-                <div className="box-btn">
+                <div className="box-btn" style={{ paddingTop: "100px" }}>
                   <button type="button" className="btn-cancle" onClick={e => handleCancleBtn(e)}>취소</button>
                   <button type="button" className="btn-confirm" onClick={e => goBack(e)}>확인</button>
                 </div>

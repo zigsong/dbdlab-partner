@@ -15,7 +15,7 @@ const FormSelect = ({
     const { onChange } = input;
 
     if (slct.current.value === defaultValue) {
-      console.log('test');
+      // console.log('test');
     } else if (input.value !== '') {
       slct.current.value = input.value;
       setValues(input.value);

@@ -77,8 +77,8 @@ class Project extends Component {
           .then((result) => {
             const name = result.data.name.length > 0 ? result.data.name : result.data.email.substring(0, result.data.email.indexOf('@'));
 
-            const lastLogin = Cookies.get('realdopt_last_login');
-            if (!lastLogin) {
+            const lastLogin = Cookies.get(`realdopt_last_login_${res.data.id}`);
+            if (!lastLogin || `${res.data.id}` !== lastLogin) {
               this.setState({
                 isLoading: false,
                 isToastShow: true,
@@ -86,7 +86,7 @@ class Project extends Component {
                 toastSubtitle: '프로젝트 관리를 시작해 보세요',
               }, () => { setTimeout(() => this.setState({ isToastShow: false }), 2200); });
             }
-            Cookies.set('realdopt_last_login', new Date().getTime(), { expires: 1 });
+            Cookies.set(`realdopt_last_login_${res.data.id}`, res.data.id, { expires: 1 });
           })
           .catch((err) => {
             console.log(err);

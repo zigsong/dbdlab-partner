@@ -646,7 +646,7 @@ class NewTestForm extends Component {
           ).then(() => {
             this.setState({
               isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
           })
             .catch((err) => {
               console.log(err);
@@ -684,7 +684,7 @@ class NewTestForm extends Component {
                     { id: res.data.quests[2].id },
                   ],
                 },
-              })}, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              })}, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             })
             .catch((err) => {
               console.log(err);
@@ -778,7 +778,7 @@ class NewTestForm extends Component {
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             } else if (!hasExTargetError && exCate1Id !== undefined && exValue1Id !== undefined) {
               await getTest(tId);
               await postTargetExtra(tgId, exCate1Id, extraInfoDesc1)
@@ -786,7 +786,7 @@ class NewTestForm extends Component {
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             }
 
             if (!!tgEx2Id
@@ -798,7 +798,7 @@ class NewTestForm extends Component {
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             } else if (!hasExTargetError && exCate2Id !== undefined && exValue2Id !== undefined) {
               await getTest(tId);
               await postTargetExtra(tgId, exCate2Id, extraInfoDesc2)
@@ -806,7 +806,7 @@ class NewTestForm extends Component {
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             }
 
             if (!!tgEx3Id
@@ -818,7 +818,7 @@ class NewTestForm extends Component {
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             } else if (!hasExTargetError && exCate3Id !== undefined && exValue3Id !== undefined) {
               await getTest(tId);
               await postTargetExtra(tgId, exCate3Id, extraInfoDesc3)
@@ -826,7 +826,7 @@ class NewTestForm extends Component {
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             }
 
         if (hasTargetError
@@ -854,7 +854,7 @@ class NewTestForm extends Component {
               this.setState({
                 isBlurSaved: true,
                 hasTargetError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
         }
       } else if (isQuestRendered && hasQuestPassed) {
         const qId = test.quests.map(q => q.id);
@@ -929,7 +929,7 @@ class NewTestForm extends Component {
           ).then(() => {
             this.setState({
               isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
           }).catch((err) => {
             console.log(err);
             console.log(err.response);
@@ -958,7 +958,7 @@ class NewTestForm extends Component {
           ).then(() => {
             this.setState({
               isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
           });
 
           await patchQuest(
@@ -973,7 +973,7 @@ class NewTestForm extends Component {
               this.setState({
                 isBlurSaved: true,
                 hasQuestError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
               console.log(this.state);
             })
             .catch((err) => {
@@ -1004,7 +1004,7 @@ class NewTestForm extends Component {
           ).then(() => {
             this.setState({
               isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
           });
           await patchQuest(
             qId[1],
@@ -1018,7 +1018,7 @@ class NewTestForm extends Component {
               this.setState({
                 isBlurSaved: true,
                 hasQuestError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             })
             .catch((err) => {
               console.log(err);
@@ -1048,7 +1048,7 @@ class NewTestForm extends Component {
           ).then(() => {
             this.setState({
               isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
           });
           await patchQuest(
             qId[2],
@@ -1062,7 +1062,7 @@ class NewTestForm extends Component {
               this.setState({
                 isBlurSaved: true,
                 hasQuestError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
             })
             .catch((err) => {
               console.log(err);

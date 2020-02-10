@@ -2,6 +2,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable-next-line no-shadow */
 import React, { Component } from 'react';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import {
   Field,
@@ -84,8 +85,9 @@ class NewTestForm extends Component {
     test: {},
     asyncErrorMsg: '',
     shouldBlockNavigation: true,
-    initSaving: true,
-    inSaving: false
+    inSaving: false,
+    inPostTest: false,
+    lastSavedTime: new Date(),
   }
 
   componentDidMount() {
@@ -102,7 +104,6 @@ class NewTestForm extends Component {
     const { pId, tId } = match.params;
 
     this.setState({ isLoading: true });
-    setTimeout(() => this.setState({ initSaving: false }), 5000);
 
     getAuthSelf()
       .then((res) => {
@@ -164,35 +165,37 @@ class NewTestForm extends Component {
               
                 getTarget(tgId)
                   .then((res) => {
-                    this.setState({
-                      test: {
-                        default: {
-                          tId: id,
-                          title,
-                          step,
-                          client_name,
-                          client_phone_number,
-                          client_email,
-                          media_category_1,
-                          media_category_2,
-                          service_extra_info,
-                          service_category,
-                          service_format,
-                          service_description,
-                          service_status,
-                          funnel,
-                          staff,
-                          project_id,
-                          create_user_id,
-                          created_at,
-                          is_register_required,
+                    this.setState((prevState) => {
+                      return _.merge(prevState, {
+                        test: {
+                          default: {
+                            tId: id,
+                            title,
+                            step,
+                            client_name,
+                            client_phone_number,
+                            client_email,
+                            media_category_1,
+                            media_category_2,
+                            service_extra_info,
+                            service_category,
+                            service_format,
+                            service_description,
+                            service_status,
+                            funnel,
+                            staff,
+                            project_id,
+                            create_user_id,
+                            created_at,
+                            is_register_required,
+                          },
+                          target: res.data,
+                          quests,
+                          order,
+                          report_url,
                         },
-                        target: res.data,
-                        quests,
-                        order,
-                        report_url,
-                      },
-                    });
+                      });
+                    })
                   })
                   .then(() => {
                     const { test } = this.state;
@@ -362,6 +365,7 @@ class NewTestForm extends Component {
         if (!tId) {
           this.setState({ isLoading: false });
           this.titleInput.getRenderedComponent().focus();
+          // this.handleBlurSave();
         }
       });
   }
@@ -607,7 +611,7 @@ class NewTestForm extends Component {
     if (hasQuestError) this.setState({ hasQuestError: true });
 
     const defaultBlurSave = async () => {
-      if (this.state.initSaving || this.state.inSaving || this.state.isBlurSaved) {
+      if (this.state.inSaving || this.state.isBlurSaved) {
         return;
       }
       this.setState({ inSaving: true })
@@ -642,13 +646,14 @@ class NewTestForm extends Component {
           ).then(() => {
             this.setState({
               isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
           })
             .catch((err) => {
               console.log(err);
               console.log(err.response);
             });
         } else {
+          this.setState({ inPostTest: true })
           await postTest(
             pId,
             step,
@@ -667,7 +672,9 @@ class NewTestForm extends Component {
           )
             .then((res) => {
               history.push(`/project/${match.params.pId}/test/${res.data.id}`);
-              this.setState({
+              this.setState((prevState) => {
+                return _.merge(prevState, {
+                  inPostTest: false,
                 isBlurSaved: true,
                 test: {
                   target: { id: res.data.targets[0].id },
@@ -677,7 +684,7 @@ class NewTestForm extends Component {
                     { id: res.data.quests[2].id },
                   ],
                 },
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+              })}, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
             })
             .catch((err) => {
               console.log(err);
@@ -771,7 +778,7 @@ class NewTestForm extends Component {
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
             } else if (!hasExTargetError && exCate1Id !== undefined && exValue1Id !== undefined) {
               await getTest(tId);
               await postTargetExtra(tgId, exCate1Id, extraInfoDesc1)
@@ -779,7 +786,7 @@ class NewTestForm extends Component {
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
             }
 
             if (!!tgEx2Id
@@ -791,7 +798,7 @@ class NewTestForm extends Component {
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
             } else if (!hasExTargetError && exCate2Id !== undefined && exValue2Id !== undefined) {
               await getTest(tId);
               await postTargetExtra(tgId, exCate2Id, extraInfoDesc2)
@@ -799,7 +806,7 @@ class NewTestForm extends Component {
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
             }
 
             if (!!tgEx3Id
@@ -811,7 +818,7 @@ class NewTestForm extends Component {
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
             } else if (!hasExTargetError && exCate3Id !== undefined && exValue3Id !== undefined) {
               await getTest(tId);
               await postTargetExtra(tgId, exCate3Id, extraInfoDesc3)
@@ -819,7 +826,7 @@ class NewTestForm extends Component {
                   this.setState({
                     isBlurSaved: true,
                     hasExTargetError: false,
-                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+                  }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
             }
 
         if (hasTargetError
@@ -847,7 +854,7 @@ class NewTestForm extends Component {
               this.setState({
                 isBlurSaved: true,
                 hasTargetError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
         }
       } else if (isQuestRendered && hasQuestPassed) {
         const qId = test.quests.map(q => q.id);
@@ -922,7 +929,7 @@ class NewTestForm extends Component {
           ).then(() => {
             this.setState({
               isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
           }).catch((err) => {
             console.log(err);
             console.log(err.response);
@@ -951,7 +958,7 @@ class NewTestForm extends Component {
           ).then(() => {
             this.setState({
               isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
           });
 
           await patchQuest(
@@ -966,7 +973,7 @@ class NewTestForm extends Component {
               this.setState({
                 isBlurSaved: true,
                 hasQuestError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
               console.log(this.state);
             })
             .catch((err) => {
@@ -997,7 +1004,7 @@ class NewTestForm extends Component {
           ).then(() => {
             this.setState({
               isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
           });
           await patchQuest(
             qId[1],
@@ -1011,7 +1018,7 @@ class NewTestForm extends Component {
               this.setState({
                 isBlurSaved: true,
                 hasQuestError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
             })
             .catch((err) => {
               console.log(err);
@@ -1041,7 +1048,7 @@ class NewTestForm extends Component {
           ).then(() => {
             this.setState({
               isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
           });
           await patchQuest(
             qId[2],
@@ -1055,7 +1062,7 @@ class NewTestForm extends Component {
               this.setState({
                 isBlurSaved: true,
                 hasQuestError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 3000));
             })
             .catch((err) => {
               console.log(err);
@@ -1063,20 +1070,21 @@ class NewTestForm extends Component {
             });
         }
       }
-      this.setState({ inSaving: false })
+      this.setState({ lastSavedTime: new Date(), inSaving: false })
     };
 
     defaultBlurSave();
   }
 
   getTime = () => {
-    const getValue = new Date();
+    const getValue = this.state.lastSavedTime
     const day = getValue.getDate();
     const month = getValue.getMonth() + 1;
     const year = getValue.getFullYear();
     const hour = getValue.getHours();
     const minute = getValue.getMinutes();
-    const date = `${year}. ${month} .${day} ${hour}시 ${minute}분`;
+    const seconds = getValue.getSeconds();
+    const date = `${year}. ${month} .${day} ${hour}시 ${minute}분 ${seconds}초`;
 
     return date;
   }
@@ -1505,7 +1513,8 @@ class NewTestForm extends Component {
             cType,
             cCode,
           ).then((res) => {
-            this.setState({
+            this.setState((prevState) => {
+              return _.merge(prevState, {
               isPayLoading: false,
               isPayInfoPopup: true,
               isPayRendered: true,
@@ -1513,7 +1522,8 @@ class NewTestForm extends Component {
               test: {
                 order: res.data,
               },
-            });
+            })
+          });
           })
             .then(() => {
               this.setState({ isAllRendered: true });
@@ -1530,6 +1540,7 @@ class NewTestForm extends Component {
         }
       }
     } else {
+      this.setState({ inPostTest: true })
       await postTest(
         pId,
         titleReg,
@@ -1547,13 +1558,16 @@ class NewTestForm extends Component {
       )
         .then((res) => {
           history.push(`/project/${match.params.pId}/test/${res.data.id}`);
-
-          this.setState({
-            test: { default: { step: res.data.step } },
-          });
+          this.setState((prevState) => {
+            return _.merge(prevState, {
+              test: { default: { step: res.data.step } },
+            });
+          })
 
           if (hasDefaultPassed) {
-            this.setState({
+            this.setState((prevState) => {
+              return _.merge(prevState, {
+                inPostTest: false,
               isDefaultRendered: false,
               isDefaultPassed: true,
               isTargetRendered: true,
@@ -1566,8 +1580,10 @@ class NewTestForm extends Component {
                 ],
               },
             });
+          });
           } else if (hasTargetPassed) {
-            this.setState({
+            this.setState((prevState) => {
+              return _.merge(prevState, {
               isTargetRendered: false,
               isTargetPassed: true,
               isQuestRendered: true,
@@ -1580,8 +1596,10 @@ class NewTestForm extends Component {
                 ],
               },
             });
+          })
           } else if (hasQuestPassed) {
-            this.setState({
+            this.setState((prevState) => {
+              return _.merge(prevState, {
               isQuestRendered: false,
               isQuestPassed: true,
               isPayRendered: true,
@@ -1594,8 +1612,10 @@ class NewTestForm extends Component {
                 ],
               },
             });
+          })
           } else if (hasPayPassed) {
-            this.setState({
+            this.setState((prevState) => {
+              return _.merge(prevState, {
               isPayRendered: true,
               isPayPassed: true,
               isAllRendered: false,
@@ -1608,6 +1628,7 @@ class NewTestForm extends Component {
                 ],
               },
             });
+          });
           }
         });
     }
@@ -1643,7 +1664,9 @@ class NewTestForm extends Component {
       hasTargetError,
       hasExTargetError,
       justRegistered,
-      shouldBlockNavigation
+      shouldBlockNavigation,
+      inPostTest,
+      inSaving,
     } = this.state;
     const {
       route,
@@ -1732,6 +1755,29 @@ class NewTestForm extends Component {
             when={shouldBlockNavigation && !!tId}
             message="떠나시겠습니까? 변경사항이 저장되지 않을 수 있습니다."
           />
+          { inPostTest && (
+            <div style={{
+              position: "absolute", 
+              zIndex: 500, 
+              background: "rgba(0, 0, 0, 0.2)", 
+              width: "100%", 
+              height: "100%"}}>
+              <LoadingIndicator />
+              <span style={{
+                position: "absolute",
+                width: "300px", 
+                height: "100px", 
+                top: "50%", 
+                left: "50%", 
+                margin: "50px 0 0 -130px", 
+                textAlign: "center", 
+                color: "black", 
+                "fontWeight": "bold"
+              }}>
+              테스트 슬롯을 생성 중입니다
+              </span>
+            </div>
+          )}
           <div className="form__nav">
             <span className="box-btn">
               <button type="button" className="btn-back" onClick={() => handleBackBtn()}>뒤로 가기</button>
@@ -2090,7 +2136,7 @@ class NewTestForm extends Component {
               )
               : null
             }
-            <span className={`box-alert--autosave${!this.state.initSaving && isBlurSaved ? '--active' : ''}`}>
+            <span className={`box-alert--autosave${isBlurSaved ? '--active' : ''}`}>
               { `Last Checkpoint: ${getTime()} (autosaved)` }
             </span>
           </div>

@@ -50,6 +50,7 @@ const FormRadio = (valueProps) => {
               input.onChange(e, step.value);
               handleBlurSave();
             }}
+            onBlur={e => handleBlurSave()}
             value={step.value}
             checked={step.value === input.value}
             disabled={disabled}
@@ -62,6 +63,7 @@ const FormRadio = (valueProps) => {
               input.onChange(e, step.value);
               handleBlurSave();
             }}
+            onBlur={e => handleBlurSave()}
             disabled={disabled}
           />
           <span className="text">{step.text}</span>

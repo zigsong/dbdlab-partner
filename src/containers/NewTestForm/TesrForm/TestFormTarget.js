@@ -428,6 +428,7 @@ class TestFormTarget extends Component {
                   onBlur={handleBlurSave}
                   component={FormSelect}
                   disabled={isDisabled}
+                  stule={{ width: '200px' }}
                 >
                   <option value="추가 정보 선택" disabled>추가 정보 선택</option>
                   {extraInfoCategory.map(m => (

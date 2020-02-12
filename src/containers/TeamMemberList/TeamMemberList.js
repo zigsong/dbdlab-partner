@@ -303,6 +303,9 @@ class TeamMemberList extends Component {
       console.log(err.response);
       console.log(err.message);
     });
+    this.setState({
+      isToastShow: false,
+    });
   }
 
   render() {
@@ -349,7 +352,7 @@ class TeamMemberList extends Component {
       ? fieldValues.serviceCategory
       : undefined;
     const serviceFormatValue = fieldValues !== undefined ? fieldValues.serviceFormat : undefined;
-
+    console.log(pristine);
     return (
       isLoading
         ? <LoadingIndicator />
@@ -387,7 +390,7 @@ class TeamMemberList extends Component {
                   </div>
                   <div className="field">
                     <span className="field__title">
-                      <strong className="title">서비스 URL 또는 어플리케이션 명*</strong>
+                      <strong className="title">서비스 URL 또는 어플리케이션 명</strong>
                     </span>
                     <Field
                       name="serviceInfo"
@@ -396,19 +399,17 @@ class TeamMemberList extends Component {
                       placeholder="서비스 URL 또는 어플리케이션 명 입력"
                       component={FormInput}
                       disabled={isDisabled}
-                      validate={[seriveInfoRequired]}
                     />
                   </div>
                   <div className="field-column">
                     <span className="field__title">
-                      <strong className="title">서비스 분야*</strong>
+                      <strong className="title">서비스 분야</strong>
                     </span>
                     <Field
                       name="serviceCategory"
                       type="select"
                       component={FormSelect}
                       disabled={isDisabled}
-                      validate={categoryRequired}
                       defaultValue="카테고리 선택"
                     >
                       <option value="카테고리 선택" disabled>카테고리 선택</option>
@@ -419,14 +420,13 @@ class TeamMemberList extends Component {
                   </div>
                   <div className="field-column">
                     <span className="field__title">
-                      <strong className="title">서비스 형태*</strong>
+                      <strong className="title">서비스 형태</strong>
                     </span>
                     <Field
                       name="serviceFormat"
                       type="select"
                       component={FormSelect}
                       disabled={isDisabled}
-                      validate={categoryRequired}
                       defaultValue="카테고리 선택"
                     >
                       <option value="카테고리 선택" disabled>카테고리 선택</option>
@@ -455,8 +455,9 @@ class TeamMemberList extends Component {
                         <button type="button" className="btn-cancle" onClick={onReset}>취소</button>
                         <button
                           type="submit"
+                          disabled={!(projectName !== undefined && !pristine)}
                           className={`
-                            btn-submit${projectName !== undefined && serviceInfoValue !== undefined && serviceCategoryValue !== undefined && serviceFormatValue !== undefined && !pristine ? '--active' : ''}
+                            btn-submit${projectName !== undefined && !pristine ? '--active' : ''}
                           `}
                         >
                           확인

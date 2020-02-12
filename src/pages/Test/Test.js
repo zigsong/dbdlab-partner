@@ -48,7 +48,7 @@ class Test extends Component {
           date.setTime(date.getTime() + expireDate * 24 * 60 * 60 * 1000);
           Cookies.remove('token', {
             domain: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : 'realdopt.com',
-            path: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : '/'
+            path: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : '/',
           });
         };
         setTokenCookie(-1);
@@ -182,12 +182,12 @@ class Test extends Component {
   render() {
     const step = [
       {
-        title: 'STEP1. 신청',
+        title: 'STEP1. 작성 중',
         desc: '테스트를 신청해주시면,\n담당 매니저가 배정됩니다.',
         state: ['apply'],
       },
       {
-        title: 'STEP2. 등록',
+        title: 'STEP2. 제출 및 검토',
         desc: '담당 매니저가 배정되면,\n테스트 등록을 도와드립니다.',
         state: ['register'],
       },

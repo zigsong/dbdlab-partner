@@ -22,6 +22,7 @@ class TestFormReport extends Component {
   }
 
   handleWheelEvent = (e) => {
+    console.log(e.deltaY);
     if (e.deltaY < 0) {
       this.changePage(-1);
     } else if (e.deltaY > 0) {

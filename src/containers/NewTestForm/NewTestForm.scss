@@ -39,7 +39,8 @@ $imgUrl: '/static/images/';
 
     .form__nav {
       width: 149px;
-      height: 100vh;
+      min-height: 100vh;
+      height: 100%;
 
       .box-btn {
         display: block;
@@ -65,7 +66,8 @@ $imgUrl: '/static/images/';
 
       .nav {
         width: 100%;
-        height: calc(100% - 48px);
+        min-height: calc(100vh - 49px);
+        height: 100%;
         border-right: 1px solid $veryLightGray;
         box-sizing: border-box;
 
@@ -182,6 +184,10 @@ $imgUrl: '/static/images/';
     .form__field {
       position: relative;
       width: calc(100% - 149px - 210px);
+
+      &.form__report {
+        width: calc(100% - 149px);
+      }
 
       input[name="title"] {
         width: 100%;
@@ -549,7 +555,7 @@ $imgUrl: '/static/images/';
           .select--target\.extraInfoCategory3 {
             display: inline-block;
             min-width: 120px;
-            max-width: 140px;
+            max-width: 170px;
             vertical-align: top;
 
             + .box-input__text {
@@ -1004,7 +1010,7 @@ $imgUrl: '/static/images/';
         &--report {
           position: relative;
           padding: 0;
-          height: calc(100vh - 48px);
+          height: calc(100vh - 49px);
           overflow: hidden;
 
           .react-pdf__Document {
@@ -1105,7 +1111,8 @@ $imgUrl: '/static/images/';
       right: -220px;
       z-index: -1;
       width: 210px;
-      height: 100vh;
+      min-height: 100vh;
+      height: 100%;
       padding: 88px 23px 87px;
       background: $white;
       border-left: 1px solid $veryLightGray;
@@ -1171,7 +1178,8 @@ $imgUrl: '/static/images/';
           z-index: 200;
           display: block;
           width: 210px;
-          height: 100vh;
+          min-height: 100vh;
+          height: 100%;
           background: rgba(0, 0, 0, .3);
         }
 
@@ -1185,7 +1193,8 @@ $imgUrl: '/static/images/';
         right: 0;
         z-index: 110;
         width: 210px;
-        height: 100vh;
+        min-height: 100vh;
+        height: 100%;
         background-color: $blue;
         transition: all .3s;
 
@@ -1220,13 +1229,15 @@ $imgUrl: '/static/images/';
           right: 0;
           z-index: 110;
           width: 210px;
-          height: 100vh;
+          min-height: 100vh;
+          height: 100%;
           transition: all .3s;
 
           &--hidden {
             @extend .form-btn-wrapper;
             right: -220px;
-            height: 100vh;
+            min-height: 100vh;
+            height: 100%;
             z-index: -1;
             transition: all .3s;
           }
@@ -1249,7 +1260,8 @@ $imgUrl: '/static/images/';
             z-index: 200;
             display: block;
             width: 210px;
-            height: 100vh;
+            min-height: 100vh;
+            height: 100%;
             background: rgba(0, 0, 0, .3);
           }
   
@@ -1261,7 +1273,8 @@ $imgUrl: '/static/images/';
         &--hidden {
           @extend .form-btn-wrapper;
           right: -220px;
-          height: 100vh;
+          min-height: 100vh;
+          height: 100%;
           z-index: -1;
           transition: all .3s;
         }
@@ -1307,7 +1320,7 @@ $imgUrl: '/static/images/';
       top: 48px;
       z-index: 100;
       width: calc(100% - 149px);
-      height: calc(100vh - 48px);
+      height: calc(100vh - 49px);
       text-indent: -9999px;
       color: transparent;
       background: rgba(255, 255, 255, .4);

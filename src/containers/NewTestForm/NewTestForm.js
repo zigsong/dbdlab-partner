@@ -1515,9 +1515,6 @@ class NewTestForm extends Component {
             this.setState(prevState => _.merge(prevState, {
               isPayLoading: false,
               isPayInfoPopup: true,
-              isPayRendered: true,
-              isPayPassed: true,
-              isAllRendered: true,
               test: {
                 order: res.data,
               },
@@ -1845,7 +1842,7 @@ class NewTestForm extends Component {
               </ol>
             </nav>
           </div>
-          <div className="form__field">
+          <div className={`form__field${isReportRendered ? ' form__report' : ''}`}>
             <Field
               type="text"
               name="title"

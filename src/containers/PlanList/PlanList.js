@@ -130,6 +130,7 @@ const PlanList = (props) => {
                       </span>
                     ) : null
                   ))}
+<span className="mount">/개</span>
                 </strong>
                 <em>/ plan</em>
                 <button type="button" className="link-changePlan" onClick={e => handleToggleList(e)}>단일 구매를 원해요</button>
@@ -162,6 +163,7 @@ const PlanList = (props) => {
                       </span>
                     ) : null
                   ))}
+<span className="mount">/개</span>
                 </strong>
                 <em>/ plan</em>
                 <button type="button" className="link-changePlan" onClick={e => handleToggleList(e)}>단일 구매를 원해요</button>

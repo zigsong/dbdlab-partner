@@ -9,6 +9,26 @@ class TestFormReport extends Component {
     pageNumber: 1,
   }
 
+  componentDidMount = () => {
+    document.onkeydown = (e) => {
+      e = e || window.event;
+
+      if (e.keyCode == '37') {
+        this.changePage(-1);
+      } else if (e.keyCode == '39') {
+        this.changePage(1);
+      }
+    };
+  }
+
+  handleWheelEvent = (e) => {
+    if (e.deltaY < 0) {
+      this.changePage(-1);
+    } else if (e.deltaY > 0) {
+      this.changePage(1);
+    }
+  }
+
   onDocumentLoadSuccess = (document) => {
     const { numPages } = document;
     this.setState({
@@ -17,9 +37,12 @@ class TestFormReport extends Component {
     });
   };
 
-  changePage = offset => this.setState(prevState => ({
-    pageNumber: prevState.pageNumber + offset,
-  }));
+  changePage = (offset) => {
+    const { numPages } = this.state;
+    this.setState(prevState => ({
+      pageNumber: Math.min(Math.max(1, prevState.pageNumber + offset), numPages),
+    }));
+  };
 
   previousPage = () => this.changePage(-1);
 
@@ -31,7 +54,7 @@ class TestFormReport extends Component {
 
     return (
       <div className="field-wrapper--report">
-        <div className="report__contents scroll-container">
+        <div className="report__contents scroll-container" onWheel={e => this.handleWheelEvent(e)}>
           <Document
             file={report}
             onLoadSuccess={this.onDocumentLoadSuccess}

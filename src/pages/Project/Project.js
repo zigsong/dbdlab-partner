@@ -1,6 +1,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable camelcase */
 import React, { Component } from 'react';
+import Cookies from 'js-cookie';
 import { connect } from 'react-redux';
 import PageTemplate from 'containers/PageTemplate';
 import NewProjectPopup from 'containers/NewProjectPopup';
@@ -76,12 +77,16 @@ class Project extends Component {
           .then((result) => {
             const name = result.data.name.length > 0 ? result.data.name : result.data.email.substring(0, result.data.email.indexOf('@'));
 
-            this.setState({
-              isLoading: false,
-              isToastShow: true,
-              toastTitle: `${name}님, 반갑습니다:)`,
-              toastSubtitle: '프로젝트 관리를 시작해 보세요',
-            }, () => { setTimeout(() => this.setState({ isToastShow: false }), 2200); });
+            const lastLogin = Cookies.get(`realdopt_last_login_${res.data.id}`);
+            if (!lastLogin || `${res.data.id}` !== lastLogin) {
+              this.setState({
+                isLoading: false,
+                isToastShow: true,
+                toastTitle: `${name}님, 반갑습니다:)`,
+                toastSubtitle: '프로젝트 관리를 시작해 보세요',
+              }, () => { setTimeout(() => this.setState({ isToastShow: false }), 2200); });
+            }
+            Cookies.set(`realdopt_last_login_${res.data.id}`, res.data.id, { expires: 1 });
           })
           .catch((err) => {
             console.log(err);

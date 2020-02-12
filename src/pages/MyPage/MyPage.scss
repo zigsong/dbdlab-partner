@@ -173,6 +173,16 @@ $imgUrl: '/static/images';
         font-weight: 500;
         text-decoration: underline;
       }
+      
+      .btn-delete {
+        margin-left: 15px;
+        padding: 0 0 0 15px;
+        font-size: 12px;
+        text-transform: capitalize;
+        color: $black;
+        font-weight: 500;
+        text-decoration: underline;
+      }
     }
 
     .info__profile {

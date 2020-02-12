@@ -23,7 +23,7 @@ const FormTextArea = ({
 
   return (
     <span className={
-      `box-textarea__text${touched && error ? '--error' : ''}${active ? '--active' : ''}`
+      `box-textarea__text${!disabled && touched && error ? '--error' : ''}${active ? '--active' : ''}`
     }
     >
       <label htmlFor={label}>
@@ -39,7 +39,7 @@ const FormTextArea = ({
           value={defaultValue !== undefined ? defaultValue : input.value}
         />
       </label>
-      {touched && ((error && <span className="msg--error">{error}</span>) || (warning && <span className="msg--warning">{warning}</span>))}
+      {!disabled && touched && ((error && <span className="msg--error">{error}</span>) || (warning && <span className="msg--warning">{warning}</span>))}
     </span>
   );
 };

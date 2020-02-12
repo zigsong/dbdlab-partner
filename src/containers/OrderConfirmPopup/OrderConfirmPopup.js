@@ -192,7 +192,7 @@ class OrderConfirmPopup extends Component {
               <span className="info__desc">
                 디비디랩주식회사
                 <br />
-                기업은행 036-107482-04-016
+                국민은행 098901-04-101303
               </span>
               <strong className="info__title">입금액</strong>
               <span className="info__desc--price">
@@ -233,7 +233,7 @@ class OrderConfirmPopup extends Component {
             }
           </section>
         </div>
-        <div className="box-btn">
+        <div className="box-btn-order">
           <button type="button" className="btn-cancel" onClick={e => onReset(e)}>닫기</button>
 
         </div>

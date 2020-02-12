@@ -5,9 +5,11 @@
   "dependencies": {
     "axios": "^0.19.0",
     "core-js": "^3.1.4",
+    "cross-env": "^5.2.0",
     "eslint-config-airbnb": "^17.1.1",
     "history": "^4.10.1",
     "js-cookie": "^2.2.1",
+    "lodash": "^4.17.15",
     "node-sass": "^4.12.0",
     "raf": "^3.4.1",
     "react": "^16.8.6",
@@ -31,10 +33,10 @@
   "scripts": {
     "start": "npm run start-qa",
     "build": "npm run build-qa",
-    "start-qa": "PORT=4000 REACT_APP_DEPLOY_ENV=LOCAL react-scripts start",
-    "build-qa": "REACT_APP_DEPLOY_ENV=QA react-scripts build",
-    "start-real": "PORT=4000 REACT_APP_DEPLOY_ENV=REAL react-scripts start",
-    "build-real": "REACT_APP_DEPLOY_ENV=REAL react-scripts build"
+    "start-qa": "cross-env PORT=4000 REACT_APP_DEPLOY_ENV=LOCAL react-scripts start",
+    "build-qa": "cross-env REACT_APP_DEPLOY_ENV=QA react-scripts build",
+    "start-real": "cross-env PORT=4000 REACT_APP_DEPLOY_ENV=REAL react-scripts start",
+    "build-real": "cross-env REACT_APP_DEPLOY_ENV=REAL react-scripts build"
   },
   "eslintConfig": {
     "extends": [
@@ -51,7 +53,7 @@
     "production": [
       ">0.2%",
       "not dead",
-      "not op_mini all"
+      "ie >= 9"
     ],
     "development": [
       "last 1 chrome version",

@@ -15,7 +15,7 @@ const FormSelect = ({
     const { onChange } = input;
 
     if (slct.current.value === defaultValue) {
-      console.log('test');
+      // console.log('test');
     } else if (input.value !== '') {
       slct.current.value = input.value;
       setValues(input.value);
@@ -59,7 +59,7 @@ const FormSelect = ({
   if (hasDisabled) newArr.push(children[0]);
 
   return (
-    <div className={`box-select${touched && error ? '--error' : ''} select--${input.name}`}>
+    <div className={`box-select${!disabled && touched && error ? '--error' : ''} select--${input.name}`}>
       <select
         name={input.name}
         defaultValue={input.value && input.value !== '' ? input.value : defaultValue}
@@ -122,7 +122,7 @@ const FormSelect = ({
             </ScrollContainer>
           )
           : null }
-        {touched && ((error && <span className="msg--error">{error}</span>) || (warning && <span className="msg--warning">{warning}</span>))}
+        {!disabled && touched && ((error && <span className="msg--error">{error}</span>) || (warning && <span className="msg--warning">{warning}</span>))}
       </div>
     </div>
   );

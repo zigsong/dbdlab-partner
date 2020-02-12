@@ -297,6 +297,7 @@ class TestFormTarget extends Component {
         }
       }
     }
+    this.props.handleBlurSave();
   };
 
   render() {
@@ -329,10 +330,17 @@ class TestFormTarget extends Component {
                 type="number"
                 label="target.minAge"
                 placeholder="숫자"
-                component={({meta: { active, touched, error, warning }}) => (
-                  <span className="msg--error" style={{
-                    position: "absolute", left: "0", zIndex: "10", fontSize: "8px", color: "red"
-                  }}>
+                component={({
+                  meta: {
+                    active, touched, error, warning,
+                  },
+                }) => (
+                  <span
+                    className="msg--error"
+                    style={{
+                      position: 'absolute', left: '0', zIndex: '10', fontSize: '8px', color: 'red',
+                    }}
+                  >
                     {!isDisabled && touched && ((error) || (warning))}
                   </span>
                 )}
@@ -347,8 +355,12 @@ class TestFormTarget extends Component {
                 type="number"
                 label="target.maxAge"
                 placeholder="숫자"
-                component={({meta: { active, touched, error, warning }}) => (
-                  <span></span>
+                component={({
+                  meta: {
+                    active, touched, error, warning,
+                  },
+                }) => (
+                  <span />
                 )}
                 onBlur={handleBlurSave}
                 validate={[ageRequired, minAgeVerify, maxAgeVerify]}
@@ -358,7 +370,7 @@ class TestFormTarget extends Component {
             <span className="field__title">
               <p className="title">모든 연령 혹은 연속된 연령대를 최대 3개까지 선택해주세요.</p>
             </span>
-            <p className="box-field">
+            <div className="box-field">
               <p style={{ margin: '5px 0' }}>
                 <Field
                   name="all"
@@ -375,7 +387,7 @@ class TestFormTarget extends Component {
               />
               {
               [[15, 19], [20, 25], [26, 30], [31, 40], [41, 50], [51, 70]].map((range, i) => (
-                <p style={{ margin: '3px 0' }}>
+                <p style={{ margin: '3px 0' }} key={`${range[0]}`}>
                   <Field
                     name={`age_${range[0]}_${range[1]}`}
                     component={Checkbox}
@@ -387,7 +399,7 @@ class TestFormTarget extends Component {
                 </p>
               ))
             }
-            </p>
+            </div>
             <Field
               name="gender"
               type="select"

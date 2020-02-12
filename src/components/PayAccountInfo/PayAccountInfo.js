@@ -20,7 +20,7 @@ const PayAccountInfo = (props) => {
   return (
     <>
       <div className="field-wrapper--pay-info">
-        <div className="wrapper-inner">
+        <div className={`wrapper-inner${voucherOrder === undefined ? ' wrapper-inner-test' : ''}`}>
           <p className="pay-info__text">
             <strong>리얼답을 이용해주셔서 감사합니다.</strong>
             <br />

@@ -24,7 +24,7 @@ class TaxBillForm extends Component {
   }
 
   render() {
-    const { handleSubmit, fieldValue } = this.props;
+    const { handleSubmit, fieldValue, isLoading } = this.props;
     const { onReset } = this;
     return (
       <FormSection name="tax" className="form-tax" onSubmit={handleSubmit}>
@@ -69,7 +69,9 @@ class TaxBillForm extends Component {
         </p>
         <div className="form__btn-wrapper">
           <button type="button" className="btn-cancle" onClick={onReset}>취소</button>
-          <button type="submit" className={`btn-submit${fieldValue !== undefined ? '--active' : ''}`} onClick={handleSubmit}>신청하기</button>
+          <button type="submit" className={`btn-submit${fieldValue !== undefined && !isLoading ? '--active' : ''}`} disabled={isLoading} onClick={handleSubmit}>
+            { isLoading ? '신청 중...' : '신청하기' }
+          </button>
         </div>
       </FormSection>
     );

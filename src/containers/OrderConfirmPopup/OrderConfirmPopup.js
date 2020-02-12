@@ -16,6 +16,7 @@ import './OrderConfirmPopup.scss';
 
 class OrderConfirmPopup extends Component {
   state = {
+    isLoading: false,
     taxOpen: false,
     hasComplete: false,
   }
@@ -87,6 +88,7 @@ class OrderConfirmPopup extends Component {
     const hasAllValues = !!company && !!companyRegistNum && !!email;
 
     if (hasAllValues) {
+      this.setState({ isLoading: true });
       if (isVoucher) {
         patchVoucherTaxBill(
           voucherId,
@@ -107,11 +109,13 @@ class OrderConfirmPopup extends Component {
                 togglePopup(false);
               }, 2000);
             });
+            this.setState({ isLoading: false });
           })
           .catch((err) => {
             console.log(err);
             console.log(err.response);
             console.log(err.message);
+            this.setState({ isLoading: false });
           });
       } else {
         patchTestTaxBill(
@@ -139,7 +143,7 @@ class OrderConfirmPopup extends Component {
   }
 
   render() {
-    const { handleStep, onReset } = this;
+    const { handleStep, onReset, isLoading } = this;
     const {
       isOpen,
       isTaxBillReq,
@@ -220,6 +224,7 @@ class OrderConfirmPopup extends Component {
                 <TaxBillForm
                   initialValues={initVoucherData}
                   isTaxBillReq={isTaxBillReq}
+                  isLoading={isLoading}
                   onSubmit={handleSubmit(values => this.onSubmit(values))}
                 />
               )
@@ -227,6 +232,7 @@ class OrderConfirmPopup extends Component {
                 <TaxBillForm
                   initialValues={initTestData}
                   isTaxBillReq={isTaxBillReq}
+                  isLoading={isLoading}
                   onSubmit={handleSubmit(values => this.onSubmit(values))}
                 />
               ))

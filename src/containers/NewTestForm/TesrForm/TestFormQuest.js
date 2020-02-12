@@ -1,6 +1,7 @@
 import React from 'react';
 import FormInput from 'components/FormInput';
 import FormSelect from 'components/FormSelect';
+import FormNestedSelect from 'components/FormNestedSelect';
 import FormTextArea from 'components/FormTextArea';
 import { Field } from 'redux-form';
 
@@ -53,7 +54,7 @@ const TestFormQuest = (props) => {
             name={`issue.q${qId[0]}`}
             type="select"
             defaultValue="문제점 선택"
-            component={FormSelect}
+            component={FormNestedSelect}
             onBlur={handleBlurSave}
             validate={[
               issue1Required,
@@ -92,7 +93,7 @@ const TestFormQuest = (props) => {
             name={`issue.q${qId[1]}`}
             type="select"
             defaultValue="문제점 선택"
-            component={FormSelect}
+            component={FormNestedSelect}
             onBlur={handleBlurSave}
             disabled={isDisabled}
             up
@@ -120,7 +121,7 @@ const TestFormQuest = (props) => {
             name={`issue.q${qId[2]}`}
             type="select"
             defaultValue="문제점 선택"
-            component={FormSelect}
+            component={FormNestedSelect}
             onBlur={handleBlurSave}
             disabled={isDisabled}
             up

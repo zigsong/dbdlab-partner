@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import * as TestAPI from 'lib/api/test';
+import _ from 'lodash';
 import { handleActions } from 'redux-actions';
 
 const SET_INIT = 'test/SET_INIT';

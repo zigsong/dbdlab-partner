@@ -613,7 +613,7 @@ class NewTestForm extends Component {
       }
       this.setState({ inSaving: true });
 
-      if (isDefaultRendered && hasDefaultPassed) {
+      if (isDefaultRendered && hasDefaultPassed()) {
         const step = 'APPLY';
 
         if (tId) {
@@ -644,22 +644,18 @@ class NewTestForm extends Component {
             serviceStatusValue,
             serviceDescValue,
             funnelValue,
-          ).then(() => {
-            this.setState({
-              isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
-          })
-            .catch((err) => {
-              console.log(err);
-              console.log(err.response);
-            });
+          );
+
+          this.setState({
+            isBlurSaved: true,
+          }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
         } else {
           if (this.state.isBlurSaved) {
             this.setState({ inSaving: false });
             return;
           }
-          this.setState({ inPostTest: '테스트 슬롯 동기화 중입니다' });
-          await postTest(
+          this.setState({ inPostTest: `"${fieldsValues.title}" 테스트 슬롯을 생성 중입니다` });
+          const res = await postTest(
             pId,
             step,
             titleReg,
@@ -674,28 +670,22 @@ class NewTestForm extends Component {
             serviceStatusValue,
             serviceDescValue,
             funnelValue,
-          )
-            .then((res) => {
-              history.push(`/project/${match.params.pId}/test/${res.data.id}`);
-              this.setState(prevState => _.merge(prevState, {
-                inPostTest: false,
-                isBlurSaved: true,
-                test: {
-                  target: { id: res.data.targets[0].id },
-                  quests: [
-                    { id: res.data.quests[0].id },
-                    { id: res.data.quests[1].id },
-                    { id: res.data.quests[2].id },
-                  ],
-                },
-              }), () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
-            })
-            .catch((err) => {
-              console.log(err);
-              console.log(err.response);
-            });
+          );
+          history.push(`/project/${match.params.pId}/test/${res.data.id}`);
+          this.setState(prevState => _.merge(prevState, {
+            inPostTest: false,
+            isBlurSaved: true,
+            test: {
+              target: { id: res.data.targets[0].id },
+              quests: [
+                { id: res.data.quests[0].id },
+                { id: res.data.quests[1].id },
+                { id: res.data.quests[2].id },
+              ],
+            },
+          }), () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
         }
-      } else if (isTargetRendered && hasTargetPassed) {
+      } else if (isTargetRendered && hasTargetPassed()) {
         // eslint-disable-next-line no-nested-ternary
         const setGenderValue = () => {
           let genderValueTxt;
@@ -873,6 +863,7 @@ class NewTestForm extends Component {
             this.setState({ inSaving: false });
             return;
           }
+
           await patchTarget(
             tgId,
             tId,
@@ -887,7 +878,7 @@ class NewTestForm extends Component {
             hasTargetError: false,
           }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
         }
-      } else if (isQuestRendered && hasQuestPassed) {
+      } else if (isQuestRendered && hasQuestPassed()) {
         const qId = test.quests.map(q => q.id);
         const issueDetail1ValueReg = issueDetail1Value !== undefined ? issueDetail1Value.replace(/(^\s*)|(\s*$)/g, '') : undefined;
         const issueDetail2ValueReg = issueDetail2Value !== undefined ? issueDetail2Value.replace(/(^\s*)|(\s*$)/g, '') : undefined;
@@ -961,14 +952,10 @@ class NewTestForm extends Component {
             serviceDescValue,
             funnelValue,
             registerValue,
-          ).then(() => {
-            this.setState({
-              isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
-          }).catch((err) => {
-            console.log(err);
-            console.log(err.response);
-          });
+          );
+          this.setState({
+            isBlurSaved: true,
+          }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
         }
 
         if (!hasQuestError
@@ -994,11 +981,10 @@ class NewTestForm extends Component {
             serviceDescValue,
             funnelValue,
             registerValue,
-          ).then(() => {
-            this.setState({
-              isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
-          });
+          );
+          this.setState({
+            isBlurSaved: true,
+          }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
 
           await patchQuest(
             qId[0],
@@ -1006,19 +992,14 @@ class NewTestForm extends Component {
             issue1Value,
             issueDetail1ValueReg,
             issueissuePurpose1ValueReg,
-          )
-            .then(() => getTest(tId))
-            .then(() => {
-              this.setState({
-                isBlurSaved: true,
-                hasQuestError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
-              console.log(this.state);
-            })
-            .catch((err) => {
-              console.log(err);
-              console.log(err.response);
-            });
+          );
+          await getTest(tId);
+
+          this.setState({
+            isBlurSaved: true,
+            hasQuestError: false,
+          }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+          console.log(this.state);
         }
 
         if (!hasQuestError
@@ -1044,29 +1025,24 @@ class NewTestForm extends Component {
             serviceDescValue,
             funnelValue,
             registerValue,
-          ).then(() => {
-            this.setState({
-              isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
-          });
+          );
+          this.setState({
+            isBlurSaved: true,
+          }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
+
           await patchQuest(
             qId[1],
             tId,
             issue2Value,
             issueDetail2ValueReg,
             issueissuePurpose2ValueReg,
-          )
-            .then(() => { getTest(tId); })
-            .then(() => {
-              this.setState({
-                isBlurSaved: true,
-                hasQuestError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
-            })
-            .catch((err) => {
-              console.log(err);
-              console.log(err.response);
-            });
+          );
+          await getTest(tId);
+
+          this.setState({
+            isBlurSaved: true,
+            hasQuestError: false,
+          }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
         }
 
         if (!hasQuestError
@@ -1092,29 +1068,23 @@ class NewTestForm extends Component {
             serviceDescValue,
             funnelValue,
             registerValue,
-          ).then(() => {
-            this.setState({
-              isBlurSaved: true,
-            }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
-          });
+          );
+          this.setState({
+            isBlurSaved: true,
+          }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
           await patchQuest(
             qId[2],
             tId,
             issue3Value,
             issueDetail3ValueReg,
             issueissuePurpose3ValueReg,
-          )
-            .then(() => { getTest(tId); })
-            .then(() => {
-              this.setState({
-                isBlurSaved: true,
-                hasQuestError: false,
-              }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
-            })
-            .catch((err) => {
-              console.log(err);
-              console.log(err.response);
-            });
+          );
+          await getTest(tId);
+
+          this.setState({
+            isBlurSaved: true,
+            hasQuestError: false,
+          }, () => setTimeout(() => this.setState({ isBlurSaved: false }), 30000));
         }
       }
       this.setState({ lastSavedTime: new Date(), inSaving: false });
@@ -1140,6 +1110,7 @@ class NewTestForm extends Component {
     const {
       route,
       postTest,
+      postTargetExtra,
       patchTest,
       patchTarget,
       patchTargetExtra,
@@ -1205,7 +1176,7 @@ class NewTestForm extends Component {
     };
 
     if (tId) {
-      if (isDefaultRendered && hasDefaultPassed) {
+      if (isDefaultRendered && hasDefaultPassed()) {
         const step = 'APPLY';
 
         await patchTest(
@@ -1224,15 +1195,14 @@ class NewTestForm extends Component {
           serviceStatus,
           serviceDesc,
           funnel,
-        ).then(() => {
-          this.setState({
-            hasDefaultError: false,
-            isDefaultRendered: false,
-            isDefaultPassed: true,
-            isTargetRendered: true,
-          });
+        );
+        this.setState({
+          hasDefaultError: false,
+          isDefaultRendered: false,
+          isDefaultPassed: true,
+          isTargetRendered: true,
         });
-      } else if (isTargetRendered && hasTargetPassed) {
+      } else if (isTargetRendered && hasTargetPassed()) {
         const {
           gender,
           minAge,
@@ -1262,89 +1232,73 @@ class NewTestForm extends Component {
         const exValue2Id = extraInfoDesc2 !== undefined && extraInfoDesc2 !== '' ? extraInfoDesc2 : undefined;
         const exValue3Id = extraInfoDesc3 !== undefined && extraInfoDesc3 !== '' ? extraInfoDesc3 : undefined;
 
-        getTarget(tgId)
-          .then((res) => {
-            const tgEx1Id = extras.length > 0 ? res.data.extras[0].id : undefined;
-            const tgEx2Id = extras.length > 1 ? res.data.extras[1].id : undefined;
-            const tgEx3Id = extras.length > 2 ? res.data.extras[2].id : undefined;
+        const res = await getTarget(tgId);
+        const tgEx1Id = extras.length > 0 ? res.data.extras[0].id : undefined;
+        const tgEx2Id = extras.length > 1 ? res.data.extras[1].id : undefined;
+        const tgEx3Id = extras.length > 2 ? res.data.extras[2].id : undefined;
 
-            if ((exCate1Id !== undefined && exValue1Id === undefined)
+        if ((exCate1Id !== undefined && exValue1Id === undefined)
               || (exCate1Id === undefined && exValue1Id !== undefined)) {
-              this.setState({
-                hasExTargetError: true,
-              });
-            }
+          this.setState({
+            hasExTargetError: true,
+          });
+        }
 
-            if ((exCate2Id !== undefined && exValue2Id === undefined)
+        if ((exCate2Id !== undefined && exValue2Id === undefined)
             || (exCate2Id === undefined && exValue2Id !== undefined)) {
-              this.setState({
-                hasExTargetError: true,
-              });
-            }
+          this.setState({
+            hasExTargetError: true,
+          });
+        }
 
-            if ((exCate3Id !== undefined && exValue3Id === undefined)
+        if ((exCate3Id !== undefined && exValue3Id === undefined)
             || (exCate3Id === undefined && exValue3Id !== undefined)) {
-              this.setState({
-                hasExTargetError: true,
-              });
-            }
+          this.setState({
+            hasExTargetError: true,
+          });
+        }
 
-            if (!!tgEx1Id
-              && !hasExTargetError
+        if (!hasExTargetError
               && exCate1Id !== undefined
               && exValue1Id !== undefined) {
-              patchTargetExtra(tgEx1Id, tgId, exCate1Id, extraInfoDesc1)
-                .then(() => {
-                  getTarget(tgId);
-                  this.setState({
-                    hasExTargetError: false,
-                  });
-                })
-                .catch((err) => {
-                  console.log(err);
-                  console.log(err.response);
-                });
-            }
+          if (!tgEx1Id) {
+            await postTargetExtra(tgId, exCate1Id, extraInfoDesc1);
+          } else {
+            await patchTargetExtra(tgEx1Id, tgId, exCate1Id, extraInfoDesc1);
+          }
+          await getTarget(tgId);
+          this.setState({
+            hasExTargetError: false,
+          });
+        }
 
-            if (!!tgEx2Id
-              && !hasExTargetError
+        if (!hasExTargetError
               && exCate2Id !== undefined
               && exValue2Id !== undefined) {
-              patchTargetExtra(tgEx2Id, tgId, exCate2Id, extraInfoDesc2)
-                .then(() => {
-                  getTarget(tgId);
-                  this.setState({
-                    hasExTargetError: false,
-                  });
-                })
-                .catch((err) => {
-                  console.log(err);
-                  console.log(err.response);
-                });
-            }
+          if (!tgEx2Id) {
+            await postTargetExtra(tgId, exCate2Id, extraInfoDesc2);
+          } else {
+            await patchTargetExtra(tgEx2Id, tgId, exCate2Id, extraInfoDesc2);
+          }
+          await getTarget(tgId);
+          this.setState({
+            hasExTargetError: false,
+          });
+        }
 
-            if (!!tgEx3Id
-              && !hasExTargetError
+        if (!hasExTargetError
               && exCate3Id !== undefined
               && exValue3Id !== undefined) {
-              patchTargetExtra(tgEx3Id, tgId, exCate3Id, extraInfoDesc3)
-                .then(() => {
-                  getTarget(tgId);
-                  this.setState({
-                    hasExTargetError: false,
-                  });
-                })
-                .catch((err) => {
-                  console.log(err);
-                  console.log(err.response);
-                });
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            console.log(err.response);
-            console.log(err.message);
+          if (!tgEx3Id) {
+            await postTargetExtra(tgId, exCate3Id, extraInfoDesc3);
+          } else {
+            await patchTargetExtra(tgEx3Id, tgId, exCate3Id, extraInfoDesc3);
+          }
+          await getTarget(tgId);
+          this.setState({
+            hasExTargetError: false,
           });
+        }
 
         if (genderValue !== undefined && genderValue !== null
           && minAge !== undefined && minAge !== null
@@ -1356,25 +1310,21 @@ class NewTestForm extends Component {
             minAge,
             maxAge,
             interest,
-          )
-            .then(() => {
-              getTest(tId);
-            })
-            .then(() => {
-              this.setState({
-                hasTargetError: false,
-                hasExTargetError: false,
-                isTargetRendered: false,
-                isTargetPassed: true,
-                isQuestRendered: true,
-              });
-            });
+          );
+          await getTest(tId);
+          this.setState({
+            hasTargetError: false,
+            hasExTargetError: false,
+            isTargetRendered: false,
+            isTargetPassed: true,
+            isQuestRendered: true,
+          });
         } else {
           console.log('error');
           alert('Oops! :(\n오류가 발생했습니다. 새로고침하여 테스트를 다시 불러와야 합니다.');
           window.location.assign(`${protocol}//${config.REACT_APP_PARTNER_URL}/project/${pId}/test/${tId}`);
         }
-      } else if (isQuestRendered && hasQuestPassed) {
+      } else if (isQuestRendered && hasQuestPassed()) {
         const submitCheck = window.confirm('테스트를 등록하시겠어요?\n등록 후엔 수정이 되지 않으니, 꼼꼼히 확인해 주세요:)');
 
         if (submitCheck && !hasDefaultError && !hasTargetError && !hasQuestError) {
@@ -1435,24 +1385,17 @@ class NewTestForm extends Component {
               issue[`q${qId[0]}`],
               issueDetail[`q${qId[0]}`].replace(/(^\s*)|(\s*$)/g, ''),
               issuePurpose[`q${qId[0]}`].replace(/(^\s*)|(\s*$)/g, ''),
-            )
-              .then(() => getTest(tId))
-              .then(() => {
-                togglePopup(true);
-                this.setState({
-                  hasQuestError: false,
-                  isQuestRendered: false,
-                  isQuestPassed: true,
-                  isPayRendered: true,
-                  justRegistered: true,
-                  isRegisterInfoPopup: true,
-                });
-              })
-              .catch((err) => {
-                console.log(err);
-                console.log(err.response);
-                console.log(err.message);
-              });
+            );
+            await getTest(tId);
+            togglePopup(true);
+            this.setState({
+              hasQuestError: false,
+              isQuestRendered: false,
+              isQuestPassed: true,
+              isPayRendered: true,
+              justRegistered: true,
+              isRegisterInfoPopup: true,
+            });
           }
 
           if (issue[`q${qId[1]}`]) {
@@ -1480,24 +1423,17 @@ class NewTestForm extends Component {
               issue[`q${qId[1]}`],
               issueDetail[`q${qId[1]}`].replace(/(^\s*)|(\s*$)/g, ''),
               issuePurpose[`q${qId[1]}`].replace(/(^\s*)|(\s*$)/g, ''),
-            )
-              .then(() => { getTest(tId); })
-              .then(() => {
-                togglePopup(true);
-                this.setState({
-                  hasQuestError: false,
-                  isQuestRendered: false,
-                  isQuestPassed: true,
-                  isPayRendered: true,
-                  justRegistered: true,
-                  isRegisterInfoPopup: true,
-                });
-              })
-              .catch((err) => {
-                console.log(err);
-                console.log(err.response);
-                console.log(err.message);
-              });
+            );
+            await getTest(tId);
+            togglePopup(true);
+            this.setState({
+              hasQuestError: false,
+              isQuestRendered: false,
+              isQuestPassed: true,
+              isPayRendered: true,
+              justRegistered: true,
+              isRegisterInfoPopup: true,
+            });
           }
 
           if (issue[`q${qId[2]}`]) {
@@ -1525,24 +1461,17 @@ class NewTestForm extends Component {
               issue[`q${qId[2]}`],
               issueDetail[`q${qId[2]}`].replace(/(^\s*)|(\s*$)/g, ''),
               issuePurpose[`q${qId[2]}`].replace(/(^\s*)|(\s*$)/g, ''),
-            )
-              .then(() => { getTest(tId); })
-              .then(() => {
-                togglePopup(true);
-                this.setState({
-                  hasQuestError: false,
-                  isQuestRendered: false,
-                  isQuestPassed: true,
-                  isPayRendered: true,
-                  justRegistered: true,
-                  isRegisterInfoPopup: true,
-                });
-              })
-              .catch((err) => {
-                console.log(err);
-                console.log(err.response);
-                console.log(err.message);
-              });
+            );
+            await getTest(tId);
+            togglePopup(true);
+            this.setState({
+              hasQuestError: false,
+              isQuestRendered: false,
+              isQuestPassed: true,
+              isPayRendered: true,
+              justRegistered: true,
+              isRegisterInfoPopup: true,
+            });
           }
 
           this.setState({ inPostTest: false });
@@ -1557,7 +1486,7 @@ class NewTestForm extends Component {
 
         if (submitCheck) {
           this.setState({ isPayLoading: true });
-          orderTest(
+          await orderTest(
             selectedPlan.id,
             tId,
             cType,
@@ -1568,14 +1497,12 @@ class NewTestForm extends Component {
               isPayInfoPopup: true,
               isPayRendered: true,
               isPayPassed: true,
+              isAllRendered: true,
               test: {
                 order: res.data,
               },
             }));
           })
-            .then(() => {
-              this.setState({ isAllRendered: true });
-            })
             .catch((err) => {
               console.log(err);
               console.log(err.response);
@@ -1589,7 +1516,7 @@ class NewTestForm extends Component {
       }
     } else {
       this.setState({ inPostTest: true });
-      await postTest(
+      const res = await postTest(
         pId,
         titleReg,
         clientNameReg,
@@ -1603,72 +1530,69 @@ class NewTestForm extends Component {
         serviceStatus,
         serviceDesc,
         funnel,
-      )
-        .then((res) => {
-          history.push(`/project/${match.params.pId}/test/${res.data.id}`);
-          this.setState(prevState => _.merge(prevState, {
-            test: { default: { step: res.data.step } },
-          }));
-
-          if (hasDefaultPassed) {
-            this.setState(prevState => _.merge(prevState, {
-              inPostTest: false,
-              isDefaultRendered: false,
-              isDefaultPassed: true,
-              isTargetRendered: true,
-              test: {
-                target: { id: res.data.targets[0].id },
-                quests: [
-                  { id: res.data.quests[0].id },
-                  { id: res.data.quests[1].id },
-                  { id: res.data.quests[2].id },
-                ],
-              },
-            }));
-          } else if (hasTargetPassed) {
-            this.setState(prevState => _.merge(prevState, {
-              isTargetRendered: false,
-              isTargetPassed: true,
-              isQuestRendered: true,
-              test: {
-                target: { id: res.data.targets[0].id },
-                quests: [
-                  { id: res.data.quests[0].id },
-                  { id: res.data.quests[1].id },
-                  { id: res.data.quests[2].id },
-                ],
-              },
-            }));
-          } else if (hasQuestPassed) {
-            this.setState(prevState => _.merge(prevState, {
-              isQuestRendered: false,
-              isQuestPassed: true,
-              isPayRendered: true,
-              test: {
-                target: { id: res.data.targets[0].id },
-                quests: [
-                  { id: res.data.quests[0].id },
-                  { id: res.data.quests[1].id },
-                  { id: res.data.quests[2].id },
-                ],
-              },
-            }));
-          } else if (hasPayPassed) {
-            this.setState(prevState => _.merge(prevState, {
-              isPayRendered: true,
-              isPayPassed: true,
-              isAllRendered: false,
-              test: {
-                target: { id: res.data.targets[0].id },
-                quests: [
-                  { id: res.data.quests[0].id },
-                  { id: res.data.quests[1].id },
-                  { id: res.data.quests[2].id },
-                ],
-              },
-            }));
-          }
-        });
+      );
+      history.push(`/project/${match.params.pId}/test/${res.data.id}`);
+      this.setState(prevState => _.merge(prevState, {
+        test: { default: { step: res.data.step } },
+      }));
+      if (hasDefaultPassed()) {
+        this.setState(prevState => _.merge(prevState, {
+          inPostTest: false,
+          isDefaultRendered: false,
+          isDefaultPassed: true,
+          isTargetRendered: true,
+          test: {
+            target: { id: res.data.targets[0].id },
+            quests: [
+              { id: res.data.quests[0].id },
+              { id: res.data.quests[1].id },
+              { id: res.data.quests[2].id },
+            ],
+          },
+        }));
+      } else if (hasTargetPassed) {
+        this.setState(prevState => _.merge(prevState, {
+          isTargetRendered: false,
+          isTargetPassed: true,
+          isQuestRendered: true,
+          test: {
+            target: { id: res.data.targets[0].id },
+            quests: [
+              { id: res.data.quests[0].id },
+              { id: res.data.quests[1].id },
+              { id: res.data.quests[2].id },
+            ],
+          },
+        }));
+      } else if (hasQuestPassed) {
+        this.setState(prevState => _.merge(prevState, {
+          isQuestRendered: false,
+          isQuestPassed: true,
+          isPayRendered: true,
+          test: {
+            target: { id: res.data.targets[0].id },
+            quests: [
+              { id: res.data.quests[0].id },
+              { id: res.data.quests[1].id },
+              { id: res.data.quests[2].id },
+            ],
+          },
+        }));
+      } else if (hasPayPassed) {
+        this.setState(prevState => _.merge(prevState, {
+          isPayRendered: true,
+          isPayPassed: true,
+          isAllRendered: false,
+          test: {
+            target: { id: res.data.targets[0].id },
+            quests: [
+              { id: res.data.quests[0].id },
+              { id: res.data.quests[1].id },
+              { id: res.data.quests[2].id },
+            ],
+          },
+        }));
+      }
     }
 
     return null;
@@ -2086,22 +2010,10 @@ class NewTestForm extends Component {
                   { isPayPassed
                     ? (
                       <>
-                        {isAllRendered
-                          ? (
-                            <PayAccountInfo
-                              testOrder={test.order}
-                              submit={
-                              () => this.setState({
-                                isPayPassed: true,
-                                isAllRendered: false,
-                                isAllPassed: true,
-                              })}
-                            />
-                          )
-                          : (
-                            <FormSection name="pay">
-                              <TestFormPay
-                                isDisabled={isNoNamed || isSpacedTitle
+                        {(
+                          <FormSection name="pay">
+                            <TestFormPay
+                              isDisabled={isNoNamed || isSpacedTitle
                                   || (isDefaultPassed
                                   && isTargetPassed
                                   && isQuestPassed
@@ -2115,12 +2027,12 @@ class NewTestForm extends Component {
                                   || step === 'completed'
                                   || !isLeader
                                 }
-                                testId={tId}
-                                extraValues={extras}
-                                extraInfoCategory={extraInfoCategory}
-                                isRegisterReq={fieldsValues !== undefined && fieldsValues.quest !== undefined ? fieldsValues.quest.registerRequire : '아니오'}
-                              />
-                            </FormSection>
+                              testId={tId}
+                              extraValues={extras}
+                              extraInfoCategory={extraInfoCategory}
+                              isRegisterReq={fieldsValues !== undefined && fieldsValues.quest !== undefined ? fieldsValues.quest.registerRequire : '아니오'}
+                            />
+                          </FormSection>
                           )
                         }
                       </>
@@ -2233,16 +2145,16 @@ class NewTestForm extends Component {
             )
             : null
           }
-          {isPayInfoPopup
+          {isPayInfoPopup && test.order
             ? (
-              <PopupTemplate isShow={isPayInfoPopup} title="테스트를 신청해주셔서 감사합니다">
-                <p className="contents__register">
-                  테스트 비용 결제 후, 입금 확인 다음 날 부터 테스트가 시작됩니다:)
-                </p>
-                <div className="box-btn">
-                  <button type="button" className="btn-cancle" onClick={e => goBack(e)}>테스트 목록으로 이동</button>
-                  <button type="button" className="btn-confirm" onClick={e => handleCancleBtn(e)}>닫기</button>
-                </div>
+              <PopupTemplate isShow={isPayInfoPopup}>
+                <PayAccountInfo
+                  testOrder={test.order}
+                  submit={() => this.setState({
+                    isPayInfoPopup: false,
+                    isAllRendered: false,
+                  })}
+                />
               </PopupTemplate>
             )
             : null

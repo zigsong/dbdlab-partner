@@ -43,29 +43,30 @@ export const postTarget = (tId, gender, minAge, maxAge) => dispatch => (
   })
 );
 
-export const postTargetExtra = (
-  tgId,
-  cId,
-  cValue,
-) => dispatch => TargetAPI.postTargetExtra(
-  tgId,
-  cId,
-  cValue,
-)
-  .then((res) => {
-    dispatch({
-      type: POST_TARGET_EXTRA_SUCCESS,
-      payload: res,
+export const postTargetExtra = (tgId, cId, cValue) => dispatch => (
+  new Promise((resolve, reject) => {
+    console.log('we are here', tgId, cId, cValue);
+    TargetAPI.postTargetExtra(tgId, cId, cValue).then(
+      (res) => {
+        console.log('server response', res);
+        dispatch({
+          type: POST_TARGET_EXTRA_SUCCESS,
+          payload: res,
+        });
+        resolve(res);
+      },
+    ).catch((err) => {
+      console.log(err);
+      console.log(err.response);
+      console.log(err.message);
+      dispatch({
+        type: POST_TARGET_EXTRA_FAILURE,
+        payload: err,
+      });
+      reject(err);
     });
-  }).catch((err) => {
-    console.log(err);
-    console.log(err.response);
-    console.log(err.message);
-    dispatch({
-      type: POST_TARGET_EXTRA_FAILURE,
-      payload: err,
-    });
-  });
+  })
+);
 
 export const patchTargetExtra = (
   tgEx1Id,

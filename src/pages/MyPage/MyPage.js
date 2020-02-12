@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { reduxForm, Field, getFormValues } from 'redux-form';
 import {
+  logout,
+  deleteAccount,
   getAuthSelf,
   getAccount,
   postAvatarUpdate,
@@ -17,7 +19,6 @@ import { togglePopup } from 'modules/popup';
 import { getProjectList } from 'modules/project';
 import { getVoucherOrderList, getTestOrderList } from 'modules/order';
 import { getNotifications } from 'modules/notification';
-import { deleteAccount } from 'modules/auth';
 import PageTemplate from 'containers/PageTemplate';
 import NewPasswordPopup from 'containers/NewPasswordPopup';
 import OrderConfirmPopup from 'containers/OrderConfirmPopup';
@@ -381,9 +382,7 @@ class MyPage extends Component {
                                   }
                                 </strong>
                                 {
-                                  !onEdit
-                                    ? <button type="button" className="btn-edit" onClick={() => handleEdit()}>Edit profile</button>
-                                    : <button type="button" className="btn-delete" onClick={e => handleDelPopup(e)}>계정 삭제</button>
+                                  !onEdit && (<button type="button" className="btn-edit" onClick={() => handleEdit()}>Edit profile</button>)
                                 }
                                 <span className="desc__mail">{email}</span>
                               </span>
@@ -425,6 +424,12 @@ class MyPage extends Component {
                                         <strong className="title">비밀번호</strong>
                                       </span>
                                       <button type="button" className="btn-changePw" onClick={e => handlePwPopup(e)}>비밀번호 수정</button>
+                                    </p>
+                                    <p className="form__data-wrapper">
+                                      <span className="wrapper__title">
+                                        <strong className="title">계정삭제</strong>
+                                      </span>
+                                      <button type="button" className="btn-delete" onClick={e => handleDelPopup(e)}>계정 삭제</button>
                                     </p>
                                   </section>
                                   <div className="form__btn-wrapper">

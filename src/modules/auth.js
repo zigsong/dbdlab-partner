@@ -15,6 +15,8 @@ const PATCH_ACCOUNT_UPDATE_FAILURE = 'auth/PATCH_ACCOUNT_UPDATE_FAILURE';
 const PUT_PASSWORD_UPDATE_SUCCESS = 'auth/PUT_PASSWORD_UPDATE_SUCCESS';
 const PUT_PASSWORD_UPDATE_FAILURE = 'auth/PUT_PASSWORD_UPDATE_FAILURE';
 const LOGOUT = 'auth/LOGOUT';
+const WITHDRAW = 'auth/WITHDRAW';
+const WITHDRAW_FAILURE = 'auth/WITHDRAW_FAILURE';
 
 export const getAuthSelf = () => dispatch => new Promise(
   (resolve, reject) => AuthAPI.getAuthSelf().then(
@@ -142,31 +144,41 @@ export const logout = () => (dispatch) => {
   });
 };
 
-export const deleteAccount = () => (dispatch) => {
-  const { protocol } = window.location;
-  const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') >= 0);
-
-  console.log('deleteAccount');
-  const deleteTokenCookie = () => new Promise(() => {
-    if (hasTokenCookie !== undefined) {
-      Cookies.remove('token', {
-        domain: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : 'realdopt.com',
-        path: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : '/',
+export const deleteAccount = () => dispatch => new Promise(
+  (resolve, reject) => AuthAPI.deleteAccount().then(
+    () => {
+      const { protocol } = window.location;
+      const hasTokenCookie = document.cookie.split(';').map(c => c).find(x => x.indexOf('token=') >= 0);
+      const deleteTokenCookie = () => new Promise(() => {
+        if (hasTokenCookie !== undefined) {
+          Cookies.remove('token', {
+            domain: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : 'realdopt.com',
+            path: process.env.REACT_APP_DEPLOY_ENV === 'LOCAL' ? undefined : '/',
+          });
+          alert('계정이 삭제되었습니다');
+        } else {
+          alert('다시 로그인 해주세요.');
+        }
       });
-      alert('로그아웃 되었습니다 :)');
-    } else {
-      alert('다시 로그인 해주세요 :)');
-    }
-  });
 
-  deleteTokenCookie().then(
-    window.location.assign(`${protocol}//${config.REACT_APP_COMPANY_URL}/login`),
-  );
+      deleteTokenCookie().then(
+        window.location.assign(`${protocol}//${config.REACT_APP_COMPANY_URL}/login`),
+      );
 
-  dispatch({
-    type: LOGOUT,
-  });
-};
+      dispatch({
+        type: WITHDRAW,
+      });
+
+      resolve();
+    },
+  ).catch((err) => {
+    dispatch({
+      type: WITHDRAW_FAILURE,
+      payload: err,
+    });
+    reject(err);
+  }),
+);
 
 
 const initialState = {
@@ -311,5 +323,19 @@ export default handleActions({
       auth_token: '',
       avatar_url: '',
     },
+  }),
+  [WITHDRAW]: () => ({
+    error: false,
+    success: false,
+    users: {
+      id: '',
+      email: '',
+      auth_token: '',
+      avatar_url: '',
+    },
+  }),
+  [WITHDRAW_FAILURE]: state => ({
+    ...state,
+    error: true,
   }),
 }, initialState);

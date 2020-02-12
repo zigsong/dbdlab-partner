@@ -50,6 +50,7 @@ class ProjectForm extends Component {
       fieldValue,
       initialValues,
       fieldMeta,
+      isLoading,
     } = this.props;
     const service = fieldValue !== undefined ? fieldValue.service : undefined;
     const same = fieldValue !== undefined ? fieldValue.same : initialValues.same;
@@ -68,6 +69,7 @@ class ProjectForm extends Component {
             label="service"
             placeholder="텍스트 입력"
             component={FormInput}
+            disabled={isLoading}
             onChange={() => this.handleInputValue()}
           />
           <span className="input__placeholder">의 사용성 테스트</span>
@@ -80,6 +82,7 @@ class ProjectForm extends Component {
               component={Checkbox}
               label="서비스명과 동일합니다"
               isChecked={same}
+              disabled={isLoading}
               onChange={() => this.handleInputValue()}
             />
           </span>
@@ -88,13 +91,21 @@ class ProjectForm extends Component {
             type="text"
             label="company"
             placeholder="텍스트 입력"
+            disabled={isLoading}
             component={FormInput}
             onChange={() => this.handleCheckboxValue()}
           />
         </p>
         <div className="form__btn-wrapper">
-          <button type="button" className="btn-cancle" onClick={onReset}>취소</button>
-          <button type="submit" className={`btn-submit${service !== undefined && fieldMeta.service.visited ? '--active' : ''}`} onClick={handleSubmit}>프로젝트 만들기</button>
+          <button type="button" className="btn-cancle" onClick={onReset} disabled={isLoading}>취소</button>
+          <button
+            type="submit"
+            className={`btn-submit${service !== undefined && fieldMeta.service.visited && !isLoading ? '--active' : ''}`}
+            onClick={handleSubmit}
+            disabled={!(service !== undefined && fieldMeta.service.visited && !isLoading)}
+          >
+            프로젝트 만들기
+          </button>
         </div>
       </form>
     );

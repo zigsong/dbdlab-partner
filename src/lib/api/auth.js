@@ -27,3 +27,4 @@ export const putPasswordUpdate = (email, currentPw, nextPw) => axios.put(`${base
   password: currentPw,
   new_password: nextPw,
 }, headers);
+export const deleteAccount = () => axios.delete(`${baseURL}/accounts/self/`, headers);

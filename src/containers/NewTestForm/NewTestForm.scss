@@ -181,7 +181,7 @@ $imgUrl: '/static/images/';
 
     .form__field {
       position: relative;
-      width: calc(100% - 149px);
+      width: calc(100% - 149px - 210px);
 
       input[name="title"] {
         width: 100%;
@@ -197,11 +197,15 @@ $imgUrl: '/static/images/';
 
       .field-wrapper {
         width: 100%;
-        padding: 39px 44px 15px;
+        padding: 39px 0px 15px 44px;
         box-sizing: border-box;
 
         &--default,
-        &--target,
+        &--target {
+          @extend .field-wrapper;
+          display: flex;
+        }
+
         &--quest,
         &--pay,
         &--testing,
@@ -212,9 +216,10 @@ $imgUrl: '/static/images/';
         .field__section {
           display: inline-block;
           max-width: 50%;
-          min-width: 354px;
+          max-width: 354px;
           margin-right: 29.5px;
           vertical-align: top;
+          flex: 1;
         }
 
         .field {
@@ -293,7 +298,8 @@ $imgUrl: '/static/images/';
               display: inline-block;
               width: 63.4px;
               height: 73.7px;
-              margin-left: 9.6px;
+              margin-right: 9.6px;
+              margin-bottom: 9.6px;
               padding: 42px 10px 11px;
               box-sizing: border-box;
               text-align: center;
@@ -305,8 +311,8 @@ $imgUrl: '/static/images/';
                 line-height: 20px;
               }
 
-              &:first-child {
-                margin-left: 0;
+              &:last-child {
+                margin-right: 0;
               }
 
               &--error {

@@ -45,7 +45,7 @@ export const postTarget = (tId, gender, minAge, maxAge) => dispatch => (
 
 export const postTargetExtra = (tgId, cId, cValue) => dispatch => (
   new Promise((resolve, reject) => {
-    console.log('we are here', tgId, cId, cValue);
+    console.log('postTargetExtra', tgId, cId, cValue);
     TargetAPI.postTargetExtra(tgId, cId, cValue).then(
       (res) => {
         console.log('server response', res);

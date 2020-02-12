@@ -444,7 +444,7 @@ class NewTestForm extends Component {
     };
   };
 
-  handleBlurSave = () => {
+  handleBlurSave = async () => {
     const { fieldsValues, fieldError } = this.props;
     const { isDefaultRendered, isTargetRendered, isQuestRendered } = this.state;
     // eslint-disable-next-line max-len
@@ -459,6 +459,9 @@ class NewTestForm extends Component {
         || fieldError.target.extraInfoCategory3 !== undefined
         || fieldError.target.extraInfoDesc3 !== undefined)
       : false;
+
+    console.log('hasExTargetError', hasExTargetError, JSON.stringify(fieldError));
+
     // eslint-disable-next-line max-len
     const hasQuestError = fieldError.quest !== undefined ? Object.values(fieldError.quest).filter(y => Object.values(y).length > 0).length > 0 : false;
     const titleValue = fieldsValues !== undefined && fieldsValues.title !== undefined
@@ -732,6 +735,7 @@ class NewTestForm extends Component {
 
         if ((exCate1Id !== undefined && exValue1Id === undefined)
               || (exCate1Id === undefined && exValue1Id !== undefined)) {
+          console.log('set true 1');
           this.setState({
             hasExTargetError: true,
           });
@@ -739,6 +743,7 @@ class NewTestForm extends Component {
 
         if ((exCate2Id !== undefined && exValue2Id === undefined)
             || (exCate2Id === undefined && exValue2Id !== undefined)) {
+          console.log('set true 2');
           this.setState({
             hasExTargetError: true,
           });
@@ -746,6 +751,7 @@ class NewTestForm extends Component {
 
         if ((exCate3Id !== undefined && exValue3Id === undefined)
             || (exCate3Id === undefined && exValue3Id !== undefined)) {
+          console.log('set true 3');
           this.setState({
             hasExTargetError: true,
           });
@@ -758,6 +764,7 @@ class NewTestForm extends Component {
         }
 
         if (!hasExTargetError) {
+          console.log('set false 1');
           this.setState({
             hasExTargetError: false,
           });
@@ -773,6 +780,7 @@ class NewTestForm extends Component {
           }
           await patchTargetExtra(tgEx1Id, tgId, exCate1Id, extraInfoDesc1);
           await getTarget(tgId);
+          console.log('set false 2');
           this.setState({
             isBlurSaved: true,
             hasExTargetError: false,
@@ -785,6 +793,7 @@ class NewTestForm extends Component {
           await getTest(tId);
           await postTargetExtra(tgId, exCate1Id, extraInfoDesc1);
           await getTarget(tgId);
+          console.log('set false 3');
           this.setState({
             isBlurSaved: true,
             hasExTargetError: false,
@@ -801,6 +810,7 @@ class NewTestForm extends Component {
           }
           await patchTargetExtra(tgEx2Id, tgId, exCate2Id, extraInfoDesc2);
           await getTarget(tgId);
+          console.log('set false 4');
           this.setState({
             isBlurSaved: true,
             hasExTargetError: false,
@@ -813,6 +823,7 @@ class NewTestForm extends Component {
           await getTest(tId);
           await postTargetExtra(tgId, exCate2Id, extraInfoDesc2);
           await getTarget(tgId);
+          console.log('set false 5');
           this.setState({
             isBlurSaved: true,
             hasExTargetError: false,
@@ -829,6 +840,7 @@ class NewTestForm extends Component {
           }
           await patchTargetExtra(tgEx3Id, tgId, exCate3Id, extraInfoDesc3);
           await getTarget(tgId);
+          console.log('set false 6');
           this.setState({
             isBlurSaved: true,
             hasExTargetError: false,
@@ -841,6 +853,7 @@ class NewTestForm extends Component {
           await getTest(tId);
           await postTargetExtra(tgId, exCate3Id, extraInfoDesc3);
           await getTarget(tgId);
+          console.log('set false 7');
           this.setState({
             isBlurSaved: true,
             hasExTargetError: false,
@@ -1090,7 +1103,7 @@ class NewTestForm extends Component {
       this.setState({ lastSavedTime: new Date(), inSaving: false });
     };
 
-    defaultBlurSave();
+    return defaultBlurSave();
   }
 
   getTime = () => {
@@ -1239,6 +1252,7 @@ class NewTestForm extends Component {
 
         if ((exCate1Id !== undefined && exValue1Id === undefined)
               || (exCate1Id === undefined && exValue1Id !== undefined)) {
+          console.log('set true 4');
           this.setState({
             hasExTargetError: true,
           });
@@ -1246,6 +1260,7 @@ class NewTestForm extends Component {
 
         if ((exCate2Id !== undefined && exValue2Id === undefined)
             || (exCate2Id === undefined && exValue2Id !== undefined)) {
+          console.log('set true 5');
           this.setState({
             hasExTargetError: true,
           });
@@ -1253,13 +1268,14 @@ class NewTestForm extends Component {
 
         if ((exCate3Id !== undefined && exValue3Id === undefined)
             || (exCate3Id === undefined && exValue3Id !== undefined)) {
+          console.log('set true 6');
           this.setState({
             hasExTargetError: true,
           });
         }
 
-        if (!hasExTargetError
-              && exCate1Id !== undefined
+        console.log('berry1', hasExTargetError, tgEx1Id, exCate1Id, exValue1Id);
+        if (exCate1Id !== undefined
               && exValue1Id !== undefined) {
           if (!tgEx1Id) {
             await postTargetExtra(tgId, exCate1Id, extraInfoDesc1);
@@ -1267,13 +1283,14 @@ class NewTestForm extends Component {
             await patchTargetExtra(tgEx1Id, tgId, exCate1Id, extraInfoDesc1);
           }
           await getTarget(tgId);
+          console.log('set false 8');
           this.setState({
             hasExTargetError: false,
           });
         }
 
-        if (!hasExTargetError
-              && exCate2Id !== undefined
+        console.log('berry2', hasExTargetError, tgEx2Id, exCate2Id, exValue2Id);
+        if (exCate2Id !== undefined
               && exValue2Id !== undefined) {
           if (!tgEx2Id) {
             await postTargetExtra(tgId, exCate2Id, extraInfoDesc2);
@@ -1281,13 +1298,14 @@ class NewTestForm extends Component {
             await patchTargetExtra(tgEx2Id, tgId, exCate2Id, extraInfoDesc2);
           }
           await getTarget(tgId);
+          console.log('set false 10');
           this.setState({
             hasExTargetError: false,
           });
         }
 
-        if (!hasExTargetError
-              && exCate3Id !== undefined
+        console.log('berry3', hasExTargetError, tgEx3Id, exCate3Id, exValue3Id);
+        if (exCate3Id !== undefined
               && exValue3Id !== undefined) {
           if (!tgEx3Id) {
             await postTargetExtra(tgId, exCate3Id, extraInfoDesc3);
@@ -1295,6 +1313,7 @@ class NewTestForm extends Component {
             await patchTargetExtra(tgEx3Id, tgId, exCate3Id, extraInfoDesc3);
           }
           await getTarget(tgId);
+          console.log('set false 11');
           this.setState({
             hasExTargetError: false,
           });
@@ -1312,6 +1331,7 @@ class NewTestForm extends Component {
             interest,
           );
           await getTest(tId);
+          console.log('set false 12');
           this.setState({
             hasTargetError: false,
             hasExTargetError: false,
@@ -2120,6 +2140,7 @@ class NewTestForm extends Component {
             submitSucceeded={submitSucceeded}
             handleSubmit={handleSubmit}
             onSubmit={onSubmit}
+            handleBlurSave={handleBlurSave}
           />
           {/* 생성된 테스트 페이지 수정 시에도 안 보이게 하려면 아래 주석 삭제 */}
           {/* { isNoNamed && tId === undefined */}

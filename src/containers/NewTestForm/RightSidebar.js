@@ -33,6 +33,7 @@ const RightSidebar = (props) => {
     isOpen,
     togglePopup,
     test,
+    handleBlurSave,
   } = props;
 
   const p = test.order;
@@ -799,7 +800,7 @@ const RightSidebar = (props) => {
                   <button
                     type="button"
                     className={`btn__default${(isQuestRendered && isTargetPassed) || (isPayRendered && step === 'payment') ? '--submit' : ''}`}
-                    onClick={handleSubmit(values => onSubmit(values))}
+                    onClick={async () => { await handleBlurSave(); await handleSubmit(values => onSubmit(values))(); }}
                     onKeyPress={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
                   >
                     Next

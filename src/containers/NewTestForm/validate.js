@@ -75,8 +75,6 @@ const validate = (values) => {
       ? values.quest.issue[issue2qId] : undefined;
     const issue3qValue = values.quest.issue !== undefined
       ? values.quest.issue[issue3qId] : undefined;
-
-    console.log('currnet issues', issue1qId, issue2qId, issue3qId, issue1qValue, issue2qValue, issue3qValue);
     const issueDetail1qValue = values.quest.issueDetail !== undefined
       ? values.quest.issueDetail[issue1qId] : undefined;
     const issueDetail2qValue = values.quest.issueDetail !== undefined
@@ -90,7 +88,6 @@ const validate = (values) => {
     const issuePurpose3qValue = values.quest.issuePurpose !== undefined
       ? values.quest.issuePurpose[issue3qId] : undefined;
 
-    console.log(issue1qValue, issue2qValue, errors.quest);
     if (issue1qValue === undefined) {
       if (issue2qValue !== undefined) {
         errors.quest.issue[issue2qId] = '문제점 1을 먼저 선택해 주세요';
@@ -116,7 +113,7 @@ const validate = (values) => {
     }
 
     if (issue2qValue !== undefined && issuePurpose2qValue === undefined) {
-      errors.quest.issuePurpose[issue2qId] = '리얼답이 제안해드린 가설 중, 검증하길 원하시는 가설을 입력해주세요.';
+      errors.quest.issuePurpose[issue2qId] = '제안해드린 가설 중, 검증하길 원하시는 가설을 입력해주세요.';
     }
 
     if (issue3qValue === undefined && issuePurpose3qValue !== undefined) {
@@ -124,7 +121,7 @@ const validate = (values) => {
     }
 
     if (issue3qValue !== undefined && issuePurpose3qValue === undefined) {
-      errors.quest.issuePurpose[issue3qId] = '리얼답이 제안해드린 가설 중, 검증하길 원하시는 가설을 입력해주세요.';
+      errors.quest.issuePurpose[issue3qId] = '제안해드린 가설 중, 검증하길 원하시는 가설을 입력해주세요.';
     }
 
     if (issue1qValue !== undefined && issueDetail1qValue === undefined) {

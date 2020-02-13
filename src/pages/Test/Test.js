@@ -14,6 +14,7 @@ import { getAuthSelf } from 'modules/auth';
 import config from 'modules/config';
 import { getProject, getProjectInviteLink } from 'modules/project';
 import { getTestList, getTest, setTestListInit } from 'modules/test';
+import { ReactTypeformEmbed } from 'react-typeform-embed';
 import './Test.scss';
 
 class Test extends Component {
@@ -179,98 +180,102 @@ class Test extends Component {
     this.setState({ isNewTestApply: true });
   }
 
-  render() {
-    const step = [
-      {
-        title: 'STEP1. 작성 중',
-        desc: '테스트를 신청해주시면,\n담당 매니저가 배정됩니다.',
-        state: ['apply'],
-      },
-      {
-        title: 'STEP2. 제출 및 검토',
-        desc: '담당 매니저가 배정되면,\n테스트 등록을 도와드립니다.',
-        state: ['register'],
-      },
-      {
-        title: 'STEP3. 결제',
-        desc: '등록 후, 결제가 완료되면\n바로 테스트가 진행됩니다.',
-        state: ['payment'],
-      },
-      {
-        title: 'STEP4. 진행 및 완료',
-        desc: '테스트는 4-5일 진행되며,\n이후 리포트가 제공됩니다.',
-        state: ['testing', 'completed'],
-      },
-    ];
-    const {
-      isLeader,
-      isLoading,
-      isAuthError,
-      isNewTestApply,
-      isTestTab,
-      inviteLink,
-    } = this.state;
-    const {
-      match,
-      location,
-      testList,
-      project,
-      avatar_url,
-    } = this.props;
-    const { handleTabToggle, handleNewTestForm } = this;
-    const { pId, tId } = match.params;
-    const { search } = location;
-    const hasTestList = Object.keys(testList).length > 0;
-    const {
-      name,
-      company_name,
-      service_extra_info,
-      service_category,
-      service_format,
-      service_description,
-    } = project;
-    const projectName = (name !== undefined && name !== '') ? name : undefined;
-    const companyName = (company_name !== undefined && company_name !== '') ? company_name : undefined;
-    const serviceInfo = (service_extra_info !== undefined && service_extra_info !== '') ? service_extra_info : undefined;
-    const serviceCategory = (service_category !== undefined && service_category !== '') ? service_category : undefined;
-    const serviceFormat = (service_format !== undefined && service_format !== '') ? service_format : undefined;
-    const serviceDesc = (service_description !== undefined && service_description !== '') ? service_description : undefined;
+openForm=() => {
+  this.typeformEmbed.typeform.open();
+}
 
-    return (
-      <>
-        { isLoading
-          ? <LoadingIndicator />
-          : (
-            <>
-              { isAuthError
-                ? <UnauthorizedPopup pId={pId} tId={tId} inviteToken={search} />
-                : (
-                  <>
-                    { isNewTestApply || match.params.tId > 0
-                      ? (
+render() {
+  const step = [
+    {
+      title: 'STEP1. 작성 중',
+      desc: '테스트를 신청해주시면,\n담당 매니저가 배정됩니다.',
+      state: ['apply'],
+    },
+    {
+      title: 'STEP2. 제출 및 검토',
+      desc: '담당 매니저가 배정되면,\n테스트 등록을 도와드립니다.',
+      state: ['register'],
+    },
+    {
+      title: 'STEP3. 결제',
+      desc: '등록 후, 결제가 완료되면\n바로 테스트가 진행됩니다.',
+      state: ['payment'],
+    },
+    {
+      title: 'STEP4. 진행 및 완료',
+      desc: '테스트는 4-5일 진행되며,\n이후 리포트가 제공됩니다.',
+      state: ['testing', 'completed'],
+    },
+  ];
+  const {
+    isLeader,
+    isLoading,
+    isAuthError,
+    isNewTestApply,
+    isTestTab,
+    inviteLink,
+  } = this.state;
+  const {
+    match,
+    location,
+    testList,
+    project,
+    avatar_url,
+  } = this.props;
+  const { handleTabToggle, handleNewTestForm } = this;
+  const { pId, tId } = match.params;
+  const { search } = location;
+  const hasTestList = Object.keys(testList).length > 0;
+  const {
+    name,
+    company_name,
+    service_extra_info,
+    service_category,
+    service_format,
+    service_description,
+  } = project;
+  const projectName = (name !== undefined && name !== '') ? name : undefined;
+  const companyName = (company_name !== undefined && company_name !== '') ? company_name : undefined;
+  const serviceInfo = (service_extra_info !== undefined && service_extra_info !== '') ? service_extra_info : undefined;
+  const serviceCategory = (service_category !== undefined && service_category !== '') ? service_category : undefined;
+  const serviceFormat = (service_format !== undefined && service_format !== '') ? service_format : undefined;
+  const serviceDesc = (service_description !== undefined && service_description !== '') ? service_description : undefined;
+
+  return (
+    <>
+      { isLoading
+        ? <LoadingIndicator />
+        : (
+          <>
+            { isAuthError
+              ? <UnauthorizedPopup pId={pId} tId={tId} inviteToken={search} />
+              : (
+                <>
+                  { isNewTestApply || match.params.tId > 0
+                    ? (
+                      <main className="contents">
+                        <NewTestForm route={this.props} />
+                      </main>
+                    )
+                    : (
+                      <>
+                        <Header
+                          global={false}
+                          projectName={project.name}
+                          avatar_url={avatar_url}
+                        />
                         <main className="contents">
-                          <NewTestForm route={this.props} />
-                        </main>
-                      )
-                      : (
-                        <>
-                          <Header
-                            global={false}
-                            projectName={project.name}
-                            avatar_url={avatar_url}
-                          />
-                          <main className="contents">
-                            <section className="contents__test">
-                              <div className="contents-inner">
-                                <ul className="test__tablist">
-                                  <li className={`tablist__item${isTestTab ? '--active' : ''}`}>
-                                    <button type="button" className="btn-tab" onClick={e => handleTabToggle(e)}>나의 테스트</button>
-                                  </li>
-                                  <li className={`tablist__item${isTestTab ? '' : '--active'}`}>
-                                    <button type="button" className="btn-tab" onClick={e => handleTabToggle(e)}>우리 팀</button>
-                                  </li>
-                                </ul>
-                                {
+                          <section className="contents__test">
+                            <div className="contents-inner">
+                              <ul className="test__tablist">
+                                <li className={`tablist__item${isTestTab ? '--active' : ''}`}>
+                                  <button type="button" className="btn-tab" onClick={e => handleTabToggle(e)}>나의 테스트</button>
+                                </li>
+                                <li className={`tablist__item${isTestTab ? '' : '--active'}`}>
+                                  <button type="button" className="btn-tab" onClick={e => handleTabToggle(e)}>우리 팀</button>
+                                </li>
+                              </ul>
+                              {
                                   isTestTab
                                     ? (
                                       <div className="test__desc">
@@ -344,7 +349,22 @@ class Test extends Component {
                                               {
                                                 isLeader
                                                   ? (
-                                                    <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
+                                                    <>
+                                                      <button type="button" className="btn-ux" onClick={this.openForm}>
+                                                    무료 UX 속성 진단하기
+                                                        <ReactTypeformEmbed
+                                                          popup
+                                                          autoOpen={false}
+                                                          url="https://bit.ly/2SqKFKc"
+                                                          hideHeaders
+                                                          hideFooter
+                                                          ref={(tf) => {
+                                                            this.typeformEmbed = tf;
+                                                          }}
+                                                        />
+                                                      </button>
+                                                      <button type="button" className="btn-start--red" onClick={e => handleNewTestForm(e)}>+ 테스트 신청하기</button>
+                                                    </>
                                                   )
                                                   : null
                                               }
@@ -369,20 +389,20 @@ class Test extends Component {
                                       </div>
                                     )
                                 }
-                              </div>
-                            </section>
-                          </main>
-                        </>
-                      )}
-                  </>
-                )
+                            </div>
+                          </section>
+                        </main>
+                      </>
+                    )}
+                </>
+              )
               }
-            </>
-          )
+          </>
+        )
         }
-      </>
-    );
-  }
+    </>
+  );
+}
 }
 
 const mapStateToProps = (state) => {

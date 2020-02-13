@@ -12,6 +12,7 @@ import ToastAlert from 'components/ToastAlert';
 import { getAuthSelf, getAccount } from 'modules/auth';
 import { togglePopup } from 'modules/popup';
 import { getProjectList } from 'modules/project';
+import { ReactTypeformEmbed } from 'react-typeform-embed';
 import './Project.scss';
 
 class Project extends Component {
@@ -104,6 +105,10 @@ class Project extends Component {
     props.togglePopup(isShow);
   };
 
+  openForm=() => {
+    this.typeformEmbed.typeform.open();
+  }
+
   render() {
     const { isOpen, history, projectList } = this.props;
     const {
@@ -129,6 +134,19 @@ class Project extends Component {
                 <>
                   <div className="project__desc">
                     <span className="desc__text">프로젝트를 만들고, 테스트를 시작해보세요!</span>
+                    <button type="button" className="btn-ux" onClick={this.openForm}>
+                                                   무료 UX 속성 진단하기
+                      <ReactTypeformEmbed
+                        popup
+                        autoOpen={false}
+                        url="https://bit.ly/2SqKFKc"
+                        hideHeaders
+                        hideFooter
+                        ref={(tf) => {
+                          this.typeformEmbed = tf;
+                        }}
+                      />
+                    </button>
                     <button type="button" className="btn-start--red" onClick={() => this.handlePopup(true)}>+ 프로젝트 만들기</button>
                   </div>
                   <NewProjectPopup

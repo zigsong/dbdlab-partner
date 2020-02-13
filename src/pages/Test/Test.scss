@@ -3,7 +3,7 @@ $black: #282828;
 $white: #fff;
 $gray: #9b9b9b;
 $veryLightGray: #cacaca;
-$imgUrl: '/static/images';
+$imgUrl: "/static/images";
 
 .contents__test {
   .contents-inner {
@@ -48,7 +48,7 @@ $imgUrl: '/static/images';
 
   .test__desc {
     text-align: center;
-  
+
     .desc__step-list,
     .desc__test-list {
       display: flex;
@@ -56,7 +56,7 @@ $imgUrl: '/static/images';
       padding-top: 17px;
       justify-content: space-between;
       align-items: top;
-  
+
       .list__item {
         width: 200px;
         height: 100%;
@@ -73,7 +73,9 @@ $imgUrl: '/static/images';
 
         .item__title {
           width: 100%;
-          background: transparent url('#{$imgUrl}/common/icons/icon_step_arrow.svg') no-repeat right center;
+          background: transparent
+            url("#{$imgUrl}/common/icons/icon_step_arrow.svg") no-repeat right
+            center;
           margin-bottom: 5px;
           font-size: 12px;
           text-transform: uppercase;
@@ -87,7 +89,9 @@ $imgUrl: '/static/images';
 
         &:last-child {
           .item__title {
-            background: transparent url('#{$imgUrl}/common/icons/icon_dropdown_arrow--black.svg') no-repeat right center;
+            background: transparent
+              url("#{$imgUrl}/common/icons/icon_dropdown_arrow--black.svg")
+              no-repeat right center;
           }
         }
 
@@ -97,7 +101,7 @@ $imgUrl: '/static/images';
         &--payment,
         &--testing {
           @extend .list__item;
-          transition: height, padding .3s;
+          transition: height, padding 0.3s;
         }
 
         &--apply {
@@ -126,7 +130,7 @@ $imgUrl: '/static/images';
             padding-bottom: 67px;
 
             &:after {
-              content: '';
+              content: "";
               display: block;
               position: absolute;
               left: 0;
@@ -135,7 +139,11 @@ $imgUrl: '/static/images';
               z-index: 1;
               width: 100%;
               height: 73px;
-              background-image: linear-gradient(to bottom, rgba(241, 243, 244, 0), #f1f3f4);
+              background-image: linear-gradient(
+                to bottom,
+                rgba(241, 243, 244, 0),
+                #f1f3f4
+              );
             }
           }
         }
@@ -148,20 +156,31 @@ $imgUrl: '/static/images';
         overflow-x: hidden;
         overflow-y: auto;
         -ms-overflow-style: none; // IE에서 스크롤바 감춤
-  
-        &::-webkit-scrollbar { 
+
+        &::-webkit-scrollbar {
           display: none;
         }
       }
     }
-  
+
     .desc__text {
       display: block;
       padding: 38px 0 27px;
       font-size: 16px;
       color: $black;
     }
-  
+    .btn-ux {
+      position: relative;
+      min-width: 210px;
+      height: 30px;
+      border-radius: 15px;
+      background: $black;
+      color: $white;
+      font-size: 16px;
+      .ReactTypeformEmbed {
+      }
+    }
+
     .btn-start--red {
       display: inline-block;
       min-width: 188px;
@@ -171,6 +190,7 @@ $imgUrl: '/static/images';
       color: $white;
       font-size: 16px;
       line-height: 30px;
+      margin-left: 20px;
     }
   }
 }

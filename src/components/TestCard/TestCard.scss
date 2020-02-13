@@ -6,7 +6,7 @@ $gray: #9b9b9b;
 $lightGray: #dcdcdc;
 $veryLightGray: #cacaca;
 $veryLightPink: #fff5f6;
-$imgUrl: '/static/images';
+$imgUrl: "/static/images";
 
 @mixin line-clamp($val) {
   display: -webkit-box;
@@ -34,7 +34,7 @@ $imgUrl: '/static/images';
     border-radius: 3px;
     border: 1px solid $veryLightGray;
     box-sizing: border-box;
-  
+
     .card-test__test {
       .test__state {
         display: block;
@@ -43,18 +43,18 @@ $imgUrl: '/static/images';
         font-weight: 500;
         color: $gray;
         line-height: 15px;
-  
+
         &--on {
           @extend .test__state;
           color: $blue;
         }
-  
+
         &--off {
           @extend .test__state;
           color: $black;
         }
       }
-  
+
       .test__title {
         @include line-clamp(2);
         height: 44px;
@@ -64,7 +64,7 @@ $imgUrl: '/static/images';
         color: $black;
       }
     }
-  
+
     .card-test__info {
       margin-top: 2px;
       font-size: 12px;
@@ -89,6 +89,8 @@ $imgUrl: '/static/images';
           color: $gray;
         }
       }
+
+  
 
       .btn-start--blue {
         width: 100%;

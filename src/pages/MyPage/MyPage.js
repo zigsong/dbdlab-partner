@@ -2,6 +2,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable camelcase */
 import React, { Component } from 'react';
+import _ from 'lodash';
 import Cookies from 'js-cookie';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -340,7 +341,8 @@ class MyPage extends Component {
       onSubmit,
     } = this;
     const { search } = location;
-
+    console.log(voucherList
+      .concat(testList));
     return (
       <>
         {isAuthError ? <UnauthorizedPopup inviteToken={search} /> : (
@@ -486,9 +488,8 @@ class MyPage extends Component {
                           <div className="payment__info">
                             <div className="wrapper-inner">
                               <ul className="info__list">
-                                {voucherList
-                                  .concat(testList)
-                                  .sort((a, b) => a.created_at - b.created_at)
+                                {_.sortBy(voucherList
+                                  .concat(testList), 'created_at').reverse()
                                   .map((p, idx) => (
                                     <li className="list__item" key={p.code}>
                                       <button

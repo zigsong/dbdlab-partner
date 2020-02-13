@@ -1515,6 +1515,8 @@ class NewTestForm extends Component {
             this.setState(prevState => _.merge(prevState, {
               isPayLoading: false,
               isPayInfoPopup: true,
+              isPayRendered: true,
+              isPayPassed: true,
               test: {
                 order: res.data,
               },
@@ -2056,7 +2058,34 @@ class NewTestForm extends Component {
                     )
                     : (
                       <>
-                        {isPayLoading ? <LoadingIndicator /> : null}
+                        {isPayLoading ? (
+                          <div style={{
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            zIndex: 500,
+                            background: 'rgba(0, 0, 0, 0.2)',
+                            width: '100%',
+                            height: '100%',
+                          }}
+                          >
+                            <LoadingIndicator />
+                            <span style={{
+                              position: 'absolute',
+                              width: '300px',
+                              height: '100px',
+                              top: '50%',
+                              left: '50%',
+                              margin: '50px 0 0 -130px',
+                              textAlign: 'center',
+                              color: 'black',
+                              fontWeight: 'bold',
+                            }}
+                            >
+                              결제 정보를 작성하고 있습니다
+                            </span>
+                          </div>
+                        ) : null}
                         <FormSection name="pay">
                           <TestFormPay
                             isDisabled={isNoNamed || isSpacedTitle

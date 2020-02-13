@@ -31,7 +31,6 @@ class DeletePopup extends Component {
       show, onPopup, handleDelete,
     } = this.props;
 
-    console.log('handleDelete', handleDelete);
     return (
       <PopupTemplate isShow={show} title="계정 삭제">
         <div style={{ maxWidth: '218px' }}>

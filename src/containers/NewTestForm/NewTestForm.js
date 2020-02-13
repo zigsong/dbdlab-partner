@@ -460,8 +460,6 @@ class NewTestForm extends Component {
         || fieldError.target.extraInfoDesc3 !== undefined)
       : false;
 
-    console.log('hasExTargetError', hasExTargetError, JSON.stringify(fieldError));
-
     // eslint-disable-next-line max-len
     const hasQuestError = fieldError.quest !== undefined ? Object.values(fieldError.quest).filter(y => Object.values(y).length > 0).length > 0 : false;
     const titleValue = fieldsValues !== undefined && fieldsValues.title !== undefined

@@ -184,8 +184,6 @@ class MailPopup extends Component {
     const formValues = this.reduceFormValues(form.elements);
     const allFieldsValid = this.checkAllFieldsValid(formValues);
 
-    console.log(allFieldsValid);
-
     if (allFieldsValid) {
       this.onSubmitMail(formValues, allFieldsValid);
     }
@@ -203,7 +201,6 @@ class MailPopup extends Component {
       const email = formValues.email.value;
       const message = formValues.message.value;
 
-      console.log('Now Loading');
       this.setState({ isLoading: true, ...formValues, allFieldsValid });
 
       axios({

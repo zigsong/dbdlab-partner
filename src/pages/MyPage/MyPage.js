@@ -341,8 +341,7 @@ class MyPage extends Component {
       onSubmit,
     } = this;
     const { search } = location;
-    console.log(voucherList
-      .concat(testList));
+
     return (
       <>
         {isAuthError ? <UnauthorizedPopup inviteToken={search} /> : (

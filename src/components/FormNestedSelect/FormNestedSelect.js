@@ -39,7 +39,6 @@ const FormNestedSelect = ({
     const { onChange } = input;
     const selectedValue = reset ? null : e.target.innerText;
 
-    console.log('HandleValue why', selectedValue, JSON.stringify(input));
     // slct.current.value = selectedValue;
     // setValues(selectedValue);
     onChange(selectedValue);

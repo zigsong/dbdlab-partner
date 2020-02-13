@@ -4,6 +4,8 @@ import { Document, Page, pdfjs } from 'react-pdf';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 class TestFormReport extends Component {
+  deltaY = 0
+
   state = {
     numPages: null,
     pageNumber: 1,
@@ -22,12 +24,20 @@ class TestFormReport extends Component {
   }
 
   handleWheelEvent = (e) => {
-    console.log(e.deltaY);
-    if (e.deltaY < 0) {
+    if (this.deltaY > 0 && e.deltaY < 0) { this.deltaY = 0; return; }
+    if (this.deltaY < 0 && e.deltaY > 0) { this.deltaY = 0; return; }
+
+    const offset = 200;
+    this.deltaY += e.deltaY;
+    if (this.deltaY < offset && this.deltaY > -offset) {
+      return;
+    }
+    if (this.deltaY < 0) {
       this.changePage(-1);
-    } else if (e.deltaY > 0) {
+    } else if (this.deltaY > 0) {
       this.changePage(1);
     }
+    this.deltaY = 0;
   }
 
   onDocumentLoadSuccess = (document) => {

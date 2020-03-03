@@ -66,9 +66,9 @@ const validate = (values) => {
     }
 
     // quest
-    const issue1qId = values.quest.issue !== undefined ? Object.keys(values.quest.issue)[0] : 1;
-    const issue2qId = values.quest.issue !== undefined ? Object.keys(values.quest.issue)[1] : 2;
-    const issue3qId = values.quest.issue !== undefined ? Object.keys(values.quest.issue)[2] : 3;
+    const issue1qId = values.quest.issue !== undefined ? Object.keys(values.quest.issueDetail)[0] : 1;
+    const issue2qId = values.quest.issue !== undefined ? Object.keys(values.quest.issueDetail)[1] : 2;
+    const issue3qId = values.quest.issue !== undefined ? Object.keys(values.quest.issueDetail)[2] : 3;
     const issue1qValue = values.quest.issue !== undefined
       ? values.quest.issue[issue1qId] : undefined;
     const issue2qValue = values.quest.issue !== undefined

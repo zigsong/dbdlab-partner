@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import FormInput from 'components/FormInput';
 import FormSelect from 'components/FormSelect';
 import FormNestedSelect from 'components/FormNestedSelect';
 import FormTextArea from 'components/FormTextArea';
-import { Field } from 'redux-form';
+import { Field, touch } from 'redux-form';
 
 const registerRequired = value => (value ? undefined : '테스트 진행에 회원가입이 필요한가요?');
 const issue1Required = value => (value ? undefined : '문제점은 최소 1개 이상 선택해야 합니다');
@@ -17,10 +17,12 @@ const TestFormQuest = (props) => {
   const {
     qId,
     issueCategory,
+    issueCategory2,
     isDisabled,
     handleBlurSave,
   } = props;
   const registerCategory = ['아니오', '네(+3,000원/명)'];
+  const [touch, onTouch] = useState([false, false, false]);
 
   return (
     <div className="field-wrapper--quest">
@@ -34,7 +36,7 @@ const TestFormQuest = (props) => {
             type="select"
             defaultValue="카테고리 선택"
             component={FormSelect}
-            onBlur={handleBlurSave}
+            // onBlur={handleBlurSave}
             validate={registerRequired}
             disabled={isDisabled}
           >
@@ -55,6 +57,9 @@ const TestFormQuest = (props) => {
               name={`issue.q${qId[0]}`}
               type="input"
               defaultValue="문제점 선택"
+              issueCategory2={issueCategory2}
+              touch={touch[0]}
+              onTouch={() => onTouch([true, touch[1], touch[2]])}
               component={FormNestedSelect}
               onBlur={handleBlurSave}
               validate={[
@@ -94,6 +99,9 @@ const TestFormQuest = (props) => {
               name={`issue.q${qId[1]}`}
               type="select"
               defaultValue="문제점 선택"
+              issueCategory2={issueCategory2}
+              touch={touch[1]}
+              onTouch={() => onTouch([touch[0], true, touch[2]])}
               component={FormNestedSelect}
               onBlur={handleBlurSave}
               disabled={isDisabled}
@@ -122,6 +130,9 @@ const TestFormQuest = (props) => {
               name={`issue.q${qId[2]}`}
               type="select"
               defaultValue="문제점 선택"
+              issueCategory2={issueCategory2}
+              touch={touch[2]}
+              onTouch={() => onTouch([touch[0], touch[1], true])}
               component={FormNestedSelect}
               onBlur={handleBlurSave}
               disabled={isDisabled}

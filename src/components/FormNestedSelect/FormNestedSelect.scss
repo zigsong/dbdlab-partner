@@ -6,6 +6,56 @@ $lightGray: #dcdcdc;
 $veryLightGray: #cacaca;
 $imgUrl: '/static/images';
 
+.ant-cascader-picker-disabled {
+  background: transparent !important;
+}
+
+.ant-cascader-picker-label {
+  z-index: 0;
+  font-weight: bold;
+  padding: 0 !important;
+}
+
+.ant-cascader-input {
+  box-shadow: none !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+.fns-msg--error {
+  position: absolute;
+  left: 0;
+  bottom: 3.5px;
+  font-size: 8px;
+  color: $red;
+}
+
+.fns-select-true {
+  .ant-cascader-input {
+    border: none !important;
+    border-radius: 0 !important;
+    border-bottom: 1px solid black !important;
+  }
+}
+
+.fns-select-false {
+  .ant-cascader-input {
+    border: none !important;
+    border-radius: 0 !important;
+    border-bottom: 1px solid #dcdcdc !important;
+  }
+}
+
+
+.box-select--error {
+  &.fns-select-false {
+    .ant-cascader-input {
+      transition: border 0.5s;
+      border-bottom: 1px solid $red !important;
+    }
+  }
+}
+
 .box-select {
   position: relative;
   width: 100%;
@@ -23,7 +73,7 @@ $imgUrl: '/static/images';
 
   .select {
     position: relative;
-    min-height: 30px;
+    min-height: 50px;
     padding-bottom: 20px;
 
     .box-btn {

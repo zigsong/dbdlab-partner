@@ -1,130 +1,91 @@
-import React, { useState, useRef, useEffect } from 'react';
-import ScrollContainer from 'react-indiana-drag-scroll';
+import React, { useState } from 'react';
 import './FormNestedSelect.scss';
+import 'antd/dist/antd.css';
 import { Cascader } from 'antd';
 
+const findNode = (tree, id) => {
+  for (let i = 0; i < tree.length; i += 1) {
+    const node = tree[i];
+    if (node.id === id) {
+      return node;
+    } if (node.children && node.children.length > 0) {
+      const result = findNode(node.children, id);
+      if (result) return result;
+    }
+  }
+  return undefined;
+};
+
+const setNode = (tree, record) => {
+  if (!record.parent_id) {
+    tree.push({ id: record.id, value: record.name, label: record.name });
+    return;
+  }
+  const parentNode = findNode(tree, record.parent_id);
+  if (parentNode) {
+    if (parentNode.children && parentNode.children.length > 0) {
+      parentNode.children.push({ id: record.id, value: record.name, label: record.name });
+    } else {
+      parentNode.children = [{ id: record.id, value: record.name, label: record.name }];
+    }
+  }
+};
+
+const getPath = (tree, value, path = []) => {
+  for (let i = 0; i < tree.length; i += 1) {
+    const node = tree[i];
+    if (node.value === value) {
+      path.push(node.value);
+      return path;
+    } if (node.children && node.children.length > 0) {
+      const result = getPath(node.children, value, [...path, node.value]);
+      if (result) return result;
+    }
+  }
+  return undefined;
+};
+
+const getOptions = (issueCategory2) => {
+  const newOptions = [];
+  if (issueCategory2) {
+    issueCategory2.forEach((record) => {
+      setNode(newOptions, record);
+    });
+  }
+  return newOptions;
+};
+
 const FormNestedSelect = ({
-  defaultValue, children, input, disabled, meta: { touched, error, warning }, up,
+  issueCategory2, defaultValue, children, input, disabled, meta: { touched, error, warning }, up, touch, onTouch,
 }) => {
-  const [values, setValues] = useState(defaultValue);
-  const [isActive, setActive] = useState(false);
-  const [isSelected, setSelected] = useState(false);
-  const slct = useRef();
-  const ul = useRef();
+  const [open, setOpen] = useState(false);
 
-  useEffect(() => {
+  const searchFilter = (inputValue, path) => path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
+  const displayRender = labels => <span>{labels[labels.length - 1]}</span>;
+
+  const handleValue = (e) => {
     const { onChange } = input;
-
-    if (slct.current.value === defaultValue) {
-      // console.log('test');
-    } else if (input.value !== '') {
-      slct.current.value = input.value;
-      setValues(input.value);
-      if (!disabled) setSelected(true);
-      onChange(input.value);
-    } else if (input.value === '' || input.value === undefined) {
-      setValues(slct.current.value);
-      onChange(slct.current.value);
-    }
-  }, [defaultValue, disabled, input, input.value]);
-
-  const handleBlur = (e) => {
-    e.preventDefault();
-    setTimeout(() => {
-      setActive(false);
-    }, 200);
+    if (!touch) onTouch();
+    onChange(e[e.length - 1]);
   };
 
-  const handleValue = (e, reset) => {
-    const { onChange } = input;
-    const selectedValue = reset ? null : e.target.innerText;
-
-    // slct.current.value = selectedValue;
-    // setValues(selectedValue);
-    onChange(selectedValue);
-    handleBlur(e);
-  };
-
-  const handleOpenList = (e) => {
-    e.preventDefault();
-
-    if (!disabled) {
-      setActive(true);
-      setSelected(true);
-    }
-  };
-
-  const newArr = [];
-  const hasDisabled = children[0].props.disabled;
-
-  if (hasDisabled) newArr.push(children[0]);
+  const options = getOptions(issueCategory2);
+  const value = input.value ? getPath(options, input.value) : input.value;
 
   return (
-    <div className={`box-select${!disabled && touched && error ? '--error' : ''} select--${input.name}`}>
-      <select
-        name={input.name}
-        defaultValue={input.value && input.value !== '' ? input.value : defaultValue}
-        className="select--hidden"
-        ref={slct}
-      >
-        {children}
-      </select>
-      <div className="select">
-        <span className="box-btn">
-          <button
-            className={`select__title${isSelected ? '--active' : ''}${isSelected && values === '' ? ' disabled' : ''}`}
-            type="button"
-            onFocus={() => input.onFocus()}
-            onClick={e => handleOpenList(e)}
-            onBlur={e => input.onBlur(handleBlur(e))}
-          >
-            {input.value ? input.value : (values || defaultValue) }
-          </button>
-        </span>
-        { isActive
-          ? (
-            <ScrollContainer>
-              <ul className={`select__list${up ? '--up' : ''} scroll-container`} ref={ul}>
-                { up
-                  ? (
-                    <>
-                      {newArr.concat(children[1]).map((c, i) => (
-                        <li key={c.props.value} className="select__item">
-                          <button
-                            onClick={e => handleValue(e, i === 0)}
-                            type="button"
-                            className={i === 0 ? 'btn disabled' : 'btn'}
-                            name={input.name}
-                          >
-                            {c.props.children}
-                          </button>
-                        </li>
-                      ))}
-                    </>
-                  )
-                  : (
-                    <>
-                      {newArr.concat(children[1]).map((c, i) => (
-                        <li key={c.props.value} className="select__item">
-                          <button
-                            onClick={e => handleValue(e, i === 0)}
-                            type="button"
-                            className={i === 0 ? 'btn disabled' : 'btn'}
-                            name={input.name}
-                          >
-                            {c.props.children}
-                          </button>
-                        </li>
-                      ))}
-                    </>
-                  )
-                }
-              </ul>
-            </ScrollContainer>
-          )
-          : null }
-        {!disabled && touched && ((error && <span className="msg--error">{error}</span>) || (warning && <span className="msg--warning">{warning}</span>))}
-      </div>
+    <div className={`box-select${!disabled && touch && error ? '--error' : ''} fns-select-${open}`}>
+      <Cascader
+        disabled={disabled}
+        style={{ maxWidth: '317px', marginBottom: '18px' }}
+        value={value}
+        options={options}
+        onChange={e => handleValue(e)}
+        placeholder={defaultValue}
+        displayRender={displayRender}
+        onPopupVisibleChange={e => setOpen(e)}
+        showSearch={{ searchFilter }}
+      />
+      {!open && !disabled && touch && ((error && <span className="fns-msg--error">{error}</span>) || (warning && <span className="fns-msg--warning">{warning}</span>))}
     </div>
   );
 };

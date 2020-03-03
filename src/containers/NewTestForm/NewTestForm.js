@@ -1697,6 +1697,7 @@ class NewTestForm extends Component {
       ? categoryListArr[6].map(c => c.name)
       : [];
     const issueCategory = categoryListArr !== undefined ? categoryListArr[7].map(c => c.name) : [];
+    const issueCategory2 = categoryListArr !== undefined ? categoryListArr[7] : [];
     const hasIssueValues = fieldsValues && fieldsValues !== undefined
       ? fieldsValues.quest.issue : undefined;
     const hasIssue1Value = hasIssueValues !== undefined ? hasIssueValues[`q${qId[0]}`] : undefined;
@@ -1993,6 +1994,7 @@ class NewTestForm extends Component {
                       }
                       qId={qId}
                       issueCategory={issueCategory}
+                      issueCategory2={issueCategory2}
                       fieldsValues={fieldsValues}
                       handleBlurSave={handleBlurSave}
                     />
